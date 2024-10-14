@@ -86,13 +86,13 @@
                    href="{{route('home')}}">
                     <img class="__inline-11"
                          src="{{ getValidImage(path: 'storage/app/public/company/'.$web_config['web_logo']->value, type: 'logo') }}"
-                         alt="{{$web_config['name']->value}}" width="130px" style="height:auto !important;width:130px !important;">
+                         alt="{{$web_config['name']->value}}" width="130px" style="height:auto !important;width:170px !important;">
                 </a>
                 <a class="navbar-brand d-sm-none"
                    href="{{route('home')}}">
                     <img class="mobile-logo-img __inline-12"
                          src="{{ getValidImage(path: 'storage/app/public/company/'.$web_config['mob_logo']->value, type: 'logo') }}"
-                         alt="{{$web_config['name']->value}}"  width="130px" style="height:auto !important;width:130px !important;"/>
+                         alt="{{$web_config['name']->value}}"  width="130px" style="height:auto !important;width:170px !important;"/>
                 </a>
 
                 <div class="input-group-overlay mx-lg-4 search-form-mobile text-align-direction">
