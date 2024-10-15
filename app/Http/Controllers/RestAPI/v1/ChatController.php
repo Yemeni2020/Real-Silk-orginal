@@ -164,6 +164,7 @@ class ChatController extends Controller
 
     public function send_message(Request $request, $type)
     {
+        // return $request;
         $validator = Validator::make($request->all(), [
             'id' => 'required',
         ]);

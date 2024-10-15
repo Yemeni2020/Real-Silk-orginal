@@ -418,7 +418,7 @@ class PaymentController extends Controller
             $redirect_link = Payment::generate_link($payer, $payment_info, $receiver_info);
 
 
-            return $receiver_info;
+            // return $receiver_info;
 
             if(in_array($request->payment_request_from, ['app', 'react'])) {
                 return response()->json(['redirect_link'=>$redirect_link], 200);
