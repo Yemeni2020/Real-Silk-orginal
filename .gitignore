@@ -17,3 +17,4 @@ composer-setup.php
 .DS_Store
 /Booking
 /RS
+/resources/lang

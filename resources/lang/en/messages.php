@@ -7514,6 +7514,4 @@
   'Digital product type is required!' => 'Digital product type is required!',
   'Removed_Successfully' => 'Removed Successfully',
   'customer_is_required' => 'Customer is required',
-  'please_provide_verification_token_sent_in_your_email' => 'Please provide verification token sent in your email',
-  'SendGrid_Configuration_updated_successfully' => 'SendGrid Configuration updated successfully',
 );
