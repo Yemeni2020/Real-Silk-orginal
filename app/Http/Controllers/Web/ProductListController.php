@@ -568,7 +568,7 @@ class ProductListController extends Controller
                     ->with(['reviews'])
                     ->where(['added_by'=>'admin','featured'=>1])->where('added_by', '!=', 'factories');
         }elseif($request->has('shop_id') && $request['shop_id'] != 0){
-            $query = Product::active()->where('added_by', '!=', 'factories')
+            $query = Product::active()->where('added_by', '!=', 'factories');
              //       ->where(['added_by'=>'admin','featured'=>1]);
         }elseif($request->has('shop_id') && $request['shop_id'] != 0){
             $query = Product::active()

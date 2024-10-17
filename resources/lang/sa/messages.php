@@ -7407,4 +7407,9 @@
   'vendor_discount' => 'Vendor discount',
   'vendor_net_income' => 'Vendor net income',
   'factories' => 'Factories',
+  'EID_Dhamaka' => 'EID Dhamaka',
+  'callback_url' => 'Callback url',
+  'please_provide_verification_token_sent_in_your_email' => 'Please provide verification token sent in your email',
+  'want_to_Turn_ON_Offline_Payment_Methods' => 'Want to Turn ON Offline Payment Methods',
+  'want_to_Turn_OFF_Offline_Payment_Methods' => 'Want to Turn OFF Offline Payment Methods',
 );
