@@ -40,6 +40,8 @@ class ProductListController extends Controller
         $porduct_data = Product::active()
         ->where('added_by', '!=', 'factories')
         ->with(['reviews']);
+        //$porduct_data = Product::active()->with(['reviews']);
+
         if ($request['data_from'] == 'category') {
             $products = $porduct_data->get();
             $product_ids = [];
@@ -100,12 +102,14 @@ class ProductListController extends Controller
 
         if ($request['data_from'] == 'featured') {
             $query = Product::with(['reviews'])->where('added_by', '!=', 'factories')->active()->where('featured', 1);
+            //$query = Product::with(['reviews'])->active()->where('featured', 1);
         }
 
         if ($request['data_from'] == 'featured_deal') {
             $featured_deal_id = FlashDeal::where(['status'=>1])->where(['deal_type'=>'feature_deal'])->pluck('id')->first();
             $featured_deal_product_ids = FlashDealProduct::where('flash_deal_id',$featured_deal_id)->pluck('product_id')->toArray();
             $query = Product::with(['reviews'])->where('added_by', '!=', 'factories')->active()->whereIn('id', $featured_deal_product_ids);
+            //$query = Product::with(['reviews'])->active()->whereIn('id', $featured_deal_product_ids);
         }
 
         if ($request['data_from'] == 'search') {
@@ -118,6 +122,7 @@ class ProductListController extends Controller
                         });
                 }
             })->where('added_by', '!=', 'factories')->pluck('id');
+            //})->pluck('id');
 
             if($product_ids->count()==0)
             {
@@ -139,6 +144,7 @@ class ProductListController extends Controller
 
         if ($request['data_from'] == 'discounted') {
             $query = Product::with(['reviews'])->active()->where('discount', '!=', 0)->where('added_by', '!=', 'factories');
+            //$query = Product::with(['reviews'])->active()->where('discount', '!=', 0);
         }
 
         if ($request['sort_by'] == 'latest') {
@@ -197,6 +203,7 @@ class ProductListController extends Controller
     public function theme_aster($request)
     {
         $request['sort_by'] == null ? $request['sort_by'] == 'latest' : $request['sort_by'];
+        //$porduct_data = Product::active()->with([
         $porduct_data = Product::active()->where('added_by', '!=', 'factories')->with([
             'reviews','rating',
             'seller.shop',
@@ -289,6 +296,7 @@ class ProductListController extends Controller
                     return $query->where('user_id', Auth::guard('customer')->user()->id ?? 0);
                 }
             ])->active()->where('added_by', '!=', 'factories')->where('featured', 1);
+            //])->active()->where('featured', 1);
         }
 
         if ($request['data_from'] == 'featured_deal') {
@@ -323,6 +331,7 @@ class ProductListController extends Controller
                             });
                     }
                 })->where('added_by', '!=', 'factories')->pluck('id');
+                //})->pluck('id');
 
             if($product_ids->count()==0)
             {
@@ -348,6 +357,7 @@ class ProductListController extends Controller
                     return $query->where('user_id', Auth::guard('customer')->user()->id ?? 0);
                 }
             ])->active()->where('added_by', '!=', 'factories')->where('discount', '!=', 0);
+            //])->active()->where('discount', '!=', 0);
         }
         if(!$request['data_from'] && !$request['name'] && $request['ratings']){
             $query = $query ?? $porduct_data;
@@ -463,6 +473,7 @@ class ProductListController extends Controller
         }
         $request['sort_by'] == null ? $request['sort_by'] == 'latest' : $request['sort_by'];
 
+        // $porduct_data = Product::active()->withSum('orderDetails', 'qty', function ($query) {
         $porduct_data = Product::active()->where('added_by', '!=', 'factories')->withSum('orderDetails', 'qty', function ($query) {
                             $query->where('delivery_status', 'delivered');
                         })
@@ -558,6 +569,9 @@ class ProductListController extends Controller
                     ->where(['added_by'=>'admin','featured'=>1])->where('added_by', '!=', 'factories');
         }elseif($request->has('shop_id') && $request['shop_id'] != 0){
             $query = Product::active()->where('added_by', '!=', 'factories')
+             //       ->where(['added_by'=>'admin','featured'=>1]);
+        }elseif($request->has('shop_id') && $request['shop_id'] != 0){
+            $query = Product::active()
                         ->where(['added_by' => 'seller', 'featured' => 1])
                         ->with(['reviews', 'seller.shop' => function($query) use ($request) {
                             $query->where('id', $request->shop_id);
@@ -571,6 +585,8 @@ class ProductListController extends Controller
             $featured_deal_id = FlashDeal::where(['status'=>1])->where(['deal_type'=>'feature_deal'])->pluck('id')->first();
             $featured_deal_product_ids = FlashDealProduct::where('flash_deal_id',$featured_deal_id)->where('added_by', '!=', 'factories')->pluck('product_id')->toArray();
             $query = Product::with(['reviews'])->active()->where('added_by', '!=', 'factories')->whereIn('id', $featured_deal_product_ids);
+            //$featured_deal_product_ids = FlashDealProduct::where('flash_deal_id',$featured_deal_id)->pluck('product_id')->toArray();
+           // $query = Product::with(['reviews'])->active()->whereIn('id', $featured_deal_product_ids);
         }
 
         if ($request['data_from'] == 'search') {
@@ -583,6 +599,7 @@ class ProductListController extends Controller
                         });
                 }
             })->where('added_by', '!=', 'factories')->pluck('id');
+            //})->pluck('id');
 
             $sellers = Shop::where(function ($q) use ($request) {
                 $q->orWhere('name', 'like', "%{$request['name']}%");
@@ -606,6 +623,7 @@ class ProductListController extends Controller
 
             if (strpos($request['name'], $company_name) !== false) {
                 $inhouse_product = Product::active()->Where('added_by', 'admin')->where('added_by', '!=', 'factories')->pluck('id');
+                //$inhouse_product = Product::active()->Where('added_by', 'admin')->pluck('id');
             }
 
             $product_ids = $product_ids->merge($seller_products)->merge($inhouse_product);

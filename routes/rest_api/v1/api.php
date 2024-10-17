@@ -125,7 +125,6 @@ Route::group(['namespace' => 'RestAPI\v1', 'prefix' => 'v1', 'middleware' => ['a
         });
 
 
-
         Route::group(['prefix' => 'categories'], function () {
             Route::get('/', 'CategoryController@get_categories');
             Route::get('products/{category_id}', 'CategoryController@get_products');

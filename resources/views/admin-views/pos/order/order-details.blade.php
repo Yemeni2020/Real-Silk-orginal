@@ -3,7 +3,6 @@
 @section('title', translate('order_Details'))
 
 @section('content')
-
     <div class="content container-fluid">
 
         <div class="d-flex flex-wrap gap-2 align-items-center mb-3">

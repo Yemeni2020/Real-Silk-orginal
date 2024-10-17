@@ -180,7 +180,6 @@ class RegisterController extends Controller
 
     public static function check($id)
     {
-        
 
         $phone_verification = Helpers::get_business_settings('phone_verification');
         $email_verification = Helpers::get_business_settings('email_verification');
@@ -201,6 +200,8 @@ class RegisterController extends Controller
         }else{
             $get_time = 0;
         }
+
+
         return view(VIEW_FILE_NAMES['customer_auth_verify'], compact('user','user_verify','get_time'));
     }
 

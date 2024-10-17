@@ -10,6 +10,7 @@ use App\Http\Controllers\Payment_Methods\MyFatoorah\API\Payment\MyFatoorahPaymen
 use DateTime;
 use Brian2694\Toastr\Facades\Toastr;
 
+
 class MyFatorahSettingsController extends Controller
 {
 
@@ -237,6 +238,7 @@ class MyFatorahSettingsController extends Controller
            
         
     }
+
 
 
     public function callback(Request $request)

@@ -511,6 +511,7 @@ class WebController extends Controller
 
         if (session()->has('address_id') && session()->has('billing_address_id') && count($cart_group_ids) > 0) {
             // return VIEW_FILE_NAMES['payment_details'];
+
             return view(
                 VIEW_FILE_NAMES['payment_details'],
                 compact(
@@ -528,6 +529,7 @@ class WebController extends Controller
         // return "ss";
 
         
+
         if($request->payment_method != 'cash_on_delivery'){
             return back()->with('error', 'Something went wrong!');
         }

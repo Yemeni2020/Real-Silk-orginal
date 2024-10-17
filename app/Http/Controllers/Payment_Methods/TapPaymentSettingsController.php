@@ -394,7 +394,6 @@ class TapPaymentSettingsController extends Controller
     }
     
 
-
     private function verifyCard($cardData, $apiKey)
     {
         $client = new \GuzzleHttp\Client();

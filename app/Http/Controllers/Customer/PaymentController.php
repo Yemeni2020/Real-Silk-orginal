@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Validator;
 use function App\Utils\currency_converter;
 use App\Services\TapPaymentService;
 use App\Http\Controllers\Payment_Methods\MyFatorahSettingsController;
+
 class PaymentController extends Controller
 {
     protected $tapService;
@@ -333,7 +334,6 @@ class PaymentController extends Controller
             'payment_platform' => 'required',
         ]);
 
-
         if ($validator->fails()) {
             $errors = Helpers::error_processor($validator);
             if(in_array($request->payment_request_from, ['app', 'react'])){
@@ -429,6 +429,12 @@ class PaymentController extends Controller
         else{
             $cls=new MyFatorahSettingsController();
             return $cls->createPaymentWaleet($request->amount,$customer);
+        $redirect_link = Payment::generate_link($payer, $payment_info, $receiver_info);
+
+        if(in_array($request->payment_request_from, ['app', 'react'])) {
+            return response()->json(['redirect_link'=>$redirect_link], 200);
+        }else{
+            return redirect($redirect_link);
         }
     }
 }

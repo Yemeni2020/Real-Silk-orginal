@@ -217,6 +217,7 @@ class OrderController extends Controller
         return response()->json(['order_ids'=>$order_ids], 200);
     }
 
+
     public function place_order_by_offline_payment(Request $request)
     {
         $cart_group_ids = CartManager::get_cart_group_ids($request);
