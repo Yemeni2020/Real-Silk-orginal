@@ -1,3 +1,4 @@
+@if (count($category['products']) > 0)
 <section class="container rtl pb-4 px-max-sm-0">
     <div class="__shadow-2">
         <div class="__p-20px rounded bg-white overflow-hidden">
@@ -9,7 +10,7 @@
                 </div>
                 <div class="category-product-view-all">
                     <a class="text-capitalize view-all-text text-nowrap web-text-primary"
-                       href="{{route('products',['id'=> $category['id'],'data_from'=>'category','page'=>1])}}">
+                       href="{{route('products',['category_id'=> $category['id'],'data_from'=>'category','page'=>1])}}">
                         {{ translate('view_all')}}
                         <i class="czi-arrow-{{Session::get('direction') === "rtl" ? 'left mr-1 ml-n1 mt-1 float-left' : 'right ml-1 mr-n1'}}"></i>
                     </a>
@@ -39,3 +40,4 @@
         </div>
     </div>
 </section>
+@endif

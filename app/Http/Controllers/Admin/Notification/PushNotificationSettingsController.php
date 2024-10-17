@@ -9,6 +9,7 @@ use App\Enums\ViewPaths\Admin\PushNotification;
 use App\Http\Controllers\BaseController;
 use App\Services\PushNotificationService;
 use Brian2694\Toastr\Facades\Toastr;
+use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
@@ -24,10 +25,10 @@ class PushNotificationSettingsController extends BaseController
      * @param TranslationRepositoryInterface $translationRepo
      */
     public function __construct(
-        private readonly BusinessSettingRepositoryInterface $businessSettingRepo,
+        private readonly BusinessSettingRepositoryInterface     $businessSettingRepo,
         private readonly NotificationMessageRepositoryInterface $notificationMessageRepo,
-        private readonly PushNotificationService $pushNotificationService,
-        private readonly TranslationRepositoryInterface $translationRepo,
+        private readonly PushNotificationService                $pushNotificationService,
+        private readonly TranslationRepositoryInterface         $translationRepo,
     )
     {
     }
@@ -52,46 +53,46 @@ class PushNotificationSettingsController extends BaseController
         $vendorMessages = $this->getPushNotificationMessageData(userType: 'seller');
         $deliveryManMessages = $this->getPushNotificationMessageData(userType: 'delivery_man');
         $language = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'pnc_language']);
-        return view(PushNotification::INDEX[VIEW],compact('customerMessages','vendorMessages','deliveryManMessages','language'));
+        return view(PushNotification::INDEX[VIEW], compact('customerMessages', 'vendorMessages', 'deliveryManMessages', 'language'));
     }
 
     /**
      * @param $userType
      * @return Collection
      */
-    protected function getPushNotificationMessageData($userType):Collection
+    protected function getPushNotificationMessageData($userType): Collection
     {
-        $pushNotificationMessages = $this->notificationMessageRepo->getListWhere(filters:['user_type'=>$userType]);
+        $pushNotificationMessages = $this->notificationMessageRepo->getListWhere(filters: ['user_type' => $userType]);
         $pushNotificationMessagesKeyArray = $this->pushNotificationService->getMessageKeyData(userType: $userType);
-        foreach ($pushNotificationMessagesKeyArray as $value ){
-            $checkKey = $pushNotificationMessages->where('key',$value)->first();
-            if($checkKey === null){
+        foreach ($pushNotificationMessagesKeyArray as $value) {
+            $checkKey = $pushNotificationMessages->where('key', $value)->first();
+            if ($checkKey === null) {
                 $this->notificationMessageRepo->add(
                     data: $this->pushNotificationService->getAddData(userType: $userType, value: $value)
                 );
             }
         }
-        foreach ($pushNotificationMessages as $value ){
+        foreach ($pushNotificationMessages as $value) {
             if (!in_array($value['key'], $pushNotificationMessagesKeyArray)) {
                 $this->notificationMessageRepo->delete(params: ['id' => $value['id']]);
             }
         }
-        return $this->notificationMessageRepo->getListWhere(filters:['user_type'=>$userType]);
+        return $this->notificationMessageRepo->getListWhere(filters: ['user_type' => $userType]);
     }
 
     /**
      * @param Request $request
      * @return RedirectResponse
      */
-    public function updatePushNotificationMessage(Request $request):RedirectResponse
+    public function updatePushNotificationMessage(Request $request): RedirectResponse
     {
-        $pushNotificationMessages = $this->notificationMessageRepo->getListWhere(filters:['user_type'=>$request['type']]);
-        foreach($pushNotificationMessages as $pushNotificationMessage){
-            $message = 'message'.$pushNotificationMessage['id'];
-            $status = 'status'.$pushNotificationMessage['id'];
-            $lang = 'lang'.$pushNotificationMessage['id'];
+        $pushNotificationMessages = $this->notificationMessageRepo->getListWhere(filters: ['user_type' => $request['type']]);
+        foreach ($pushNotificationMessages as $pushNotificationMessage) {
+            $message = 'message' . $pushNotificationMessage['id'];
+            $status = 'status' . $pushNotificationMessage['id'];
+            $lang = 'lang' . $pushNotificationMessage['id'];
             $this->notificationMessageRepo->update(
-                id:$pushNotificationMessage['id'],
+                id: $pushNotificationMessage['id'],
                 data: $this->pushNotificationService->getUpdateData(
                     request: $request,
                     message: $message,
@@ -101,11 +102,11 @@ class PushNotificationSettingsController extends BaseController
             );
             foreach ($request->$lang as $index => $value) {
                 if ($request->$message[$index] && $value != 'en') {
-                    $this->translationRepo->updateDataForPushNotification(
+                    $this->translationRepo->updateData(
                         model: 'App\Models\NotificationMessage',
                         id: $pushNotificationMessage['id'],
                         lang: $value,
-                        key:$pushNotificationMessage['key'] ,
+                        key: $pushNotificationMessage['key'],
                         value: $request->$message[$index]
                     );
                 }
@@ -118,21 +119,34 @@ class PushNotificationSettingsController extends BaseController
     /**
      * @return View
      */
-    public function getFirebaseConfigurationView():View
+    public function getFirebaseConfigurationView(): View
     {
-        $pushNotificationKey = $this->businessSettingRepo->getFirstWhere(params:['type'=>'push_notification_key'])->value;
-        $projectId = $this->businessSettingRepo->getFirstWhere(params:['type'=>'fcm_project_id'])->value;
-        return view(PushNotification::FIREBASE_CONFIGURATION[VIEW],compact('pushNotificationKey','projectId'));
+        $pushNotificationKey = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'push_notification_key'])->value ?? '';
+        $configData = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'fcm_credentials'])->value ?? '';
+        $projectId = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'fcm_project_id'])->value ?? '';
+        return view(PushNotification::FIREBASE_CONFIGURATION[VIEW], [
+            'pushNotificationKey' => $pushNotificationKey,
+            'projectId' => $projectId,
+            'configData' => json_decode($configData),
+        ]);
     }
 
     /**
      * @param Request $request
      * @return RedirectResponse
+     * @throws Exception
      */
     public function getFirebaseConfigurationUpdate(Request $request): RedirectResponse
     {
         $this->businessSettingRepo->updateOrInsert(type: 'fcm_project_id', value: $request['fcm_project_id']);
         $this->businessSettingRepo->updateOrInsert(type: 'push_notification_key', value: $request['push_notification_key']);
+
+        // fcm_credentials
+        $configData = $this->pushNotificationService->getFCMCredentialsArray(request: $request);
+        $this->pushNotificationService->firebaseConfigFileGenerate(config: $configData);
+        $this->businessSettingRepo->updateOrInsert(type: 'fcm_credentials', value: json_encode($configData));
+        clearWebConfigCacheKeys();
+
         Toastr::success(translate('settings_updated'));
         return back();
     }

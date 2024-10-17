@@ -6,27 +6,29 @@ enum Vendor
 {
     const LIST = [
         URI => 'list',
-        VIEW => 'admin-views.seller.index'
+        VIEW => 'admin-views.vendor.index'
     ];
 
     const ADD = [
         URI => 'add',
-        VIEW => 'admin-views.seller.add-new-seller'
+        VIEW => 'admin-views.vendor.add-new-vendor'
     ];
 
     const ORDER_LIST = [
         URI => 'order-list',
-        VIEW => 'admin-views.seller.order-list'
+        VIEW => 'admin-views.vendor.order-list'
     ];
-
+    const ORDER_LIST_EXPORT = [
+        URI => 'order-list-export',
+    ];
     const ORDER_DETAILS = [
         URI => 'order-details',
-        VIEW => 'admin-views.seller.order-details'
+        VIEW => 'admin-views.vendor.order-details'
     ];
 
     const PRODUCT_LIST = [
         URI => 'product-list',
-        VIEW => 'admin-views.seller.product-list'
+        VIEW => 'admin-views.vendor.product-list'
     ];
 
     const STATUS = [
@@ -41,32 +43,32 @@ enum Vendor
 
     const VIEW = [
         URI => 'view',
-        VIEW => 'admin-views.seller.view'
+        VIEW => 'admin-views.vendor.view'
     ];
 
     const VIEW_ORDER = [
         URI => '',
-        VIEW => 'admin-views.seller.view.order'
+        VIEW => 'admin-views.vendor.view.order'
     ];
 
     const VIEW_PRODUCT = [
         URI => '',
-        VIEW => 'admin-views.seller.view.product'
+        VIEW => 'admin-views.vendor.view.product'
     ];
 
     const VIEW_REVIEW = [
         URI => '',
-        VIEW => 'admin-views.seller.view.review'
+        VIEW => 'admin-views.vendor.view.review'
     ];
 
     const VIEW_TRANSACTION = [
         URI => '',
-        VIEW => 'admin-views.seller.view.transaction'
+        VIEW => 'admin-views.vendor.view.transaction'
     ];
 
     const VIEW_SETTING = [
         URI => '',
-        VIEW => 'admin-views.seller.view.setting'
+        VIEW => 'admin-views.vendor.view.setting'
     ];
 
     const UPDATE = [
@@ -85,7 +87,7 @@ enum Vendor
 
     const WITHDRAW_LIST = [
         URI => 'withdraw-list',
-        VIEW => 'admin-views.seller.withdraw'
+        VIEW => 'admin-views.vendor.withdraw'
     ];
 
     const WITHDRAW_LIST_EXPORT = [
@@ -95,7 +97,7 @@ enum Vendor
 
     const WITHDRAW_VIEW = [
         URI => 'withdraw-view',
-        VIEW => 'admin-views.seller.withdraw-view',
+        VIEW => 'admin-views.vendor.withdraw-view',
     ];
 
     const WITHDRAW_STATUS = [

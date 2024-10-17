@@ -8,7 +8,7 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex gap-2 align-items-center">
-                <img width="20" src="{{asset('/public/assets/back-end/img/seller_sale.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/seller_sale.png')}}" alt="">
                 {{translate('product_report')}}
             </h2>
         </div>
@@ -72,7 +72,7 @@
                         </div>
                     </form>
 
-                    <div>
+                    <div class="dropdown">
                         <button type="button" class="btn btn-outline--primary text-nowrap btn-block"
                                 data-toggle="dropdown">
                             <i class="tio-download-to"></i>
@@ -81,7 +81,10 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-right">
                             <li><a class="dropdown-item"
-                                   href="{{ route('vendor.report.product-stock-export', ['category_id' => request('category_id'), 'sort' => request('sort'), 'search' => request('search')]) }}">{{translate('excel')}}</a>
+                                   href="{{ route('vendor.report.product-stock-export', ['category_id' => request('category_id'), 'sort' => request('sort'), 'search' => request('search')]) }}">
+                                    <img width="14" src="{{dynamicAsset(path: 'public/assets/back-end/img/excel.png')}}" alt="">
+                                    {{translate('excel')}}
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -114,8 +117,8 @@
                                 <td>
                                     <div class="p-name">
                                         <a href="{{route('vendor.products.view',[$data['id']])}}"
-                                           class="media align-items-center gap-2 title-color">
-                                            <span>{{\Illuminate\Support\Str::limit($data['name'],20)}}</span>
+                                           class="media align-items-center gap-2 title-color text-nowrap text-truncate w-100 d--block">
+                                            {{ $data['name'] }}
                                         </a>
                                     </div>
                                 </td>
@@ -134,19 +137,6 @@
                                 </td>
                             </tr>
                         @endforeach
-
-                        @if(count($products)==0)
-                            <tr>
-                                <td colspan="5">
-                                    <div class="text-center p-4">
-                                        <img class="mb-3 w-160"
-                                             src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}"
-                                             alt="{{translate('image_description')}}">
-                                        <p class="mb-0">{{ translate('no_data_to_show')}}</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endif
                         </tbody>
                     </table>
                 </div>
@@ -155,6 +145,9 @@
                         {!! $products->links() !!}
                     </div>
                 </div>
+                @if(count($products)==0)
+                    @include('layouts.back-end._empty-state',['text'=>'no_product_found'],['image'=>'default'])
+                @endif
             </div>
         </div>
     </div>

@@ -9,8 +9,8 @@ class DeliveryManWalletService
     {
         return [
             'delivery_man_id' => $id,
-            'current_balance' => currencyConverter($deliverymanCharge) ?? 0,
-            'cash_in_hand' => currencyConverter($cashInHand),
+            'current_balance' => $deliverymanCharge,
+            'cash_in_hand' => $cashInHand,
             'pending_withdraw' => 0,
             'total_withdraw' => 0,
         ];
@@ -18,9 +18,9 @@ class DeliveryManWalletService
     public function getDeliveryManWalletData(object $request, object $wallet, object $withdraw):array
     {
        return [
-           'total_withdraw' => $request['approved'] == 1 ? ($wallet['total_withdraw'] + currencyConverter($withdraw['amount'])) : $wallet['total_withdraw'],
-           'pending_withdraw' => $wallet['pending_withdraw'] - currencyConverter($withdraw['amount']),
-           'current_balance' =>  $request['approved'] == 1 ? ($wallet['current_balance'] - currencyConverter($withdraw['amount'])) : $wallet['current_balance'],
+           'total_withdraw' => $request['approved'] == 1 ? ($wallet['total_withdraw'] + $withdraw['amount']) : $wallet['total_withdraw'],
+           'pending_withdraw' => $wallet['pending_withdraw'] - $withdraw['amount'],
+           'current_balance' =>  $request['approved'] == 1 ? ($wallet['current_balance'] - $withdraw['amount']) : $wallet['current_balance'],
         ];
     }
 }

@@ -6,7 +6,7 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{asset('/public/assets/back-end/img/coupon_setup.png')}}" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/coupon_setup.png')}}" alt="">
                 {{translate('coupon_setup')}}
             </h2>
         </div>
@@ -81,7 +81,7 @@
                                     <input type="number" min="1" max="1000000" name="discount"
                                            value="{{ old('discount') }}" class="form-control"
                                            id="discount"
-                                           placeholder="{{translate('ex')}}: 500">
+                                           placeholder="{{translate('ex').': 5000'}}">
                                 </div>
                                 <div class="col-md-6 col-lg-4 form-group">
                                     <label for="name"
@@ -97,21 +97,21 @@
                                     <input type="number" min="1" max="1000000" name="max_discount"
                                            value="{{ old('max_discount') }}"
                                            class="form-control" id="maximum discount"
-                                           placeholder="{{translate('ex')}}: 5000">
+                                           placeholder="{{translate('ex').': 5000'}}">
                                 </div>
                                 <div class="col-md-6 col-lg-4 form-group">
                                     <label for="name"
                                            class="title-color font-weight-medium d-flex">{{translate('start_date')}}</label>
                                     <input id="start_date" type="date" name="start_date" value="{{ old('start_date') }}"
                                            class="form-control"
-                                           placeholder="{{translate('start date')}}" required>
+                                           placeholder="{{translate('start_date')}}" required>
                                 </div>
                                 <div class="col-md-6 col-lg-4 form-group">
                                     <label for="name"
                                            class="title-color font-weight-medium d-flex">{{translate('expire_date')}}</label>
                                     <input id="expire_date" type="date" name="expire_date"
                                            value="{{ old('expire_date') }}" class="form-control"
-                                           placeholder="{{translate('expire date')}}" required>
+                                           placeholder="{{translate('expire_date')}}" required>
                                 </div>
                             </div>
 
@@ -131,29 +131,41 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="px-3 py-4">
-                        <div class="row justify-content-between align-items-center flex-grow-1">
-                            <div class="col-sm-4 col-md-6 col-lg-8 mb-2 mb-sm-0">
-                                <h5 class="mb-0 text-capitalize d-flex gap-2">
-                                    {{translate('coupon_list')}}
-                                    <span
-                                        class="badge badge-soft-dark radius-50 fz-12 ml-1">{{ $coupons->total() }}</span>
-                                </h5>
-                            </div>
-                            <div class="col-sm-8 col-md-6 col-lg-4">
-                                <form action="{{ url()->current() }}" method="GET">
-                                    <div class="input-group input-group-merge input-group-custom">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text">
-                                                <i class="tio-search"></i>
-                                            </div>
+                        <div class="d-flex flex-wrap  gap-3 align-items-center">
+                            <h5 class="mb-0 text-capitalize d-flex gap-2 mr-auto">
+                                {{translate('coupon_list')}}
+                                <span class="badge badge-soft-dark radius-50 fz-12 ml-1">{{ $coupons->total() }}</span>
+                            </h5>
+                            <form action="{{ url()->current() }}" method="GET">
+                                <div class="input-group input-group-merge input-group-custom">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <i class="tio-search"></i>
                                         </div>
-                                        <input id="datatableSearch_" type="search" name="searchValue" class="form-control"
-                                               placeholder="{{translate('search_by_Title_or_Code_or_Discount_Type')}}"
-                                               value="{{ $searchValue }}" aria-label="Search orders" required>
-                                        <button type="submit"
-                                                class="btn btn--primary">{{translate('search')}}</button>
                                     </div>
-                                </form>
+                                    <input id="datatableSearch_" type="search" name="searchValue" class="form-control"
+                                           placeholder="{{translate('search_by_Title_or_Code_or_Discount_Type')}}"
+                                           value="{{ request('searchValue') }}" aria-label="Search orders" required>
+                                    <button type="submit" class="btn btn--primary">{{translate('search')}}</button>
+                                </div>
+                            </form>
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-outline--primary text-nowrap btn-block"
+                                        data-toggle="dropdown">
+                                    <i class="tio-download-to"></i>
+                                    {{translate('export')}}
+                                    <i class="tio-chevron-down"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li>
+                                        <a class="dropdown-item"
+                                           href="{{ route('vendor.coupon.export',['searchValue'=>request('searchValue')]) }}">
+                                            <img width="14" src="{{dynamicAsset(path: 'public/assets/back-end/img/excel.png')}}"
+                                                 alt="">
+                                            {{translate('excel')}}
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -168,10 +180,11 @@
                                 <th>{{translate('coupon_type')}}</th>
                                 <th>{{translate('duration')}}</th>
                                 <th>{{translate('user_limit')}}</th>
-                                <th>{{translate('discount_bearer')}}</th>
+                                <th  class="text-center">{{translate('discount_bearer')}}</th>
                                 <th>
                                     {{translate('status')}}
                                     <i class="tio-info font-130 info-color"
+                                        data-toggle="tooltip"
                                        title="{{translate('some_status_buttons_are_disabled_because_the_admin_added_coupons')}}, {{translate('the_coupon_discount_bearer_is_admin')}}, {{translate('or_some_coupons_are_for_all_vendors')}}">
 
                                     </i>
@@ -179,6 +192,7 @@
                                 <th class="text-center">
                                     {{translate('action')}}
                                     <i class="tio-info font-130 info-color"
+                                        data-toggle="tooltip"
                                        title="{{translate('some_actions_are_disabled_because_the_admin_added_coupons')}}, {{translate('the_coupon_discount_bearer_is_admin')}}, {{translate('or_some_coupons_are_for_all_vendors')}}">
 
                                     </i>
@@ -206,7 +220,7 @@
                                             <strong>{{ $coupon['order_count'] }}</strong>
                                         </span>
                                     </td>
-                                    <td>{{ $coupon['coupon_bearer'] == 'inhouse' ? 'admin':$coupon['coupon_bearer'] }}</td>
+                                    <td class="text-center">{{ translate($coupon['coupon_bearer'] == 'inhouse' ? 'admin':$coupon['coupon_bearer']) }}</td>
                                     <td>
                                         @if($coupon->added_by=='seller' || ($coupon->added_by=='admin' && $coupon->coupon_bearer=='seller' && $coupon->seller_id==auth('seller')->id()))
                                             <form action="{{route('vendor.coupon.update-status',[$coupon['id'],$coupon->status?0:1])}}" method="get" id="coupon_status{{$coupon['id']}}-form" class="coupon_status_form">
@@ -216,8 +230,8 @@
                                                         data-toggle-id = "coupon_status{{$coupon['id']}}"
                                                         data-on-image = "coupon-status-on.png"
                                                         data-off-image = "coupon-status-off.png"
-                                                        data-on-title = "{{translate('Want_to_Turn_ON_Coupon_Status').'?'}}"
-                                                        data-off-title = "{{translate('Want_to_Turn_OFF_Coupon_Status').'?'}}"
+                                                        data-on-title = "{{translate('want_to_Turn_ON_Coupon_Status').'?'}}"
+                                                        data-off-title = "{{translate('want_to_Turn_OFF_Coupon_Status').'?'}}"
                                                         data-on-message = "<p>{{translate('if_enabled_this_coupon_will_be_available_on_the_website_and_customer_app')}}</p>"
                                                         data-off-message = "<p>{{translate('if_disabled_this_coupon_will_be_hidden_from_the_website_and_customer_app')}}</p>"
                                                     >
@@ -289,12 +303,7 @@
                     </div>
 
                     @if(count($coupons)==0)
-                        <div class="text-center p-4">
-                            <img class="mb-3 w-160"
-                                 src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}"
-                                 alt="{{translate('image_description')}}">
-                            <p class="mb-0">{{translate('no_data_to_show')}}</p>
-                        </div>
+                        @include('layouts.back-end._empty-state',['text'=>'no_coupon_found'],['image'=>'default'])
                     @endif
                 </div>
             </div>
@@ -304,5 +313,5 @@
     <span id="get-detail-url" data-url="{{ route('vendor.coupon.quick-view') }}"></span>
 @endsection
 @push('script')
-    <script src="{{asset('public/assets/back-end/js/vendor/coupon.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/vendor/coupon.js')}}"></script>
 @endpush

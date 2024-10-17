@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\RestAPI\v2\seller\auth;
 
-use App\Events\PasswordResetMailEvent;
+use App\Events\PasswordResetEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Seller;
 use App\Utils\Helpers;
-use App\Utils\SMS_module;
+use App\Utils\SMSModule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -22,10 +22,10 @@ class ForgotPasswordController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)], 403);
         }
 
-        $verification_by = Helpers::get_business_settings('forgot_password_verification');
+        $verification_by = getWebConfig(name: 'forgot_password_verification');
         DB::table('password_resets')->where('user_type','seller')->where('identity', 'like', "%{$request['identity']}%")->delete();
 
         if ($verification_by == 'email') {
@@ -38,14 +38,22 @@ class ForgotPasswordController extends Controller
                     'user_type'=>'seller',
                     'created_at' => now(),
                 ]);
-                $reset_url = url('/') . '/seller/auth/reset-password?token=' . $token;
+                $reset_url = route('vendor.auth.forgot-password.reset-password', ['token' => $token]);
 
-                $emailServices_smtp = Helpers::get_business_settings('mail_config');
+                $emailServices_smtp = getWebConfig(name: 'mail_config');
                 if ($emailServices_smtp['status'] == 0) {
-                    $emailServices_smtp = Helpers::get_business_settings('mail_config_sendgrid');
+                    $emailServices_smtp = getWebConfig(name: 'mail_config_sendgrid');
                 }
                 if ($emailServices_smtp['status'] == 1) {
-                    PasswordResetMailEvent::dispatch($seller['email'], $reset_url);
+                    $data = [
+                        'userType' => 'vendor',
+                        'templateName' => 'forgot-password',
+                        'vendorName' => $seller['f_name'],
+                        'subject' => translate('password_reset'),
+                        'title' => translate('password_reset'),
+                        'passwordResetURL' => $reset_url,
+                    ];
+                    event(new PasswordResetEvent(email: $seller['email'],data: $data));
                     $response = translate('check_your_email');
                 }else{
                     $response= translate('email_failed');
@@ -63,18 +71,7 @@ class ForgotPasswordController extends Controller
                     'created_at' => now(),
                 ]);
 
-                $published_status = 0;
-                $payment_published_status = config('get_payment_publish_status');
-                if (isset($payment_published_status[0]['is_published'])) {
-                    $published_status = $payment_published_status[0]['is_published'];
-                }
-
-                if($published_status == 1){
-                    SmsGateway::send($seller->phone, $token);
-                }else{
-                    SMS_module::send($seller->phone, $token);
-                }
-
+                SMSModule::sendCentralizedSMS($seller->phone, $token);
                 return response()->json(['message' => 'otp sent successfully.'], 200);
             }
         }
@@ -91,7 +88,7 @@ class ForgotPasswordController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)], 403);
         }
 
         $id = $request['identity'];
@@ -119,7 +116,7 @@ class ForgotPasswordController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)], 403);
         }
 
         $data = DB::table('password_resets')

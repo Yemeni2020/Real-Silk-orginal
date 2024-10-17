@@ -3,18 +3,25 @@
 namespace App\Http\Controllers\Admin\Product;
 
 use App\Contracts\Repositories\CategoryRepositoryInterface;
+use App\Contracts\Repositories\ProductRepositoryInterface;
 use App\Contracts\Repositories\TranslationRepositoryInterface;
+use App\Enums\ExportFileNames\Admin\Category as CategoryExport;
 use App\Enums\ViewPaths\Admin\Category;
+use App\Exports\CategoryListExport;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\CategoryAddRequest;
 use App\Http\Requests\Admin\CategoryUpdateRequest;
 use App\Services\CategoryService;
+use App\Services\ProductService;
 use App\Traits\PaginatorTrait;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class CategoryController extends BaseController
 {
@@ -22,6 +29,8 @@ class CategoryController extends BaseController
 
     public function __construct(
         private readonly CategoryRepositoryInterface        $categoryRepo,
+        private readonly ProductRepositoryInterface        $productRepo,
+        private readonly ProductService        $productService,
         private readonly TranslationRepositoryInterface     $translationRepo,
     )
     {
@@ -50,7 +59,7 @@ class CategoryController extends BaseController
         ]);
     }
 
-    public function getUpdateView(string|int $id): View
+    public function getUpdateView(string|int $id): View|RedirectResponse
     {
         $category = $this->categoryRepo->getFirstWhere(params:['id'=>$id], relations: ['translations']);
         $languages = getWebConfig(name: 'pnc_language') ?? null;
@@ -91,11 +100,28 @@ class CategoryController extends BaseController
         return response()->json(['success' => 1,], 200);
     }
 
-    public function delete(Request $request, CategoryService $categoryService): JsonResponse
+    public function delete(Request $request, CategoryService $categoryService): RedirectResponse
     {
+        $this->productRepo->updateByParams(params:['category_id'=>$request['id']],data:['category_ids'=>json_encode($this->productService->getCategoriesArray(request: $request)),'category_id' =>$request['category_id'],'sub_category_id'=>null,'sub_sub_category_id'=>null]);
         $category = $this->categoryRepo->getFirstWhere(params: ['id'=>$request['id']], relations: ['childes.childes']);
         $categoryService->deleteImages(data:$category);
         $this->categoryRepo->delete(params: ['id'=>$request['id']]);
-        return response()->json(['message'=> translate('deleted_successfully')]);
+        Toastr::success(translate('deleted_successfully'));
+        return redirect()->back();
+    }
+
+    public function getExportList(Request $request): BinaryFileResponse
+    {
+        $categories = $this->categoryRepo->getListWhere(orderBy: ['id'=>'desc'], searchValue: $request->get('searchValue'), filters: ['position' => 0], dataLimit: 'all');
+        $active = $categories->where('home_status',1)->count();
+        $inactive = $categories->where('home_status',0)->count();
+        return Excel::download(new CategoryListExport([
+            'categories' => $categories,
+            'title' => 'category',
+            'search' => $request['searchValue'],
+            'active' => $active,
+            'inactive' => $inactive,
+        ]), CategoryExport::CATEGORY_LIST_XLSX
+        );
     }
 }

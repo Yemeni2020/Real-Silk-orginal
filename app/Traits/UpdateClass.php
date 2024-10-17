@@ -2,7 +2,14 @@
 
 namespace App\Traits;
 
+use App\Models\Admin;
+use App\Models\Brand;
+use App\Models\Category;
+use App\Models\EmailTemplate;
+use App\Models\LoginSetup;
 use App\Models\Shop;
+use App\Repositories\EmailTemplatesRepository;
+use App\Services\EmailTemplateService;
 use App\Utils\Helpers;
 use App\Enums\GlobalConstant;
 use App\Http\Controllers\InstallController;
@@ -11,7 +18,8 @@ use App\Models\Product;
 use App\Models\BusinessSetting;
 use App\Models\NotificationMessage;
 use App\Models\Order;
-use App\User;
+use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
@@ -19,200 +27,114 @@ use Illuminate\Support\Str;
 
 trait UpdateClass
 {
-    public function insert_data_of($version_number)
+    use EmailTemplateTrait;
+
+    public function getProcessAllVersionsUpdates(): void
     {
-        if ($version_number == '13.0') {
-            if (BusinessSetting::where(['type' => 'product_brand'])->first() == false) {
-                DB::table('business_settings')->updateOrInsert(['type' => 'product_brand'], [
-                    'value' => 1
-                ]);
-            }
+        Artisan::call('migrate', ['--force' => true]);
+        $this->getInsertDataOfVersion('13.0');
+        $this->getInsertDataOfVersion('13.1');
+        $this->getInsertDataOfVersion('14.0');
+        $this->getInsertDataOfVersion('14.1');
+        $this->getInsertDataOfVersion('14.2');
+        $this->getInsertDataOfVersion('14.3');
+        $this->getInsertDataOfVersion('14.3.1');
+        $this->getInsertDataOfVersion('14.4');
+        $this->getInsertDataOfVersion('14.5');
+        $this->getInsertDataOfVersion('14.6');
+        $this->getInsertDataOfVersion('14.7');
+        $this->getInsertDataOfVersion('14.8');
+    }
 
-            if (BusinessSetting::where(['type' => 'digital_product'])->first() == false) {
-                DB::table('business_settings')->updateOrInsert(['type' => 'digital_product'], [
-                    'value' => 1
+    /**
+     * @param string $type
+     * @param mixed $value
+     * @return mixed
+     */
+    public function businessSettingGetOrInsert(string $type, mixed $value): mixed
+    {
+        $result = BusinessSetting::where(['type' => $type])->first();
+        if (!$result) {
+            $result = BusinessSetting::create(['type' => $type, 'value' => $value, 'updated_at' => now()]);
+        }
+        return $result;
+    }
+
+    public function updateOrInsertPolicy($type): mixed
+    {
+        $policy = BusinessSetting::where(['type' => $type])->first();
+        if ($policy) {
+            $policyValue = json_decode($policy['value'], true);
+            if (!isset($policyValue['status'])) {
+                BusinessSetting::where(['type' => $type])->update([
+                    'value' => json_encode([
+                        'status' => 1,
+                        'content' => $policyValue['content'] ?? $policy['value'],
+                    ]),
                 ]);
             }
+        } else {
+            $policy = $this->businessSettingGetOrInsert(type: $type, value: json_encode(['status' => 0, 'content' => '']));
+        }
+        return $policy;
+    }
+
+    public function getInsertDataOfVersion($versionNumber): void
+    {
+        if ($versionNumber == '13.0') {
+            $this->businessSettingGetOrInsert(type: 'product_brand', value: 1);
+            $this->businessSettingGetOrInsert(type: 'digital_product', value: 1);
         }
 
-        if ($version_number == '13.1') {
-            $refund_policy = BusinessSetting::where(['type' => 'refund-policy'])->first();
-            if ($refund_policy) {
-                $refund_value = json_decode($refund_policy['value'], true);
-                if(!isset($refund_value['status'])){
-                    BusinessSetting::where(['type' => 'refund-policy'])->update([
-                        'value' => json_encode([
-                            'status' => 1,
-                            'content' => $refund_policy['value'],
-                        ]),
-                    ]);
-                }
-            }elseif(!$refund_policy){
-                BusinessSetting::insert([
-                    'type' => 'refund-policy',
-                    'value' => json_encode([
-                        'status' => 1,
-                        'content' => '',
-                    ]),
-                ]);
-            }
-
-            $return_policy = BusinessSetting::where(['type' => 'return-policy'])->first();
-            if ($return_policy) {
-                $return_value = json_decode($return_policy['value'], true);
-                if(!isset($return_value['status'])){
-                    BusinessSetting::where(['type' => 'return-policy'])->update([
-                        'value' => json_encode([
-                            'status' => 1,
-                            'content' => $return_policy['value'],
-                        ]),
-                    ]);
-                }
-            }elseif(!$return_policy){
-                BusinessSetting::insert([
-                    'type' => 'return-policy',
-                    'value' => json_encode([
-                        'status' => 1,
-                        'content' => '',
-                    ]),
-                ]);
-            }
-
-            $cancellation_policy = BusinessSetting::where(['type' => 'cancellation-policy'])->first();
-            if ($cancellation_policy) {
-                $cancellation_value = json_decode($cancellation_policy['value'], true);
-                if(!isset($cancellation_value['status'])){
-                    BusinessSetting::where(['type' => 'cancellation-policy'])->update([
-                        'value' => json_encode([
-                            'status' => 1,
-                            'content' => $cancellation_policy['value'],
-                        ]),
-                    ]);
-                }
-            }elseif(!$cancellation_policy){
-                BusinessSetting::insert([
-                    'type' => 'cancellation-policy',
-                    'value' => json_encode([
-                        'status' => 1,
-                        'content' => '',
-                    ]),
-                ]);
-            }
-
-            if (BusinessSetting::where(['type' => 'offline_payment'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'offline_payment',
-                    'value' => json_encode([
-                        'status' => 0,
-                    ]),
-                    'updated_at' => now()
-                ]);
-            }
-
-            if (BusinessSetting::where(['type' => 'temporary_close'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'temporary_close',
-                    'value' => json_encode([
-                        'status' => 0,
-                    ]),
-                    'updated_at' => now()
-                ]);
-            }
-
-            if (BusinessSetting::where(['type' => 'vacation_add'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'vacation_add',
-                    'value' => json_encode([
-                        'status' => 0,
-                        'vacation_start_date' => null,
-                        'vacation_end_date' => null,
-                        'vacation_note' => null
-                    ]),
-                    'updated_at' => now()
-                ]);
-            }
-
-            if (BusinessSetting::where(['type' => 'cookie_setting'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'cookie_setting',
-                    'value' => json_encode([
-                        'status' => 0,
-                        'cookie_text' => null
-                    ]),
-                    'updated_at' => now()
-                ]);
-            }
-
-            DB::table('colors')
-                ->whereIn('id', [16,38,93])
-                ->delete();
+        if ($versionNumber == '13.1') {
+            $this->updateOrInsertPolicy(type: 'refund-policy');
+            $this->updateOrInsertPolicy(type: 'return-policy');
+            $this->updateOrInsertPolicy(type: 'cancellation-policy');
+            $this->businessSettingGetOrInsert(type: 'offline_payment', value: json_encode(['status' => 0]));
+            $this->businessSettingGetOrInsert(type: 'temporary_close', value: json_encode(['status' => 0]));
+            $this->businessSettingGetOrInsert(type: 'vacation_add', value: json_encode([
+                'status' => 0,
+                'vacation_start_date' => null,
+                'vacation_end_date' => null,
+                'vacation_note' => null
+            ]));
+            $this->businessSettingGetOrInsert(type: 'cookie_setting', value: json_encode([
+                'status' => 0,
+                'cookie_text' => null
+            ]));
+            DB::table('colors')->whereIn('id', [16, 38, 93])->delete();
         }
 
-        if ($version_number == '14.0') {
-            $colors = BusinessSetting::where('type', 'colors')->first();
-            if($colors){
-                $colors = json_decode($colors->value);
+        if ($versionNumber == '14.0') {
+            $getColors = BusinessSetting::where(['type' => 'colors'])->first();
+            if ($getColors) {
+                $colors = json_decode($getColors->value, true);
                 BusinessSetting::where('type', 'colors')->update([
-                    'value' => json_encode(
-                        [
-                            'primary' => $colors->primary,
-                            'secondary' => $colors->secondary,
-                            'primary_light' => isset($colors->primary_light) ? $colors->primary_light : '#CFDFFB',
-                        ]),
+                    'value' => json_encode([
+                        'primary' => $colors['primary'],
+                        'secondary' => $colors['secondary'],
+                        'primary_light' => $colors['primary_light'] ?? '#CFDFFB',
+                    ]),
                 ]);
             }
 
-            if (BusinessSetting::where(['type' => 'maximum_otp_hit'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'maximum_otp_hit',
-                    'value' => 0,
-                    'updated_at' => now()
-                ]);
-            }
+            $this->businessSettingGetOrInsert(type: 'maximum_otp_hit', value: 0);
+            $this->businessSettingGetOrInsert(type: 'otp_resend_time', value: 0);
+            $this->businessSettingGetOrInsert(type: 'temporary_block_time', value: 0);
+            $this->businessSettingGetOrInsert(type: 'maximum_login_hit', value: 0);
+            $this->businessSettingGetOrInsert(type: 'temporary_login_block_time', value: 0);
 
-            if (BusinessSetting::where(['type' => 'otp_resend_time'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'otp_resend_time',
-                    'value' => 0,
-                    'updated_at' => now()
-                ]);
-            }
-
-            if (BusinessSetting::where(['type' => 'temporary_block_time'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'temporary_block_time',
-                    'value' => 0,
-                    'updated_at' => now()
-                ]);
-            }
-
-            if (BusinessSetting::where(['type' => 'maximum_login_hit'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'maximum_login_hit',
-                    'value' => 0,
-                    'updated_at' => now()
-                ]);
-            }
-
-            if (BusinessSetting::where(['type' => 'temporary_login_block_time'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'temporary_login_block_time',
-                    'value' => 0,
-                    'updated_at' => now()
-                ]);
-            }
-
-            //product category id update start
+            // Product category id update start
             $products = Product::all();
-            foreach($products as $product){
+            foreach ($products as $product) {
                 $categories = json_decode($product->category_ids, true);
                 $i = 0;
-                foreach($categories as $category){
-                    if($i == 0){
+                foreach ($categories as $category) {
+                    if ($i == 0) {
                         $product->category_id = $category['id'];
-                    }elseif($i == 1){
+                    } elseif ($i == 1) {
                         $product->sub_category_id = $category['id'];
-                    }elseif($i == 2){
+                    } elseif ($i == 2) {
                         $product->sub_sub_category_id = $category['id'];
                     }
 
@@ -223,7 +145,7 @@ trait UpdateClass
             //product category id update end
         }
 
-        if ($version_number == '14.1') {
+        if ($versionNumber == '14.1') {
             // default theme folder delete from resources/views folder start
             $folder = base_path('resources/views');
             $directories = glob($folder . '/*', GLOB_ONLYDIR);
@@ -243,344 +165,307 @@ trait UpdateClass
                     unlink($folder . '/' . $file);
                 }
             }
-            // default theme folder dele from resources/views folder end
+            // default theme folder delete from resources/views folder end
 
-            //apple login information insert
-            if (BusinessSetting::where(['type' => 'apple_login'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'apple_login',
-                    'value' => json_encode([
-                        [
-                            'login_medium' => 'apple',
-                            'client_id' => '',
-                            'client_secret' => '',
-                            'status' => 0,
-                            'team_id' => '',
-                            'key_id' => '',
-                            'service_file' => '',
-                            'redirect_url' => '',
-                        ]
-                    ]),
-                    'updated_at' => now()
-                ]);
-            }
+            // Apple Login Information Insert
+            $this->businessSettingGetOrInsert(type: 'apple_login', value: json_encode([[
+                'login_medium' => 'apple',
+                'client_id' => '',
+                'client_secret' => '',
+                'status' => 0,
+                'team_id' => '',
+                'key_id' => '',
+                'service_file' => '',
+                'redirect_url' => '',
+            ]]));
 
             //referral code update for existing user
-            $customers = User::whereNull('referral_code')->where('id','!=',0)->get();
-            foreach($customers as $customer){
+            $customers = User::whereNull('referral_code')->where('id', '!=', 0)->get();
+            foreach ($customers as $customer) {
                 $customer->referral_code = Helpers::generate_referer_code();
                 $customer->save();
             }
 
-            if (BusinessSetting::where(['type' => 'ref_earning_status'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'ref_earning_status',
-                    'value' => 0,
-                    'updated_at' => now()
-                ]);
-            }
+            $this->businessSettingGetOrInsert(type: 'ref_earning_status', value: 0);
+            $this->businessSettingGetOrInsert(type: 'ref_earning_exchange_rate', value: 0);
 
-            if (BusinessSetting::where(['type' => 'ref_earning_exchange_rate'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'ref_earning_exchange_rate',
-                    'value' => 0,
-                    'updated_at' => now()
-                ]);
-            }
-
-            // new payment module necessary table insert
+            // New payment module necessary table insert
             try {
                 if (!Schema::hasTable('addon_settings')) {
-                $sql = File::get(base_path('database/migrations/addon_settings.sql'));
-                DB::unprepared($sql);
+                    $sql = File::get(base_path('database/migrations/addon_settings.sql'));
+                    DB::unprepared($sql);
                 }
-
 
                 if (!Schema::hasTable('payment_requests')) {
-                $sql = File::get(base_path('database/migrations/payment_requests.sql'));
-                DB::unprepared($sql);
+                    $sql = File::get(base_path('database/migrations/payment_requests.sql'));
+                    DB::unprepared($sql);
                 }
-
             } catch (\Exception $exception) {
                 //
             }
 
-            //existing payment gateway data import from business setting table
+            // Existing payment gateway data import from business setting table
             $this->payment_gateway_data_update();
             $this->sms_gateway_data_update();
 
-            // guest checkout add
-            if (BusinessSetting::where(['type' => 'guest_checkout'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'guest_checkout',
-                    'value' => 0,
-                    'updated_at' => now()
-                ]);
-            }
+            $this->businessSettingGetOrInsert(type: 'guest_checkout', value: 0);
+            $this->businessSettingGetOrInsert(type: 'minimum_order_amount', value: 0);
+            $this->businessSettingGetOrInsert(type: 'minimum_order_amount_by_seller', value: 0);
+            $this->businessSettingGetOrInsert(type: 'minimum_order_amount_status', value: 0);
+            $this->businessSettingGetOrInsert(type: 'admin_login_url', value: 'admin');
+            $this->businessSettingGetOrInsert(type: 'employee_login_url', value: 'employee');
+            $this->businessSettingGetOrInsert(type: 'free_delivery_status', value: 0);
+            $this->businessSettingGetOrInsert(type: 'free_delivery_responsibility', value: 'admin');
+            $this->businessSettingGetOrInsert(type: 'free_delivery_over_amount', value: 0);
+            $this->businessSettingGetOrInsert(type: 'free_delivery_over_amount_seller', value: 0);
+            $this->businessSettingGetOrInsert(type: 'add_funds_to_wallet', value: 0);
+            $this->businessSettingGetOrInsert(type: 'minimum_add_fund_amount', value: 0);
+            $this->businessSettingGetOrInsert(type: 'user_app_version_control', value: json_encode([
+                "for_android" => [
+                    "status" => 1,
+                    "version" => "14.1",
+                    "link" => ""
+                ],
+                "for_ios" => [
+                    "status" => 1,
+                    "version" => "14.1",
+                    "link" => ""
+                ]
+            ]));
+            $this->businessSettingGetOrInsert(type: 'seller_app_version_control', value: json_encode([
+                "for_android" => [
+                    "status" => 1,
+                    "version" => "14.1",
+                    "link" => ""
+                ],
+                "for_ios" => [
+                    "status" => 1,
+                    "version" => "14.1",
+                    "link" => ""
+                ]
+            ]));
+            $this->businessSettingGetOrInsert(type: 'delivery_man_app_version_control', value: json_encode([
+                "for_android" => [
+                    "status" => 1,
+                    "version" => "14.1",
+                    "link" => ""
+                ],
+                "for_ios" => [
+                    "status" => 1,
+                    "version" => "14.1",
+                    "link" => ""
+                ]
+            ]));
 
-            // minimum_order_amount
-            if (BusinessSetting::where(['type' => 'minimum_order_amount'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'minimum_order_amount',
-                    'value' => 0,
-                    'updated_at' => now()
-                ]);
-            }
-
-            if (BusinessSetting::where(['type' => 'minimum_order_amount_by_seller'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'minimum_order_amount_by_seller',
-                    'value' => 0,
-                    'updated_at' => now()
-                ]);
-            }
-
-            if (BusinessSetting::where(['type' => 'minimum_order_amount_status'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'minimum_order_amount_status',
-                    'value' => 0,
-                    'updated_at' => now()
-                ]);
-            }
-
-            //admin_login_url
-            if (BusinessSetting::where(['type' => 'admin_login_url'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'admin_login_url',
-                    'value' => 'admin',
-                    'updated_at' => now()
-                ]);
-            }
-
-            //employee_login_url
-            if (BusinessSetting::where(['type' => 'employee_login_url'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'employee_login_url',
-                    'value' => 'employee',
-                    'updated_at' => now()
-                ]);
-            }
-
-            //free_delivery_status
-            if (BusinessSetting::where(['type' => 'free_delivery_status'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'free_delivery_status',
-                    'value' => 0,
-                    'updated_at' => now()
-                ]);
-            }
-
-            //free_delivery_responsibility
-            if (BusinessSetting::where(['type' => 'free_delivery_responsibility'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'free_delivery_responsibility',
-                    'value' => 'admin',
-                    'updated_at' => now()
-                ]);
-            }
-
-            //free_delivery_over_amount
-            if (BusinessSetting::where(['type' => 'free_delivery_over_amount'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'free_delivery_over_amount',
-                    'value' => 0,
-                    'updated_at' => now()
-                ]);
-            }
-
-            //free_delivery_over_amount
-            if (BusinessSetting::where(['type' => 'free_delivery_over_amount_seller'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'free_delivery_over_amount_seller',
-                    'value' => 0,
-                    'updated_at' => now()
-                ]);
-            }
-
-            //add_funds_to_wallet
-            if (BusinessSetting::where(['type' => 'add_funds_to_wallet'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'add_funds_to_wallet',
-                    'value' => 0,
-                    'updated_at' => now()
-                ]);
-            }
-
-            //minimum_add_fund_amount
-            if (BusinessSetting::where(['type' => 'minimum_add_fund_amount'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'minimum_add_fund_amount',
-                    'value' => 0,
-                    'updated_at' => now()
-                ]);
-            }
-
-            //maximum_add_fund_amount
-            if (BusinessSetting::where(['type' => 'maximum_add_fund_amount'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'maximum_add_fund_amount',
-                    'value' => 0,
-                    'updated_at' => now()
-                ]);
-            }
-
-            //user_app_version_control
-            if (BusinessSetting::where(['type' => 'user_app_version_control'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'user_app_version_control',
-                    'value' => json_encode([
-                        "for_android" => [
-                            "status" => 1,
-                            "version" => "14.1",
-                            "link" => ""
-                        ],
-                        "for_ios" => [
-                            "status" => 1,
-                            "version" => "14.1",
-                            "link" => ""
-                        ]
-                    ]),
-                    'updated_at' => now()
-                ]);
-            }
-
-            //seller_app_version_control
-            if (BusinessSetting::where(['type' => 'seller_app_version_control'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'seller_app_version_control',
-                    'value' => json_encode([
-                        "for_android" => [
-                            "status" => 1,
-                            "version" => "14.1",
-                            "link" => ""
-                        ],
-                        "for_ios" => [
-                            "status" => 1,
-                            "version" => "14.1",
-                            "link" => ""
-                        ]
-                    ]),
-                    'updated_at' => now()
-                ]);
-            }
-
-            //Delivery_man_app_version_control
-            if (BusinessSetting::where(['type' => 'delivery_man_app_version_control'])->first() == false) {
-                DB::table('business_settings')->insert([
-                    'type' => 'delivery_man_app_version_control',
-                    'value' => json_encode([
-                        "for_android" => [
-                            "status" => 1,
-                            "version" => "14.1",
-                            "link" => ""
-                        ],
-                        "for_ios" => [
-                            "status" => 1,
-                            "version" => "14.1",
-                            "link" => ""
-                        ]
-                    ]),
-                    'updated_at' => now()
-                ]);
-            }
-
-            // script for theme setup for existing banner
-            $theme_name = theme_root_path();
+            // Script for theme setup for existing banner
+            $themeName = theme_root_path();
             $banners = Banner::get();
-            if($banners){
-                foreach($banners as $banner){
-                    $banner->theme = $theme_name;
+            if ($banners) {
+                foreach ($banners as $banner) {
+                    $banner->theme = $themeName;
                     $banner->save();
                 }
             }
 
-            // current shipping responsibility add to orders table
-            Order::query()->update(['shipping_responsibility'=>Helpers::get_business_settings('shipping_method')]);
+            // Current shipping responsibility add to orders table
+            Order::query()->update(['shipping_responsibility' => getWebConfig(name: 'shipping_method')]);
 
-            //whatsapp
-            $whatsapp = BusinessSetting::where(['type' => 'whatsapp'])->first();
-            if(!$whatsapp) {
-                DB::table('business_settings')->insert([
-                    'type' => 'whatsapp',
-                    'value' => json_encode([
-                        "status" => 1,
-                        "phone" => "00000000000"
-                    ]),
-                    'updated_at' => now()
-                ]);
-            }
-
-            //currency_symbol_position
-            $currency_symbol_position = BusinessSetting::where(['type' => 'currency_symbol_position'])->first();
-            if(!$currency_symbol_position){
-                DB::table('business_settings')->insert([
-                    'type' => 'currency_symbol_position',
-                    'value' => "left",
-                    'updated_at' => now()
-                ]);
-            }
+            $this->businessSettingGetOrInsert(type: 'whatsapp', value: json_encode(['status' => 1, 'phone' => '00000000000']));
+            $this->businessSettingGetOrInsert(type: 'currency_symbol_position', value: 'left');
         }
 
-        if ($version_number == '14.2'){
-
-            // notification message import process
+        if ($versionNumber == '14.2') {
+            // Notification message import process
             InstallController::notification_message_import();
 
-            // business table notification message data import in notification message table
+            // Business table notification message data import in notification message table
             self::notification_message_processing();
 
-            //company riliability import process
+            // Company reliability import process
             InstallController::company_riliability_import();
         }
 
-        if ($version_number == '14.3'){
-            if (BusinessSetting::where(['type' => 'react_setup'])->first() == false) {
-                DB::table('business_settings')->updateOrInsert([
-                    'type' => 'react_setup'
-                    ],
-                    [
-                        'type' => 'react_setup',
-                        'value' => json_encode([
-                            'status' => 0,
-                            'react_license_code' => '',
-                            'react_domain' => '',
-                            'react_platform' => ''
-                        ]),
-                        'updated_at' => now()
-                    ]
-                );
-            }
-            if (BusinessSetting::where(['type' => 'app_activation'])->first() == false) {
-                DB::table('business_settings')->updateOrInsert(
-                    ['type' => 'app_activation'],
-                    [
-                        'type' => 'app_activation',
-                        'value' => json_encode(['software_id' => '', 'is_active' => 0]),
-                        'updated_at' => now()
-                ]);
-            }
+        if ($versionNumber == '14.3') {
+            $this->businessSettingGetOrInsert(type: 'app_activation', value: json_encode(['software_id' => '', 'is_active' => 0]));
         }
 
-        if ($version_number == '14.3.1'){
-            //shop slug
-            $shops = Shop::where('slug','en')->get();
+        if ($versionNumber == '14.3.1') {
+            // Shop slug
+            $shops = Shop::where('slug', 'en')->get();
             if ($shops) {
-                foreach($shops as $shop){
+                foreach ($shops as $shop) {
                     $shop->slug = Str::slug($shop->name, '-') . '-' . Str::random(6);
                     $shop->save();
                 }
             }
 
-            //translation table data update
-            DB::table('translations')->where('translationable_type', 'LIKE', "%Product%")->update(['translationable_type'=>'App\Models\Product']);
-            DB::table('translations')->where('translationable_type', 'LIKE', "%Brand%")->update(['translationable_type'=>'App\Models\Brand']);
-            DB::table('translations')->where('translationable_type', 'LIKE', "%Category%")->update(['translationable_type'=>'App\Models\Category']);
-            DB::table('translations')->where('translationable_type', 'LIKE', "%NotificationMessage%")->update(['translationable_type'=>'App\Models\NotificationMessage']);
+            // Translation table data update
+            DB::table('translations')->where('translationable_type', 'LIKE', "%Product%")->update(['translationable_type' => 'App\Models\Product']);
+            DB::table('translations')->where('translationable_type', 'LIKE', "%Brand%")->update(['translationable_type' => 'App\Models\Brand']);
+            DB::table('translations')->where('translationable_type', 'LIKE', "%Category%")->update(['translationable_type' => 'App\Models\Category']);
+            DB::table('translations')->where('translationable_type', 'LIKE', "%NotificationMessage%")->update(['translationable_type' => 'App\Models\NotificationMessage']);
+        }
+
+        if ($versionNumber == '14.4') {
+            if (!NotificationMessage::where(['key' => 'product_request_approved_message'])->first()) {
+                DB::table('notification_messages')->updateOrInsert([
+                    'key' => 'product_request_approved_message'
+                ],
+                    [
+                        'user_type' => 'seller',
+                        'key' => 'product_request_approved_message',
+                        'message' => 'customize your product request approved message message',
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]
+                );
+            }
+
+            if (!NotificationMessage::where(['key' => 'product_request_rejected_message'])->first()) {
+                DB::table('notification_messages')->updateOrInsert([
+                    'key' => 'product_request_rejected_message'
+                ],
+                    [
+                        'user_type' => 'seller',
+                        'key' => 'product_request_rejected_message',
+                        'message' => 'customize your product request rejected message message',
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]
+                );
+            }
+        }
+
+        if ($versionNumber == '14.5') {
+            $this->businessSettingGetOrInsert(type: 'map_api_status', value: 1);
+        }
+
+        if ($versionNumber == '14.6') {
+            Product::where(['product_type' => 'digital'])->update(['current_stock' => 999999999]);
+
+            //priority setup and vendor registration data process
+            InstallController::getPrioritySetupAndVendorRegistrationData();
+
+            if (Admin::count() > 0 && EmailTemplate::count() < 1) {
+                $emailTemplateUserData = [
+                    'admin',
+                    'customer',
+                    'vendor',
+                    'delivery-man',
+                ];
+                foreach ($emailTemplateUserData as $key => $value) {
+                    $this->getEmailTemplateDataForUpdate($value);
+                }
+            }
+        }
+
+        if ($versionNumber == '14.7') {
+            $this->businessSettingGetOrInsert(type: 'storage_connection_type', value: 'public');
+            $this->businessSettingGetOrInsert(type: 'google_search_console_code', value: '');
+            $this->businessSettingGetOrInsert(type: 'bing_webmaster_code', value: '');
+            $this->businessSettingGetOrInsert(type: 'baidu_webmaster_code', value: '');
+            $this->businessSettingGetOrInsert(type: 'yandex_webmaster_code', value: '');
+            InstallController::updateRobotTexFile();
+        }
+
+        if ($versionNumber == '14.8') {
+            $this->businessSettingGetOrInsert(type: 'firebase_otp_verification', value: json_encode(['status' => 0, 'web_api_key' => '']));
+            if (!LoginSetup::where(['key' => 'login_options'])->first()) {
+                DB::table('login_setups')->updateOrInsert(['key' => 'login_options'], ['value' => json_encode([
+                    'manual_login' => 1,
+                    'otp_login' => 0,
+                    'social_login' => 1,
+                ])]);
+            }
+            if (!LoginSetup::where(['key' => 'social_media_for_login'])->first() || true) {
+                $socialMediaForLogin = [
+                    'google' => 0,
+                    'facebook' => 0,
+                    'apple' => 0,
+                ];
+                $socialLogin = BusinessSetting::where(['type' => 'social_login'])->first();
+                $appleLogin = BusinessSetting::where(['type' => 'apple_login'])->first();
+                if ($socialLogin) {
+                    $socialLoginUpdate = [];
+                    foreach (json_decode($socialLogin?->value, true) as $socialLoginService) {
+                        $socialMediaForLogin[$socialLoginService['login_medium']] = (int)$socialLoginService['status'];
+                        $socialLoginService['status'] = 1;
+                        $socialLoginUpdate[] = $socialLoginService;
+                    }
+                    BusinessSetting::where(['type' => 'social_login'])->update(['value' => json_encode($socialLoginUpdate)]);
+                }
+
+                if ($appleLogin) {
+                    $appleLoginUpdate = [];
+                    foreach (json_decode($appleLogin?->value, true) as $appleLoginService) {
+                        $socialMediaForLogin[$appleLoginService['login_medium']] = (int)$appleLoginService['status'];
+                        $appleLoginService['status'] = 1;
+                        $appleLoginUpdate[] = $appleLoginService;
+                    }
+                    BusinessSetting::where(['type' => 'apple_login'])->update(['value' => json_encode($appleLoginUpdate)]);
+                }
+
+                DB::table('login_setups')->updateOrInsert(['key' => 'login_options'], ['value' => json_encode([
+                    'manual_login' => 1,
+                    'otp_login' => 0,
+                    'social_login' => $socialMediaForLogin['google'] || $socialMediaForLogin['facebook'] || $socialMediaForLogin['apple'] ? 1 : 0,
+                ])]);
+                DB::table('login_setups')->updateOrInsert(['key' => 'social_media_for_login'], ['value' => json_encode($socialMediaForLogin)]);
+            }
+
+            if (!LoginSetup::where(['key' => 'email_verification'])->first()) {
+                $emailVerification = BusinessSetting::where(['type' => 'email_verification'])->first()?->value ?? 0;
+                DB::table('login_setups')->updateOrInsert(['key' => 'email_verification'], [
+                    'value' => $emailVerification ? 1 : 0
+                ]);
+            }
+            if (!LoginSetup::where(['key' => 'phone_verification'])->first()) {
+                $otpVerification = BusinessSetting::where(['type' => 'otp_verification'])->first()?->value ?? 0;
+                DB::table('login_setups')->updateOrInsert(['key' => 'phone_verification'], [
+                    'value' => $otpVerification ? 1 : 0
+                ]);
+            }
+
+            $this->businessSettingGetOrInsert(type: 'maintenance_system_setup', value: json_encode([
+                'user_app' => 0,
+                'user_website' => 0,
+                'vendor_app' => 0,
+                'deliveryman_app' => 0,
+                'vendor_panel' => 0,
+            ]));
+
+            if (!BusinessSetting::where(['type' => 'maintenance_duration_setup'])->first()) {
+                DB::table('business_settings')->updateOrInsert(['type' => 'maintenance_duration_setup'], [
+                    'value' => json_encode([
+                        'maintenance_duration' => "until_change",
+                        'start_date' => null,
+                        'end_date' => null,
+                    ]),
+                ]);
+            }
+            if (!BusinessSetting::where(['type' => 'maintenance_message_setup'])->first()) {
+                DB::table('business_settings')->updateOrInsert(['type' => 'maintenance_message_setup'], [
+                    'value' => json_encode([
+                        'business_number' => 1,
+                        'business_email' => 1,
+                        'maintenance_message' => "We are Working On Something Special",
+                        'message_body' => "We apologize for any inconvenience. For immediate assistance, please contact with our support team",
+                    ]),
+                ]);
+            }
+            $this->updateOrInsertPolicy(type: 'shipping-policy');
+        }
+
+        Artisan::call('file:permission');
+        if (DOMAIN_POINTED_DIRECTORY == 'public' && function_exists('shell_exec')) {
+            shell_exec('ln -s ../resources/themes themes');
+            Artisan::call('storage:link');
         }
     }
 
-    public static function notification_message_processing(){
-        $business_notification_message = [
+    public static function notification_message_processing(): bool
+    {
+        $businessNotificationMessage = [
             'order_pending_message',
             'order_confirmation_msg',
             'order_processing_message',
@@ -593,9 +478,9 @@ trait UpdateClass
             'delivery_boy_expected_delivery_date_message',
         ];
 
-        $messages = BusinessSetting::whereIn('type', $business_notification_message)->get()->toArray();
+        $messages = BusinessSetting::whereIn('type', $businessNotificationMessage)->get()->toArray();
 
-        $current_notification_message = [
+        $currentNotificationMessage = [
             'order_pending_message',
             'order_confirmation_message',
             'order_processing_message',
@@ -608,23 +493,23 @@ trait UpdateClass
             'expected_delivery_date',
         ];
 
-        foreach($messages as $message){
+        foreach ($messages as $message) {
             $data = $message['type'];
-            if($data == 'order_confirmation_msg'){
+            if ($data == 'order_confirmation_msg') {
                 $data = 'order_confirmation_message';
 
-            }elseif($data == 'delivery_boy_assign_message'){
+            } elseif ($data == 'delivery_boy_assign_message') {
                 $data = 'new_order_assigned_message';
 
-            }elseif($data == 'delivery_boy_expected_delivery_date_message'){
+            } elseif ($data == 'delivery_boy_expected_delivery_date_message') {
                 $data = 'expected_delivery_date';
             }
 
-            $is_true = in_array($data, $current_notification_message);
+            $isTrue = in_array($data, $currentNotificationMessage);
             $value = json_decode($message['value'], true);
 
-            if($is_true){
-                $notification = NotificationMessage::where('key',$data)->first();
+            $notification = NotificationMessage::where('key', $data)->first();
+            if ($isTrue && $notification && isset($value['message'])) {
                 $notification->message = $value['message'];
                 $notification->status = $value['status'];
                 $notification->save();
@@ -634,84 +519,88 @@ trait UpdateClass
         return true;
     }
 
-    private function sms_gateway_data_update(){
+    private function sms_gateway_data_update()
+    {
         try {
-            $gateway = array_merge(Helpers::default_sms_gateways(), [
-                        'twilio_sms',
-                        'nexmo_sms',
-                        '2factor_sms',
-                        'msg91_sms',
-                        'releans_sms',
+            $gateway = array_merge(Helpers::getDefaultSMSGateways(), [
+                'twilio_sms',
+                'nexmo_sms',
+                '2factor_sms',
+                'msg91_sms',
+                'releans_sms',
+            ]);
+
+            $data = BusinessSetting::whereIn('type', $gateway)->pluck('value', 'type')->toArray();
+
+            if ($data) {
+                foreach ($data as $key => $value) {
+
+                    $decoded_value = json_decode($value, true);
+
+                    $gateway = $key;
+                    if ($key == 'twilio_sms') {
+                        $gateway = 'twilio';
+                        $additional_data = [
+                            'sid' => $decoded_value['sid'],
+                            'messaging_service_sid' => $decoded_value['messaging_service_sid'],
+                            'token' => $decoded_value['token'],
+                            'from' => $decoded_value['from'],
+                            'otp_template' => $decoded_value['otp_template'],
+                        ];
+                    } elseif ($key == 'nexmo_sms') {
+                        $gateway = 'nexmo';
+                        $additional_data = [
+                            'api_key' => $decoded_value['api_key'],
+                            'api_secret' => $decoded_value['api_secret'],
+                            'from' => $decoded_value['from'],
+                            'otp_template' => $decoded_value['otp_template'],
+                        ];
+                    } elseif ($key == '2factor_sms') {
+                        $gateway = '2factor';
+                        $additional_data = [
+                            'api_key' => $decoded_value['api_key'],
+                        ];
+                    } elseif ($key == 'msg91_sms') {
+                        $gateway = 'msg91';
+                        $additional_data = [
+                            'template_id' => $decoded_value['template_id'],
+                            'authkey' => $decoded_value['authkey'] ?? '',
+                        ];
+                    } elseif ($key == 'releans_sms') {
+                        $gateway = 'releans';
+                        $additional_data = [
+                            'api_key' => $decoded_value['api_key'],
+                            'from' => $decoded_value['from'],
+                            'otp_template' => $decoded_value['otp_template'],
+                        ];
+                    }
+
+                    $default_data = [
+                        'gateway' => $gateway,
+                        'mode' => 'live',
+                        'status' => $decoded_value['status'] ?? 0
+                    ];
+
+                    $credentials = json_encode(array_merge($default_data, $additional_data));
+
+                    $payment_additional_data = [
+                        'gateway_title' => ucfirst(str_replace('_', ' ', $gateway)),
+                        'gateway_image' => null
+                    ];
+
+                    DB::table('addon_settings')->updateOrInsert(['key_name' => $gateway, 'settings_type' => 'sms_config'], [
+                        'key_name' => $gateway,
+                        'live_values' => $credentials,
+                        'test_values' => $credentials,
+                        'settings_type' => 'sms_config',
+                        'mode' => isset($decoded_value['status']) == 1 ? 'live' : 'test',
+                        'is_active' => isset($decoded_value['status']) == 1 ? 1 : 0,
+                        'additional_data' => json_encode($payment_additional_data),
                     ]);
 
-            $data = BusinessSetting::whereIn('type',$gateway)->pluck('value','type')->toArray();
 
-            foreach($data as $key => $value){
-
-                $decoded_value= json_decode($value , true);
-
-                $gateway=$key;
-                if($key == 'twilio_sms'){
-                    $gateway='twilio';
-                    $additional_data = [
-                        'sid' => $decoded_value['sid'],
-                        'messaging_service_sid' => $decoded_value['messaging_service_sid'],
-                        'token' => $decoded_value['token'],
-                        'from' => $decoded_value['from'],
-                        'otp_template' => $decoded_value['otp_template'],
-                    ];
-                }elseif($key == 'nexmo_sms'){
-                    $gateway='nexmo';
-                    $additional_data = [
-                        'api_key' => $decoded_value['api_key'],
-                        'api_secret' => $decoded_value['api_secret'],
-                        'from' => $decoded_value['from'],
-                        'otp_template' => $decoded_value['otp_template'],
-                    ];
-                }elseif($key == '2factor_sms'){
-                    $gateway='2factor';
-                    $additional_data = [
-                        'api_key' => $decoded_value['api_key'],
-                    ];
-                }elseif($key == 'msg91_sms'){
-                    $gateway='msg91';
-                    $additional_data = [
-                        'template_id' => $decoded_value['template_id'],
-                        'authkey' => $decoded_value['authkey'] ?? '',
-                    ];
-                }elseif($key == 'releans_sms'){
-                    $gateway='releans';
-                    $additional_data = [
-                        'api_key' => $decoded_value['api_key'],
-                        'from' => $decoded_value['from'],
-                        'otp_template' => $decoded_value['otp_template'],
-                    ];
                 }
-
-                $default_data = [
-                    'gateway' => $gateway,
-                    'mode' => 'live',
-                    'status' => $decoded_value['status'] ?? 0
-                ];
-
-                $credentials = json_encode(array_merge($default_data, $additional_data));
-
-                $payment_additional_data=[
-                    'gateway_title' => ucfirst(str_replace('_',' ',$gateway)),
-                    'gateway_image' => null
-                ];
-
-                DB::table('addon_settings')->updateOrInsert(['key_name' => $gateway, 'settings_type' => 'sms_config'], [
-                    'key_name' => $gateway,
-                    'live_values' => $credentials,
-                    'test_values' => $credentials,
-                    'settings_type' => 'sms_config',
-                    'mode' => isset($decoded_value['status']) == 1  ?  'live': 'test',
-                    'is_active' => isset($decoded_value['status']) == 1  ?  1: 0 ,
-                    'additional_data' => json_encode($payment_additional_data),
-                ]);
-
-
+                BusinessSetting::whereIn('type', $gateway)->delete();
             }
         } catch (\Exception $exception) {
             dd($exception);
@@ -719,23 +608,24 @@ trait UpdateClass
         return true;
     }
 
-    private function payment_gateway_data_update(){
-        try{
+    private function payment_gateway_data_update()
+    {
+        try {
             $gateway[] = ['ssl_commerz_payment'];
 
-            $data = BusinessSetting::whereIn('type', GlobalConstant::DEFAULT_PAYMENT_GATEWAYS)->pluck('value','type')->toArray();
+            $data = BusinessSetting::whereIn('type', GlobalConstant::DEFAULT_PAYMENT_GATEWAYS)->pluck('value', 'type')->toArray();
 
-            foreach($data as $key => $value)
-            {
-                $gateway = $key;
-                if($key == 'ssl_commerz_payment' ){
-                    $gateway = 'ssl_commerz';
-                }
+            if ($data) {
+                foreach ($data as $key => $value) {
+                    $gateway = $key;
+                    if ($key == 'ssl_commerz_payment') {
+                        $gateway = 'ssl_commerz';
+                    }
 
-                $decoded_value = json_decode($value , true);
-                $data = [
-                    'gateway' => $gateway ,
-                    'mode' =>  isset($decoded_value['status']) == 1  ?  'live': 'test'
+                    $decoded_value = json_decode($value, true);
+                    $data = [
+                        'gateway' => $gateway,
+                        'mode' => isset($decoded_value['status']) == 1 ? 'live' : 'test'
                     ];
 
                     if ($gateway == 'ssl_commerz') {
@@ -829,27 +719,28 @@ trait UpdateClass
                         ];
                     }
 
-                $credentials= json_encode(array_merge($data, $additional_data));
+                    $credentials = json_encode(array_merge($data, $additional_data));
 
-                $payment_additional_data=['gateway_title' => ucfirst(str_replace('_',' ',$gateway)),
-                                        'gateway_image' => null];
+                    $payment_additional_data = ['gateway_title' => ucfirst(str_replace('_', ' ', $gateway)),
+                        'gateway_image' => null];
 
 
-                DB::table('addon_settings')->updateOrInsert(['key_name' => $gateway, 'settings_type' => 'payment_config'], [
-                'key_name' => $gateway,
-                'live_values' => $credentials,
-                'test_values' => $credentials,
-                'settings_type' => 'payment_config',
-                'mode' => isset($decoded_value['status']) && $decoded_value['status'] == '1'  ?  'live': 'test',
-                'is_active' => isset($decoded_value['status']) && $decoded_value['status'] == '1'  ?  1: 0 ,
-                'additional_data' => json_encode($payment_additional_data),
-                ]);
+                    DB::table('addon_settings')->updateOrInsert(['key_name' => $gateway, 'settings_type' => 'payment_config'], [
+                        'key_name' => $gateway,
+                        'live_values' => $credentials,
+                        'test_values' => $credentials,
+                        'settings_type' => 'payment_config',
+                        'mode' => isset($decoded_value['status']) && $decoded_value['status'] == '1' ? 'live' : 'test',
+                        'is_active' => isset($decoded_value['status']) && $decoded_value['status'] == '1' ? 1 : 0,
+                        'additional_data' => json_encode($payment_additional_data),
+                    ]);
+                }
+                BusinessSetting::whereIn('type', GlobalConstant::DEFAULT_PAYMENT_GATEWAYS)->delete();
             }
         } catch (\Exception $exception) {
 
         }
         return true;
     }
-
 
 }

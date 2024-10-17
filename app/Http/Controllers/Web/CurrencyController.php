@@ -18,10 +18,12 @@ class CurrencyController extends Controller
     public function changeCurrency(Request $request): JsonResponse
     {
         session()->put('currency_code', $request['currency_code']);
-        $currency = $this->currencyRepo->getFirstWhere(params: ['code'=>$request['currency_code']]);
+        $currency = $this->currencyRepo->getFirstWhere(params: ['code' => $request['currency_code']]);
         session()->put('currency_symbol', $currency['symbol']);
         session()->put('currency_exchange_rate', $currency['exchange_rate']);
-        $message = translate('currency_changed_to').' '.$currency['name'];
-        return response()->json(['message'=>$message]);
+        session()->forget('default');
+        session()->forget('usd');
+        $message = translate('currency_changed_to') . ' ' . $currency['name'];
+        return response()->json(['message' => $message]);
     }
 }

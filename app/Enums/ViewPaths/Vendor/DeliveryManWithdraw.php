@@ -11,7 +11,7 @@ enum DeliveryManWithdraw
     ];
     const DETAILS = [
         URI => 'details',
-        VIEW => 'vendor-views.delivery-man.withdraw.details'
+        VIEW => 'vendor-views.delivery-man.withdraw._details'
     ];
     const UPDATE_STATUS = [
         URI => 'update-status',

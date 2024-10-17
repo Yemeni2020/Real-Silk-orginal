@@ -7,7 +7,7 @@
 
         <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
             <h2 class="h1 mb-0">
-                <img src="{{ asset('public/assets/back-end/img/attribute.png') }}" class="mb-1 mr-1" alt="">
+                <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/attribute.png') }}" class="mb-1 mr-1" alt="">
                 {{ translate('update_attribute') }}
             </h2>
         </div>
@@ -65,5 +65,5 @@
 @endsection
 
 @push('script')
-    <script src="{{ asset('public/assets/back-end/js/products-management.js') }}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/products-management.js') }}"></script>
 @endpush

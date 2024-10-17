@@ -14,6 +14,10 @@ enum Contact
         URI => 'view',
         VIEW => 'admin-views.contacts.view'
     ];
+    const FILTER = [
+        URI => 'filer',
+        VIEW => 'admin-views.contacts._table'
+    ];
 
     const UPDATE = [
         URI => 'update',

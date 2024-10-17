@@ -9,6 +9,10 @@
                 <th>{{ translate('filter_Criteria').' - ' }}</th>
                 <th></th>
                 <th>
+                    @if(isset($data['vendor']))
+                        {{translate('store_Name')}} - {{$data['vendor']?->shop?->name}}
+                        <br>
+                    @endif
                     {{translate('category').' - '. ($data['category'] != 'all' ? $data['category']['defaultName'] : $data['category'])  }}
                     <br>
                     {{translate('sub_Category').' - '. ($data['sub_category'] != 'all' ? $data['sub_category']['defaultName'] : $data['sub_category'])  }}
@@ -58,7 +62,7 @@
                 <tr>
                     <td> {{++$key}}	</td>
                     <td style="height: 200px"></td>
-                    <td>{{asset('storage/app/public/product/thumbnail/'.$item->thumbnail)}}</td>
+                    <td>{{dynamicStorage(path: 'storage/app/public/product/thumbnail/'.$item->thumbnail)}}</td>
                     <td> {{$item->name}}</td>
                     <td>{{$item->code}}</td>
                     <td>{{strip_tags(str_replace('&nbsp;', ' ', $item->details))}}</td>

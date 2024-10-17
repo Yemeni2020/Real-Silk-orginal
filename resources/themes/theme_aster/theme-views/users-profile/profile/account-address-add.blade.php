@@ -53,8 +53,10 @@
 
                                             <div class="form-group mb-3">
                                                 <label for="phone">{{translate('phone')}}</label>
-                                                <input type="tel" id="phone" class="form-control " name="phone" required
+                                                <input type="tel" id="phone" class="form-control phone-input-with-country-picker" required
                                                        placeholder="{{translate('ex').':'.translate('01xxxxxxxxx')}}">
+
+                                                <input type="hidden" class="country-picker-phone-number w-50" name="phone" readonly>
                                             </div>
 
                                             <div class="form-group mb-3 ">
@@ -117,7 +119,7 @@
                                                     </label>
                                                 </div>
                                             </div>
-
+                                            @if(getWebConfig('map_api_status') ==1 )
                                             <div class="mb-3 ">
                                                 <input id="pac-input" class="controls rounded __inline-46"
                                                        title="{{translate('search_your_location_here')}}" type="text"
@@ -125,7 +127,7 @@
                                                 <div class="dark-support rounded w-100 __h-14rem"
                                                      id="location_map_canvas"></div>
                                             </div>
-
+                                            @endif
                                             <div class="form-group">
                                                 <label for="address">{{translate('address')}}</label>
                                                 <textarea name="address" id="address" rows="5" class="form-control"
@@ -168,8 +170,10 @@
 @endsection
 @push('script')
     <script src="{{ theme_asset('assets/plugins/select2/js/select2.min.js') }}"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key={{getWebConfig(name: 'map_api_key')}}&callback=&libraries=places&v=3.49"
-        defer>
-    </script>
     <script src="{{ theme_asset('assets/js/address.js') }}"></script>
+    @if(getWebConfig('map_api_status') ==1 )
+        <script
+            src="https://maps.googleapis.com/maps/api/js?key={{getWebConfig('map_api_key')}}&callback=callBackFunction&loading=async&libraries=places&v=3.56" defer>
+        </script>
+    @endif
 @endpush

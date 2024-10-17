@@ -6,7 +6,7 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{asset('/public/assets/back-end/img/deliveryman.png')}}" width="20" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/deliveryman.png')}}" width="20" alt="">
                 {{translate('delivery_man')}} <span class="badge badge-soft-dark radius-50 fz-12">{{ $deliveryMens->total() }}</span>
             </h2>
         </div>
@@ -25,7 +25,7 @@
                                             </div>
                                         </div>
                                         <input id="datatableSearch_" type="search" name="searchValue" class="form-control"
-                                                placeholder="{{translate('search')}}" aria-label="Search" value="{{ request('searchValue') }}" required>
+                                                placeholder="{{translate('search_by_name').','.translate('_contact_info')}}" aria-label="Search" value="{{ request('searchValue') }}" required>
                                         <button type="submit" class="btn btn--primary">{{translate('search')}}</button>
                                     </div>
                                 </form>
@@ -42,7 +42,7 @@
                                     <ul class="dropdown-menu dropdown-menu-right">
                                         <li>
                                             <a type="submit" class="dropdown-item d-flex align-items-center gap-2 " href="{{route('admin.delivery-man.export',['searchValue' => request('searchValue')])}}">
-                                                <img width="14" src="{{asset('/public/assets/back-end/img/excel.png')}}" alt="">
+                                                <img width="14" src="{{dynamicAsset(path: 'public/assets/back-end/img/excel.png')}}" alt="">
                                                 {{translate('excel')}}
                                             </a>
                                         </li>
@@ -70,13 +70,13 @@
                             </thead>
 
                             <tbody id="set-rows">
-                            @forelse($deliveryMens as $key => $deliveryMen)
+                            @foreach($deliveryMens as $key => $deliveryMen)
                                 <tr>
                                     <td>{{$deliveryMens->firstitem()+$key}}</td>
                                     <td>
                                         <div class="media align-items-center gap-10">
                                             <img class="rounded-circle avatar avatar-lg" alt=""
-                                                 src="{{getValidImage(path: 'storage/app/public/delivery-man/'.$deliveryMen['image'],type:'backend-profile')}}">
+                                                 src="{{getStorageImages(path:$deliveryMen->image_full_url,type:'backend-profile')}}">
                                             <div class="media-body">
                                                 <a title="Earning Statement"
                                                    class="title-color hover-c1"
@@ -89,7 +89,7 @@
                                     <td>
                                         <div class="d-flex flex-column gap-1">
                                             <div><a class="title-color hover-c1" href="mailto:{{$deliveryMen['email']}}"><strong>{{$deliveryMen['email']}}</strong></a></div>
-                                            <a class="title-color hover-c1" href="tel:+{{$deliveryMen['country_code']}}{{$deliveryMen['phone']}}">+{{ $deliveryMen['country_code'].' '. $deliveryMen['phone']}}</a>
+                                            <a class="title-color hover-c1" href="tel:{{$deliveryMen['country_code']}}{{$deliveryMen['phone']}}">{{ $deliveryMen['country_code'].' '. $deliveryMen['phone']}}</a>
                                         </div>
                                     </td>
                                     <td>
@@ -145,17 +145,7 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7">
-                                        <div class="text-center p-4">
-                                            <img class="mb-3 w-160" src="{{ asset('public/assets/back-end/svg/illustrations/sorry.svg') }}" alt="Image Description">
-                                            <p class="mb-0">{{translate('no_delivery_man_found')}}</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforelse
-
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -164,6 +154,9 @@
                             {!! $deliveryMens->links() !!}
                         </div>
                     </div>
+                    @if(count($deliveryMens)==0)
+                        @include('layouts.back-end._empty-state',['text'=>'no_delivery_man_found'],['image'=>'default'])
+                    @endif
                 </div>
             </div>
         </div>
@@ -171,5 +164,5 @@
 @endsection
 
 @push('script_2')
-    <script src="{{asset('public/assets/back-end/js/admin/deliveryman.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/admin/deliveryman.js')}}"></script>
 @endpush

@@ -55,10 +55,6 @@ return [
             'driver' => 'session',
             'provider' => 'sellers',
         ],
-        'factory' => [
-            'driver' => 'session',
-            'provider' => 'factory',
-        ],
 
         'customer' => [
             'driver' => 'session',
@@ -97,10 +93,6 @@ return [
         'sellers' => [
             'driver' => 'eloquent',
             'model' => \App\Models\Seller::class,
-        ],
-        'factory' => [
-            'driver' => 'eloquent',
-            'model' => \App\Models\factory::class,
         ],
 
         // 'users' => [
@@ -141,12 +133,6 @@ return [
 
         'sellers' => [
             'provider' => 'sellers',
-            'table' => 'password_resets',
-            'expire' => 60,
-            'throttle' => 60,
-        ],
-        'factory' => [
-            'provider' => 'factory',
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,

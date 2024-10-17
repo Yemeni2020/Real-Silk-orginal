@@ -64,6 +64,18 @@ class EmergencyContactController extends BaseController
         Toastr::success(translate('emergency_contact_added_successfully').'!');
         return redirect()->back();
     }
+    public function getUpdateView($id):JsonResponse
+    {
+        $emergencyContact = $this->emergencyContactRepo->getFirstWhere(params: ['id'=>$id]);
+        return response()->json(['view'=>view(EmergencyContact::UPDATE[VIEW],compact('emergencyContact'))->render()]);
+
+    }
+    public function update(EmergencyContactRequest $request,$id): RedirectResponse
+    {
+        $this->emergencyContactRepo->update(id:$id,data:$this->emergencyContactService->getEmergencyContactUpdateData(request:$request));
+        Toastr::success(translate('emergency_contact_update_successfully'));
+        return back();
+    }
 
     /**
      * @param Request $request

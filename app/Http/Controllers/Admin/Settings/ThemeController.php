@@ -76,15 +76,15 @@ class ThemeController extends BaseController
     }
 
 
-    public function notifyAllTheSellers(Request $request, ThemeService $themeService): JsonResponse
+    public function notifyAllTheVendors(Request $request, ThemeService $themeService): JsonResponse
     {
         $status = 0;
-        $message = translate('Notification_Sent_to_All_Sellers_Fail');
+        $message = translate('Notification_Sent_to_All_Vendors_Fail');
 
         try {
             $dataArray = $themeService->getNotifySellersData(request: $request);
             $status = 1;
-            $message = translate('Notification_Sent_to_All_Sellers');
+            $message = translate('Notification_Sent_to_All_Vendors');
             $this->notificationRepo->add($dataArray);
             $this->sendPushNotificationToTopic(data: $dataArray, topic: 'six_valley_seller');
         } catch (Throwable $th) {

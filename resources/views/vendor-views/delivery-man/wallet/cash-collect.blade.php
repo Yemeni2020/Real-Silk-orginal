@@ -7,7 +7,7 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{asset('/public/assets/back-end/img/earning_statictics.png')}}" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/earning_statictics.png')}}" alt="">
                 {{translate('collect_Cash')}}
             </h2>
         </div>
@@ -67,7 +67,7 @@
                             </thead>
 
                             <tbody id="set-rows">
-                            @forelse($transactions as $transaction)
+                            @foreach($transactions as $transaction)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>
@@ -81,11 +81,7 @@
                                     </td>
 
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td class="text-center" colspan="4">{{translate('no_transaction_has_made')}}</td>
-                                </tr>
-                            @endforelse
+                            @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -95,6 +91,9 @@
                             {!! $transactions->links() !!}
                         </div>
                     </div>
+                    @if(count($transactions)==0)
+                        @include('layouts.back-end._empty-state',['text'=>'no_data_found'],['image'=>'default'])
+                    @endif
                 </div>
             </div>
         </div>

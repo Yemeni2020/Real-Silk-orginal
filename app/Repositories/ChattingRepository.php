@@ -46,13 +46,101 @@ class ChattingRepository implements ChattingRepositoryInterface
 
     public function getListWhere(array $orderBy = [], string $searchValue = null, array $filters = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
     {
-        // TODO: Implement getListWhere() method.
+        $query = $this->chatting->with($relations)
+            ->when(isset($filters['user_id']), function ($query) use ($filters) {
+                return $query->where(['user_id'=>$filters['user_id']]);
+            })
+            ->when(isset($filters['seller_id']), function ($query) use ($filters) {
+                return $query->where(['seller_id'=>$filters['seller_id']]);
+            })
+            ->when(isset($filters['shop_id']), function ($query) use ($filters) {
+                return $query->where(['shop_id'=>$filters['shop_id']]);
+            })
+            ->when(isset($filters['delivery_man_id']), function ($query) use ($filters) {
+                return $query->where(['delivery_man_id'=>$filters['delivery_man_id']]);
+            })
+            ->when(isset($filters['admin_id']), function ($query) use ($filters) {
+                return $query->where(['admin_id'=>$filters['admin_id']]);
+            })->when(isset($filters['sent_by_customer']), function ($query) use ($filters) {
+                return $query->where(['sent_by_customer'=>$filters['sent_by_customer']]);
+            })->when(isset($filters['seen_by_customer']), function ($query) use ($filters) {
+                return $query->where(['seen_by_customer'=>$filters['seen_by_customer']]);
+            })
+            ->when(!empty($orderBy), function ($query) use ($orderBy) {
+                return $query->orderBy(array_key_first($orderBy), array_values($orderBy)[0]);
+            });
+
+        $filters += ['searchValue' =>$searchValue];
+        return $dataLimit == 'all' ? $query->get() : $query->paginate($dataLimit)->appends($filters);
+    }
+
+    public function getListWhereNotNull(array $orderBy = [], string $searchValue = null, array $filters = [], array $whereNotNull = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
+    {
+        $query = $this->chatting->with($relations)
+            ->when(isset($filters['user_id']), function ($query) use ($filters) {
+                return $query->where(['user_id'=>$filters['user_id']]);
+            })
+            ->when(isset($filters['seller_id']), function ($query) use ($filters) {
+                return $query->where(['seller_id'=>$filters['seller_id']]);
+            })
+            ->when(isset($filters['shop_id']), function ($query) use ($filters) {
+                return $query->where(['shop_id'=>$filters['shop_id']]);
+            })
+            ->when(isset($filters['delivery_man_id']), function ($query) use ($filters) {
+                return $query->where(['delivery_man_id'=>$filters['delivery_man_id']]);
+            })
+            ->when(isset($filters['admin_id']), function ($query) use ($filters) {
+                return $query->where(['admin_id'=>$filters['admin_id']]);
+            })
+            ->when(isset($filters['notification_receiver']), function ($query) use ($filters) {
+                return $query->where(['notification_receiver'=>$filters['notification_receiver']]);
+            })
+            ->when(isset($filters['seen_notification']), function ($query) use ($filters) {
+                return $query->where(['seen_notification'=>$filters['seen_notification']]);
+            })
+            ->whereNotNull($whereNotNull)
+            ->when(!empty($orderBy), function ($query) use ($orderBy) {
+                return $query->orderBy(array_key_first($orderBy), array_values($orderBy)[0]);
+            });
+
+        $filters += ['searchValue' =>$searchValue];
+        return $dataLimit == 'all' ? $query->get() : $query->paginate($dataLimit)->appends($filters);
     }
 
     public function updateAllWhere(array $params, array $data) : bool
     {
         return $this->chatting->where($params)->update($data);
     }
+
+    public function updateListWhereNotNull(string $searchValue = null, array $filters = [], array $whereNotNull = [], array $data = []): bool
+    {
+        $this->chatting
+            ->when(isset($filters['user_id']), function ($query) use ($filters) {
+                return $query->where(['user_id'=>$filters['user_id']]);
+            })
+            ->when(isset($filters['seller_id']), function ($query) use ($filters) {
+                return $query->where(['seller_id'=>$filters['seller_id']]);
+            })
+            ->when(isset($filters['shop_id']), function ($query) use ($filters) {
+                return $query->where(['shop_id'=>$filters['shop_id']]);
+            })
+            ->when(isset($filters['delivery_man_id']), function ($query) use ($filters) {
+                return $query->where(['delivery_man_id'=>$filters['delivery_man_id']]);
+            })
+            ->when(isset($filters['admin_id']), function ($query) use ($filters) {
+                return $query->where(['admin_id'=>$filters['admin_id']]);
+            })
+            ->when(isset($filters['notification_receiver']), function ($query) use ($filters) {
+                return $query->where(['notification_receiver'=>$filters['notification_receiver']]);
+            })
+            ->when(isset($filters['seen_notification']), function ($query) use ($filters) {
+                return $query->where(['seen_notification'=>$filters['seen_notification']]);
+            })
+            ->whereNotNull($whereNotNull)->update($data);
+
+        return true;
+    }
+
     public function update(string $id, array $data): bool
     {
         // TODO: Implement update() method.

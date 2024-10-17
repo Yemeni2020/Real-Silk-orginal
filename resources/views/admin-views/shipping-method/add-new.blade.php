@@ -10,7 +10,7 @@
     <div class="content container-fluid"> <!-- Page Heading -->
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">{{translate('dashboard')}}</a></li>
+                <li class="breadcrumb-item"><a href="{{route('admin.dashboard.index')}}">{{translate('dashboard')}}</a></li>
                 <li class="breadcrumb-item" aria-current="page">{{translate('shipping_Method')}}</li>
             </ol>
         </nav>

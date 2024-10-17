@@ -1,12 +1,14 @@
 @extends('layouts.back-end.app-seller')
 
 @section('title', translate('shop_Edit'))
-
+@push('css_or_js')
+    <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/plugins/intl-tel-input/css/intlTelInput.css') }}">
+@endpush
 @section('content')
     <div class="content container-fluid">
     <div class="mb-3">
         <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-            <img width="20" src="{{asset('/public/assets/back-end/img/shop-info.png')}}" alt="">
+            <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/shop-info.png')}}" alt="">
             {{translate('edit_shop_info')}}
         </h2>
     </div>
@@ -29,8 +31,15 @@
                                             required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="name" class="title-color">{{translate('contact')}} <span class="text-info">( {{'*'.translate('country_code_is_must_like_for_BD_880')}} )</span></label>
-                                    <input type="number" name="contact" value="{{$shop->contact}}" class="form-control" id="name" required>
+                                    <label for="name" class="title-color">{{translate('contact')}}</label>
+                                    <div class="mb-3">
+                                        <input class="form-control form-control-user phone-input-with-country-picker"
+                                               type="tel" id="exampleInputPhone" value="{{$shop->contact ?? old('phone')}}"
+                                               placeholder="{{ translate('enter_phone_number') }}" required>
+                                        <div class="">
+                                            <input type="text" class="country-picker-phone-number w-50" value="{{$shop->contact}}" name="contact" hidden  readonly>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="address" class="title-color">{{translate('address')}} <span class="text-danger">*</span></label>
@@ -50,7 +59,7 @@
                                 </div>
                                 <div class="text-center">
                                     <img class="upload-img-view" id="viewer"
-                                    src="{{getValidImage(path: 'storage/app/public/shop/'.$shop->image,type: 'backend-basic')}}" alt="{{translate('image')}}"/>
+                                    src="{{getStorageImages(path: $shop->image_full_url,type: 'backend-basic')}}" alt="{{translate('image')}}"/>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-4 mt-2">
@@ -58,7 +67,7 @@
                                     <div class="flex-start">
                                         <label for="name" class="title-color text-capitalize">{{translate('upload_banner')}} </label>
                                         <div class="mx-1">
-                                            <span class="text-info">{{translate('ratio').' '.'( 6:1 )'}}</span>
+                                            <span class="text-info">{{ THEME_RATIO[theme_root_path()]['Store cover Image'] }}</span>
                                         </div>
                                     </div>
                                     <div class="custom-file text-left">
@@ -71,7 +80,7 @@
                                 <div class="text-center">
                                     <div class="d-flex justify-content-center">
                                         <img class="upload-img-view upload-img-view__banner" id="viewer-banner"
-                                             src="{{getValidImage(path: 'storage/app/public/shop/banner/'.$shop->banner,type: 'backend-banner')}}" alt="{{translate('banner_image')}}"/>
+                                             src="{{getStorageImages(path:$shop->banner_full_url,type: 'backend-banner')}}" alt="{{translate('banner_image')}}"/>
                                     </div>
                                 </div>
                             </div>
@@ -93,7 +102,7 @@
                                 </div>
                                 <div class="text-center">
                                     <div class="d-flex justify-content-center">
-                                        <img class="upload-img-view upload-img-view__banner" id="viewer-bottom-banner" src="{{getValidImage(path: 'storage/app/public/shop/banner/'.$shop->bottom_banner, type: 'backend-banner')}}" alt="{{translate('banner_image')}}"/>
+                                        <img class="upload-img-view upload-img-view__banner" id="viewer-bottom-banner" src="{{getStorageImages(path:$shop->bottom_banner_full_url, type: 'backend-banner')}}" alt="{{translate('banner_image')}}"/>
                                     </div>
                                 </div>
                             </div>
@@ -117,7 +126,7 @@
                                     <div class="text-center">
                                         <div class="d-flex">
                                             <img class="upload-img-view upload-img-view__banner" id="viewer-offer-banner"
-                                                src="{{getValidImage(path: 'storage/app/public/shop/banner/'.$shop->offer_banner,type: 'backend-banner')}}" alt="{{translate('banner_image')}}"/>
+                                                src="{{getStorageImages(path: $shop->offer_banner_full_url,type: 'backend-banner')}}" alt="{{translate('banner_image')}}"/>
                                         </div>
                                     </div>
                                 </div>
@@ -134,3 +143,7 @@
     </div>
     </div>
 @endsection
+@push('script')
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/plugins/intl-tel-input/js/intlTelInput.js') }}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/country-picker-init.js') }}"></script>
+@endpush

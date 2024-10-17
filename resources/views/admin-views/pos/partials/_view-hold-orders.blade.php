@@ -1,6 +1,6 @@
 @if ($totalHoldOrders > 0)
-    <div class="table-responsive datatable-custom custom-scrollbar-pos">
-        <table class="table table-hover table-thead-bordered table-nowrap table-align-middle card-table w-100 min-h-300 text-start">
+    <div class="table-responsive datatable-custom custom-scrollbar-pos min-h-300">
+        <table class="table table-hover table-thead-bordered table-nowrap table-align-middle card-table w-100 text-start">
             <thead class="thead-light thead-50 text-capitalize">
             <tr>
                 <th>{{translate('SL')}}</th>
@@ -16,7 +16,8 @@
             @if (session()->has('cart_name') && count(session()->get('cart_name')) > 0 )
             @php($totalHoldOrdersCount=1)
                 @foreach ($cartItems as $key => $singleCart)
-                    <tr>
+                    @if($singleCart['customerOnHold'])
+                        <tr>
                         <td>{{ $totalHoldOrdersCount }}</td>
                             <?php $totalHoldOrdersCount++; ?>
                         <td>
@@ -44,12 +45,17 @@
                                                 <div class="p-3 border-bottom rounded d-flex justify-content-between gap-2">
                                                     <div class="media gap-2">
                                                         <img width="40" alt=""
-                                                             src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$item['image'], type: 'backend-product') }}">
+                                                             src="{{ getStorageImages(path: $item['image'], type: 'backend-product') }}">
                                                         <div class="media-body">
                                                             <h6 class="text-truncate"> {{ Str::limit($item['name'], 12 )}}</h6>
+                                                            @if($item['variant'])
+                                                                <div class="text-muted">{{ translate('variation') }}
+                                                                    : {{ $item['variant'] }}</div>
+                                                            @endif
                                                             <div class="text-muted">{{ translate('qty') }}
                                                                 : {{ $item['quantity'] }}</div>
                                                         </div>
+
                                                     </div>
                                                     <h5>{{setCurrencySymbol(amount: usdToDefaultCurrency(amount: $item['productSubtotal']), currencyCode: getCurrencyCode())}}</h5>
                                                 </div>
@@ -60,8 +66,8 @@
                             </div>
                         </td>
                         <td>
-                            @if (($singleCart['total']+$singleCart['totalTax']) != $singleCart['subtotal'])
-                                <del>{{setCurrencySymbol(amount:usdToDefaultCurrency(amount: round($singleCart['subtotal']+$singleCart['totalTax'], 2)), currencyCode: getCurrencyCode())}}</del>
+                            @if ($singleCart['discountOnProduct']>0)
+                                <del>{{setCurrencySymbol(amount:usdToDefaultCurrency(amount: round($singleCart['subtotal']+$singleCart['discountOnProduct']+$singleCart['totalTax'], 2)), currencyCode: getCurrencyCode())}}</del>
                             @endif
                             {{setCurrencySymbol(amount: usdToDefaultCurrency(amount: round($singleCart['total']+$singleCart['totalTax'], 2)), currencyCode: getCurrencyCode())}}
                         </td>
@@ -77,15 +83,16 @@
                             </div>
                         </td>
                     </tr>
+                    @endif
                 @endforeach
             @endif
             </tbody>
         </table>
     </div>
 @else
-    <div class="d-flex align-items-center justify-content-center ">
+    <div class="d-flex align-items-center justify-content-center h-100">
         <div>
-            <img src="{{ asset('public/assets/back-end/img/icons/product.svg') }}" alt="">
+            <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/icons/product.svg') }}" alt="">
             <h4 class="text-muted text-center mt-4">{{ translate('No_Order_Found') }}</h4>
         </div>
     </div>

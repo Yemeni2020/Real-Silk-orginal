@@ -6,7 +6,7 @@
     <div class="content container-fluid">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 pb-2">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img width="20" src="{{asset('/public/assets/back-end/img/admin-wallet.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/admin-wallet.png')}}" alt="">
                 {{translate('wallet_bonus_edit')}}
             </h2>
             <div class="text-primary d-flex align-items-center gap-3 font-weight-bolder">
@@ -29,7 +29,7 @@
                         </div>
                         <div class="modal-body px-4 px-sm-5 pt-0 text-center">
                             <div class="d-flex flex-column align-items-center gap-2">
-                                <img width="80" class="mb-3" src="{{asset('/public/assets/back-end/img/para.png')}}"
+                                <img width="80" class="mb-3" src="{{dynamicAsset(path: 'public/assets/back-end/img/para.png')}}"
                                      loading="lazy" alt="">
                                 <h4 class="lh-md">
                                     {{ translate('wallet_bonus_is_only_applicable_when_a_customer_add_fund_to_wallet_via_outside_payment_gateway').'!' }}
@@ -138,6 +138,6 @@
     </div>
 @endsection
 @push('script')
-    <script src="{{asset('public/assets/back-end/js/admin/customer/wallet.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/admin/customer/wallet.js')}}"></script>
 @endpush
 

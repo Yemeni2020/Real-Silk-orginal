@@ -42,10 +42,22 @@ class WithdrawRequestRepository implements WithdrawRequestRepositoryInterface
 
     public function getListWhere(array $orderBy=[], string $searchValue = null, array $filters = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
     {
-        $query = $this->withdrawRequest
-            ->with($relations)
+        $query = $this->withdrawRequest->with($relations)
+            ->when($searchValue, function ($query) use ($searchValue,$relations) {
+                $query->whereHas(current($relations), function ($query) use ($searchValue) {
+                    $searchTerms = explode(' ', $searchValue);
+                    foreach ($searchTerms as $term) {
+                        $query->where(function ($query) use ($term) {
+                            $query->where('f_name', 'like', "%$term%")
+                                ->orWhere('l_name', 'like', "%$term%");
+                        });
+                    }
+                });
+            })
             ->when(isset($filters['vendorId']),function ($query)use($filters){
                 $query->where(['seller_id'=>$filters['vendorId']]);
+            })->when(isset($filters['admin_id']),function ($query)use($filters){
+                $query->where(['admin_id'=>$filters['admin_id']]);
             })
             ->when(isset($filters['whereNotNull']) && $filters['whereNotNull'] =='delivery_man_id'  ,function ($query){
                 $query->whereNotNull('delivery_man_id');

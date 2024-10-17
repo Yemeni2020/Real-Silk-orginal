@@ -14,11 +14,6 @@ enum BusinessSettings
         VIEW => 'admin-views.business-settings.cookie-settings'
     ];
 
-    const OTP_SETUP = [
-        URI => 'otp-setup',
-        VIEW => 'admin-views.business-settings.otp-setup'
-    ];
-
     const ANALYTICS_INDEX = [
         URI => 'analytics-index',
         VIEW => 'admin-views.business-settings.analytics.index'
@@ -32,11 +27,6 @@ enum BusinessSettings
     const APP_SETTINGS = [
         URI => 'app-settings',
         VIEW => 'admin-views.business-settings.apps-settings'
-    ];
-
-    const LOGIN_URL_SETUP = [
-        URI => 'login-url-setup',
-        VIEW => 'admin-views.business-settings.login-url-setup'
     ];
 
     const MAINTENANCE_MODE = [
@@ -54,12 +44,12 @@ enum BusinessSettings
         VIEW => ''
     ];
 
-    const SELLER_VIEW = [
+    const VENDOR_VIEW = [
         URI => '/',
         VIEW => 'admin-views.business-settings.seller-settings'
     ];
 
-    const SELLER_SETTINGS_UPDATE = [
+    const VENDOR_SETTINGS_UPDATE = [
         URI => 'update-vendor-settings',
         VIEW => ''
     ];

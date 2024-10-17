@@ -6,7 +6,7 @@
     <div class="content container-fluid text-start">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img width="20" src="{{asset('/public/assets/back-end/img/my-bank-info.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/my-bank-info.png')}}" alt="">
                 {{translate('edit_Bank_info')}}
             </h2>
         </div>

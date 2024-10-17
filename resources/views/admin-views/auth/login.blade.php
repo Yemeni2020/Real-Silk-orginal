@@ -2,18 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="_token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{{ translate($role) }} | {{ translate('login')}}</title>
-
-    <link rel="shortcut icon" href="{{asset('storage/app/public/company/'.getWebConfig(name: 'company_fav_icon'))}}">
-
-    <link rel="stylesheet" href="{{ asset('public/assets/back-end/css/google-fonts.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/assets/back-end/css/vendor.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/assets/back-end/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/assets/back-end/vendor/icon-set/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/assets/back-end/css/theme.minc619.css?v=1.0') }}">
-    <link rel="stylesheet" href="{{ asset('public/assets/back-end/css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/assets/back-end/css/toastr.css') }}">
+    <link rel="shortcut icon" href="{{getStorageImages(path: getWebConfig(name: 'company_fav_icon'), type:'backend-logo')}}">
+    <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/css/google-fonts.css') }}">
+    <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/css/vendor.min.css') }}">
+    <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/vendor/icon-set/style.css') }}">
+    <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/css/theme.minc619.css?v=1.0') }}">
+    <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/css/style.css') }}">
+    <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/css/toastr.css') }}">
 </head>
 
 <body>
@@ -28,9 +27,9 @@
     <div class="container py-5 py-sm-7">
         <label class="badge badge-soft-success float-right __inline-2">{{translate('software_version')}}
             : {{ env('SOFTWARE_VERSION') }}</label>
-        @php($e_commerce_logo = getWebConfig(name: 'company_web_logo'))
+        @php($eCommerceLogo = getWebConfig(name: 'company_web_logo'))
         <a class="d-flex justify-content-center mb-5" href="{{ route('home') }}">
-            <img class="z-index-2 onerror-logo" height="40" src="{{ getValidImage(path: "storage/app/public/company/".$e_commerce_logo, type:'backend-logo') }}" alt="Logo">
+            <img class="z-index-2 onerror-logo" height="40" src="{{ getStorageImages(path: $eCommerceLogo, type:'backend-logo') }}" alt="Logo">
         </a>
 
         <div class="row justify-content-center">
@@ -41,8 +40,12 @@
                             @csrf
                             <div class="text-center">
                                 <div class="mb-5">
-                                    <h1 class="display-4">{{translate('sign_in')}}</h1><br>
-                                    <span>( {{ translate($role) }} {{translate('Login')}})</span>
+                                    <h1 class="display-4">{{translate('sign_in')}}</h1>
+                                    <div class="text-center">
+                                        <h1 class="h4 text-gray-900 mb-4">
+                                            {{translate('welcome_back_to')}} {{ translate($role) }} {{translate('Login')}}
+                                        </h1>
+                                    </div>
                                 </div>
                             </div>
 
@@ -96,14 +99,19 @@
                             @else
                                 <div class="row p-2">
                                     <div class="col-6 pr-0">
-                                        <input type="text" class="form-control form-control-lg border-0"
+                                        <input type="text" class="form-control form-control-lg form-control-focus-none"
+                                               id="admin-login-recaptcha-input"
                                                name="default_captcha_value" value="" required
-                                               placeholder="{{translate('enter_captcha_value')}}" autocomplete="off">
+                                               placeholder="{{translate('enter_captcha_value')}}">
                                     </div>
                                     <div class="col-6 input-icons bg-white rounded">
-                                        <a class="get-login-recaptcha-verify" data-link="{{ URL('login/recaptcha/') }}">
+                                        <a class="get-login-recaptcha-verify cursor-pointer get-session-recaptcha-auto-fill"
+                                           data-link="{{ URL('login/recaptcha/') }}"
+                                           data-session="{{ 'adminRecaptchaSessionKey' }}"
+                                           data-input="#admin-login-recaptcha-input"
+                                        >
                                             <img src="{{ URL('login/recaptcha/'.rand().'?captcha_session_id=default_recaptcha_id_'.$role.'_login') }}"
-                                                 class="input-field w-90 h-75" id="default_recaptcha_id" alt="">
+                                                 class="input-field w-90 h-75 p-0 rounded" id="default_recaptcha_id" alt="">
                                             <i class="tio-refresh icon"></i>
                                         </a>
                                     </div>
@@ -137,12 +145,16 @@
 
 <span id="message-please-check-recaptcha" data-text="{{ translate('please_check_the_recaptcha') }}"></span>
 <span id="message-copied_success" data-text="{{ translate('copied_successfully') }}"></span>
+<span id="route-get-session-recaptcha-code"
+      data-route="{{ route('get-session-recaptcha-code') }}"
+      data-mode="{{ env('APP_MODE') }}"
+></span>
 
-<script src="{{asset('public/assets/back-end/js/vendor.min.js')}}"></script>
+<script src="{{dynamicAsset(path: 'public/assets/back-end/js/vendor.min.js')}}"></script>
 
-<script src="{{asset('public/assets/back-end/js/theme.min.js')}}"></script>
-<script src="{{asset('public/assets/back-end/js/toastr.js')}}"></script>
-<script src="{{asset('public/assets/back-end/js/admin/login.js')}}"></script>
+<script src="{{dynamicAsset(path: 'public/assets/back-end/js/theme.min.js')}}"></script>
+<script src="{{dynamicAsset(path: 'public/assets/back-end/js/toastr.js')}}"></script>
+<script src="{{dynamicAsset(path: 'public/assets/back-end/js/admin/login.js')}}"></script>
 {!! Toastr::message() !!}
 
 @if ($errors->any())

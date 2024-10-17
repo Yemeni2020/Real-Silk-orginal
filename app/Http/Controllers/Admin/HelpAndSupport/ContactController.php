@@ -46,10 +46,26 @@ class ContactController extends BaseController
         return view(Contact::LIST[VIEW], compact('contacts'));
     }
 
+    public function getListByFilter(Request $request):JsonResponse
+    {
+        $contacts = $this->contactRepo->getListWhere(
+            orderBy: ['id'=>'desc'],
+            searchValue: $request->get('searchValue'),
+            filters: ['reply' => $request['status']],
+            dataLimit: getWebConfig('pagination_limit')
+        );
+        return response()->json(
+            [
+                'view' => view(Contact::FILTER[VIEW] , compact('contacts'))->render(),
+                'count' => count($contacts),
+            ]
+        );
+    }
+
     public function update(Request $request, $id): RedirectResponse
     {
-        $this->contactRepo->update(id:$id, data: ['feedback'=>$request['feedback'], 'seen'=>1]);
-        Toastr::success(translate('Feedback_Update_successfully'));
+        $this->contactRepo->update(id:$id, data: ['seen'=>1]);
+        Toastr::success(translate('message_checked').'.');
         return redirect()->route('admin.contact.list');
     }
 
@@ -71,12 +87,12 @@ class ContactController extends BaseController
     {
         $dataArray = $contactService->getAddData(request: $request);
         $this->contactRepo->add(data: $dataArray);
-        return response()->json(['success' => 'Your Message Send Successfully']);
+        return response()->json(['success' => 'Your_Message_Send_Successfully']);
     }
 
     public function sendMail(Request $request, $id, ContactService $contactService): RedirectResponse
     {
-        $contact = $this->contactRepo->getFirstWhere(params: ['id'=>$id]);
+        $contact = $this->contactRepo->getFirstWhere(params: ['id' => $id]);
         $data = array('body' => $request['mail_body']);
 
         $emailServices_smtp = getWebConfig(name: 'mail_config');
@@ -87,10 +103,11 @@ class ContactController extends BaseController
         if ($emailServices_smtp['status'] == 1) {
             try {
                 $dataArray = $contactService->getMailData(request: $request, data: $data, contact: $contact, companyName: getWebConfig(name: 'company_name'));
-                $this->contactRepo->update(id:$id, data: $dataArray);
-                Toastr::success(translate('Mail_sent_successfully'));
+                $this->contactRepo->update(id: $id, data: $dataArray);
+                Toastr::success(translate('mail_sent_successfully'));
             } catch (Throwable $th) {
-                Toastr::error(translate('Mail_Sent_Unsuccessful'));
+                Toastr::error(translate('This_Mail_Could_Not_be_Sent') . '.');
+                Toastr::info(translate('please_go_to_3rd_Party') . ' > ' . translate('Mail_Config') . ',' . translate('and_check_if_you’ve_enabled_and_saved_your_settings_properly'));
             }
         } else {
             Toastr::error(translate('Configure_your_mail_setup_first'));

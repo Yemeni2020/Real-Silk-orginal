@@ -34,13 +34,52 @@
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label for="phone2">{{translate('phone')}}</label>
-                                                <input type="text" id="phone" name="phone" class="form-control" value="{{$customerDetail['phone']}}" placeholder="{{translate('ex').':'.'01xxxxxxxxx'}}">
+                                                <div class="position-relative d-flex align-items-center">
+                                                    <input type="text" id="phone" class="form-control profile-phone-with-country-picker" value="{{$customerDetail['phone']}}" placeholder="{{translate('ex').':'.'01xxxxxxxxx'}}" {{ $customerDetail['is_phone_verified'] ? 'disabled' : '' }}>
+                                                    <input type="hidden" name="phone" class="profile-phone-country-picker-hidden" value="{{$customerDetail['phone']}}">
+
+                                                    @if($customerDetail['phone'] && getLoginConfig(key: 'phone_verification'))
+                                                        @if($customerDetail['is_phone_verified'])
+                                                            <span class="position-absolute inset-inline-end-10px cursor-pointer" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ translate('Your_phone_is_verified') }}">
+                                                                <img width="16"
+                                                                     src="{{theme_asset('assets/img/icons/verified.svg')}}"
+                                                                     class="dark-support" alt="">
+                                                            </span>
+                                                        @else
+                                                            <span class="position-absolute inset-inline-end-10px cursor-pointer" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                  title="{{ translate('Phone_not_verified.') }} {{ translate('Please_verify_through_the_user_app') }}">
+                                                                <img width="16"
+                                                                     src="{{ theme_asset('assets/img/icons/verified-error.svg') }}"
+                                                                     class="dark-support" alt="">
+                                                            </span>
+                                                        @endif
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label for="email2">{{translate('email')}}</label>
-                                                <input type="email" id="email2" class="form-control" value="{{$customerDetail['email']}}" disabled>
+                                                <div class="position-relative d-flex align-items-center">
+                                                    <input type="email" id="email2" class="form-control" value="{{$customerDetail['email']}}" name="email">
+
+                                                    @if($customerDetail['email'] && getLoginConfig(key: 'email_verification'))
+                                                        @if($customerDetail['is_email_verified'])
+                                                            <span class="position-absolute inset-inline-end-10px cursor-pointer" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ translate('Your_email_is_verified') }}">
+                                                            <img width="16"
+                                                                 src="{{theme_asset('assets/img/icons/verified.svg')}}"
+                                                                 class="dark-support" alt="">
+                                                            </span>
+                                                        @else
+                                                            <span class="position-absolute inset-inline-end-10px cursor-pointer" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                  title="{{ translate('Email_not_verified.') }} {{ translate('Please_verify_through_the_user_app.') }}">
+                                                            <img width="16"
+                                                                 src="{{theme_asset('assets/img/icons/verified-error.svg')}}"
+                                                                 class="dark-support" alt="">
+                                                            </span>
+                                                        @endif
+                                                    @endif
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -50,6 +89,7 @@
                                                     <input type="password" minlength="6" id="password" class="form-control" name="password" placeholder="{{translate('ex').':'.'7+'.translate('character')}}">
                                                     <i class="bi bi-eye-slash-fill togglePassword"></i>
                                                 </div>
+                                                <span class="text-danger mx-1 password-error"></span>
                                             </div>
                                         </div>
                                         <div class="col-sm-6">
@@ -67,7 +107,7 @@
                                                 <label>{{translate('attachment')}}</label>
                                                 <div class="d-flex flex-column gap-3">
                                                     <div class="upload-file">
-                                                        <input type="file" class="upload-file__input"  name="image" multiple aria-required="true" accept="image/*">
+                                                        <input type="file" class="upload-file__input --size-8-75rem"  name="image" multiple aria-required="true" accept="image/*">
                                                         <div class="upload-file__img">
                                                             <div class="temp-img-box">
                                                                 <div class="d-flex align-items-center flex-column gap-2">
@@ -85,7 +125,7 @@
                                         </div>
                                         <div class="col-12">
                                             <div class="d-flex justify-content-end gap-3">
-                                                <button type="reset" class="btn btn-secondary">{{translate('reset')}}</button>
+                                                <button type="reset" class="btn btn-secondary" id="profile-reset-button">{{translate('reset')}}</button>
                                                 <button type="submit" class="btn btn-primary text-capitalize">{{translate('update_profile')}}</button>
                                             </div>
                                         </div>
@@ -100,5 +140,11 @@
         </div>
     </main>
 @endsection
-
+@push('script')
+    <script>
+        "use strict";
+        initializePhoneInput('.profile-phone-with-country-picker', '.profile-phone-country-picker-hidden');
+    </script>
+    <script src="{{theme_asset('assets/js/password-strength.js')}}"></script>
+@endpush
 

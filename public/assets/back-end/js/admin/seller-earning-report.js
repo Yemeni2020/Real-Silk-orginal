@@ -1,19 +1,4 @@
 "use strict";
-
-// Bar Charts
-Chart.plugins.unregister(ChartDataLabels);
-
-$('.js-chart').each(function () {
-    $.HSCore.components.HSChartJS.init($(this));
-});
-
-var updatingChart = $.HSCore.components.HSChartJS.init($('#updatingData'));
-
-
-$(function () {
-    $('[data-toggle="tooltip"]').tooltip()
-})
-
 $('#from_date,#to_date').change(function () {
     let from_date = $('#from_date').val();
     let to_date = $('#to_date').val();
@@ -64,9 +49,9 @@ var options = {
         type: 'donut',
     },
     labels: [
-        "'" + $('#withdrawable_balance_text').data('text') + "'" + $('#currency_symbol').data('text') + " " + $('#withdrawable_balance_format').data('text') + "'",
-        "'" + $('#pending_withdraw_text').data('text') + "'" + $('#currency_symbol').data('text') + " " + $('#pending_withdraw_format').data('text') + "'",
-        "'" + $('#already_withdrawn_text').data('text') + "'" + $('#currency_symbol').data('text') + " " + $('#already_withdrawn_format').data('text') + "'",
+        $('#withdrawable_balance_text').data('text') + " " + $('#currency_symbol').data('text') + " " + $('#withdrawable_balance_format').data('text') + " ",
+        $('#pending_withdraw_text').data('text') + " " + $('#currency_symbol').data('text') + " " + $('#pending_withdraw_format').data('text') + " ",
+        $('#already_withdrawn_text').data('text') + " " + $('#currency_symbol').data('text') + " " + $('#already_withdrawn_format').data('text') + " ",
     ],
     dataLabels: {
         enabled: false,
@@ -93,5 +78,4 @@ var options = {
 
 var chart = new ApexCharts(document.querySelector("#dognut-pie"), options);
 chart.render();
-
 

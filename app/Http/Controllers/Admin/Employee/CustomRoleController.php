@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin\Employee;
 
 use App\Contracts\Repositories\AdminRepositoryInterface;
 use App\Contracts\Repositories\AdminRoleRepositoryInterface;
+use App\Enums\ExportFileNames\Admin\Employee;
 use App\Enums\ViewPaths\Admin\CustomRole;
+use App\Exports\EmployeeRoleListExport;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\CustomRoleRequest;
 use App\Traits\PaginatorTrait;
@@ -13,8 +15,8 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Rap2hpoutre\FastExcel\FastExcel;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CustomRoleController extends BaseController
 {
@@ -89,15 +91,20 @@ class CustomRoleController extends BaseController
 
     }
 
-
-    public function exportList(Request $request): string|StreamedResponse
+    public function exportList(Request $request): BinaryFileResponse
     {
         $roles = $this->adminRoleRepo->getEmployeeRoleList(
             orderBy: ['id'=>'desc'],
             searchValue: $request['searchValue'],
             filters: ['admin_role_id' => $request['role']],
             dataLimit: 'all');
-        return (new FastExcel($roles))->download('role_list.xlsx');
+
+        return Excel::download(new EmployeeRoleListExport([
+            'roles' => $roles,
+            'searchValue' => $request['searchValue'],
+            'active' => count($roles->where('status',1)),
+            'inActive' => count($roles->where('status',0)),
+        ]), Employee::EMPLOYEE_ROLE_LIST);
     }
 
     public function delete(Request $request): JsonResponse

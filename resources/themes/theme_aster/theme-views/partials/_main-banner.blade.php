@@ -11,21 +11,21 @@
                             <ul class="dropdown-menu dropdown-menu--static bs-dropdown-min-width--auto">
                                 @foreach($categories as $key=>$category)
                                     <li class="{{ $category->childes->count() > 0 ? 'menu-item-has-children' : '' }}">
-                                        <a href="{{route('products',['id'=> $category['id'],'data_from'=>'category','page'=>1])}}">
+                                        <a href="{{route('products',['category_id'=> $category['id'],'data_from'=>'category','page'=>1])}}">
                                             {{$category['name']}}
                                         </a>
                                         @if ($category->childes->count() > 0)
                                             <ul class="sub-menu">
                                                 @foreach($category['childes'] as $subCategory)
                                                     <li class="{{ $subCategory->childes->count()>0 ? 'menu-item-has-children' : '' }}">
-                                                        <a href="{{route('products',['id'=> $subCategory['id'],'data_from'=>'category','page'=>1])}}">
+                                                        <a href="{{route('products',['category_id'=> $subCategory['id'],'data_from'=>'category','page'=>1])}}">
                                                             {{$subCategory['name']}}
                                                         </a>
                                                         @if($subCategory->childes->count()>0)
                                                             <ul class="sub-menu">
                                                                 @foreach($subCategory['childes'] as $subSubCategory)
                                                                     <li>
-                                                                        <a href="{{route('products',['id'=> $subSubCategory['id'],'data_from'=>'category','page'=>1])}}">
+                                                                        <a href="{{route('products',['category_id'=> $subSubCategory['id'],'data_from'=>'category','page'=>1])}}">
                                                                             {{$subSubCategory['name']}}
                                                                         </a>
                                                                     </li>
@@ -58,7 +58,7 @@
                                                 <div class="swiper-slide">
                                                     <a href="{{ $banner['url'] }}" class="h-100">
                                                         <img loading="lazy" alt="" class="dark-support rounded"
-                                                            src="{{ getValidImage(path: 'storage/app/public/banner/'.$banner['photo'], type:'banner') }}">
+                                                            src="{{ getStorageImages(path:$banner['photo_full_url'], type:'banner') }}">
                                                     </a>
                                                 </div>
                                             @endforeach
@@ -74,7 +74,7 @@
                             @foreach($footer_banner as $key=>$banner)
                                 <div class="col-6 d-none d-sm-block">
                                     <a href="{{ $banner['url'] }}" class="ad-hover h-100">
-                                        <img src="{{ getValidImage(path: 'storage/app/public/banner/'.$banner['photo'], type:'banner') }}"
+                                        <img src="{{  getStorageImages(path:$banner['photo_full_url'], type:'banner') }}"
                                              loading="lazy" alt="" class="dark-support rounded w-100 img-fit">
                                     </a>
                                 </div>
@@ -82,14 +82,14 @@
                             @if(count($footer_banner)==0)
                                 <div class="col-6 d-none d-sm-block">
                                     <span class="ad-hover h-100">
-                                        <img src="{{ theme_asset('assets/img/image-place-holder-2_1.png') }}"
+                                        <img src="{{ getStorageImages(path: null, type:'banner') }}"
                                              loading="lazy" alt=""
                                              class="dark-support rounded w-100 img-fit">
                                     </span>
                                 </div>
                                 <div class="col-6 d-none d-sm-block">
                                     <span class="ad-hover h-100">
-                                        <img src="{{ theme_asset('assets/img/image-place-holder-2_1.png') }}"
+                                        <img src="{{ getStorageImages(path: null, type:'banner') }}"
                                              loading="lazy" alt=""
                                              class="dark-support rounded w-100 img-fit">
                                     </span>
@@ -98,7 +98,7 @@
                             @if(count($footer_banner)==1)
                                 <div class="col-6 d-none d-sm-block">
                                     <span class="ad-hover h-100">
-                                        <img src="{{ theme_asset('assets/img/image-place-holder-2_1.png') }}"
+                                        <img src="{{ getStorageImages(path: null, type:'banner') }}"
                                              loading="lazy" alt=""
                                              class="dark-support rounded w-100">
                                     </span>
@@ -124,7 +124,7 @@
                                                         <img src="{{ theme_asset('assets/img/svg/delivery-car.svg') }}"
                                                              alt="" class="svg">
                                                     @else
-                                                        {{ $coupon->discount_type == 'amount' ? Helpers::currency_converter($coupon->discount) : $coupon->discount.'%'}}
+                                                        {{ $coupon->discount_type == 'amount' ? webCurrencyConverter($coupon->discount) : $coupon->discount.'%'}}
                                                         {{translate('off')}}
                                                         <img src="{{ theme_asset('assets/img/svg/dollar.svg') }}" alt=""
                                                              class="svg">
@@ -159,7 +159,7 @@
                             @if($top_side_banner)
                                 <a href="{{ $top_side_banner['url'] }}">
                                     <img alt="" class="dark-support rounded w-100"
-                                        src="{{ getValidImage(path: 'storage/app/public/banner/'.($top_side_banner ? $top_side_banner['photo'] : ''), type:'banner', source: theme_asset('assets/img/top-side-banner-placeholder.png')) }}">
+                                        src="{{ getStorageImages(path: $top_side_banner['photo_full_url'], type:'banner', source: theme_asset('assets/img/top-side-banner-placeholder.png')) }}">
                                 </a>
                             @else
                                 <img src="{{ theme_asset('assets/img/top-side-banner-placeholder.png') }}"

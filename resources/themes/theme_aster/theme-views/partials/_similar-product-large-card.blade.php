@@ -8,7 +8,7 @@
                 -@if ($product->discount_type == 'percent')
                     {{round($product->discount, $web_config['decimal_point_settings'])}}%
                 @elseif($product->discount_type =='flat')
-                    {{Helpers::currency_converter($product->discount)}}
+                    {{webCurrencyConverter($product->discount)}}
                 @endif
             </span>
         @endif
@@ -37,17 +37,10 @@
                id="compare_list-{{$product['id']}}">
                 <i class="bi bi-repeat"></i>
             </a>
-            <a href="javascript:" class="btn-quickview stopPropagation get-quick-view"
-                data-product-id = "{{$product['id']}}"
-                data-action = "{{route('quick-view')}}"
-               title="{{translate('quick_view')}}"
-            >
-                <i class="bi bi-eye"></i>
-            </a>
         </div>
 
         <div class="product__thumbnail align-items-center d-flex h-100 justify-content-center">
-            <img src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$product['thumbnail'], type: 'product') }}"
+            <img src="{{ getStorageImages(path:$product->thumbnail_full_url, type: 'product') }}"
                  loading="lazy" class="dark-support rounded" alt="">
         </div>
         @if(($product['product_type'] == 'physical') && ($product['current_stock'] < 1))
@@ -96,10 +89,10 @@
 
         <div class="product__price d-flex flex-wrap column-gap-2">
             @if($product->discount > 0)
-                <del class="product__old-price">{{Helpers::currency_converter($product->unit_price)}}</del>
+                <del class="product__old-price">{{webCurrencyConverter($product->unit_price)}}</del>
             @endif
             <ins class="product__new-price">
-                {{Helpers::currency_converter($product->unit_price-Helpers::get_product_discount($product,$product->unit_price))}}
+                {{webCurrencyConverter($product->unit_price-Helpers::getProductDiscount($product,$product->unit_price))}}
             </ins>
         </div>
     </div>

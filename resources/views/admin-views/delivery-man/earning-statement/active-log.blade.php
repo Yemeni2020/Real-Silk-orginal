@@ -5,7 +5,7 @@
     <div class="content container-fluid">
         <div class="mb-4 pb-2">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{asset('/public/assets/back-end/img/add-new-seller.png')}}" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/add-new-seller.png')}}" alt="">
                 {{translate('earning_statement')}}
             </h2>
         </div>
@@ -47,7 +47,7 @@
                                     <ul class="dropdown-menu dropdown-menu-right">
                                         <li>
                                             <a type="submit" class="dropdown-item d-flex align-items-center gap-2 " href="{{route('admin.delivery-man.order-history-log-export',['id'=>$deliveryMan->id,'type'=>'log','searchValue'=>request('searchValue')])}}">
-                                                <img width="14" src="{{asset('/public/assets/back-end/img/excel.png')}}" alt="">
+                                                <img width="14" src="{{dynamicAsset(path: 'public/assets/back-end/img/excel.png')}}" alt="">
                                                 {{translate('excel')}}
                                             </a>
                                         </li>
@@ -73,61 +73,52 @@
                                     </thead>
 
                                     <tbody id="set-rows">
-                                    @forelse($orders as $key => $order)
-                                    <tr>
-                                        <td>{{ $orders->firstItem()+$key }}</td>
-                                        <td>
-                                            <div class="media align-items-center gap-10 flex-wrap">
-                                                <a class="title-color" title="{{translate('order_details')}}"
-                                                   href="{{route('admin.orders.details',['id'=>$order['id']])}}">
-                                                    {{ $order->id }}
-                                                </a>
-                                            </div>
-                                        </td>
-                                        <td class="text-center text-capitalize">
-                                            @if($order['order_status']=='pending')
-                                                <span class="badge badge-soft-info fz-12">
-                                                    {{translate($order['order_status'])}}
-                                            </span>
-
-                                            @elseif($order['order_status']=='processing' || $order['order_status']=='out_for_delivery')
-                                                <span class="badge badge-soft-warning fz-12">
-                                                {{translate(str_replace('_',' ',$order['order_status'] == 'processing' ? 'packaging':$order['order_status']))}}
-                                            </span>
-                                            @elseif($order['order_status']=='confirmed')
-                                                <span class="badge badge-soft-success fz-12">
-                                                {{translate($order['order_status'])}}
-                                            </span>
-                                            @elseif($order['order_status']=='failed')
-                                                <span class="badge badge-danger fz-12">
-                                                {{translate('Failed_To_Deliver')}}
-                                            </span>
-                                            @elseif($order['order_status']=='delivered')
-                                                <span class="badge badge-soft-success fz-12">
-                                                {{translate($order['order_status'])}}
-                                            </span>
-                                            @else
-                                                <span class="badge badge-soft-danger fz-12">
-                                                {{translate($order['order_status'])}}
-                                            </span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <div class="media align-items-center gap-10 flex-wrap">
-                                                <button data-id="{{ $order['id'] }}" class="btn btn-info order-status-history"  data-toggle="modal" data-target="#exampleModalLong"><i class="tio-history"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    @empty
+                                    @foreach($orders as $key => $order)
                                         <tr>
-                                            <td colspan="4">
-                                                <div class="text-center p-4">
-                                                    <img class="mb-3 w-160" src="{{ asset('public/assets/back-end/svg/illustrations/sorry.svg') }}" alt="Image Description">
-                                                    <p class="mb-0">{{ translate('no_order_history_found') }}</p>
+                                            <td>{{ $orders->firstItem()+$key }}</td>
+                                            <td>
+                                                <div class="media align-items-center gap-10 flex-wrap">
+                                                    <a class="title-color" title="{{translate('order_details')}}"
+                                                       href="{{route('admin.orders.details',['id'=>$order['id']])}}">
+                                                        {{ $order->id }}
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td class="text-center text-capitalize">
+                                                @if($order['order_status']=='pending')
+                                                    <span class="badge badge-soft-info fz-12">
+                                                        {{translate($order['order_status'])}}
+                                                </span>
+
+                                                @elseif($order['order_status']=='processing' || $order['order_status']=='out_for_delivery')
+                                                    <span class="badge badge-soft-warning fz-12">
+                                                    {{translate(str_replace('_',' ',$order['order_status'] == 'processing' ? 'packaging':$order['order_status']))}}
+                                                </span>
+                                                @elseif($order['order_status']=='confirmed')
+                                                    <span class="badge badge-soft-success fz-12">
+                                                    {{translate($order['order_status'])}}
+                                                </span>
+                                                @elseif($order['order_status']=='failed')
+                                                    <span class="badge badge-danger fz-12">
+                                                    {{translate('Failed_To_Deliver')}}
+                                                </span>
+                                                @elseif($order['order_status']=='delivered')
+                                                    <span class="badge badge-soft-success fz-12">
+                                                    {{translate($order['order_status'])}}
+                                                </span>
+                                                @else
+                                                    <span class="badge badge-soft-danger fz-12">
+                                                    {{translate($order['order_status'])}}
+                                                </span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <div class="media align-items-center gap-10 flex-wrap">
+                                                    <button data-id="{{ $order['id'] }}" class="btn btn-info order-status-history"  data-toggle="modal" data-target="#exampleModalLong"><i class="tio-history"></i></button>
                                                 </div>
                                             </td>
                                         </tr>
-                                    @endforelse
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -137,6 +128,9 @@
                                     {{ $orders->links() }}
                                 </div>
                             </div>
+                            @if(count($orders)==0)
+                                @include('layouts.back-end._empty-state',['text'=>'no_order_found'],['image'=>'default'])
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -154,5 +148,5 @@
 @endsection
 
 @push('script')
-    <script src="{{asset('public/assets/back-end/js/admin/deliveryman.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/admin/deliveryman.js')}}"></script>
 @endpush

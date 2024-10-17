@@ -20,10 +20,10 @@ class UserLoyaltyController extends Controller
         ]);
 
         if ($validator->errors()->count() > 0) {
-            return response()->json(['errors' => Helpers::error_processor($validator)]);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
         }
 
-        $loyalty_point_status = Helpers::get_business_settings('loyalty_point_status');
+        $loyalty_point_status = getWebConfig(name: 'loyalty_point_status');
         if($loyalty_point_status==1)
         {
             $user = $request->user();
@@ -47,8 +47,8 @@ class UserLoyaltyController extends Controller
 
     public function loyalty_exchange_currency(Request $request)
     {
-        $wallet_status = Helpers::get_business_settings('wallet_status');
-        $loyalty_point_status = Helpers::get_business_settings('loyalty_point_status');
+        $wallet_status = getWebConfig(name: 'wallet_status');
+        $loyalty_point_status = getWebConfig(name: 'loyalty_point_status');
 
         if($wallet_status != 1 || $loyalty_point_status !=1)
         {
@@ -62,11 +62,11 @@ class UserLoyaltyController extends Controller
         ]);
 
         if ($validator->errors()->count() > 0) {
-            return response()->json(['errors' => Helpers::error_processor($validator)]);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
         }
 
         $user = $request->user();
-        if($request->point < (int)Helpers::get_business_settings('loyalty_point_minimum_point')
+        if($request->point < (int)getWebConfig(name: 'loyalty_point_minimum_point')
             || $request->point > $user->loyalty_point)
         {
             return response()->json([

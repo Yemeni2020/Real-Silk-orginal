@@ -17,7 +17,7 @@ class SocialLoginService
                     'login_medium' => $service,
                     'client_id' => $request['client_id'],
                     'client_secret' => $request['client_secret'],
-                    'status' => $request['status'] ?? 0,
+                    'status' => 1,
                 ];
                 $credentialArray[] = $cred;
             } else {
@@ -39,7 +39,7 @@ class SocialLoginService
                     'login_medium' => $service,
                     'client_id' => $request['client_id'],
                     'client_secret' => $request['client_secret'],
-                    'status' => $request['status'] ?? 0,
+                    'status' => 1,
                     'team_id' => $request['team_id'],
                     'key_id' => $request['key_id'],
                     'service_file' => $fileName ?? $data['service_file'],

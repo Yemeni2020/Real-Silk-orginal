@@ -26,9 +26,9 @@ class MailConfigServiceProvider extends ServiceProvider
     public function boot()
     {
         try {
-            $emailServices_smtp = Helpers::get_business_settings('mail_config');
+            $emailServices_smtp = getWebConfig(name: 'mail_config');
             if ($emailServices_smtp['status'] == 0) {
-                $emailServices_smtp = Helpers::get_business_settings('mail_config_sendgrid');
+                $emailServices_smtp = getWebConfig(name: 'mail_config_sendgrid');
             }
             if ($emailServices_smtp['status'] == 1) {
                 $config = array(

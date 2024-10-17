@@ -17,7 +17,7 @@ class shippingController extends Controller
     public function get_shipping_type(Request $request)
     {
         $seller = $request->seller;
-        $shippingMethod = Helpers::get_business_settings('shipping_method');
+        $shippingMethod = getWebConfig(name: 'shipping_method');
 
         $seller_shipping = ShippingType::where('seller_id',$seller['id'])->first();
 
@@ -88,7 +88,7 @@ class shippingController extends Controller
         ]);
 
         if ($validator->errors()->count() > 0) {
-            return response()->json(['errors' => Helpers::error_processor($validator)]);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
         }
         if(isset($request->ids))
         {

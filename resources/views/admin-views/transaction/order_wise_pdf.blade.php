@@ -5,9 +5,13 @@
     <meta http-equiv="Content-Type" content="text/html;"/>
     <meta charset="UTF-8">
 
-    <link rel="stylesheet" href="{{asset('public/assets/back-end/css/google-fonts.css')}}">
-    <link rel="stylesheet" href="{{ asset('public/assets/back-end/css/admin/order-transaction.css') }}">
+    <link rel="stylesheet" href="{{dynamicAsset(path: 'public/assets/back-end/css/google-fonts.css')}}">
+    <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/css/admin/order-transaction.css') }}">
 </head>
+
+<?php
+    $companyLogo = getWebConfig(name: 'company_web_logo');
+?>
 
 <body>
 <table class="content-position">
@@ -19,7 +23,7 @@
                         {{translate('order_Transaction_Statement')}}
                     </th>
                     <th class="p-0 text-right">
-                        <img class="logo" src="{{getValidImage(path:'storage/app/public/company/'.$company_web_logo,type:'backend-logo')}}" alt="">
+                        <img class="logo" src="{{ getStorageImages(path: $companyLogo, type: 'backend-logo') }}" alt="">
                     </th>
                 </tr>
             </table>
@@ -89,7 +93,7 @@
                                 <th class="bold black p-0 text-left">{{translate('delivered_By')}} </th>
                                 <td class="p-0 p-3">:
                                     @if($transaction->order->delivery_type =='self_delivery' && !empty($transaction->order->delivery_man_id))
-                                        {{translate('delivery_man')}} {{ isset($transaction->order->delivery_man->seller_id) ? ($transaction->order->delivery_man->seller_id == 0 ? 'admin':'seller') : '' }}
+                                        {{translate('delivery_man')}} {{ isset($transaction->order->deliveryMan->seller_id) ? ($transaction->order->deliveryMan->seller_id == 0 ? 'admin':'seller') : '' }}
                                     @else
                                         {{ $transaction->delivery_type }}
                                     @endif
@@ -173,6 +177,13 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="text-center">6</td>
+                    <td>{{translate('deliveryman_incentive')}}</td>
+                    <td class="text-right">
+                        {{ ($transaction->order->delivery_type=='self_delivery' && $transaction->order->delivery_man_id) ? setCurrencySymbol(amount: usdToDefaultCurrency(amount: $transaction->order->deliveryman_charge), currencyCode: getCurrencyCode()) : setCurrencySymbol(amount: usdToDefaultCurrency(amount: 0), currencyCode: getCurrencyCode()) }}
+                    </td>
+                </tr>
+                <tr>
                     <td class="text-center">7</td>
                     <td>{{translate('order_Amount')}}</td>
                     <td class="text-right">
@@ -229,10 +240,14 @@
             if ($transaction['seller_is'] == 'admin') {
                 $admin_net_income += $transaction['order_amount'] + $transaction['tax'];
             }
-            if (isset($transaction->order->delivery_man) && $transaction->order->delivery_man->seller_id == '0') {
+            if (isset($transaction->order->deliveryMan) && $transaction->order->deliveryMan->seller_id == '0') {
                 $admin_net_income += $transaction['delivery_charge'];
             }
             $admin_net_income += $transaction['admin_commission'];
+
+            if($transaction->order->delivery_type == 'self_delivery' && ($transaction->order->shipping_responsibility == 'inhouse_shipping' || $transaction->order->seller_is == 'admin')){
+                $admin_net_income -= $transaction->order->deliveryman_charge;
+            }
 
             if ($transaction['seller_is'] == 'seller') {
                 if ($transaction->order->shipping_responsibility == 'inhouse_shipping') {
@@ -256,12 +271,16 @@
         <td class="text-right">
             <?php
             $seller_net_income = 0;
-            if (isset($transaction->order->delivery_man) && $transaction->order->delivery_man->seller_id != '0') {
+            if (isset($transaction->order->deliveryMan) && $transaction->order->deliveryMan->seller_id != '0') {
                 $seller_net_income += $transaction['delivery_charge'];
             }
 
             if ($transaction['seller_is'] == 'seller') {
                 $seller_net_income += $transaction['order_amount'] + $transaction['tax'] - $transaction['admin_commission'];
+            }
+
+            if($transaction->order->delivery_type == 'self_delivery' && $transaction->order->shipping_responsibility == 'sellerwise_shipping' && $transaction->order->seller_is == 'seller'){
+                $seller_net_income -= $transaction->order->deliveryman_charge;
             }
 
             if ($transaction['seller_is'] == 'seller') {

@@ -16,7 +16,9 @@
             @foreach($withdrawRequests as $key=>$withdrawRequest)
                 <tr>
                     <td>{{$withdrawRequests->firstitem()+$key}}</td>
-                    <td>{{currencyConverter($withdrawRequest['amount'])}}</td>
+                    <td>
+                        {{ setCurrencySymbol(amount: usdToDefaultCurrency(amount: $withdrawRequest['amount']), currencyCode: getCurrencyCode(type: 'default')) }}
+                    </td>
                     <td>{{date("F jS, Y", strtotime($withdrawRequest->created_at))}}</td>
                     <td>
                         @if($withdrawRequest->approved==0)
@@ -42,15 +44,13 @@
                     </td>
                 </tr>
             @endforeach
-        @else
-            <td colspan="5" class="text-center">
-                <img class="mb-3 w-160" src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}" alt="{{translate('image_description')}}">
-                <p class="mb-0">{{translate('no_data_to_show')}}</p>
-            </td>
         @endif
         </tbody>
     </table>
 </div>
+@if(count($withdrawRequests)==0)
+    @include('layouts.back-end._empty-state',['text'=>'no_withdraw_request_found'],['image'=>'default'])
+@endif
 <div class="table-responsive mt-4">
     <div class="px-4 d-flex justify-content-lg-end">
         {{$withdrawRequests->links()}}

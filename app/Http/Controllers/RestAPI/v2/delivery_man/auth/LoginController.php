@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DeliveryMan;
 use App\Models\PasswordReset;
 use App\Utils\Helpers;
-use App\Utils\SMS_module;
+use App\Utils\SMSModule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -25,7 +25,7 @@ class LoginController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)], 403);
         }
 
         /**
@@ -63,7 +63,7 @@ class LoginController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)], 403);
         }
         /**
          * Delete previous unused reset request
@@ -89,16 +89,25 @@ class LoginController extends Controller
                 'created_at' => now(),
             ]);
 
-            $verification_by = Helpers::get_business_settings('forgot_password_verification');
+            $verification_by = getWebConfig(name: 'forgot_password_verification');
             if ($verification_by == 'email') {
-                $emailServices_smtp = Helpers::get_business_settings('mail_config');
+                $emailServices_smtp = getWebConfig(name: 'mail_config');
 
                 if ($emailServices_smtp['status'] == 0) {
-                    $emailServices_smtp = Helpers::get_business_settings('mail_config_sendgrid');
+                    $emailServices_smtp = getWebConfig(name: 'mail_config_sendgrid');
                 }
                 if ($emailServices_smtp['status'] == 1) {
                     try{
-                        DeliverymanPasswordResetEvent::dispatch($delivery_man['email'], $otp);
+
+                        $data = [
+                            'userType' => 'delivery-man',
+                            'templateName' => 'reset-password-verification',
+                            'deliveryManName' => $delivery_man['f_name'],
+                            'subject' => translate('OTP_Verification_for_password_reset'),
+                            'title' => translate('OTP_Verification'),
+                            'verificationCode' => $otp,
+                        ];
+                        event(new DeliverymanPasswordResetEvent(email: $delivery_man['email'],data: $data));
                     }catch(\Exception $ex)
                     {
                         return response()->json(['message' => translate('email_send_failed')], 403);
@@ -109,20 +118,8 @@ class LoginController extends Controller
 
                 }
             }elseif ($verification_by == 'phone') {
-
                 $phone_number = $delivery_man->country_code ? '+' . $delivery_man->country_code . $delivery_man->phone : $delivery_man->phone;
-
-                $published_status = 0;
-                $payment_published_status = config('get_payment_publish_status');
-                if (isset($payment_published_status[0]['is_published'])) {
-                    $published_status = $payment_published_status[0]['is_published'];
-                }
-
-                if ($published_status == 1) {
-                    SmsGateway::send($phone_number, $otp);
-                } else {
-                    SMS_module::send($phone_number, $otp);
-                }
+                SMSModule::sendCentralizedSMS($phone_number, $otp);
             }
             return response()->json(['message' => translate('OTP_sent_successfully._Please_check_your_email_or_phone')], 200);
         }
@@ -138,7 +135,7 @@ class LoginController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)], 403);
         }
 
         $data = PasswordReset::where(['token' => $request['otp'], 'user_type'=> 'delivery_man'])->first();
@@ -169,7 +166,7 @@ class LoginController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)], 403);
         }
 
         DeliveryMan::where(['phone' => $request['phone']])

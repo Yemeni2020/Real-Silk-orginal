@@ -6,7 +6,7 @@
 <div class="content container-fluid">
     <div class="mb-3">
         <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-            <img width="20" src="{{asset('/public/assets/back-end/img/Pages.png')}}" alt="">
+            <img width="20" src="{{dynamicAsset(path: '/public/assets/back-end/img/Pages.png')}}" alt="">
             {{ translate('pages') }}
         </h2>
     </div>
@@ -25,7 +25,7 @@
                                         <span class="title-color">
                                             {{translate($value->item)}}
                                             <span class="input-label-secondary cursor-pointer" data-toggle="tooltip" data-placement="top" title="{{translate('if_enabled,_the_'.$value->item.'_will_be_available_on_the_system.')}}.">
-                                                <img width="16" src="{{asset('/public/assets/back-end/img/info-circle.svg')}}" alt="">
+                                                <img width="16" src="{{dynamicAsset(path: '/public/assets/back-end/img/info-circle.svg')}}" alt="">
                                             </span>
                                         </span>
                                         <input type="hidden" name="item" value="{{ $value->item }}">
@@ -56,13 +56,20 @@
                                             </span>
 
                                             <div class="img_area_with_preview position-absolute z-index-2">
+                                                @php
+                                                    $imageArray = [
+                                                        'image_name' => $value?->image->image_name ?? $value?->image,
+                                                        'storage' => $value?->image?->storage ?? 'public',
+                                                    ];
+                                                    $imagePath = storageLink('company-reliability',$imageArray['image_name'],$imageArray['storage']);
+                                                @endphp
                                                 <img id="pre_img_header_logo{{$key}}" class="h-auto aspect-ratio-3-15 bg-white" onerror="this.classList.add('d-none')"
-                                                     src="{{asset('storage/app/public/company-reliability').'/'.$value->image}}"
+                                                     src="{{$imagePath['path']}}"
                                                      alt="">
                                             </div>
                                             <div class="position-absolute h-100 top-0 w-100 d-flex align-content-center justify-content-center">
                                                 <div class="d-flex flex-column justify-content-center align-items-center">
-                                                    <img src="{{asset('public/assets/back-end/img/icons/product-upload-icon.svg')}}" class="w-50" alt="">
+                                                    <img src="{{dynamicAsset(path: 'public/assets/back-end/img/icons/product-upload-icon.svg')}}" class="w-50" alt="">
                                                     <h3 class="text-muted text-capitalize">{{ translate('upload_icon') }}</h3>
                                                 </div>
                                             </div>
@@ -83,7 +90,7 @@
 </div>
 @endsection
 @push('script')
-    <script src="{{asset('public/assets/back-end/js/admin/business-setting/features-and-company-reliability-section.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/admin/business-setting/features-and-company-reliability-section.js')}}"></script>
     <script>
         onErrorImage()
     </script>

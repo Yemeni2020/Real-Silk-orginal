@@ -63,8 +63,7 @@ class BannerController extends BaseController
         $shops = $this->shopRepo->getListWithScope(scope:'active', dataLimit: 'all');
         $brands = $this->brandRepo->getListWhere(dataLimit: 'all');
         $products = $this->productRepo->getListWithScope(scope:'active', dataLimit: 'all');
-        $isReactActive = getWebConfig(name: 'react_setup')['status'];
-        return view(Banner::LIST[VIEW],  compact('banners', 'categories','shops', 'brands', 'products', 'isReactActive', 'bannerTypes'));
+        return view(Banner::LIST[VIEW],  compact('banners', 'categories','shops', 'brands', 'products', 'bannerTypes'));
     }
 
     public function add(BannerAddRequest $request): RedirectResponse
@@ -92,7 +91,7 @@ class BannerController extends BaseController
         $data = $this->bannerService->getProcessedData(request: $request, image: $banner['photo']);
         $this->bannerRepo->update(id:$banner['id'], data:$data);
         Toastr::success(translate('banner_updated_successfully'));
-        return back();
+        return redirect()->route(Banner::UPDATE[ROUTE]);
     }
 
     public function updateStatus(Request $request): JsonResponse

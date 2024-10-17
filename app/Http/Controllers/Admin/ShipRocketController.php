@@ -13,7 +13,7 @@ class ShipRocketController extends Controller
 
     public function __construct()
     {
-        $config = Helpers::get_business_settings('shiprocket_credentials');
+        $config = getWebConfig(name: 'shiprocket_credentials');
         $this->loginDetails = Shiprocket::login([
             'email' => isset($config) ? $config['email'] : 'no_email@email.com',
             'password' => isset($config) ? $config['password'] : 'no_password'

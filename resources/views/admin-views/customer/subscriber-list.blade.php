@@ -6,7 +6,7 @@
 <div class="content container-fluid">
     <div class="mb-3">
         <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-            <img src="{{asset('/public/assets/back-end/img/subscribers.png')}}" width="20" alt="">
+            <img src="{{dynamicAsset(path: 'public/assets/back-end/img/subscribers.png')}}" width="20" alt="">
             {{translate('subscriber_list')}}
             <span class="badge badge-soft-dark radius-50 fz-14 ml-1">{{ $subscription_list->total() }}</span>
         </h2>
@@ -27,19 +27,21 @@
                             <button type="submit" class="btn btn--primary">{{ translate('search')}}</button>
                         </div>
                     </form>
-                    <button type="button" class="btn btn-outline--primary text-nowrap" data-toggle="dropdown">
-                        <i class="tio-download-to"></i>
-                        {{ translate('export') }}
-                        <i class="tio-chevron-down"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-right">
-                        <li>
-                            <a class="dropdown-item" href="{{route('admin.customer.subscriber-list.export',['searchValue'=>request('searchValue')])}}">
-                                <img width="14" src="{{asset('/public/assets/back-end/img/excel.png')}}" alt="">
-                                {{ translate('excel') }}
-                            </a>
-                        </li>
-                    </ul>
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-outline--primary text-nowrap" data-toggle="dropdown">
+                            <i class="tio-download-to"></i>
+                            {{ translate('export') }}
+                            <i class="tio-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a class="dropdown-item" href="{{route('admin.customer.subscriber-list.export',['searchValue'=>request('searchValue')])}}">
+                                    <img width="14" src="{{dynamicAsset(path: 'public/assets/back-end/img/excel.png')}}" alt="">
+                                    {{ translate('excel') }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="table-responsive">
@@ -75,10 +77,7 @@
                     </div>
                 </div>
                 @if(count($subscription_list)==0)
-                    <div class="text-center p-4">
-                        <img class="mb-3 w-160" src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}" alt="Image Description">
-                        <p class="mb-0">{{ translate('no_data_to_show')}}</p>
-                    </div>
+                    @include('layouts.back-end._empty-state',['text'=>'no_subscriber_found'],['image'=>'default'])
                 @endif
             </div>
         </div>

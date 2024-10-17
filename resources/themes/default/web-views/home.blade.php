@@ -3,39 +3,36 @@
 @section('title', $web_config['name']->value.' '.translate('online_Shopping').' | '.$web_config['name']->value.' '.translate('ecommerce'))
 
 @push('css_or_js')
-    <meta property="og:image" content="{{asset('storage/app/public/company')}}/{{$web_config['web_logo']->value}}"/>
+    <meta property="og:image" content="{{$web_config['web_logo']['path']}}"/>
     <meta property="og:title" content="Welcome To {{$web_config['name']->value}} Home"/>
     <meta property="og:url" content="{{env('APP_URL')}}">
     <meta property="og:description" content="{{ substr(strip_tags(str_replace('&nbsp;', ' ', $web_config['about']->value)),0,160) }}">
 
-    <meta property="twitter:card" content="{{asset('storage/app/public/company')}}/{{$web_config['web_logo']->value}}"/>
+    <meta property="twitter:card" content="{{$web_config['web_logo']['path']}}"/>
     <meta property="twitter:title" content="Welcome To {{$web_config['name']->value}} Home"/>
     <meta property="twitter:url" content="{{env('APP_URL')}}">
     <meta property="twitter:description" content="{{ substr(strip_tags(str_replace('&nbsp;', ' ', $web_config['about']->value)),0,160) }}">
 
-    <link rel="stylesheet" href="{{asset('public/assets/front-end/css/home.css')}}"/>
-    <link rel="stylesheet" href="{{ asset('public/assets/front-end/css/owl.carousel.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/assets/front-end/css/owl.theme.default.min.css') }}">
+    <link rel="stylesheet" href="{{theme_asset(path: 'public/assets/front-end/css/home.css')}}"/>
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/owl.carousel.min.css') }}">
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/owl.theme.default.min.css') }}">
 @endpush
 
 @section('content')
     <div class="__inline-61">
         @php($decimalPointSettings = !empty(getWebConfig(name: 'decimal_point_settings')) ? getWebConfig(name: 'decimal_point_settings') : 0)
-        <section class="bg-transparent py-3">
-            <div class="container position-relative">
-                @include('web-views.partials._home-top-slider',['main_banner'=>$main_banner])
-            </div>
-        </section>
 
-        @if ($web_config['flash_deals'] && count($web_config['flash_deals']->products) >0 )
+        @include('web-views.partials._home-top-slider',['main_banner'=>$main_banner])
+
+        @if ($flashDeal['flashDeal'] && $flashDeal['flashDealProducts'] && count($flashDeal['flashDealProducts']) > 0)
             @include('web-views.partials._flash-deal', ['decimal_point_settings'=>$decimalPointSettings])
         @endif
 
-        @if ($featured_products->count() > 0 )
+        @if ($featuredProductsList->count() > 0 )
             <div class="container py-4 rtl px-0 px-md-3">
                 <div class="__inline-62 pt-3">
                     <div class="feature-product-title mt-0 web-text-primary">
-                        {{ translate('featured_products')}}
+                        {{ translate('featured_products') }}
                     </div>
                     <div class="text-end px-3 d-none d-md-block">
                         <a class="text-capitalize view-all-text web-text-primary" href="{{route('products',['data_from'=>'featured','page'=>1])}}">
@@ -46,7 +43,7 @@
                     <div class="feature-product">
                         <div class="carousel-wrap p-1">
                             <div class="owl-carousel owl-theme" id="featured_products_list">
-                                @foreach($featured_products as $product)
+                                @foreach($featuredProductsList as $product)
                                     <div>
                                         @include('web-views.partials._feature-product',['product'=>$product, 'decimal_point_settings'=>$decimalPointSettings])
                                     </div>
@@ -67,7 +64,7 @@
         @include('web-views.partials._category-section-home')
 
         @if($web_config['featured_deals'] && (count($web_config['featured_deals'])>0))
-            <section class="featured_deal rtl">
+            <section class="featured_deal">
                 <div class="container">
                     <div class="__featured-deal-wrap bg--light">
                         <div class="d-flex flex-wrap justify-content-between gap-8 mb-3">
@@ -98,39 +95,22 @@
                 <a href="{{$main_section_banner->url}}" target="_blank"
                     class="cursor-pointer d-block">
                     <img class="d-block footer_banner_img __inline-63" alt=""
-                         src="{{ getValidImage(path: 'storage/app/public/banner/'.$main_section_banner['photo'], type: 'wide-banner') }}">
+                         src="{{ getStorageImages(path:$main_section_banner->photo_full_url, type: 'wide-banner') }}">
                 </a>
             </div>
         @endif
 
         @php($businessMode = getWebConfig(name: 'business_mode'))
-        @if ($businessMode == 'multi' && count($top_sellers) > 0)
+        @if ($businessMode == 'multi' && count($topVendorsList) > 0)
             @include('web-views.partials._top-sellers')
         @endif
 
         @include('web-views.partials._deal-of-the-day', ['decimal_point_settings'=>$decimalPointSettings])
 
-        @if ($footer_banner->count() > 0 )
-            @foreach($footer_banner as $key=>$banner)
-            @if ($key == 0)
-                <div class="container rtl d-sm-none">
-                    <div class="row g-3">
-                        <div class="col-md-12">
-                            <a href="{{$banner->url}}" class="d-block" target="_blank">
-                                <img class="footer_banner_img __inline-63" alt=""
-                                     src="{{ getValidImage(path: 'storage/app/public/banner/'.$banner['photo'], type: 'banner') }}">
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            @endif
-            @endforeach
-        @endif
-
         <section class="new-arrival-section">
 
-            <div class="container rtl mt-4">
-                @if ($latest_products->count() >0 )
+            @if ($newArrivalProducts->count() >0 )
+                <div class="container rtl mt-4">
                     <div class="section-header">
                         <div class="arrival-title d-block">
                             <div class="text-capitalize">
@@ -138,21 +118,21 @@
                             </div>
                         </div>
                     </div>
-                @endif
-            </div>
-            <div class="container rtl mb-3 overflow-hidden">
-                <div class="py-2">
-                    <div class="new_arrival_product">
-                        <div class="carousel-wrap">
-                            <div class="owl-carousel owl-theme new-arrivals-product">
-                                @foreach($latest_products as $key=> $product)
-                                    @include('web-views.partials._product-card-2',['product'=>$product,'decimal_point_settings'=>$decimalPointSettings])
-                                @endforeach
+                </div>
+                <div class="container rtl mb-3 overflow-hidden">
+                    <div class="py-2">
+                        <div class="new_arrival_product">
+                            <div class="carousel-wrap">
+                                <div class="owl-carousel owl-theme new-arrivals-product">
+                                    @foreach($newArrivalProducts as $key=> $product)
+                                        @include('web-views.partials._product-card-2',['product'=>$product,'decimal_point_settings'=>$decimalPointSettings])
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            @endif
 
             <div class="container rtl px-0 px-md-3">
                 <div class="row g-3 mx-max-md-0">
@@ -168,31 +148,24 @@
             </div>
         </section>
 
-        @if ($footer_banner->count() > 0 )
-            @foreach($footer_banner as $key=>$banner)
-            @if ($key == 1)
-                <div class="container rtl pt-4 d-sm-none">
-                    <div class="row g-3">
-                        <div class="col-md-12">
-                            <a href="{{$banner->url}}" class="d-block" target="_blank">
-                                <img class="footer_banner_img __inline-63"  alt=""
-                                     src="{{ getValidImage(path: 'storage/app/public/banner/'.$banner['photo'], type: 'banner') }}">
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            @endif
-            @endforeach
-        @endif
 
-        @if ($footer_banner->count() > 0 )
-            <div class="container rtl d-md-block d-none">
-                <div class="row g-3">
+        @if (count($footer_banner) > 1)
+            <div class="container rtl pt-4">
+                <div class="promotional-banner-slider owl-carousel owl-theme">
+                    @foreach($footer_banner as $banner)
+                        <a href="{{ $banner['url'] }}" class="d-block" target="_blank">
+                            <img class="footer_banner_img __inline-63"  alt="" src="{{ getStorageImages(path:$banner->photo_full_url, type: 'banner') }}">
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        @else
+            <div class="container rtl pt-4">
+                <div class="row">
                     @foreach($footer_banner as $banner)
                         <div class="col-md-6">
-                            <a href="{{$banner->url}}" class="d-block" target="_blank">
-                                <img class="footer_banner_img __inline-63"  alt=""
-                                     src="{{ getValidImage(path: 'storage/app/public/banner/'.$banner['photo'], type: 'banner') }}">
+                            <a href="{{ $banner['url'] }}" class="d-block" target="_blank">
+                                <img class="footer_banner_img __inline-63"  alt="" src="{{ getStorageImages(path:$banner->photo_full_url, type: 'banner') }}">
                             </a>
                         </div>
                     @endforeach
@@ -216,13 +189,13 @@
                 </div>
 
                 <div class="mt-sm-3 mb-3 brand-slider">
-                    <div class="owl-carousel owl-theme p-2 brands-slider pb-5 pb-sm-0">
+                    <div class="owl-carousel owl-theme p-2 brands-slider">
                         @foreach($brands as $brand)
                             <div class="text-center">
-                                <a href="{{route('products',['id'=> $brand['id'],'data_from'=>'brand','page'=>1])}}"
+                                <a href="{{route('products',['brand_id'=> $brand['id'],'data_from'=>'brand','page'=>1])}}"
                                    class="__brand-item">
-                                    <img alt="{{ $brand->name }}"
-                                        src="{{ getValidImage(path: "storage/app/public/brand/$brand->image", type: 'brand') }}">
+                                    <img alt="{{ $brand->image_alt_text }}"
+                                        src="{{ getStorageImages(path: $brand->image_full_url, type: 'brand') }}">
                                 </a>
                             </div>
                         @endforeach
@@ -231,8 +204,8 @@
             </section>
         @endif
 
-        @if ($home_categories->count() > 0)
-            @foreach($home_categories as $category)
+        @if ($homeCategories->count() > 0)
+            @foreach($homeCategories as $category)
                 @include('web-views.partials._category-wise-product', ['decimal_point_settings'=>$decimalPointSettings])
             @endforeach
         @endif
@@ -247,7 +220,7 @@
 @endsection
 
 @push('script')
-    <script src="{{asset('public/assets/front-end/js/owl.carousel.min.js')}}"></script>
-    <script src="{{ asset('public/assets/front-end/js/home.js') }}"></script>
+    <script src="{{theme_asset(path: 'public/assets/front-end/js/owl.carousel.min.js')}}"></script>
+    <script src="{{ theme_asset(path: 'public/assets/front-end/js/home.js') }}"></script>
 @endpush
 

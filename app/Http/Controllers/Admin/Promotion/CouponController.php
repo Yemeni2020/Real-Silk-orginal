@@ -119,7 +119,7 @@ class CouponController extends BaseController
         return redirect()->back();
     }
 
-    public function getSellerList(Request $request): JsonResponse
+    public function getVendorList(Request $request): JsonResponse
     {
         $sellers = $this->vendorRepo->getListWhere(filters: ['status'=>'approved'], relations: ['shop'], dataLimit: 'all');
         $output= '<option value="" disabled selected>'. translate('select_vendor') .'</option><option value="0">'.translate('all_vendor').'</option>';

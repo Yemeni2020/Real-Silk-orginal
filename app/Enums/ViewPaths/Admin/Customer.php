@@ -13,6 +13,10 @@ enum Customer
         URI => 'view',
         VIEW => 'admin-views.customer.customer-view'
     ];
+    const ORDER_LIST_EXPORT = [
+        URI => 'order-list-export',
+    ];
+
 
     const UPDATE = [
         URI => 'status-update',
@@ -41,6 +45,10 @@ enum Customer
 
     const SEARCH = [
         URI => 'customer-list-search',
+        VIEW => ''
+    ];
+    const SEARCH_WITHOUT_ALL_CUSTOMER = [
+        URI => 'customer-list-without-all-customer',
         VIEW => ''
     ];
 

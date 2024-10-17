@@ -15,7 +15,7 @@
                             <div class="media flex-wrap gap-3">
                                 <div class="avatar avatar-lg rounded-circle">
                                     <img loading="lazy" class="img-fit rounded-circle dark-support" alt=""
-                                         src="{{ getValidImage(path: 'storage/app/public/profile/'.(customer_info()->image), type:'avatar') }}">
+                                         src="{{ getStorageImages(path: customer_info()->image_full_url, type:'avatar') }}">
                                 </div>
                                 <div class="media-body">
                                     <div class="d-flex flex-column gap-1">
@@ -78,15 +78,12 @@
                                             @if($conversation['customer_message'])
                                                 <p class="message_text">{{ $conversation['customer_message']}}</p>
                                             @endif
-                                            @if ($conversation['attachment'] !=null && count(json_decode($conversation['attachment'])) > 0)
-                                                <div class="d-flex flex-wrap g-2 gap-2 justify-content-end">
-                                                    @foreach (json_decode($conversation['attachment']) as $key => $photo)
-                                                        @if(file_exists(base_path("storage/app/public/support-ticket/".$photo)))
-                                                            <div class="col-sm-6 col-md-3">
-                                                                <img src="{{ getValidImage(path: 'storage/app/public/support-ticket/'.$photo, type:'product') }}"
-                                                                    height="100" class="rounded" alt="img">
-                                                            </div>
-                                                        @endif
+                                            @if (count($conversation->attachment_full_url) > 0)
+                                                <div class="d-flex flex-wrap g-2 gap-2 justify-content-end custom-image-popup-init">
+                                                    @foreach ($conversation->attachment_full_url as $key => $photo)
+                                                        <a class="inbox-image-element custom-image-popup" href="{{ getStorageImages(path: $photo, type:'product') }}">
+                                                            <img src="{{ getStorageImages(path: $photo, type:'product') }}" alt="">
+                                                        </a>
                                                     @endforeach
                                                 </div>
                                             @endif
@@ -99,15 +96,12 @@
                                             @if($conversation['admin_message'])
                                                 <p class="message_text">{{$conversation['admin_message']}}</p>
                                             @endif
-                                            @if ($conversation['attachment'] !=null && count(json_decode($conversation['attachment'])) > 0)
-                                                <div class="d-flex flex-wrap g-2 gap-2 justify-content-start">
-                                                    @foreach (json_decode($conversation['attachment']) as $key => $photo)
-                                                        @if(file_exists(base_path("storage/app/public/support-ticket/".$photo)))
-                                                            <div class="col-sm-6 col-md-3">
-                                                                <img height="100" class="rounded" alt="img"
-                                                                    src="{{ getValidImage(path: 'storage/app/public/support-ticket/'.$photo, type:'product') }}">
-                                                            </div>
-                                                        @endif
+                                            @if (count($conversation->attachment_full_url ) > 0)
+                                                <div class="d-flex flex-wrap g-2 gap-2 justify-content-start custom-image-popup-init">
+                                                    @foreach ($conversation->attachment_full_url as $key => $photo)
+                                                        <a class="inbox-image-element custom-image-popup" href="{{ getStorageImages(path: $photo, type:'product') }}">
+                                                            <img src="{{ getStorageImages(path: $photo, type:'product') }}" alt="">
+                                                        </a>
                                                     @endforeach
                                                 </div>
                                             @endif
@@ -117,20 +111,24 @@
                                     @endif
                                 @endforeach
                             </div>
-                            <div class="type_msg">
-                                <form action="{{route('support-ticket.comment',[$ticket['id']])}}" method="post">
-                                    @csrf
-                                    <div class="input_msg_write border-top py-2 px-2 px-sm-3 d-flex align-items-start justify-content-between gap-2 gap-sm-3 lh-base">
+
+                            @if($ticket->status ==  'open')
+                                <div class="type_msg">
+                                    <form action="{{route('support-ticket.comment',[$ticket['id']])}}" method="post">
+                                        @csrf
+                                        <div class="input_msg_write border-top py-2 px-2 px-sm-3 d-flex align-items-start justify-content-between gap-2 gap-sm-3 lh-base">
 
                                         <textarea class="w-100 custom-height h--5rem" id="msgInputValueTicket"
                                                   name="comment" rows="6"
                                                   placeholder="{{translate('start_typing').'...'}}"></textarea>
-                                        <button class="btn btn-primary px-2 py-1 lh-1 rounded" type="submit">
-                                            <i class="bi bi-send-fill fs-16"></i>
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
+                                            <button class="btn btn-primary px-2 py-1 lh-1 rounded" type="submit">
+                                                <i class="bi bi-send-fill fs-16"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            @endif
+
                         </div>
                     </div>
                 </div>

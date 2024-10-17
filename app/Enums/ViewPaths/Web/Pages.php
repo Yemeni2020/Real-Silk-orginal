@@ -43,4 +43,9 @@ enum Pages
         URI => 'terms-and-condition',
         VIEW => ''
     ];
+
+    const SHIPPING_POLICY = [
+        URI => 'shipping-policy',
+        VIEW => ''
+    ];
 }

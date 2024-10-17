@@ -484,7 +484,7 @@ trait  SmsGateway
             $user = $config['user_name'];
             $password = $config['password'];
             $from = $config['from'];
-            // dd($message, $user, $password, $from);
+
             try {
               $res= Http::get("https://api.smsglobal.com/http-api.php?action=sendsms&user=".$user."&password=".$password."&from=".$from."&to=".$receiver."&text=".$message);
                // $response = 'success';

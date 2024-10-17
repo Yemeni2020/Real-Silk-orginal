@@ -11,7 +11,7 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex gap-2">
-                <img width="20" src="{{asset('/public/assets/back-end/img/deal_of_the_day.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/deal_of_the_day.png')}}" alt="">
                 {{translate('deal_of_the_day')}}
             </h2>
         </div>
@@ -55,7 +55,7 @@
                                         <input type="text" class="product_id" name="product_id" hidden>
                                         <div class="dropdown select-product-search w-100">
                                             <button class="form-control text-start dropdown-toggle text-capitalize select-product-button"
-                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button">
                                                 {{translate('select_product')}}
                                             </button>
                                             <div class="dropdown-menu w-100 px-2">
@@ -182,12 +182,7 @@
                         </div>
                     </div>
                     @if(count($deals)==0)
-                        <div class="text-center p-4">
-                            <img class="mb-3 w-160"
-                                 src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}"
-                                 alt="{{translate('image_description')}}">
-                            <p class="mb-0">{{translate('no_data_to_show')}}</p>
-                        </div>
+                        @include('layouts.back-end._empty-state',['text'=>'no_data_found'],['image'=>'default'])
                     @endif
                 </div>
             </div>
@@ -196,6 +191,6 @@
 @endsection
 
 @push('script')
-    <script src="{{asset('public/assets/back-end/js/search-product.js')}}"></script>
-    <script src="{{asset('public/assets/back-end/js/admin/deal.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/search-product.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/admin/deal.js')}}"></script>
 @endpush

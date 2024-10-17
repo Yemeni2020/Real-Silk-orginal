@@ -39,6 +39,7 @@ class DeliverymanSettingsController extends BaseController
     public function update(Request $request): RedirectResponse
     {
         $this->businessSettingRepo->updateOrInsert(type: 'upload_picture_on_delivery', value: $request->get('upload_picture_on_delivery', 0));
+        clearWebConfigCacheKeys();
         Toastr::success(translate('Updated_successfully'));
         return redirect()->back();
     }

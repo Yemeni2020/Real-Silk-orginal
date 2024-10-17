@@ -75,7 +75,7 @@ class OrderController extends Controller
         ]);
 
         if ($validator->errors()->count() > 0) {
-            return response()->json(['errors' => Helpers::error_processor($validator)]);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
         }
 
         $data = Helpers::get_seller_by_token($request);
@@ -161,7 +161,7 @@ class OrderController extends Controller
         ]);
 
         if ($validator->errors()->count() > 0) {
-            return response()->json(['errors' => Helpers::error_processor($validator)]);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
         }
 
         $order_details = OrderDetail::find($request->order_id);
@@ -192,8 +192,8 @@ class OrderController extends Controller
             return response()->json(['success' => 0, 'message' => translate("Customer account has been deleted. you can't update status!")], 202);
         }
 
-        $wallet_status = Helpers::get_business_settings('wallet_status');
-        $loyalty_point_status = Helpers::get_business_settings('loyalty_point_status');
+        $wallet_status = getWebConfig(name: 'wallet_status');
+        $loyalty_point_status = getWebConfig(name: 'loyalty_point_status');
 
         if($request->order_status=='delivered' && $order->payment_status !='paid'){
 
@@ -281,7 +281,7 @@ class OrderController extends Controller
         ]);
 
         if ($validator->errors()->count() > 0) {
-            return response()->json(['errors' => Helpers::error_processor($validator)]);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
         }
 
         $order = Order::find($request->order_id);
@@ -314,7 +314,7 @@ class OrderController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)], 403);
         }
 
         $order = Order::find($request['order_id']);

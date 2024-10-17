@@ -5,7 +5,7 @@
     <div class="content container-fluid ">
         <div class="mb-4">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img width="20" src="{{asset('/public/assets/back-end/img/order_report.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/order_report.png')}}" alt="">
                 {{translate('transaction_table')}}
                 <span class="badge badge-soft-dark radius-50 fz-12">{{$transactions->total()}}</span>
             </h2>
@@ -130,7 +130,7 @@
                             <td>{{$transactions->firstItem()+$key}}</td>
                             <td>
                                 @if($transaction['seller_is'] == 'admin')
-                                    {{ Helpers::get_business_settings('company_name') }}
+                                    {{ getWebConfig(name: 'company_name') }}
                                 @else
                                     @if (isset($transaction->seller))
                                         {{ $transaction->seller->f_name }} {{ $transaction->seller->l_name }}
@@ -175,11 +175,7 @@
                     </tbody>
                 </table>
                 @if(count($transactions)==0)
-                    <div class="text-center p-4">
-                        <img class="mb-3 w-160" src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}"
-                             alt="Image Description">
-                        <p class="mb-0">{{ translate('no_data_to_show')}}</p>
-                    </div>
+                    @include('layouts.back-end._empty-state',['text'=>'no_data_found'],['image'=>'default'])
                 @endif
             </div>
 

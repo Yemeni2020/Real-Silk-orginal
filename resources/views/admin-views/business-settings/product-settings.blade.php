@@ -6,7 +6,7 @@
     <div class="content container-fluid">
         <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{asset('/public/assets/back-end/img/business-setup.png')}}" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/business-setup.png')}}" alt="">
                 {{translate('business_Setup')}}
             </h2>
             <div class="btn-group">
@@ -19,7 +19,7 @@
                 </div>
                 <div class="dropdown-menu dropdown-menu-right bg-aliceblue border border-color-primary-light p-4 dropdown-w-lg">
                     <div class="d-flex align-items-center gap-2 mb-3">
-                        <img width="20" src="{{asset('/public/assets/back-end/img/note.png')}}" alt="">
+                        <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/note.png')}}" alt="">
                         <h5 class="text-primary mb-0">{{translate('note')}}</h5>
                     </div>
                     <p class="title-color font-weight-medium mb-0">{{ translate('please_click_save_information_button_below_to_save_all_the_changes') }}</p>
@@ -30,7 +30,7 @@
         <div class="card">
             <div class="card-header">
                 <h5 class="mb-0 text-capitalize d-flex gap-2 text-capitalize">
-                    <img width="20" src="{{asset('/public/assets/back-end/img/product_setup.png')}}" alt="">
+                    <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/product_setup.png')}}" alt="">
                     {{translate('product_setup')}}
                 </h5>
             </div>
@@ -47,7 +47,7 @@
                                     <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
                                           data-placement="right" title="{{translate('set_the_stock_limit_for_the_Reorder_level')}}
                                     {{translate ('vendors_can_see_all_products_that_need_to_be_re_stocked_in_a_section_when_they_reach_this_ReOrder_Level')}}">
-                                        <img width="16" src="{{asset('/public/assets/back-end/img/info-circle.svg')}}"
+                                        <img width="16" src="{{dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg')}}"
                                              alt="">
                                     </span>
                                 </div>
@@ -65,7 +65,7 @@
                                               data-placement="right"
                                               title="{{translate('if_enabled_vendors_can_sell_digital_products') }} ({{ translate('software') }}, {{ translate('ebooks') }}, {{ translate('activation_keys') }}, JPG, PNG, etc.) {{ translate('in_their_shops') }}">
                                             <img width="16"
-                                                 src="{{asset('/public/assets/back-end/img/info-circle.svg')}}" alt="">
+                                                 src="{{dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg')}}" alt="">
                                         </span>
                                     </span>
                                     <label class="switcher" for="digital-product">
@@ -93,7 +93,7 @@
                                               data-placement="right"
                                               title="{{translate('if_enabled_customers_can_see_brands_on_the_app_and_website').'.'.translate('they_can_browse_and_search_for_products_from_each_brand_inside_any_shop')}}">
                                             <img width="16"
-                                                 src="{{asset('/public/assets/back-end/img/info-circle.svg')}}" alt="">
+                                                 src="{{dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg')}}" alt="">
                                         </span>
                                     </span>
 

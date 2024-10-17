@@ -17,7 +17,7 @@ class UserWalletController extends Controller
 
     public function index(Request $request)
     {
-        $wallet_status = Helpers::get_business_settings('wallet_status');
+        $wallet_status = getWebConfig(name: 'wallet_status');
         if ($wallet_status == 1) {
             $total_wallet_balance = auth('customer')->user()->wallet_balance;
             $wallet_transactio_list = WalletTransaction::where('user_id', auth('customer')->id())

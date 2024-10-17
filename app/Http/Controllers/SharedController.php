@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Session;
 
 class SharedController extends Controller
 {
-    public function changeLanguage(Request $request):JsonResponse
+    public function changeLanguage(Request $request): JsonResponse
     {
         $direction = 'ltr';
         $language = getWebConfig('language');
@@ -23,6 +23,23 @@ class SharedController extends Controller
         Helpers::language_load();
         session()->put('local', $request['language_code']);
         Session::put('direction', $direction);
-        return response()->json(['message'=> translate('language_change_successfully').'.']);
+        return response()->json(['message' => translate('language_change_successfully') . '.']);
+    }
+
+    public function getSessionRecaptchaCode(Request $request): JsonResponse
+    {
+        if (env('APP_MODE') == 'dev' && session()->has($request['sessionKey'])) {
+            $code = session($request['sessionKey']);
+        }
+        return response()->json(['code' => $code ?? '']);
+    }
+
+    public function storeRecaptchaResponse(Request $request): JsonResponse
+    {
+        $response = $request->get('g_recaptcha_response', null);
+        if ($response) {
+            session()->put('g-recaptcha-response', $response);
+        }
+        return response()->json(['recaptcha' => $response]);
     }
 }

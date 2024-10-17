@@ -7,7 +7,7 @@
         <div class="container">
             <div class="mb-3">
                 <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                    <img width="20" src="{{asset('/public/assets/back-end/img/message.png')}}" alt="">
+                    <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/message.png')}}" alt="">
                     {{translate('message_view')}}
                 </h2>
             </div>
@@ -19,26 +19,16 @@
                                 <i class="tio-user-big"></i>
                                 {{translate('user_details')}}
                             </h5>
-                            <form action="{{route('admin.contact.update',$contact->id)}}" method="post">
+                            <form action="{{route('admin.contact.update',$contact->id)}}" method="post" id="submit-form">
                                 @csrf
-                                <div class="form-group d--none">
-                                    <div class="row">
-                                        <div class="col-md-10">
-                                            <h4>{{translate('feedback')}}</h4>
-                                            <textarea class="form-control" name="feedback" placeholder="{{translate('please_send_a_Feedback')}}">
-                                                {{$contact->feedback}}
-                                            </textarea>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="d-flex justify-content-end">
                                     @if($contact->seen==0)
-                                        <button type="submit" class="btn btn-success">
+                                        <button type="button" class="btn btn-success form-alert" data-id="submit-form" data-message="{{translate('want_check_this_message').'?'}}">
                                             <i class="tio-checkmark-circle"></i> {{translate('check')}}
                                         </button>
                                     @else
                                         <button type="button" class="btn btn-info" disabled>
-                                            <i class="tio-checkmark-circle"></i> {{translate('already_check')}}
+                                            <i class="tio-checkmark-circle text-capitalize"></i> {{translate('already_check')}}
                                         </button>
                                     @endif
                                 </div>
@@ -50,7 +40,7 @@
                                 @if($contact->seen==1)
                                     <label class="badge badge-soft-info mb-0">{{translate('seen')}}</label>
                                 @else
-                                    <label class="badge badge-soft-info mb-0">{{translate('not_Seen_Yet')}}</label>
+                                    <label class="badge badge-soft-info mb-0 text-capitalize">{{translate('not_seen_yet')}}</label>
                                 @endif
                             </div>
                             <table class="table table-user-information table-borderless mb-0">
@@ -111,19 +101,27 @@
                 <div class="col-lg-6">
                     <div class="card">
                         <div class="card-body mt-3 mx-lg-4">
-                            <div class="row " style="text-align: {{Session::get('direction') === "rtl" ? 'right' : 'left'}};">
+                            <div class="row text-start">
                                 <div class="col-12">
-                                    <center>
+                                    <div class="d-flex justify-content-center">
                                         <h3>{{translate('send_Mail')}}</h3>
-                                        <label class="badge-soft-danger px-1">{{translate('configure_your_mail_setup_first')}}.</label>
-                                    </center>
-                                    <form action="{{route('admin.contact.send-mail',$contact->id)}}" method="post">
+                                        <?php
+                                            $emailServices_smtp = getWebConfig(name: 'mail_config');
+                                            if ($emailServices_smtp['status'] == 0) {
+                                                $emailServices_smtp = getWebConfig(name: 'mail_config_sendgrid');
+                                            }
+                                        ?>
+                                        @if($emailServices_smtp['status'] != 1)
+                                            <label class="badge-soft-danger px-1">{{translate('configure_your_mail_setup_first').'.'}}</label>
+                                        @endif
+                                    </div>
+                                    <form action="{{route('admin.contact.send-mail', $contact->id)}}" method="post">
                                         @csrf
                                         <div class="form-group mt-2">
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <label class="title-color">{{translate('subject')}}</label>
-                                                    <input class="form-control" name="subject" required>
+                                                    <input class="form-control" name="subject" required placeholder="{{translate('subject')}}">
                                                 </div>
                                                 <div class="col-md-12 mt-3">
                                                     <label class="title-color">{{translate('mail_Body')}}</label>

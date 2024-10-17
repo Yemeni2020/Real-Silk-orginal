@@ -28,7 +28,7 @@
                             <h5 class="mb-4 text-capitalize">{{ translate('payment_information') }}</h5>
                             <div class="mb-30">
                                 <ul class="option-select-btn flex-wrap gap-3">
-                                    @if(!$cod_not_show && $cash_on_delivery['status'])
+                                    @if($cashOnDeliveryBtnShow && $cash_on_delivery['status'])
                                         <li>
                                             <form action="{{route('checkout-complete')}}" method="get">
                                                 <label>
@@ -43,23 +43,23 @@
                                             </form>
                                         </li>
                                     @endif
+                                    @if(auth('customer')->check() && $wallet_status == 1)
+                                        <li>
+                                            <label class="">
+                                                <button
+                                                    class="payment-method d-flex align-iems-center border-0 gap-3 overflow-hidden"
+                                                    type="submit" data-bs-toggle="modal"
+                                                    data-bs-target="#wallet_submit_button">
+                                                    <img width="30"
+                                                         src="{{ theme_asset('assets/img/icons/wallet.png') }}"
+                                                         class="dark-support" alt="">
+                                                    <span>{{ translate('wallet') }}</span>
+                                                </button>
+                                            </label>
+                                        </li>
+                                    @endif
                                     @if ($digital_payment['status']==1)
-                                        @if(auth('customer')->check() && $wallet_status==1)
-                                            <li>
-                                                <label class="">
-                                                    <button
-                                                        class="payment-method d-flex align-iems-center border-0 gap-3 overflow-hidden"
-                                                        type="submit" data-bs-toggle="modal"
-                                                        data-bs-target="#wallet_submit_button">
-                                                        <img width="30"
-                                                             src="{{ theme_asset('assets/img/icons/wallet.png') }}"
-                                                             class="dark-support" alt="">
-                                                        <span>{{ translate('wallet') }}</span>
-                                                    </button>
-                                                </label>
-                                            </li>
-                                        @endif
-                                        <li class="{{ ((($payment_gateway_published_status == 1 && count($payment_gateways_list) == 0) && (!isset($offline_payment) && !$offline_payment['status']))? 'd-none':'') }}">
+                                        <li class="{{ ((($paymentGatewayPublishedStatus == 1 && count($payment_gateways_list) == 0) && (!isset($offline_payment) && !$offline_payment['status']))? 'd-none':'') }}">
                                             <label id="digital-payment-btn">
                                                 <input type="hidden">
                                                 <span class="payment-method d-flex align-iems-center gap-3">
@@ -92,14 +92,18 @@
                                                         <input type="hidden" name="callback" value="">
                                                     @endif
                                                     <input type="hidden" name="external_redirect_link"
-                                                           value="{{ url('/').'/web-payment' }}">
+                                                           value="{{ route('web-payment-success') }}">
                                                     <label>
                                                         @php($additional_data = $payment_gateway['additional_data'] != null ? json_decode($payment_gateway['additional_data']) : [])
                                                         <button
                                                             class="payment-method border-0 d-flex align-iems-center gap-3 digital-payment-card overflow-hidden"
                                                             type="submit">
-                                                            <img width="100" class="dark-support" alt=""
-                                                                 src="{{ getValidImage(path: 'storage/app/public/payment_modules/gateway_image/'.($additional_data != null ? $additional_data->gateway_image : ''), type:'banner') }}">
+                                                            @if($additional_data != null && isset($additional_data->gateway_image) && file_exists(base_path('storage/app/public/payment_modules/gateway_image/'.$additional_data->gateway_image)))
+                                                                <img width="100" class="dark-support" alt=""
+                                                                     src="{{ getStorageImages(path: null, type:'banner', source: 'storage/app/public/payment_modules/gateway_image/'.($additional_data != null ? $additional_data->gateway_image : '')) }}">
+                                                            @else
+                                                                <h4>{{ ucwords(str_replace('_', ' ', $payment_gateway->key_name)) }}</h4>
+                                                            @endif
                                                         </button>
                                                     </label>
                                                 </form>
@@ -125,70 +129,73 @@
                                         @endif
                                     @endif
                                 </ul>
-                                @if ($digital_payment['status']==1)
-                                    @if(auth('customer')->check() && $wallet_status==1)
-                                        <div class="modal fade" id="wallet_submit_button">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title"
-                                                            id="exampleModalLongTitle">{{ translate('wallet_payment') }}</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
-                                                    </div>
-                                                    @php($customer_balance = auth('customer')->user()->wallet_balance)
-                                                    @php($remain_balance = $customer_balance - $amount)
-                                                    <form action="{{route('checkout-complete-wallet')}}" method="get"
-                                                          class="needs-validation">
-                                                        @csrf
-                                                        <div class="modal-body">
-                                                            <div class="form-row">
-                                                                <div class="form-group col-12">
-                                                                    <label
-                                                                        for="">{{ translate('your_current_balance') }}</label>
-                                                                    <input class="form-control" type="text"
-                                                                           value="{{Helpers::currency_converter($customer_balance)}}"
-                                                                           readonly>
-                                                                </div>
-                                                            </div>
 
-                                                            <div class="form-row">
-                                                                <div class="form-group col-12">
-                                                                    <label
-                                                                        for="">{{ translate('order_amount') }}</label>
-                                                                    <input class="form-control" type="text"
-                                                                           value="{{Helpers::currency_converter($amount)}}"
-                                                                           readonly>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-row">
-                                                                <div class="form-group col-12">
-                                                                    <label
-                                                                        for="">{{ translate('remaining_balance') }}</label>
-                                                                    <input class="form-control" type="text"
-                                                                           value="{{Helpers::currency_converter($remain_balance)}}"
-                                                                           readonly>
-                                                                    @if ($remain_balance<0)
-                                                                        <label
-                                                                            class="__color-crimson">{{ translate('you_do_not_have_sufficient_balance_for_pay_this_order') }}
-                                                                            !!</label>
-                                                                    @endif
-                                                                </div>
-                                                            </div>
-
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button"
-                                                                    class="update_cart_button fs-16 btn btn-secondary"
-                                                                    data-dismiss="modal">{{ translate('close') }}</button>
-                                                            <button type="submit"
-                                                                    class="update_cart_button fs-16 btn btn-primary" {{$remain_balance>0? '':'disabled'}}>{{ translate('submit') }}</button>
-                                                        </div>
-                                                    </form>
+                                @if(auth('customer')->check() && $wallet_status==1)
+                                    <div class="modal fade" id="wallet_submit_button">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title"
+                                                        id="exampleModalLongTitle">{{ translate('wallet_payment') }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
                                                 </div>
+                                                @php($customer_balance = auth('customer')->user()->wallet_balance)
+                                                @php($remain_balance = $customer_balance - $amount)
+                                                <form action="{{route('checkout-complete-wallet')}}" method="get"
+                                                      class="needs-validation">
+                                                    @csrf
+                                                    <div class="modal-body">
+                                                        <div class="form-row mb-3">
+                                                            <div class="form-group col-12">
+                                                                <label
+                                                                    for="">{{ translate('your_current_balance') }}</label>
+                                                                <input class="form-control" type="text"
+                                                                       value="{{webCurrencyConverter($customer_balance)}}"
+                                                                       readonly>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-row mb-3">
+                                                            <div class="form-group col-12">
+                                                                <label
+                                                                    for="">{{ translate('order_amount') }}</label>
+                                                                <input class="form-control" type="text"
+                                                                       value="{{webCurrencyConverter($amount)}}"
+                                                                       readonly>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-row mb-2">
+                                                            <div class="form-group col-12">
+                                                                <label for="">
+                                                                    {{ translate('remaining_balance') }}
+                                                                </label>
+                                                                <input class="form-control" type="text"
+                                                                       value="{{webCurrencyConverter($remain_balance)}}"
+                                                                       readonly>
+                                                                @if ($remain_balance<0)
+                                                                    <label
+                                                                        class="__color-crimson mt-2">{{ translate('you_do_not_have_sufficient_balance_for_pay_this_order') }}
+                                                                        !!</label>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" data-bs-dismiss="modal"
+                                                                class="update_cart_button fs-16 btn btn-secondary"
+                                                                data-dismiss="modal">{{ translate('close') }}</button>
+                                                        <button type="submit"
+                                                                class="update_cart_button fs-16 btn btn-primary" {{$remain_balance>0? '':'disabled'}}>{{ translate('submit') }}</button>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
-                                    @endif
+                                    </div>
+                                @endif
+
+                                @if ($digital_payment['status']==1)
                                     @if(isset($offline_payment) && $offline_payment['status'])
                                         <div class="modal fade" id="offline_payment_submit_button">
                                             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">

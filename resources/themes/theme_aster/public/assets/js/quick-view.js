@@ -9,7 +9,16 @@ $(document).ready(function () {
 
         if (minValue >= valueCurrent) {
             productQty.val(minValue);
-            productQty.parent().find('.quantity__minus').html('<i class="bi bi-trash3-fill text-danger fs-10"></i>')
+
+            try {
+                if (productQty.data('details-page')) {
+                    productQty.parent().find(".quantity__minus").html('<i class="bi bi-dash"></i>');
+                }else{
+                    productQty.parent().find('.quantity__minus').html('<i class="bi bi-trash3-fill text-danger fs-10"></i>')
+                }
+            }catch (e) {
+                productQty.parent().find('.quantity__minus').html('<i class="bi bi-trash3-fill text-danger fs-10"></i>')
+            }
         } else {
             productQty.parent().find('.quantity__minus').html('<i class="bi bi-dash"></i>')
         }

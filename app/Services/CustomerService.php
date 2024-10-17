@@ -18,16 +18,19 @@ class CustomerService
             'l_name' => $request['l_name'],
             'email' => $request['email'],
             'phone' => $request['phone'],
-            'country' => $request['country'],
-            'city' => $request['city'],
-            'zip' => $request['zip_code'],
-            'street_address' =>$request['address'],
+            'country' => $request['country']??null,
+            'city' => $request['city']??null,
+            'zip' => $request['zip_code']??null,
+            'street_address' =>$request['address']??null,
             'password' => bcrypt($request['password'] ?? 'password')
         ];
     }
-    public function deleteImage(object $data): bool
+
+    public function deleteImage(object|null $data): bool
     {
-        if ($data['image']) {$this->delete('profile/'.$data['image']);};
+        if ($data && $data['image']) {
+            $this->delete('profile/' . $data['image']);
+        };
         return true;
     }
 }

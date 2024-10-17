@@ -2,21 +2,25 @@
 
 namespace App\Http\Controllers\Admin\Settings;
 
-use App\Contracts\Repositories\BusinessSettingRepositoryInterface;
-use App\Contracts\Repositories\CurrencyRepositoryInterface;
-use App\Enums\ViewPaths\Admin\BusinessSettings;
-use App\Http\Controllers\BaseController;
-use App\Http\Requests\Admin\BusinessSettingRequest;
-use App\Http\Requests\Admin\LoginSetupRequest;
-use App\Http\Requests\Admin\AnalyticsRequest;
-use App\Services\BusinessSettingService;
-use App\Traits\FileManagerTrait;
-use App\Traits\SettingsTrait;
-use Brian2694\Toastr\Facades\Toastr;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
+use App\Contracts\Repositories\DeliveryManRepositoryInterface;
+use App\Contracts\Repositories\SocialMediaRepositoryInterface;
+use App\Contracts\Repositories\VendorRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Traits\SettingsTrait;
+use App\Traits\FileManagerTrait;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Contracts\View\View;
+use Brian2694\Toastr\Facades\Toastr;
+use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\BaseController;
+use App\Services\BusinessSettingService;
+use App\Http\Requests\Admin\AnalyticsRequest;
+use App\Enums\ViewPaths\Admin\BusinessSettings;
+use App\Http\Requests\Admin\BusinessSettingRequest;
+use App\Contracts\Repositories\CurrencyRepositoryInterface;
+use App\Contracts\Repositories\BusinessSettingRepositoryInterface;
+use Illuminate\Support\Facades\Cache;
 
 class BusinessSettingsController extends BaseController
 {
@@ -29,7 +33,11 @@ class BusinessSettingsController extends BaseController
 
     public function __construct(
         private readonly BusinessSettingRepositoryInterface $businessSettingRepo,
+        private readonly VendorRepositoryInterface          $vendorRepo,
+        private readonly DeliveryManRepositoryInterface     $deliveryManRepo,
         private readonly CurrencyRepositoryInterface        $currencyRepo,
+        private readonly SocialMediaRepositoryInterface     $socialMediaRepo,
+        private readonly BusinessSettingService             $businessSettingService,
     )
     {
     }
@@ -75,16 +83,26 @@ class BusinessSettingsController extends BaseController
             'pagination_limit' => $this->getSettings(object: $web, type: 'pagination_limit')->value ?? '',
             'copyright_text' => $this->getSettings(object: $web, type: 'company_copyright_text')->value ?? '',
             'decimal_point_settings' => $this->getSettings(object: $web, type: 'decimal_point_settings')->value ?? 0,
-            'maintenance_mode' => $this->getSettings(object: $web, type: 'maintenance_mode')->value ?? '',
             'loader_gif' => $this->getSettings(object: $web, type: 'loader_gif')->value ?? '',
             'default_location' => $this->getSettings(object: $web, type: 'default_location')->value ?? '',
+            'maintenance_mode' => $this->getSettings(object: $web, type: 'maintenance_mode')->value ?? 0,
         ];
-
+        $maintenanceSystemSetup = json_decode($this->getSettings(object: $web, type: 'maintenance_system_setup')?->value, true) ?? [];
         $CurrencyList = $this->currencyRepo->getListWhere(dataLimit: 'all');
+
+        $selectedMaintenanceDuration = getWebConfig(name: 'maintenance_duration_setup') ?? [];
+        $maintenanceStartDate = isset($selectedMaintenanceDuration['start_date']) ? Carbon::parse($selectedMaintenanceDuration['start_date']) : null;
+        $maintenanceEndDate = isset($selectedMaintenanceDuration['end_date']) ? Carbon::parse($selectedMaintenanceDuration['end_date']) : null;
+        $selectedMaintenanceMessage = getWebConfig(name: 'maintenance_message_setup') ?? [];
 
         return view(BusinessSettings::INDEX[VIEW], [
             'CurrencyList' => $CurrencyList,
             'businessSetting' => $businessSetting,
+            'maintenanceStartDate' => $maintenanceStartDate,
+            'maintenanceEndDate' => $maintenanceEndDate,
+            'selectedMaintenanceDuration' => $selectedMaintenanceDuration,
+            'maintenanceSystemSetup' => $maintenanceSystemSetup,
+            'selectedMaintenanceMessage' => $selectedMaintenanceMessage,
         ]);
     }
 
@@ -105,10 +123,19 @@ class BusinessSettingsController extends BaseController
         $this->businessSettingRepo->updateOrInsert(type: 'forgot_password_verification', value: $request['forgot_password_verification']);
         $this->businessSettingRepo->updateOrInsert(type: 'decimal_point_settings', value: $request['decimal_point_settings'] ?? 0);
         $this->businessSettingRepo->updateOrInsert(type: 'shop_address', value: $request['shop_address']);
-        $this->businessSettingRepo->updateOrInsert(type: 'system_default_currency', value: $request['currency_id']);
         $this->businessSettingRepo->updateOrInsert(type: 'currency_symbol_position', value: $request['currency_symbol_position']);
         $this->businessSettingRepo->updateOrInsert(type: 'business_mode', value: $request['business_mode']);
         $this->businessSettingRepo->updateOrInsert(type: 'country_code', value: $request['country_code']);
+
+        $this->businessSettingRepo->updateWhere(params: ['type' => 'system_default_currency'], data: ['value' => $request['currency_id']]);
+        $currencyModel = getWebConfig(name: 'currency_model');
+        if ($currencyModel == 'multi_currency') {
+            $default = $this->currencyRepo->getFirstWhere(params: ['id' => $request['currency_id']]);
+            $allCurrencies = $this->currencyRepo->getListWhere(dataLimit: 'all');
+            foreach ($allCurrencies as $data) {
+                $this->currencyRepo->update(id: $data['id'], data: ['exchange_rate' => ($data['exchange_rate'] / $default['exchange_rate'])]);
+            }
+        }
 
         $colors = json_encode(['primary' => $request['primary'], 'secondary' => $request['secondary'], 'primary_light' => $request['primary_light'] ?? '#CFDFFB']);
         $this->businessSettingRepo->updateOrInsert(type: 'colors', value: $colors);
@@ -122,51 +149,157 @@ class BusinessSettingsController extends BaseController
         $appGoogleStore = json_encode(['status' => $request['play_store_download_status'] ?? 0, 'link' => $request['play_store_download_url']]);
         $this->businessSettingRepo->updateOrInsert(type: 'download_app_google_stroe', value: $appGoogleStore);
 
-        $webLogo = $this->businessSettingRepo->getFirstWhere(params: ['type'=>'company_web_logo']);
+        $webLogo = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'company_web_logo']);
         if ($request->has('company_web_logo')) {
-            $webLogoImage = $this->updateFile(dir: 'company/', oldImage: $webLogo['value'], format: 'webp', image: $request->file('company_web_logo'));
-            $this->businessSettingRepo->updateWhere(params: ['type'=>'company_web_logo'], data: ['value' => $webLogoImage]);
+            $webLogoImage = [
+                'image_name' => $this->updateFile(dir: 'company/', oldImage: (is_array($webLogo['value']) ? $webLogo['value']['image_name'] : $webLogo['value']), format: 'webp', image: $request->file('company_web_logo')),
+                'storage' => config('filesystems.disks.default') ?? 'public'
+            ];
+            $this->businessSettingRepo->updateWhere(params: ['type' => 'company_web_logo'], data: ['value' => $webLogoImage]);
         }
 
-        $mobileLogo = $this->businessSettingRepo->getFirstWhere(params: ['type'=>'company_mobile_logo']);
+        $mobileLogo = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'company_mobile_logo']);
         if ($request->has('company_mobile_logo')) {
-            $mobileLogoImage = $this->updateFile(dir: 'company/', oldImage: $mobileLogo['value'], format: 'webp', image: $request->file('company_mobile_logo'));
-            $this->businessSettingRepo->updateWhere(params: ['type'=>'company_mobile_logo'], data: ['value' => $mobileLogoImage]);
+            $mobileLogoImage = [
+                'image_name' => $this->updateFile(dir: 'company/', oldImage: (is_array($mobileLogo['value']) ? $mobileLogo['value']['image_name'] : $mobileLogo['value']), format: 'webp', image: $request->file('company_mobile_logo')),
+                'storage' => config('filesystems.disks.default') ?? 'public'
+            ];
+            $this->businessSettingRepo->updateWhere(params: ['type' => 'company_mobile_logo'], data: ['value' => $mobileLogoImage]);
         }
 
-        $webFooterLogo = $this->businessSettingRepo->getFirstWhere(params: ['type'=>'company_footer_logo']);
+        $webFooterLogo = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'company_footer_logo']);
         if ($request->has('company_footer_logo')) {
-            $webFooterLogoImage = $this->updateFile(dir: 'company/', oldImage: $webFooterLogo['value'], format: 'webp', image: $request->file('company_footer_logo'));
-            $this->businessSettingRepo->updateWhere(params: ['type'=>'company_footer_logo'], data: ['value' => $webFooterLogoImage]);
+            $webFooterLogoImage = [
+                'image_name' => $this->updateFile(dir: 'company/', oldImage: (is_array($webFooterLogo['value']) ? $webFooterLogo['value']['image_name'] : $webFooterLogo['value']), format: 'webp', image: $request->file('company_footer_logo')),
+                'storage' => config('filesystems.disks.default') ?? 'public'
+            ];
+            $this->businessSettingRepo->updateWhere(params: ['type' => 'company_footer_logo'], data: ['value' => $webFooterLogoImage]);
         }
 
-        $favIcon = $this->businessSettingRepo->getFirstWhere(params: ['type'=>'company_fav_icon']);
+        $favIcon = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'company_fav_icon']);
         if ($request->has('company_fav_icon')) {
-            $favIconImage = $this->updateFile(dir: 'company/', oldImage: $favIcon['value'], format: 'webp', image: $request->file('company_fav_icon'));
-            $this->businessSettingRepo->updateWhere(params: ['type'=>'company_fav_icon'], data: ['value' => $favIconImage]);
+            $favIconImage = [
+                'image_name' => $this->updateFile(dir: 'company/', oldImage: (is_array($favIcon['value']) ? $favIcon['value']['image_name'] : $favIcon['value']), format: 'webp', image: $request->file('company_fav_icon')),
+                'storage' => config('filesystems.disks.default') ?? 'public'
+            ];
+            $this->businessSettingRepo->updateWhere(params: ['type' => 'company_fav_icon'], data: ['value' => $favIconImage]);
         }
 
-        $loaderGif = $this->businessSettingRepo->getFirstWhere(params: ['type'=>'loader_gif']);
+        $loaderGif = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'loader_gif']);
         if ($request->has('loader_gif')) {
-            $loaderGifImage = $loaderGif ? $this->updateFile(dir: 'company/', oldImage: $loaderGif['value'], format: 'webp', image: $request->file('loader_gif'))
-            : $this->upload(dir: 'company/', format: 'webp', image: $request->file('loader_gif'));
-            $this->businessSettingRepo->updateOrInsert(type: 'loader_gif', value: $loaderGifImage);
+            $loaderGifImage = $loaderGif ? $this->updateFile(dir: 'company/', oldImage: (is_array($loaderGif['value']) ? $loaderGif['value']['image_name'] : $loaderGif['value']), format: 'webp', image: $request->file('loader_gif'))
+                : $this->upload(dir: 'company/', format: 'webp', image: $request->file('loader_gif'));
+
+            $loaderGifImageArray = [
+                'image_name' => $loaderGifImage,
+                'storage' => config('filesystems.disks.default') ?? 'public'
+            ];
+            $this->businessSettingRepo->updateOrInsert(type: 'loader_gif', value: json_encode($loaderGifImageArray));
         }
 
-        $language = $this->businessSettingRepo->getFirstWhere(params: ['type'=>'language']);
+        $language = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'language']);
         $languageArray = $businessSettingService->getLanguageData(request: $request, language: $language);
-        $this->businessSettingRepo->updateWhere(params: ['type'=>'language'],data: ['value' => $languageArray]);
+        $this->businessSettingRepo->updateWhere(params: ['type' => 'language'], data: ['value' => $languageArray]);
         $this->businessSettingRepo->updateOrInsert(type: 'pagination_limit', value: $request['pagination_limit']);
+        session()->forget('usd');
+        session()->forget('default');
+        session()->forget('system_default_currency_info');
+        session()->forget('currency_code');
+        session()->forget('currency_symbol');
+        session()->forget('currency_exchange_rate');
         Toastr::success(translate('updated_successfully'));
         return back();
     }
 
-    public function updateSystemMode(Request $request): JsonResponse
+    public function updateSystemMode(Request $request): RedirectResponse|JsonResponse
     {
-        $this->businessSettingRepo->updateOrInsert(type:'maintenance_mode', value: $request->get('value', 0));
-        return response()->json([
-            'message' => $request->has('value') && $request['value'] ? translate('Maintenance_is_on') : translate('Maintenance_is_off')
-        ]);
+        if (env('APP_MODE') == 'demo') {
+            if ($request->ajax()) {
+                return response()->json([
+                    'message' => translate('you_can_not_update_this_on_demo_mode'), 401
+                ]);
+            } else {
+                Toastr::error(translate('you_can_not_update_this_on_demo_mode'));
+                return back();
+            }
+        }
+
+        $selectedSystems = [];
+        $totalSelectedSystems = 0;
+        $systemPlatforms = ['user_app', 'user_website', 'vendor_app', 'deliveryman_app', 'vendor_panel'];
+        foreach ($systemPlatforms as $system) {
+            $selectedSystems[$system] = $request->get($system, 0);
+            $totalSelectedSystems = $request->get($system, 0) + $totalSelectedSystems;
+        }
+
+        if ($totalSelectedSystems == 0 && $request->get('maintenance_mode', 0) == 1) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'message' => translate('Please_select_minimum_one_system'),
+                    'status' => 'error'
+                ]);
+            } else {
+                Toastr::error(translate('Please_select_minimum_one_system'));
+                return back();
+            }
+        }
+
+        $maintenanceDuration = [
+            'maintenance_duration' => $request['maintenance_duration'],
+            'start_date' => $request['start_date'] ?? null,
+            'end_date' => $request['end_date'] ?? null,
+        ];
+        $maintenanceMessageSetup = [
+            'business_number' => $request->has('business_number') ? 1 : 0,
+            'business_email' => $request->has('business_email') ? 1 : 0,
+            'maintenance_message' => $request['maintenance_message'],
+            'message_body' => $request['message_body']
+        ];
+
+        $maintenanceModeStatus = $request->get('maintenance_mode', 0);
+        $this->businessSettingRepo->updateOrInsert(type: 'maintenance_system_setup', value: json_encode($selectedSystems));
+        $this->businessSettingRepo->updateOrInsert(type: 'maintenance_mode', value: $maintenanceModeStatus);
+        $this->businessSettingRepo->updateOrInsert(type: 'maintenance_duration_setup', value: json_encode($maintenanceDuration));
+        $this->businessSettingRepo->updateOrInsert(type: 'maintenance_message_setup', value: json_encode($maintenanceMessageSetup));
+        clearWebConfigCacheKeys();
+
+        $businessMode = getWebConfig(name: 'business_mode');
+        if ($maintenanceModeStatus == 1) {
+            $maintenanceArray = [
+                'status' => $maintenanceModeStatus,
+                'start_date' => $request->input('start_date', null),
+                'end_date' => $request->input('end_date', null),
+                'selectedSystems' => $selectedSystems,
+                'maintenance_duration' => $maintenanceDuration,
+                'maintenance_message' => $maintenanceMessageSetup,
+            ];
+
+            Cache::put('system_maintenance_mode', $maintenanceArray, now()->addYears(1));
+        } else {
+            Cache::forget('system_maintenance_mode');
+        }
+
+        if ($selectedSystems['user_app']) {
+            $this->businessSettingService->sendMaintenanceModeNotification(status: $maintenanceModeStatus ? 'on' : 'off', topic: 'maintenance_mode_start_user_app');
+        }
+
+        if ($businessMode == 'multi' && $selectedSystems['vendor_app']) {
+            $this->businessSettingService->sendMaintenanceModeNotification(status: $maintenanceModeStatus ? 'on' : 'off', topic: 'maintenance_mode_start_vendor');
+        }
+
+        if ($selectedSystems['deliveryman_app']) {
+            $this->businessSettingService->sendMaintenanceModeNotification(status: $maintenanceModeStatus ? 'on' : 'off', topic: 'maintenance_mode_start_deliveryman');
+        }
+
+        if ($request->ajax()) {
+            return response()->json([
+                'message' => $maintenanceModeStatus ? translate('Maintenance_is_on') : translate('Maintenance_is_off'),
+                'status' => 'success'
+            ]);
+        } else {
+            Toastr::success($maintenanceModeStatus ? translate('Maintenance_is_on') : translate('Maintenance_is_off'));
+            return back();
+        }
     }
 
     public function getAppSettingsView(): View
@@ -206,31 +339,8 @@ class BusinessSettingsController extends BaseController
             'status' => $request->get('status', 0),
             'cookie_text' => $request['cookie_text'],
         ]));
-
         Toastr::success(translate('cookie_settings_updated_successfully'));
         return redirect()->back();
-    }
-
-    public function getOtpSetupView(): View
-    {
-        $maximumOtpHit = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'maximum_otp_hit'])->value ?? 0;
-        $otpResendTime = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'otp_resend_time'])->value ?? 0;
-        $temporaryBlockTime = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'temporary_block_time'])->value ?? 0;
-        $maximumLoginHit = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'maximum_login_hit'])->value ?? 0;
-        $temporaryLoginBlockTime = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'temporary_login_block_time'])->value ?? 0;
-        return view(BusinessSettings::OTP_SETUP[VIEW], compact('maximumOtpHit', 'otpResendTime',
-            'temporaryBlockTime', 'maximumLoginHit', 'temporaryLoginBlockTime'));
-    }
-
-    public function updateOtpSetup(Request $request): RedirectResponse
-    {
-        $this->businessSettingRepo->updateOrInsert(type: 'maximum_otp_hit', value: $request['maximum_otp_hit']);
-        $this->businessSettingRepo->updateOrInsert(type: 'otp_resend_time', value: $request['otp_resend_time']);
-        $this->businessSettingRepo->updateOrInsert(type: 'temporary_block_time', value: $request['temporary_block_time']);
-        $this->businessSettingRepo->updateOrInsert(type: 'maximum_login_hit', value: $request['maximum_login_hit']);
-        $this->businessSettingRepo->updateOrInsert(type: 'temporary_login_block_time', value: $request['temporary_login_block_time']);
-        Toastr::success(translate('Settings_updated'));
-        return back();
     }
 
     public function getAnalyticsView(): View
@@ -238,48 +348,24 @@ class BusinessSettingsController extends BaseController
         return view(BusinessSettings::ANALYTICS_INDEX[VIEW]);
     }
 
-    public function updateAnalytics(AnalyticsRequest $request): RedirectResponse
+    public function updateAnalytics(Request $request): RedirectResponse
     {
         if ($request['type'] == 'pixel_analytics') {
-            $this->businessSettingRepo->updateOrInsert(type: 'pixel_analytics', value: $request['value']);
+            $this->businessSettingRepo->updateOrInsert(type: 'pixel_analytics', value: $request['value'] ?? '');
         }
 
         if ($request['type'] == 'google_tag_manager_id') {
-            $this->businessSettingRepo->updateOrInsert(type: 'google_tag_manager_id', value: $request['value']);
+            $this->businessSettingRepo->updateOrInsert(type: 'google_tag_manager_id', value: $request['value'] ?? '');
         }
         Toastr::success(translate('Data_updated'));
         return back();
     }
 
-    public function getLoginSetupView(): View
-    {
-        return view(BusinessSettings::LOGIN_URL_SETUP[VIEW]);
-    }
-
-    public function updateLoginSetupView(LoginSetupRequest $request): RedirectResponse
-    {
-        $currentUrl = strtolower($request->url);
-
-        if ($request['type'] == 'admin_login_url' || $request->type == 'employee_login_url') {
-            $anotherType = ($request['type'] == 'admin_login_url') ? 'employee_login_url' : 'admin_login_url';
-            $anotherLoginUrl = $this->businessSettingRepo->getFirstWhere(['type' => $anotherType])->value ?? '';
-
-            if ($anotherLoginUrl != $currentUrl) {
-                $this->businessSettingRepo->updateOrInsert(type: $request['type'], value: $currentUrl);
-                Toastr::success(translate('Updated_successfully'));
-            } else {
-                Toastr::error(translate('admin_and_employee_URL_cannot_be_same'));
-            }
-        }
-
-        return back();
-    }
-
     public function getProductSettingsView(): View
     {
-        $digitalProduct = $this->businessSettingRepo->getFirstWhere(params: ['type'=>'digital_product']);
-        $brand = $this->businessSettingRepo->getFirstWhere(params: ['type'=>'product_brand']);
-        $stockLimit = $this->businessSettingRepo->getFirstWhere(params: ['type'=>'stock_limit']);
+        $digitalProduct = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'digital_product']);
+        $brand = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'product_brand']);
+        $stockLimit = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'stock_limit']);
         return view(BusinessSettings::PRODUCT_SETTINGS[VIEW], compact('digitalProduct', 'brand', 'stockLimit'));
     }
 
@@ -288,6 +374,7 @@ class BusinessSettingsController extends BaseController
         $this->businessSettingRepo->updateOrInsert(type: 'stock_limit', value: $request->get('stock_limit', 0));
         $this->businessSettingRepo->updateOrInsert(type: 'product_brand', value: $request->get('product_brand', 0));
         $this->businessSettingRepo->updateOrInsert(type: 'digital_product', value: $request->get('digital_product', 0));
+        clearWebConfigCacheKeys();
         Toastr::success(translate('updated_successfully'));
         return back();
     }
@@ -300,8 +387,8 @@ class BusinessSettingsController extends BaseController
 
     public function updateAnnouncement(Request $request): RedirectResponse
     {
-        $value = json_encode(['status' => $request['announcement_status'],'color' => $request['announcement_color'],
-                'text_color' => $request['text_color'],'announcement' => $request['announcement'],]);
+        $value = json_encode(['status' => $request['announcement_status'], 'color' => $request['announcement_color'],
+            'text_color' => $request['text_color'], 'announcement' => $request['announcement'],]);
         $this->businessSettingRepo->updateOrInsert(type: 'announcement', value: $value);
         Toastr::success(translate('announcement_updated_successfully'));
         return back();

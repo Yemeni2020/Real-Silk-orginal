@@ -33,12 +33,12 @@ class ChattingController extends BaseController
      * @param CustomerRepositoryInterface $customerRepo
      */
     public function __construct(
-        private readonly ChattingRepositoryInterface $chattingRepo,
-        private readonly ShopRepositoryInterface $shopRepo,
-        private readonly ChattingService $chattingService,
-        private readonly VendorRepositoryInterface $vendorRepo,
+        private readonly ChattingRepositoryInterface    $chattingRepo,
+        private readonly ShopRepositoryInterface        $shopRepo,
+        private readonly ChattingService                $chattingService,
+        private readonly VendorRepositoryInterface      $vendorRepo,
         private readonly DeliveryManRepositoryInterface $deliveryManRepo,
-        private readonly CustomerRepositoryInterface $customerRepo,
+        private readonly CustomerRepositoryInterface    $customerRepo,
     )
     {
     }
@@ -51,111 +51,127 @@ class ChattingController extends BaseController
      */
     public function index(?Request $request, string|array $type = null): View|Collection|LengthAwarePaginator|null|callable|RedirectResponse
     {
-
-        return $this->getListView(type:$type);
+        return $this->getListView(type: $type);
     }
 
     /**
      * @param string|array $type
      * @return View
      */
-    public function getListView(string|array $type):View
+    public function getListView(string|array $type): View
     {
         $shop = $this->shopRepo->getFirstWhere(params: ['seller_id' => auth('seller')->id()]);
         $vendorId = auth('seller')->id();
         if ($type == 'delivery-man') {
-            $lastChat = $this->chattingRepo->getFirstWhereNotNull(
-                params: ['seller_id' =>$vendorId],
-                filters: ['delivery_man_id', 'seller_id'],
-                orderBy: ['created_at' => 'DESC']
-            );
-            if (isset($lastChat)) {
+            $allChattingUsers = $this->chattingRepo->getListWhereNotNull(
+                orderBy: ['created_at' => 'DESC'],
+                filters: ['seller_id' => $vendorId],
+                whereNotNull: ['delivery_man_id', 'seller_id'],
+                relations: ['deliveryMan'],
+                dataLimit: 'all'
+            )->unique('delivery_man_id');
+
+            if (count($allChattingUsers) > 0) {
+                $lastChatUser = $allChattingUsers[0]->deliveryMan;
                 $this->chattingRepo->updateAllWhere(
-                    params: ['seller_id' => $vendorId, 'delivery_man_id' => $lastChat['delivery_man_id']],
+                    params: ['seller_id' => $vendorId, 'delivery_man_id' => $lastChatUser['id']],
                     data: ['seen_by_seller' => 1]
                 );
-                $chattings = $this->getChatList(
-                    tableName: 'delivery_men',
-                    orderBy : 'desc',
-                    id: $lastChat['delivery_man_id'],
+
+                $chattingMessages = $this->chattingRepo->getListWhereNotNull(
+                    orderBy: ['created_at' => 'DESC'],
+                    filters: ['seller_id' => $vendorId, 'delivery_man_id' => $lastChatUser->id],
+                    whereNotNull: ['delivery_man_id', 'seller_id'],
+                    relations: ['deliveryMan'],
+                    dataLimit: 'all'
                 );
-                $chattingUser = $this->getChatList(
-                    tableName: 'delivery_men',
-                    orderBy : 'desc',
-                )->unique('delivery_man_id');
-                return view(Chatting::INDEX[VIEW], compact('chattings', 'chattingUser', 'lastChat', 'shop'));
+
+                return view(Chatting::INDEX[VIEW], [
+                    'userType' => $type,
+                    'allChattingUsers' => $allChattingUsers,
+                    'lastChatUser' => $lastChatUser,
+                    'chattingMessages' => $chattingMessages,
+                ]);
             }
         } elseif ($type == 'customer') {
-            $lastChat = $this->chattingRepo->getFirstWhereNotNull(
-                params: ['seller_id' =>$vendorId],
-                filters: ['user_id', 'seller_id'],
-                orderBy: ['created_at' => 'DESC']
-            );
-            if (isset($lastChat)) {
-                $this->chattingRepo->updateAllWhere(
-                    params: ['seller_id' => $vendorId, 'user_id' => $lastChat['user_id']],
-                    data: ['seen_by_seller' => 1]);
+            $allChattingUsers = $this->chattingRepo->getListWhereNotNull(
+                orderBy: ['created_at' => 'DESC'],
+                filters: ['seller_id' => $vendorId],
+                whereNotNull: ['user_id', 'seller_id'],
+                relations: ['customer'],
+                dataLimit: 'all'
+            )->unique('user_id');
 
-                $chattings = $this->getChatList(
-                    tableName: 'users',
-                    orderBy : 'desc',
-                    id: $lastChat['user_id'],
+            if (count($allChattingUsers) > 0) {
+                $lastChatUser = $allChattingUsers[0]->customer;
+                $this->chattingRepo->updateAllWhere(
+                    params: ['seller_id' => $vendorId, 'user_id' => $lastChatUser['id']],
+                    data: ['seen_by_seller' => 1]
                 );
-                $chattingUser = $this->getChatList(
-                    tableName: 'users',
-                    orderBy : 'desc',
-                )->unique('user_id');
-                return view(Chatting::INDEX[VIEW], compact('chattings', 'chattingUser', 'lastChat', 'shop'));
+
+                $chattingMessages = $this->chattingRepo->getListWhereNotNull(
+                    orderBy: ['created_at' => 'DESC'],
+                    filters: ['seller_id' => $vendorId, 'user_id' => $lastChatUser->id],
+                    whereNotNull: ['user_id', 'seller_id'],
+                    relations: ['customer'],
+                    dataLimit: 'all'
+                );
+                return view(Chatting::INDEX[VIEW], [
+                    'userType' => $type,
+                    'allChattingUsers' => $allChattingUsers,
+                    'lastChatUser' => $lastChatUser,
+                    'chattingMessages' => $chattingMessages,
+                ]);
             }
         }
-        return view(Chatting::INDEX[VIEW], compact( 'shop'));
+        return view(Chatting::INDEX[VIEW], compact('shop'));
     }
 
     /**
      * @param Request $request
      * @return JsonResponse
      */
-    public function getMessageByUser(Request $request):JsonResponse
+    public function getMessageByUser(Request $request): JsonResponse
     {
         $vendorId = auth('seller')->id();
+        $data = [];
         if ($request->has(key: 'delivery_man_id')) {
+            $getUser = $this->deliveryManRepo->getFirstWhere(params: ['id' => $request['delivery_man_id']]);
             $this->chattingRepo->updateAllWhere(
                 params: ['seller_id' => $vendorId, 'delivery_man_id' => $request['delivery_man_id']],
                 data: ['seen_by_seller' => 1]);
-            $chattings = $this->getChatList(
-                tableName: 'delivery_men',
-                orderBy : 'asc',
-                id: $request['delivery_man_id'],
-                );
+
+            $chattingMessages = $this->chattingRepo->getListWhereNotNull(
+                orderBy: ['created_at' => 'DESC'],
+                filters: ['seller_id' => $vendorId, 'delivery_man_id' => $request['delivery_man_id']],
+                whereNotNull: ['delivery_man_id', 'seller_id'],
+                dataLimit: 'all'
+            );
+            $data = self::getRenderMessagesView(user: $getUser, message: $chattingMessages, type: 'delivery_man');
         } elseif ($request->has(key: 'user_id')) {
+            $getUser = $this->customerRepo->getFirstWhere(params: ['id' => $request['user_id']]);
             $this->chattingRepo->updateAllWhere(
                 params: ['seller_id' => $vendorId, 'user_id' => $request['user_id']],
                 data: ['seen_by_seller' => 1]
             );
-            $chattings = $this->getChatList(
-                tableName: 'users',
-                orderBy : 'asc',
-                id: $request['user_id'],
+            $chattingMessages = $this->chattingRepo->getListWhereNotNull(
+                orderBy: ['created_at' => 'DESC'],
+                filters: ['seller_id' => $vendorId, 'user_id' => $request['user_id']],
+                whereNotNull: ['user_id', 'seller_id'],
+                dataLimit: 'all'
             );
+            $data = self::getRenderMessagesView(user: $getUser, message: $chattingMessages, type: 'customer');
         }
-        foreach ($chattings as $chatting) {
-            $imageNewData = [];
-            foreach (json_decode($chatting['attachment']) as $data) {
-                $imageNewData[] = getValidImage(path: 'storage/app/public/chatting/' . $data, type: 'backend-basic');
-            }
-            $chatting['attachment'] = json_encode($imageNewData);
-        }
-        return response()->json($chattings);
+        return response()->json($data);
     }
 
     /**
      * @param ChattingRequest $request
      * @return JsonResponse
      */
-    public function addVendorMessage(ChattingRequest $request):JsonResponse
+    public function addVendorMessage(ChattingRequest $request): JsonResponse
     {
-        $message = $request['message'];
-        $time = now();
+        $data = [];
         $vendor = $this->vendorRepo->getFirstWhere(params: ['id' => auth('seller')->id()]);
         $shop = $this->shopRepo->getFirstWhere(params: ['seller_id' => auth('seller')->id()]);
         $attachment = $this->chattingService->getAttachment($request);
@@ -167,8 +183,16 @@ class ChattingController extends BaseController
                     vendorId: $vendor['id']
                 )
             );
-            $deliveryMan = $this->deliveryManRepo->getFirstWhere(params: ['id' => $request['user_id']]);
-            ChattingEvent::dispatch('message_from_seller', 'delivery_man', $deliveryMan, $vendor);
+            $deliveryMan = $this->deliveryManRepo->getFirstWhere(params: ['id' => $request['delivery_man_id']]);
+            event(new ChattingEvent(key: 'message_from_seller', type: 'delivery_man', userData: $deliveryMan, messageForm: $vendor));
+
+            $chattingMessages = $this->chattingRepo->getListWhereNotNull(
+                orderBy: ['created_at' => 'DESC'],
+                filters: ['seller_id' => $vendor['id'], 'delivery_man_id' => $request['delivery_man_id']],
+                whereNotNull: ['delivery_man_id', 'seller_id'],
+                dataLimit: 'all'
+            );
+            $data = self::getRenderMessagesView(user: $deliveryMan, message: $chattingMessages, type: 'delivery_man');
         } elseif ($request->has(key: 'user_id')) {
             $this->chattingRepo->add(
                 data: $this->chattingService->getCustomerChattingData(
@@ -177,13 +201,17 @@ class ChattingController extends BaseController
                     vendorId: $vendor['id'])
             );
             $customer = $this->customerRepo->getFirstWhere(params: ['id' => $request['user_id']]);
-            ChattingEvent::dispatch('message_from_seller', 'customer', $customer, $vendor);
+            event(new ChattingEvent(key: 'message_from_seller', type: 'customer', userData: $customer, messageForm: $vendor));
+
+            $chattingMessages = $this->chattingRepo->getListWhereNotNull(
+                orderBy: ['created_at' => 'DESC'],
+                filters: ['seller_id' => $vendor['id'], 'user_id' => $request['user_id']],
+                whereNotNull: ['user_id', 'seller_id'],
+                dataLimit: 'all'
+            );
+            $data = self::getRenderMessagesView(user: $customer, message: $chattingMessages, type: 'customer');
         }
-        $imageArray = [];
-        foreach ($attachment as $singleImage) {
-            $imageArray[] = getValidImage(path: 'storage/app/public/chatting/'.$singleImage, type: 'backend-basic');
-        }
-        return response()->json(['message' => $message, 'time' => $time, 'image' => $imageArray]);
+        return response()->json($data);
     }
 
     /**
@@ -192,7 +220,7 @@ class ChattingController extends BaseController
      * @param string|int|null $id
      * @return Collection
      */
-    protected function getChatList(string $tableName, string $orderBy, string|int $id = null) :Collection
+    protected function getChatList(string $tableName, string $orderBy, string|int $id = null): Collection
     {
         $vendorId = auth('seller')->id();
         $columnName = $tableName == 'users' ? 'user_id' : 'delivery_man_id';
@@ -203,5 +231,51 @@ class ChattingController extends BaseController
             filters: $filters,
             orderBy: ['chattings.created_at' => $orderBy],
         );
+    }
+
+    /**
+     * @param object $user
+     * @param object $message
+     * @param string $type
+     * @return array
+     */
+    protected function getRenderMessagesView(object $user, object $message, string $type): array
+    {
+        $userData = ['name' => $user['f_name'] . ' ' . $user['l_name'], 'phone' => $user['country_code'] . $user['phone']];
+
+        if ($type == 'customer') {
+            $userData['image'] = getStorageImages(path: $user->image_full_url, type: 'backend-profile');
+        } else {
+            $userData['image'] = getStorageImages(path: $user->image_full_url, type: 'backend-profile');
+        }
+
+        return [
+            'userData' => $userData,
+            'chattingMessages' => view('vendor-views.chatting.messages', [
+                'lastChatUser' => $user,
+                'userType' => $type,
+                'chattingMessages' => $message
+            ])->render(),
+        ];
+    }
+
+    public function getNewNotification(): JsonResponse
+    {
+        $vendorId = auth('seller')->id();
+        $chatting = $this->chattingRepo->getListWhereNotNull(
+            filters: ['seller_id' => $vendorId, 'seen_by_seller' => 0, 'notification_receiver' => 'seller', 'seen_notification' => 0],
+            whereNotNull: ['seller_id'],
+        )->count();
+
+        $this->chattingRepo->updateListWhereNotNull(
+            filters: ['seller_id' => $vendorId, 'seen_by_seller' => 0, 'notification_receiver' => 'seller', 'seen_notification' => 0],
+            whereNotNull: ['seller_id'],
+            data: ['seen_notification' => 1]
+        );
+
+        return response()->json([
+            'newMessagesExist' => $chatting,
+            'message' => $chatting > 1 ? $chatting . ' ' . translate('New_Message') : translate('New_Message'),
+        ]);
     }
 }

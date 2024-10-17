@@ -1,6 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
+/public/themes
 /storage/*.key
 /storage/app/*
 /vendor
@@ -15,8 +16,3 @@ npm-debug.log
 yarn-error.log
 composer-setup.php
 .DS_Store
-/Booking
-/RS
-/resources/lang
-/storage
-

@@ -21,33 +21,28 @@
                                      alt="">
                             </div>
                             <p class="text-muted mx-w mx-auto text-center mb-4 width--18-75rem">
-                                @if($verification_by == 'email')
-                                    {{ translate('please_enter_your_email_to_send_a_verification_code_for_forget_password') }}
-                                @elseif($verification_by=='phone')
-                                    {{ translate('please_enter_your_phone_to_send_a_verification_code_for_forget_password') }}
-                                @endif
+                                {{ translate('we_will_send_you_a_temporary_OTP_in_your_reference') }}
                             </p>
                             <form action="{{route('customer.auth.forgot-password')}}" class="forget-password-form"
                                   method="post">
                                 @csrf
-                                @if($verification_by=='email')
-                                    <div class="form-group">
-                                        <label for="recover-email">{{translate('email')}}</label>
-                                        <input class="form-control" type="email" name="identity" id="recover-email"
-                                               autocomplete="off" required>
-                                        <div
-                                            class="invalid-feedback">{{translate('please_provide_valid_email_address').'.'}}</div>
+                                <div class="form-group">
+                                    <label for="recover-email">
+                                        {{ translate('Phone').' / '.translate('Email') }}
+                                    </label>
+                                    <input class="form-control clean-phone-input-value" type="text" name="identity" id="recover-email"
+                                           autocomplete="off" required placeholder="{{ translate('enter_your_phone_or_email') }}">
+                                    <span class="fs-12 text-muted">* {{ translate('must_use_country_code_before_phone_number') }}</span>
+                                    <div class="invalid-feedback">
+                                        {{translate('please_provide_valid_identity').'.'}}
                                     </div>
-                                @else
-                                    <div class="form-group">
-                                        <label for="recover-email">{{translate('phone')}}</label>
-                                        <input class="form-control" type="text" name="identity" id="recover-email"
-                                               autocomplete="off" required>
-                                        <div
-                                            class="invalid-feedback">{{translate('please_provide_valid_phone_number').'.'}}</div>
-                                    </div>
+                                </div>
+
+                                @if($web_config['firebase_otp_verification'] && $web_config['firebase_otp_verification']['status'])
+                                    <div id="recaptcha-container-verify-token" class="d-flex justify-content-center my-4"></div>
                                 @endif
-                                <div class="d-flex justify-content-center gap-3 mt-5">
+
+                                <div class="d-flex justify-content-center gap-3 mt-2">
                                     <button class="btn btn-outline-primary get-view-by-onclick"
                                             data-link="{{ route('home') }}"
                                             type="button">{{ translate('back_again') }}</button>

@@ -31,50 +31,55 @@
                                     <h5 class="mb-3 text-capitalize">{{ translate('delivery_information_details') }}</h5>
                                     <div class="d-flex flex-wrap justify-content-between gap-3 mb-3">
                                         <div class="d-flex flex-wrap gap-3 align-items-center">
-                                            <h6 class="text-capitalize">{{ translate('delivery_address') }}</h6>
+                                            <h6 class="text-capitalize">{{ translate('Shipping_Address') }}</h6>
                                         </div>
                                         <div class="d-flex flex-wrap gap-3 align-items-center">
-                                            <a href="javascript:" type="button" data-bs-toggle="modal"
-                                               data-bs-target="#shippingMapModal"
-                                               class="btn-link text-primary text-capitalize">{{ translate('set_form_map') }}
-                                                <i class="bi bi-geo-alt-fill"></i></a>
+                                            @if(getWebConfig('map_api_status') == 1)
+                                                <a href="javascript:" type="button" data-bs-toggle="modal"
+                                                   data-bs-target="#shippingMapModal"
+                                                   class="btn-link text-primary text-capitalize">{{ translate('set_form_map') }}
+                                                    <i class="bi bi-geo-alt-fill"></i>
+                                                </a>
+                                                <div class="modal fade" id="shippingMapModal" tabindex="-1"
+                                                     aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-body">
+                                                                <div class="product-quickview">
+                                                                    <button type="button" class="btn-close outside"
+                                                                            data-bs-dismiss="modal"
+                                                                            aria-label="Close"></button>
+                                                                    <input id="pac-input"
+                                                                           class="controls rounded __inline-46"
+                                                                           title="{{translate('search_your_location_here')}}"
+                                                                           type="text"
+                                                                           placeholder="{{translate('search_here')}}"/>
+                                                                    <div class="dark-support rounded w-100 __h-14rem"
+                                                                         id="location_map_canvas"></div>
+                                                                    <input type="hidden" id="latitude"
+                                                                           name="latitude" class="form-control d-inline"
+                                                                           placeholder="{{ translate('ex') }} : {{ translate('-94.22213') }}"
+                                                                           value="{{$default_location?$default_location['lat']:0}}"
+                                                                           required readonly>
+                                                                    <input type="hidden"
+                                                                           name="longitude" class="form-control"
+                                                                           placeholder="{{ translate('ex') }} : {{ translate('103.344322') }}"
+                                                                           id="longitude"
+                                                                           value="{{$default_location?$default_location['lng']:0}}"
+                                                                           required>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
+
                                             @if(auth('customer')->check())
                                                 <a href="javascript:" type="button" data-bs-toggle="modal"
                                                    data-bs-target="#shippingSavedAddressModal"
                                                    class="btn-link text-primary text-capitalize">{{ translate('select_from_saved') }}</a>
                                             @endif
-                                            <div class="modal fade" id="shippingMapModal" tabindex="-1"
-                                                 aria-hidden="true">
-                                                <div class="modal-dialog modal-lg modal-dialog-centered">
-                                                    <div class="modal-content">
-                                                        <div class="modal-body">
-                                                            <div class="product-quickview">
-                                                                <button type="button" class="btn-close outside"
-                                                                        data-bs-dismiss="modal"
-                                                                        aria-label="Close"></button>
-                                                                <input id="pac-input"
-                                                                       class="controls rounded __inline-46"
-                                                                       title="{{translate('search_your_location_here')}}"
-                                                                       type="text"
-                                                                       placeholder="{{translate('search_here')}}"/>
-                                                                <div class="dark-support rounded w-100 __h-14rem"
-                                                                     id="location_map_canvas"></div>
-                                                                <input type="hidden" id="latitude"
-                                                                       name="latitude" class="form-control d-inline"
-                                                                       placeholder="{{ translate('ex') }} : {{ translate('-94.22213') }}"
-                                                                       value="{{$default_location?$default_location['lat']:0}}"
-                                                                       required readonly>
-                                                                <input type="hidden"
-                                                                       name="longitude" class="form-control"
-                                                                       placeholder="{{ translate('ex') }} : {{ translate('103.344322') }}"
-                                                                       id="longitude"
-                                                                       value="{{$default_location?$default_location['lng']:0}}"
-                                                                       required>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+
                                         </div>
                                     </div>
 
@@ -192,9 +197,10 @@
                                                         <div class="col-sm-6">
                                                             <div class="form-group mb-3">
                                                                 <label for="phone">{{ translate('phone') }}</label>
-                                                                <input type="tel" name="phone" id="phoneNumber"
-                                                                       class="form-control"
+                                                                <input type="tel" id="phoneNumber"
+                                                                       class="form-control phone-input-with-country-picker-shipping"
                                                                        placeholder="{{ translate('ex') }}: {{translate('+8801000000000')}}" {{$shipping_addresses->count()==0?'required':''}}>
+                                                                <input type="hidden" class="country-picker-phone-number-shipping w-50" name="phone" readonly>
                                                             </div>
                                                         </div>
                                                         @if(!auth('customer')->check())
@@ -276,11 +282,14 @@
                                                                     <input type="text" name="address" id="address"
                                                                            class="flex-grow-1 text-dark bg-transparent border-0 focus-input"
                                                                            placeholder="{{ translate('your_address') }}" {{$shipping_addresses->count()==0?'required':''}}>
+
+                                                                    @if(getWebConfig('map_api_status') == 1)
                                                                     <div class="border-start ps-3 pe-1"
                                                                          data-bs-toggle="modal"
                                                                          data-bs-target="#shippingMapModal">
                                                                         <i class="bi bi-compass-fill"></i>
                                                                     </div>
+                                                                    @endif
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -304,7 +313,41 @@
                                         </div>
                                     </div>
                                 </form>
+
+                                @if(!Auth::guard('customer')->check() && $web_config['guest_checkout_status'])
+                                    <div class="card __card mt-3">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center flex-wrap justify-content-between gap-3">
+                                                <div class="min-h-45 d-flex gap-2 align-items-center cursor-pointer user-select-none">
+                                                    <input type="checkbox" id="is_check_create_account" name="is_check_create_account">
+                                                    <label class="fw-bold fs-13 mb-0" for="is_check_create_account">
+                                                        {{translate('Create_an_account_with_the_above_info')}}
+                                                    </label>
+                                                </div>
+
+                                                <div class="is_check_create_account_password_group d--none">
+                                                    <div class="d-flex gap-3 flex-wrap flex-sm-nowrap">
+                                                        <div class="">
+                                                            <div class="input-inner-end-ele">
+                                                                <input name="customer_password" type="password" id="customer_password" class="form-control" placeholder="{{ translate('new_Password') }}" required="">
+                                                                <i class="bi bi-eye-slash-fill togglePassword"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="">
+                                                            <div class="input-inner-end-ele">
+                                                                <input name="customer_confirm_password" type="password" id="customer_confirm_password" class="form-control" placeholder="{{ translate('confirm_Password') }}" required="">
+                                                                <i class="bi bi-eye-slash-fill togglePassword"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+
                             @endif
+
                             @if($billing_input_by_customer)
                                 <div class="mt-5 {{ $billing_input_by_customer ? '':'d-none' }}">
                                     <div class="bg-light rounded p-3 mt-20">
@@ -324,17 +367,29 @@
                                         </div>
                                     </div>
 
+                                    @if(!$physical_product_view)
+                                        <div class="my-3 alert--info">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <img class="mb-1" src="{{ theme_asset('assets/img/icons/info-light.svg') }}" alt="Info">
+                                                <span>{{ translate('When_you_input_all_the_required_information_for_this_billing_address_it_will_be_stored_for_future_purchases') }}</span>
+                                            </div>
+                                        </div>
+                                    @endif
+
                                     <form method="post" id="billing-address-form">
                                         <div class="toggle-billing-address mt-3" id="hide-billing-address">
                                             <div class="d-flex flex-wrap justify-content-between gap-3 mb-3">
                                                 <div class="d-flex flex-wrap gap-3 align-items-center">
                                                 </div>
                                                 <div class="d-flex flex-wrap gap-3 align-items-center">
-                                                    <a href="javascript:" data-bs-toggle="modal"
-                                                       data-bs-target="#billingMapModal"
-                                                       class="btn-link text-primary text-capitalize">{{ translate('set_form_map') }}
-                                                        <i class="bi bi-geo-alt-fill"></i></a>
-                                                    <div class="modal fade" id="billingMapModal" tabindex="-1"
+                                                    @if(getWebConfig('map_api_status') == 1)
+                                                        <a href="javascript:" data-bs-toggle="modal"
+                                                           data-bs-target="#billingMapModal"
+                                                           class="btn-link text-primary text-capitalize">
+                                                            {{ translate('set_form_map') }}
+                                                            <i class="bi bi-geo-alt-fill"></i>
+                                                        </a>
+                                                        <div class="modal fade" id="billingMapModal" tabindex="-1"
                                                          aria-hidden="true">
                                                         <div class="modal-dialog modal-lg modal-dialog-centered">
                                                             <div class="modal-content">
@@ -369,6 +424,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    @endif
 
                                                     @if(auth('customer')->check())
                                                         <a href="javascript:" type="button" data-bs-toggle="modal"
@@ -499,9 +555,11 @@
                                                                     <div class="form-group mb-3">
                                                                         <label
                                                                             for="billing_phone">{{ translate('phone') }}</label>
-                                                                        <input type="tel" name="billing_phone"
-                                                                               id="billing-phone" class="form-control"
+                                                                        <input type="tel"
+                                                                               id="billing-phone" class="form-control phone-input-with-country-picker-billing"
                                                                                placeholder="{{ translate('ex') }}: {{translate('+88 01000000000')}}" {{$billing_addresses->count()==0?'required':''}}>
+                                                                        <input type="hidden" class="country-picker-phone-number-billing w-50" name="billing_phone" readonly>
+
                                                                     </div>
                                                                 </div>
                                                                 @if(!auth('customer')->check())
@@ -587,19 +645,21 @@
                                                                 <div class="col-sm-12">
                                                                     <div class="form-group mb-3">
                                                                         <label
-                                                                            for="billing-address">{{ translate('address') }}</label>
+                                                                            for="billing_address">{{ translate('address') }}</label>
                                                                         <div
                                                                             class="form-control focus-border rounded d-flex align-items-center">
                                                                             <input type="text" name="billing_address"
-                                                                                   id="billing-address"
+                                                                                   id="billing_address"
                                                                                    class="flex-grow-1 text-dark bg-transparent border-0 focus-input"
                                                                                    placeholder="{{ translate('your_address') }}" {{$shipping_addresses->count()==0?'required':''}}>
 
-                                                                            <div class="border-start ps-3 pe-1"
-                                                                                 data-bs-toggle="modal"
-                                                                                 data-bs-target="#billingMapModal">
-                                                                                <i class="bi bi-compass-fill"></i>
-                                                                            </div>
+                                                                            @if(getWebConfig('map_api_status') == 1)
+                                                                                <div class="border-start ps-3 pe-1"
+                                                                                     data-bs-toggle="modal"
+                                                                                     data-bs-target="#billingMapModal">
+                                                                                    <i class="bi bi-compass-fill"></i>
+                                                                                </div>
+                                                                            @endif
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -627,6 +687,38 @@
                                         </div>
                                     </form>
                                 </div>
+
+                                @if(!Auth::guard('customer')->check() && $web_config['guest_checkout_status'] && !$physical_product_view)
+                                    <div class="card __card mt-3">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center flex-wrap justify-content-between gap-3">
+                                                <div class="min-h-45 d-flex gap-2 align-items-center cursor-pointer user-select-none">
+                                                    <input type="checkbox" id="is_check_create_account" name="is_check_create_account">
+                                                    <label class="fw-bold fs-13 mb-0" for="is_check_create_account">
+                                                        {{ translate('Create_account_with_above_info') }}
+                                                    </label>
+                                                </div>
+
+                                                <div class="is_check_create_account_password_group d--none">
+                                                    <div class="d-flex gap-3 flex-wrap flex-sm-nowrap">
+                                                        <div class="">
+                                                            <div class="input-inner-end-ele">
+                                                                <input name="customer_password" type="password" id="customer_password" class="form-control" placeholder="{{ translate('new_Password') }}" required="">
+                                                                <i class="bi bi-eye-slash-fill togglePassword"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="">
+                                                            <div class="input-inner-end-ele">
+                                                                <input name="customer_confirm_password" type="password" id="customer_confirm_password" class="form-control" placeholder="{{ translate('confirm_Password') }}" required="">
+                                                                <i class="bi bi-eye-slash-fill togglePassword"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             @endif
                         </div>
                     </div>
@@ -643,7 +735,11 @@
 @endsection
 @push('script')
     <script src="{{ theme_asset('assets/js/shipping-page.js') }}"></script>
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key={{getWebConfig(name: 'map_api_key')}}&callback=mapsLoading&libraries=places&v=3.49"
-        defer></script>
+
+    @if(getWebConfig('map_api_status') ==1 )
+        <script
+            src="https://maps.googleapis.com/maps/api/js?key={{getWebConfig('map_api_key')}}&callback=mapsLoading&loading=async&libraries=places&v=3.56"
+            defer>
+        </script>
+    @endif
 @endpush

@@ -7,18 +7,25 @@ use App\Contracts\Repositories\OrderDetailRepositoryInterface;
 use App\Contracts\Repositories\OrderRepositoryInterface;
 use App\Contracts\Repositories\RefundRequestRepositoryInterface;
 use App\Contracts\Repositories\RefundStatusRepositoryInterface;
+use App\Contracts\Repositories\VendorRepositoryInterface;
+use App\Enums\ExportFileNames\Admin\RefundRequest as RefundRequestExportFile;
 use App\Enums\ViewPaths\Vendor\Refund;
 use App\Events\RefundEvent;
+use App\Exports\RefundRequestExport;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Vendor\RefundStatusRequest;
+use App\Repositories\VendorRepository;
 use App\Services\RefundStatusService;
 use App\Traits\CustomerTrait;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class RefundController extends BaseController
 {
@@ -30,6 +37,7 @@ class RefundController extends BaseController
         private readonly RefundStatusRepositoryInterface $refundStatusRepo,
         private readonly RefundStatusService $refundStatusService,
         private readonly OrderRepositoryInterface $orderRepo,
+        private readonly VendorRepositoryInterface $vendorRepo,
 
     )
     {
@@ -94,35 +102,36 @@ class RefundController extends BaseController
 
     /**
      * @param RefundStatusRequest $request
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function updateStatus(RefundStatusRequest $request):RedirectResponse
+    public function updateStatus(RefundStatusRequest $request):JsonResponse
     {
-
         $vendorId = auth('seller')->id();
         $refund = $this->refundRequestRepo->getFirstWhereHas(
             params:['id'=>$request['id']],
             whereHas: 'order',
             whereHasFilters: [ 'seller_is'=>'seller', 'seller_id' => $vendorId],
         );
+        if (($request['refund_status'] == 'approved' && $refund['approved_count'] >=2) || $request['refund_status'] == 'rejected' && $refund['denied_count'] >=2){
+            return response()->json(['error'=>translate('you_already_changed_').($request['refund_status']=='approved'?'approve' : 'reject').translate('_status_two_times').'!!']);
+        }
         $customer = $this->customerRepo->getFirstWhere(params:['id'=>$refund['customer_id']]);
         if(!isset($customer))
         {
-            Toastr::warning(translate('this_account_has_been_deleted,_you_can_not_modify_the_status').'!!');
+            return response()->json(['error'=>translate('this_account_has_been_deleted').','.translate('you_can_not_modify_the_status').'!!']);
         }
         $loyaltyPointStatus = getWebConfig('loyalty_point_status');
-
         $orderDetails = $this->orderDetailRepo->getFirstWhere(['id' => $refund['order_details_id']]);
         if($loyaltyPointStatus == 1){
             $loyaltyPoint = $this->convertAmountToLoyaltyPoint(orderDetails:$orderDetails);
             if($customer['loyalty_point'] < $loyaltyPoint && $request['refund_status'] == 'approved')
             {
-                Toastr::warning(translate('customer_has_not_sufficient_loyalty_point_to_take_refund_for_this_order').'!!');
+                return response()->json(['error'=>translate('customer_has_not_sufficient_loyalty_point_to_take_refund_for_this_order').'!!']);
             }
         }
 
         if($refund['change_by'] =='admin'){
-            Toastr::warning(translate('refunded_status_can_not_be_changed!!_Admin_already_changed_the_status') .': '.$refund['status'].'!!');
+            return response()->json(['error'=>translate('refunded_status_can_not_be_changed').'!!'.('admin_already_changed_the_status') .': '.$refund['status'].'!!']);
         }
         if($refund['status'] != 'refunded'){
             $statusMapping = [
@@ -143,16 +152,41 @@ class RefundController extends BaseController
             $this->refundRequestRepo->update(
                 id:$refund['id'],
                 data: [
-                    'status'=>$request['refund_status'],
+                    'status'=> $request['refund_status'],
+                    'approved_count' => $request['refund_status'] == 'approved' ? ($refund['approved_count']+1) : $refund['approved_count'],
+                    'denied_count' => $request['refund_status'] == 'rejected' ? ($refund['denied_count']+1) : $refund['denied_count'],
+                    'rejected_note' => $request['refund_status'] == 'rejected' ? $request['rejected_note'] : null,
+                    'approved_note' => $request['refund_status'] == 'approved' ? $request['approved_note'] : null,
                     'change_by'=>'seller',
                     ]
             );
             $order = $this->orderRepo->getFirstWhere(params: ['id'=>$refund['order_id']]);
-            RefundEvent::dispatch($request['refund_status'], $order);
-            Toastr::success(translate('refund_status_updated') . '!!');
+            event(new RefundEvent(status: $request['refund_status'], order: $order, refund: $refund, orderDetails: $orderDetails));
+            return response()->json(['message'=>translate('refund_status_updated') . '!!']);
         }else {
-            Toastr::warning(translate('refunded_status_can_not_be_changed').'!!');
+            return response()->json(['message'=>translate('refunded_status_can_not_be_changed') . '!!']);
         }
-        return redirect()->back();
+    }
+    public function exportList(Request $request, $status): BinaryFileResponse
+    {
+        $vendorId = auth('seller')->id();
+        $vendor = $this->vendorRepo->getFirstWhere(params:['id' => $vendorId]);
+        $refundList = $this->refundRequestRepo->getListWhereHas(
+            orderBy: ['id' => 'desc'],
+            searchValue: $request['search'],
+            filters: ['status' => $status],
+            whereHas: 'order',
+            whereHasFilters: [ 'seller_is'=>'seller', 'seller_id' => $vendorId],
+            relations: ['order', 'order.seller', 'order.deliveryMan', 'product'],
+            dataLimit: 'all',
+        );
+        return Excel::download(new RefundRequestExport([
+            'data-from' => 'vendor',
+            'vendor' => $vendor,
+            'refundList' => $refundList,
+            'search' => $request['search'],
+            'status' => $status,
+            'filter_By' => $request->get('type', 'all'),
+        ]), RefundRequestExportFile::EXPORT_XLSX);
     }
 }

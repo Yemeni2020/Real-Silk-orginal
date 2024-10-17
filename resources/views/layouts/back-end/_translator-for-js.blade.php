@@ -1,9 +1,10 @@
-<span id="call-demo-message" data-text="{{translate("update_option_is_disabled_for_demo").'!'}}"></span>
+<span id="call-demo-message" data-text="{{translate("this_option_is_disabled_for_demo").'!'}}"></span>
 <span id="get-update-status-message"
       data-text="{{translate("status_updated_successfully")}}"
       data-error="{{translate("status_update_failed")}}">
 </span>
 <span id="get-update-success-message" data-text="{{translate("updated_successfully")}}"></span>
+<span id="get-extension-text-message" data-text="{{translate("extension")}}"></span>
 <span id="get-deleted-message" data-text="{{translate("deleted_successfully")}}"></span>
 <span id="get-confirm-and-cancel-button-text" data-sure ="{{translate('are_you_sure').'?'}}"
       data-delete-text="{{translate('once_deleted_you_will_not_be_able_to_recover_this').'!'}}"
@@ -27,7 +28,17 @@
       data-on-size-err="{{ translate('file_size_too_big')}}">
 </span>
 
-<span id="get-logout-text" data-title="{{translate('do_you_want_to_logout')}}"
+<span id="get-logout-text" data-title="{{translate('do_you_want_to_sign_out').'?'}}"
       data-confirm="{{translate('yes')}}" data-cancel="{{translate('no')}}"
       data-deny="{{translate('do_not_Logout')}}"></span>
 <span id="get-select-product-text" data-text="{{translate('select_product')}}"></span>
+<span id="change-language-message" data-text="{{translate('want_to_change_this_language').'?'}}"></span>
+<span id="get-quantity-check-message" data-warning="{{translate('please_enter_a_valid_integer_for_current_stock')}}"></span>
+<span id="password-error-message" data-max-character="{{translate('at_least_8_characters').'.'}}" data-uppercase-character="{{translate('at_least_one_uppercase_letter_').'(A...Z)'.'.'}}" data-lowercase-character="{{translate('at_least_one_uppercase_letter_').'(a...z)'.'.'}}"
+      data-number="{{translate('at_least_one_number').'(0...9)'.'.'}}" data-symbol="{{translate('at_least_one_symbol').'(!...%)'.'.'}}"></span>
+<span id="get-example-text" data-example="{{translate('ex')}}"></span>
+<span id="download-path-not-found-message" data-message="{{translate('file_not_found').'!!!'}}"></span>
+<span id="get-product-stock-message"
+      data-out-of-stock="{{translate('out_of_stock').'.'.translate('please_check_your_inventory_and_update')}}"
+      data-limited-stock="{{ translate('There_isn’t_enough_quantity_on_stock').'.'.translate('please_check_your_inventory')}}">
+</span>

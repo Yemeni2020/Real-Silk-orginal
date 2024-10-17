@@ -6,7 +6,7 @@
 <div class="content container-fluid">
     <div class="mb-4 pb-2">
         <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-            <img src="{{asset('/public/assets/back-end/img/system-setting.png')}}" alt="">
+            <img src="{{dynamicAsset(path: 'public/assets/back-end/img/system-setting.png')}}" alt="">
             {{translate('system_Setup')}}
         </h2>
     </div>
@@ -14,7 +14,7 @@
     <div class="card">
         <div class="border-bottom px-4 py-3">
             <h5 class="mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img width="20" src="{{asset('/public/assets/back-end/img/environment.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/environment.png')}}" alt="">
                 {{translate('environment_information')}}
             </h5>
         </div>
@@ -141,5 +141,48 @@
             </form>
         </div>
     </div>
+
+    @if(env('APP_MODE') != 'demo' && env('APP_MODE') == 'dev')
+        <div class="row d--none">
+            <div class="col-md-4">
+                <div class="card mt-3">
+                    <div class="border-bottom px-4 py-3">
+                        <h5 class="mb-0 text-capitalize d-flex align-items-center gap-2">
+                            <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/environment.png')}}" alt="">
+                            {{translate('Force_HTTPS')}}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{route('admin.business-settings.web-config.environment-https-setup')}}" method="post"
+                              enctype="multipart/form-data">
+                            @csrf
+                            <div>
+                                <div class="form-group">
+                                    <label class="title-color d-flex">{{ translate('Force_HTTPS') }}</label>
+                                    <select name="force_https" class="form-control js-select2-custom">
+                                        <option value="true" {{ env('FORCE_HTTPS') ? 'selected' : '' }}>
+                                            {{ translate('true') }}
+                                        </option>
+                                        <option value="false" {{ !env('APP_DEBUG') ? 'selected' : '' }}>
+                                            {{ translate('false') }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end flex-wrap gap-3">
+                                <button type="submit" class="btn btn--primary px-5">
+                                    {{ translate('Update') }}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6"></div>
+        </div>
+    @endif
+
+
 </div>
 @endsection

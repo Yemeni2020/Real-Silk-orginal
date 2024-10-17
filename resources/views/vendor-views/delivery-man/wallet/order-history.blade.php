@@ -10,7 +10,7 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{asset('/public/assets/back-end/img/add-new-seller.png')}}" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/add-new-seller.png')}}" alt="">
                 {{translate('earning_Statement')}}
             </h2>
         </div>
@@ -61,7 +61,7 @@
                                     </thead>
 
                                     <tbody id="set-rows">
-                                    @forelse($orders as $key=>$order)
+                                    @foreach($orders as $key=>$order)
                                         <tr>
                                             <td>{{ $orders->firstItem()+$key }}</td>
                                             <td>
@@ -87,7 +87,7 @@
                                             </span>
                                                 @elseif($order['order_status']=='failed')
                                                     <span class="badge badge-danger fz-12">
-                                                {{$order['order_status'] == 'failed' ? 'Failed To Deliver' : ''}}
+                                                {{translate('Failed_To_Deliver')}}
                                             </span>
                                                 @elseif($order['order_status']=='delivered')
                                                     <span class="badge badge-soft-success fz-12">
@@ -105,17 +105,7 @@
                                                 </div>
                                             </td>
                                         </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4">
-                                                <div class="text-center p-4">
-                                                    <img class="mb-3 w-160" src="{{ asset('public/assets/back-end/svg/illustrations/sorry.svg') }}" alt="Image Description">
-                                                    <p class="mb-0">{{ translate('no_order_history_found').'!' }}</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforelse
-
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -124,6 +114,9 @@
                                     {{ $orders->links() }}
                                 </div>
                             </div>
+                            @if(count($orders)==0)
+                                @include('layouts.back-end._empty-state',['text'=>'no_order_found'],['image'=>'default'])
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -140,5 +133,5 @@
 @endsection
 
 @push('script_2')
-    <script src="{{asset('public/assets/back-end/js/vendor/wallet.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/vendor/wallet.js')}}"></script>
 @endpush

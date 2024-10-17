@@ -9,7 +9,7 @@
                     @if ($product->discount_type == 'percent')
                         {{'-'.' '.round($product->discount, (!empty($decimal_point_settings) ? $decimal_point_settings: 0)).'%'}}
                     @elseif($product->discount_type =='flat')
-                        {{'-'.' '.Helpers::currency_converter($product->discount)}}
+                        {{'-'.' '.webCurrencyConverter($product->discount)}}
                     @endif
                 </span>
             </span>
@@ -39,7 +39,7 @@
         </div>
 
         <div class="product__thumbnail align-items-center d-flex h-100 justify-content-center">
-            <img src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$product['thumbnail'], type: 'product') }}"
+            <img src="{{ getStorageImages(path: $product->thumbnail_full_url, type: 'product') }}"
                  loading="lazy" class="dark-support rounded"
                  alt="{{ $product['name'] }}">
         </div>
@@ -57,29 +57,29 @@
                     @endif
                 @endfor
             </span>
-            <span>({{$product->reviews_count}})</span>
+            <span>({{ count($product->reviews) }})</span>
         </div>
 
         <div class="text-muted fs-12">
             @if($product->added_by=='seller')
                 {{ isset($product->seller->shop->name) ? Str::limit($product->seller->shop->name, 20) : '' }}
             @elseif($product->added_by=='admin')
-                {{$web_config['name']->value}}
+                {{ $web_config['name']->value }}
             @endif
         </div>
 
         <h6 class="product__title text-truncate width--80">
             <a href="{{route('product',$product->slug)}}"
-               class="text-capitalize">{{ Str::limit($product['name'], 23) }}</a>
+               class="text-capitalize text-truncate">{{ $product['name'] }}</a>
         </h6>
         <a href="{{route('product',$product->slug)}}">
             <div class="product__price d-flex flex-wrap column-gap-2">
                 @if($product->discount > 0)
-                    <del class="product__old-price">{{Helpers::currency_converter($product->unit_price)}}</del>
+                    <del class="product__old-price">{{webCurrencyConverter($product->unit_price)}}</del>
                 @endif
                 <ins class="product__new-price">
-                    {{Helpers::currency_converter(
-                        $product->unit_price-(Helpers::get_product_discount($product,$product->unit_price))
+                    {{webCurrencyConverter(
+                        $product->unit_price-(Helpers::getProductDiscount($product,$product->unit_price))
                     )}}
                 </ins>
             </div>

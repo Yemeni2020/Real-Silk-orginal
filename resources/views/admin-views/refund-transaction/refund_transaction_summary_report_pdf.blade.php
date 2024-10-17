@@ -291,10 +291,10 @@
             <table class="bs-0">
                 <tr>
                     <th class="h3 p-0 text-left">
-                        {{translate('oder_Transaction_Statement')}}
+                        {{translate('order_Transaction_Statement')}}
                     </th>
                     <th class="p-0 text-right">
-                        <img class="logo" src="{{asset("storage/app/public/company/".$data['company_web_logo'])}}"
+                        <img class="logo" src="{{dynamicStorage(path: "storage/app/public/company/".$data['company_web_logo'])}}"
                              alt="">
                     </th>
                 </tr>

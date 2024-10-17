@@ -6,19 +6,29 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{{translate('vendor_login')}}</title>
-    <link rel="shortcut icon" href="{{ asset('storage/app/public/company/'.getWebConfig(name: 'company_fav_icon')) }}">
-    <link rel="stylesheet" href="{{asset('public/assets/back-end/css/google-fonts.css')}}">
-    <link rel="stylesheet" href="{{asset('public/assets/back-end/css/bootstrap.min.css')}}">
-    <link rel="stylesheet" href="{{asset('public/assets/back-end/css/vendor.min.css')}}">
-    <link rel="stylesheet" href="{{asset('public/assets/back-end/vendor/icon-set/style.css')}}">
-    <link rel="stylesheet" href="{{asset('public/assets/back-end/css/toastr.css')}}">
-    <link rel="stylesheet" href="{{asset('public/assets/back-end/css/theme.minc619.css?v=1.0')}}">
-    <link rel="stylesheet" href="{{asset('public/assets/back-end/css/style.css')}}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="_token" content="{{ csrf_token() }}">
+    <title>{{translate('vendor_Login')}}</title>
+    <link rel="shortcut icon" href="{{ getStorageImages(path:getWebConfig(name: 'company_fav_icon')) }}">
+    <link rel="stylesheet" href="{{dynamicAsset(path: 'public/assets/back-end/css/google-fonts.css')}}">
+    <link rel="stylesheet" href="{{dynamicAsset(path: 'public/assets/back-end/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{dynamicAsset(path: 'public/assets/back-end/css/vendor.min.css')}}">
+    <link rel="stylesheet" href="{{dynamicAsset(path: 'public/assets/back-end/vendor/icon-set/style.css')}}">
+    <link rel="stylesheet" href="{{dynamicAsset(path: 'public/assets/back-end/css/toastr.css')}}">
+    <link rel="stylesheet" href="{{dynamicAsset(path: 'public/assets/back-end/css/theme.minc619.css?v=1.0')}}">
+    <link rel="stylesheet" href="{{dynamicAsset(path: 'public/assets/back-end/css/style.css')}}">
+    <link rel="stylesheet" href="{{dynamicAsset(path: 'public/assets/back-end/css/custom.css')}}">
 </head>
 
 <body>
 <main id="content" role="main" class="main">
+    <div class="row">
+        <div class="col-12 position-fixed z-9999 mt-10rem">
+            <div id="loading" class="d--none">
+                <div id="loader"></div>
+            </div>
+        </div>
+    </div>
     <div class="position-fixed top-0 right-0 left-0 bg-img-hero __h-32rem">
         <figure class="position-absolute right-0 bottom-0 left-0">
             <svg preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 1921 273">
@@ -26,11 +36,11 @@
             </svg>
         </figure>
     </div>
-    <div class="container py-5 py-sm-7 ">
-        @php($companyWebLogo=getWebConfig(name: 'company_web_logo'))
-        <a class="d-flex justify-content-center mb-5" href="javascript:">
+    <div class="container py-5 py-sm-7">
+        @php($companyWebLogo = getWebConfig(name: 'company_web_logo'))
+        <a class="d-flex justify-content-center mb-5" href="{{ route('home') }}">
             <img class="z-index-2" height="40"
-                 src="{{getValidImage(path: 'storage/app/public/company/'.$companyWebLogo,type: 'backend-logo')}}"
+                 src="{{getStorageImages(path: $companyWebLogo,type: 'backend-logo')}}"
                  alt="{{translate('logo')}}">
         </a>
         <div class="row justify-content-center">
@@ -86,7 +96,7 @@
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input" id="termsCheckbox"
                                            name="remember">
-                                    <label class="custom-control-label text-muted" for="termsCheckbox">
+                                    <label class="custom-control-label text-muted user-select-none" for="termsCheckbox">
                                         {{translate('remember_me')}}
                                     </label>
                                 </div>
@@ -97,20 +107,24 @@
                             @else
                                 <div class="row py-2">
                                     <div class="col-6 pr-0">
-                                        <input type="text" class="form-control __h-40 border-0" name="vendorRecaptchaKey" value=""
+                                        <input type="text" class="form-control form-control-lg form-control-focus-none" name="vendorRecaptchaKey" value=""
+                                               id="vendor-login-recaptcha-input"
                                                placeholder="{{translate('enter_captcha_value')}}" autocomplete="off">
                                     </div>
-                                    <div class="col-6 input-icons mb-2 w-100 rounded bg-white">
-                                        <a class="d-flex align-items-center align-items-center get-login-recaptcha-verify"
-                                           data-link="{{ URL('/vendor/auth/recaptcha') }}">
+                                    <div class="col-6 input-icons bg-white rounded">
+                                        <a class="get-login-recaptcha-verify cursor-pointer get-session-recaptcha-auto-fill"
+                                               data-link="{{ URL('/vendor/auth/recaptcha') }}"
+                                               data-session="{{ 'vendorRecaptchaSessionKey' }}"
+                                               data-input="#vendor-login-recaptcha-input"
+                                            >
                                             <img src="{{ URL('/vendor/auth/recaptcha/1?captcha_session_id=vendorRecaptchaSessionKey') }}"
-                                                alt="" class="rounded __h-40" id="default_recaptcha_id">
-                                            <i class="tio-refresh position-relative cursor-pointer p-2"></i>
+                                                alt="" class="input-field w-90 h-75 p-0 rounded" id="default_recaptcha_id">
+                                            <i class="tio-refresh icon"></i>
                                         </a>
                                     </div>
                                 </div>
                             @endif
-                            <button type="submit" class="btn btn-lg btn-block btn--primary">{{translate('sign_in')}}</button>
+                            <button type="button" class="btn btn-lg btn-block btn--primary submit-login-form">{{translate('login')}}</button>
                         </form>
                     </div>
                     @if(env('APP_MODE')=='demo')
@@ -131,26 +145,44 @@
             </div>
         </div>
     </div>
+    <div class="vendor-suspend suspended-message d-none">
+        <img src="{{dynamicAsset(path: 'public/assets/back-end/img/warning.png')}}" alt="">
+        <div class="cont">
+            <h6>{{translate('warning')}}</h6>
+            <div>
+                {{translate('your_account_has_been_suspended').', '.translate('please_contact_with')}} <a href="{{route('contacts')}}">{{translate('help_and_support')}}</a>
+            </div>
+        </div>
+        <button class="p-2 m-0 border-0 outlie-0 shadow-none bg-transparent clear-alter-message">
+            <i class="tio-clear"></i>
+        </button>
+    </div>
+    <div class="vendor-suspend pending-message d-none">
+        <img src="{{dynamicAsset(path: 'public/assets/back-end/img/warning.png')}}" alt="">
+        <div class="cont">
+            <h6>{{translate('warning')}}</h6>
+            <div>
+                {{translate('your_account_is_not_approved_yet').', '.translate('please_wait_or_contact_with')}} <a href="{{route('contacts')}}">{{translate('help_and_support')}}</a>
+            </div>
+        </div>
+        <button class="p-2 m-0 border-0 outlie-0 shadow-none bg-transparent clear-alter-message">
+            <i class="tio-clear"></i>
+        </button>
+    </div>
 </main>
 <span id="message-please-check-recaptcha" data-text="{{ translate('please_check_the_recaptcha') }}"></span>
 <span id="message-copied_success" data-text="{{ translate('copied_successfully') }}"></span>
-<script src="{{asset('public/assets/back-end/js/vendor.min.js')}}"></script>
-<script src="{{asset('public/assets/back-end/js/theme.min.js')}}"></script>
-<script src="{{asset('public/assets/back-end/js/toastr.js')}}"></script>
-<script src="{{asset('public/assets/back-end/js/vendor/login.js')}}"></script>
-{!! Toastr::message() !!}
-@if ($errors->any())
-    <script>
-        "use strict";
-        @foreach($errors->all() as $error)
-        toastr.error('{{$error}}', Error, {
-            CloseButton: true,
-            ProgressBar: true
-        });
-        @endforeach
-    </script>
-@endif
 
+<span id="route-get-session-recaptcha-code"
+      data-route="{{ route('get-session-recaptcha-code') }}"
+      data-mode="{{ env('APP_MODE') }}"
+></span>
+
+<script src="{{dynamicAsset(path: 'public/assets/back-end/js/vendor.min.js')}}"></script>
+<script src="{{dynamicAsset(path: 'public/assets/back-end/js/theme.min.js')}}"></script>
+<script src="{{dynamicAsset(path: 'public/assets/back-end/js/toastr.js')}}"></script>
+<script src="{{dynamicAsset(path: 'public/assets/back-end/js/vendor/login.js')}}"></script>
+{!! Toastr::message() !!}
 @if(isset($recaptcha) && $recaptcha['status'] == 1)
     <script type="text/javascript">
         "use strict";

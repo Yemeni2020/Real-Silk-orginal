@@ -9,15 +9,16 @@ interface OrderTransactionRepositoryInterface extends RepositoryInterface
 {
     /**
      * @param array $filters
-     * @param string|null $whereBetween
      * @param string|null $selectColumn
+     * @param string|null $whereBetween
+     * @param string|null $groupBy
      * @param array $whereBetweenFilters
      * @param array $relations
      * @param int|string $dataLimit
      * @param int|null $offset
      * @return Collection|LengthAwarePaginator
      */
-    public function getListWhereBetween(array $filters = [], string $whereBetween = null, string $selectColumn = null,array $whereBetweenFilters = [] , array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null):  Collection|LengthAwarePaginator;
+    public function getListWhereBetween(array $filters = [], string $selectColumn = null, string $whereBetween = null, string $groupBy = null, array $whereBetweenFilters = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator;
 
     /**
      * @param string|null $sellerIs

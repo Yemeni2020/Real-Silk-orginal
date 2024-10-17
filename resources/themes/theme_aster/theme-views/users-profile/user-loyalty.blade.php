@@ -62,25 +62,25 @@
                                             <button type="button"
                                                     class="border-0 bg-transparent dropdown-toggle text-dark p-0 custom-pe-3 text-capitalize"
                                                     data-bs-toggle="dropdown" aria-expanded="false">
-                                                {{ request()->has('type') ? (request('type') == 'all'? translate('all_transactions') : ucwords(translate(request('type')))):translate('all_transactions')}}
+                                                {{ request()->has('type') ? (request('type') == 'all' ? translate('all_transactions') : ucwords(translate(request('type')))):translate('all_transactions')}}
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
-                                                <li>
+                                                <li class=" {{!request()->has('type') || request('type') == 'all' ? 'bg--light':'' }}">
                                                     <a class="d-flex text-capitalize" href="{{route('loyalty')}}/?type=all">
                                                         {{translate('all_transaction')}}
                                                     </a>
                                                 </li>
-                                                <li>
+                                                <li class=" {{request()->has('type') && request('type') == 'order_place' ? 'bg--light':'' }}">
                                                     <a class="d-flex text-capitalize" href="{{route('loyalty')}}/?type=order_place">
                                                         {{translate('order_Place')}}
                                                     </a>
                                                 </li>
-                                                <li>
+                                                <li class=" {{request()->has('type') && request('type') == 'point_to_wallet' ? 'bg--light':'' }}">
                                                     <a class="d-flex text-capitalize" href="{{route('loyalty')}}/?type=point_to_wallet">
                                                         {{translate('point_To_wallet')}}
                                                     </a>
                                                 </li>
-                                                <li>
+                                                <li class=" {{request()->has('type') && request('type') == 'refund_order' ? 'bg--light':'' }}">
                                                     <a class="d-flex text-capitalize" href="{{route('loyalty')}}/?type=refund_order">
                                                         {{translate('refund_order')}}
                                                     </a>
@@ -93,13 +93,14 @@
                             <div class="d-flex flex-column gap-2">
                                 @foreach($loyaltyPointList as $key => $item)
                                     <div class="bg-light p-3 p-sm-4 rounded d-flex justify-content-between gap-3">
-                                        <div class="">
-                                            <h4 class="mb-2">{{ $item['debit'] != 0 ? $item['debit'] : $item['credit'] }}</h4>
+                                        <div class="align-items-start d-flex flex-column">
+                                            <h4 class="mb-2 direction-ltr">
+                                                {{ $item['debit'] != 0 ? ' - '.$item['debit'] : ' + '.$item['credit'] }}
+                                            </h4>
                                             <h6 class="text-muted">{{ucwords(translate($item['transaction_type']))}}</h6>
                                         </div>
                                         <div class="text-end">
-                                            <div
-                                                class="text-muted mb-1">{{date('d M, Y H:i A',strtotime($item['created_at']))}} </div>
+                                            <div class="text-muted mb-1">{{date('d M, Y H:i A',strtotime($item['created_at']))}} </div>
                                             @if($item['debit'] != 0)
                                                 <p class="text-danger fs-12">{{translate('debit')}}</p>
                                             @else
@@ -148,7 +149,7 @@
                         </div>
                         <div class="text-center mb-2">
                             <span>
-                                {{ $loyaltyPointExchangeRate }} {{translate('point')}} = {{Helpers::currency_converter(1)}}
+                                {{ $loyaltyPointExchangeRate }} {{translate('point')}} = {{webCurrencyConverter(1)}}
                             </span>
                         </div>
                         <div class="form-row">

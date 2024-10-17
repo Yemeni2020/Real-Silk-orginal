@@ -10,6 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 class WithdrawStatusUpdateListener
 {
     use PushNotificationTrait;
+
     /**
      * Create the event listener.
      */
@@ -25,6 +26,7 @@ class WithdrawStatusUpdateListener
     {
         $this->sendNotification($event);
     }
+
     public function sendNotification($event): void
     {
         $key = $event->key;
@@ -32,6 +34,6 @@ class WithdrawStatusUpdateListener
         $lang = $event->lang;
         $status = $event->status;
         $fcmToken = $event->fcmToken;
-        $this->withdrawStatusUpdateNotification(key: $key, type: $type, lang: $lang, status: $status,fcmToken: $fcmToken);
+        $this->withdrawStatusUpdateNotification(key: $key, type: $type, lang: $lang, status: $status, fcmToken: $fcmToken);
     }
 }

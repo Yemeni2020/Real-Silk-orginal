@@ -37,7 +37,7 @@ class ProductController extends Controller
     public function stock_out_list(Request $request)
     {
         $data = Helpers::get_seller_by_token($request);
-        $stock_limit = Helpers::get_business_settings('stock_limit');
+        $stock_limit = getWebConfig(name: 'stock_limit');
 
         if ($data['success'] == 1) {
             $seller = $data['data'];
@@ -71,7 +71,7 @@ class ProductController extends Controller
         ]);
 
         if ($validator->errors()->count() > 0) {
-            return response()->json(['errors' => Helpers::error_processor($validator)]);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
         }
 
         $path = $request['type'] == 'product' ? '' : $request['type'] . '/';
@@ -99,7 +99,7 @@ class ProductController extends Controller
             ]);
 
             if ($validator->errors()->count() > 0) {
-                return response()->json(['errors' => Helpers::error_processor($validator)]);
+                return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
             }
 
             $file = ImageManager::file_upload('product/digital-product/', $request->digital_file_ready->getClientOriginalExtension(), $request->file('digital_file_ready'));
@@ -283,7 +283,7 @@ class ProductController extends Controller
         }
 
         if ($validator->errors()->count() > 0) {
-            return response()->json(['errors' => Helpers::error_processor($validator)]);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
         }
 
         //combinations end
@@ -303,7 +303,7 @@ class ProductController extends Controller
 
         $product->video_provider = 'youtube';
         $product->video_url = $request->video_link;
-        $product->request_status = Helpers::get_business_settings('new_product_approval') == 1 ? 0 : 1;
+        $product->request_status = getWebConfig(name: 'new_product_approval') == 1 ? 0 : 1;
         $product->status = 0;
         $product->shipping_cost  = $request->product_type == 'physical' ? Convert::usd($request->shipping_cost) : 0;
         $product->multiply_qty = ($request->product_type == 'physical') ? ($request->multiplyQTY == 1 ? 1 : 0) : 0;
@@ -535,7 +535,7 @@ class ProductController extends Controller
         }
 
         if ($validator->errors()->count() > 0) {
-            return response()->json(['errors' => Helpers::error_processor($validator)]);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
         }
 
         //combinations end
@@ -552,10 +552,10 @@ class ProductController extends Controller
         $product->meta_title        = $request->meta_title;
         $product->meta_description  = $request->meta_description;
 
-        $product->shipping_cost     = $request->product_type == 'physical' ? (Helpers::get_business_settings('product_wise_shipping_cost_approval') == 1 ? $product->shipping_cost : Convert::usd($request->shipping_cost)) : 0;
+        $product->shipping_cost     = $request->product_type == 'physical' ? (getWebConfig(name: 'product_wise_shipping_cost_approval') == 1 ? $product->shipping_cost : Convert::usd($request->shipping_cost)) : 0;
         $product->multiply_qty      = ($request->product_type == 'physical') ? ($request->multiplyQTY == 1 ? 1 : 0) : 0;
 
-        if (Helpers::get_business_settings('product_wise_shipping_cost_approval') == 1 && ($product->shipping_cost != Convert::usd($request->shipping_cost)) && ($request->product_type == 'physical')) {
+        if (getWebConfig(name: 'product_wise_shipping_cost_approval') == 1 && ($product->shipping_cost != Convert::usd($request->shipping_cost)) && ($request->product_type == 'physical')) {
             $product->temp_shipping_cost = Convert::usd($request->shipping_cost);
             $product->is_shipping_cost_updated = 0;
         }

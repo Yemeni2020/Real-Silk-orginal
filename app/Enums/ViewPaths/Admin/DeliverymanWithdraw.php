@@ -7,7 +7,8 @@ enum DeliverymanWithdraw
 
     const LIST = [
         URI => 'withdraw-list',
-        VIEW => 'admin-views.delivery-man.withdraw.withdraw_list'
+        VIEW => 'admin-views.delivery-man.withdraw.index',
+        TABLE_VIEW=> 'admin-views.delivery-man.withdraw._table',
     ];
 
     const EXPORT_LIST = [
@@ -17,11 +18,11 @@ enum DeliverymanWithdraw
 
     const VIEW = [
         URI => 'withdraw-view',
-        VIEW => 'admin-views.delivery-man.withdraw.withdraw-view'
+        VIEW => 'admin-views.delivery-man.withdraw._details'
     ];
 
     const UPDATE = [
-        URI => 'withdraw-status',
+        URI => 'withdraw-update-status',
         VIEW => ''
     ];
 

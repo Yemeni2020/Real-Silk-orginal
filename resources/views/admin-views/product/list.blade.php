@@ -7,7 +7,7 @@
 
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex gap-2">
-                <img src="{{ asset('public/assets/back-end/img/inhouse-product-list.png') }}" alt="">
+                <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/inhouse-product-list.png') }}" alt="">
                 @if($type == 'in_house')
                     {{ translate('in_House_Product_List') }}
                 @elseif($type == 'seller')
@@ -125,7 +125,7 @@
                                         </div>
                                         <input id="datatableSearch_" type="search" name="searchValue"
                                                class="form-control"
-                                               placeholder="{{ translate('search_Product_Name') }}"
+                                               placeholder="{{ translate('search_by_Product_Name') }}"
                                                aria-label="Search orders"
                                                value="{{ request('searchValue') }}">
                                         <input type="hidden" value="{{ request('status') }}" name="status">
@@ -135,7 +135,7 @@
                             </div>
                             <div class="col-lg-8 mt-3 mt-lg-0 d-flex flex-wrap gap-3 justify-content-lg-end">
 
-                                <div>
+                                <div class="dropdown">
                                     <button type="button" class="btn btn-outline--primary" data-toggle="dropdown">
                                         <i class="tio-download-to"></i>
                                         {{ translate('export') }}
@@ -145,7 +145,7 @@
                                         <li>
                                             <a class="dropdown-item"
                                                href="{{ route('admin.products.export-excel',['type'=>request('type')]) }}?brand_id={{request('brand_id') }}&searchValue={{ request('searchValue') }}&category_id={{request('category_id') }}&sub_category_id={{request('sub_category_id') }}&sub_sub_category_id={{request('sub_sub_category_id') }}&seller_id={{request('seller_id') }}&status={{request('status') }}">
-                                                <img width="14" src="{{ asset('/public/assets/back-end/img/excel.png') }}"
+                                                <img width="14" src="{{ dynamicAsset(path: 'public/assets/back-end/img/excel.png') }}"
                                                      alt="">
                                                 {{ translate('excel') }}
                                             </a>
@@ -173,8 +173,8 @@
                             <tr>
                                 <th>{{ translate('SL') }}</th>
                                 <th>{{ translate('product Name') }}</th>
-                                <th class="text-right">{{ translate('product Type') }}</th>
-                                <th class="text-right">{{ translate('selling_price') }}</th>
+                                <th class="text-center">{{ translate('product Type') }}</th>
+                                <th class="text-center">{{ translate('unit_price') }}</th>
                                 <th class="text-center">{{ translate('show_as_featured') }}</th>
                                 <th class="text-center">{{ translate('active_status') }}</th>
                                 <th class="text-center">{{ translate('action') }}</th>
@@ -185,19 +185,19 @@
                                 <tr>
                                     <th scope="row">{{ $products->firstItem()+$key}}</th>
                                     <td>
-                                        <a href="{{ route('admin.products.view',[$product['id']]) }}"
+                                        <a href="{{ route('admin.products.view',['addedBy'=>($product['added_by']=='seller'?'vendor' : 'in-house'),'id'=>$product['id']]) }}"
                                            class="media align-items-center gap-2">
-                                            <img src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$product['thumbnail'], type: 'backend-product') }}"
+                                            <img src="{{ getStorageImages(path: $product->thumbnail_full_url, type: 'backend-product') }}"
                                                  class="avatar border" alt="">
                                             <span class="media-body title-color hover-c1">
                                             {{ Str::limit($product['name'], 20) }}
                                         </span>
                                         </a>
                                     </td>
-                                    <td class="text-right">
+                                    <td class="text-center">
                                         {{ translate(str_replace('_',' ',$product['product_type'])) }}
                                     </td>
-                                    <td class="text-right">
+                                    <td class="text-center">
                                         {{setCurrencySymbol(amount: usdToDefaultCurrency(amount: $product['unit_price']), currencyCode: getCurrencyCode()) }}
                                     </td>
                                     <td class="text-center">
@@ -255,7 +255,7 @@
                                                 <i class="tio-barcode"></i>
                                             </a>
                                             <a class="btn btn-outline-info btn-sm square-btn" title="View"
-                                               href="{{ route('admin.products.view',[$product['id']]) }}">
+                                               href="{{ route('admin.products.view',['addedBy'=>($product['added_by']=='seller'?'vendor' : 'in-house'),'id'=>$product['id']]) }}">
                                                 <i class="tio-invisible"></i>
                                             </a>
                                             <a class="btn btn-outline--primary btn-sm square-btn"
@@ -287,17 +287,11 @@
                     </div>
 
                     @if(count($products)==0)
-                        <div class="text-center p-4">
-                            <img class="mb-3 w-160"
-                                 src="{{ asset('public/assets/back-end/svg/illustrations/sorry.svg') }}"
-                                 alt="{{translate('image_description')}}">
-                            <p class="mb-0">{{ translate('no_data_to_show') }}</p>
-                        </div>
+                        @include('layouts.back-end._empty-state',['text'=>'no_product_found'],['image'=>'default'])
                     @endif
                 </div>
             </div>
         </div>
     </div>
-
     <span id="message-select-word" data-text="{{ translate('select') }}"></span>
 @endsection

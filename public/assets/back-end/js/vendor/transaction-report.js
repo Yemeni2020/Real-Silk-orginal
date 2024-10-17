@@ -56,10 +56,10 @@ var options = {
         type: 'donut',
     },
     labels: [
-        "'" + $('#digital_payment_text').data('text') + "'" + $('#currency_symbol').data('text') + " " + $('#digital_payment_format').data('text') + "'",
-        "'" + $('#cash_payment_text').data('text') + "'" + $('#currency_symbol').data('text') + " " + $('#cash_payment_format').data('text') + "'",
-        "'" + $('#wallet_payment_text').data('text') + "'" + $('#currency_symbol').data('text') + " " + $('#wallet_payment_format').data('text') + "'",
-        "'" + $('#offline_payment_text').data('text') + "'" + $('#currency_symbol').data('text') + " " + $('#offline_payment_format').data('text') + "'",
+        $('#digital_payment_text').data('text') + " " + $('#currency_symbol').data('text') + " " + $('#digital_payment_format').data('text') + " ",
+        $('#cash_payment_text').data('text') + " " + $('#currency_symbol').data('text') + " " + $('#cash_payment_format').data('text') + " ",
+        $('#wallet_payment_text').data('text') + " " + $('#currency_symbol').data('text') + " " + $('#wallet_payment_format').data('text') + " ",
+        $('#offline_payment_text').data('text') + " " + $('#currency_symbol').data('text') + " " + $('#offline_payment_format').data('text') + " ",
     ],
     dataLabels: {
         enabled: false,

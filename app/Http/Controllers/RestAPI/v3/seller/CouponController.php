@@ -5,7 +5,7 @@ namespace App\Http\Controllers\RestAPI\v3\seller;
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
 use App\Models\Order;
-use App\User;
+use App\Models\User;
 use App\Utils\Convert;
 use App\Utils\Helpers;
 use Carbon\Carbon;
@@ -62,7 +62,7 @@ class CouponController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => Helpers::error_processor($validator)], 403);
+            return response()->json(['message' => Helpers::validationErrorProcessor($validator)], 403);
         }
 
         $coupon = new Coupon();

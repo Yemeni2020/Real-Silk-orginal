@@ -80,7 +80,7 @@ class WithdrawalMethodController extends BaseController
         }
 
         Toastr::success(translate('withdrawal_method_added_successfully'));
-        return redirect()->route('admin.sellers.withdraw-method.list');
+        return redirect()->route('admin.vendors.withdraw-method.list');
     }
 
     public function delete($id): RedirectResponse
@@ -134,6 +134,6 @@ class WithdrawalMethodController extends BaseController
             $this->withdrawalMethodRepo->update(id:$withdrawalMethod['id'], data: ['is_active' => 1]);
         }
         Toastr::success(translate('withdrawal_method_added_successfully'));
-        return redirect()->route('admin.sellers.withdraw-method.list');
+        return redirect()->route('admin.vendors.withdraw-method.list');
     }
 }

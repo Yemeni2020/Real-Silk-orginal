@@ -11,8 +11,19 @@ class EmergencyContactService
     {
         return [
             'user_id' => $id,
+            'country_code' => $request['country_code'],
             'name' => $request['name'],
             'phone' => $request['phone'],
+            'status' => 1,
+        ];
+    }
+    public function getEmergencyContactUpdateData(object $request):array
+    {
+        return [
+            'country_code' => $request['country_code'],
+            'name' => $request['name'],
+            'phone' => $request['phone'],
+            'updated_at' =>now(),
         ];
     }
 }

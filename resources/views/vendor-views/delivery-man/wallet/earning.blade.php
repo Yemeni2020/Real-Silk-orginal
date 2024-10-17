@@ -10,7 +10,7 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{asset('/public/assets/back-end/img/add-new-seller.png')}}" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/add-new-seller.png')}}" alt="">
                 {{translate('earning_Statement')}}
             </h2>
         </div>
@@ -30,22 +30,24 @@
                     <div class="col-sm-6 col-lg-4">
                         <div class="business-analytics">
                             <h5 class="business-analytics__subtitle">{{ translate('total_earning') }}</h5>
-                            <h2 class="business-analytics__title">{{ $totalEarn ? setCurrencySymbol(amount: usdToDefaultCurrency(amount: $totalEarn), currencyCode: getCurrencyCode()) : setCurrencySymbol(amount: 0, currencyCode: getCurrencyCode()) }}</h2>
-                            <img src="{{ asset('public/assets/back-end/img/aw.png') }}" width="40" class="business-analytics__img" alt="">
+                            <h2 class="business-analytics__title">
+                                {{ $totalEarn ? setCurrencySymbol(amount: usdToDefaultCurrency(amount: $totalEarn), currencyCode: getCurrencyCode()) : setCurrencySymbol(amount: 0, currencyCode: getCurrencyCode()) }}
+                            </h2>
+                            <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/aw.png') }}" width="40" class="business-analytics__img" alt="">
                         </div>
                     </div>
                     <div class="col-sm-6 col-lg-4">
                         <div class="business-analytics">
                             <h5 class="business-analytics__subtitle">{{ translate('withdrawable_balance') }}</h5>
                             <h2 class="business-analytics__title">{{ $withdrawableBalance? setCurrencySymbol(amount: usdToDefaultCurrency(amount: $withdrawableBalance)) : setCurrencySymbol(amount: 0) }}</h2>
-                            <img src="{{ asset('public/assets/back-end/img/pw.png') }}" width="40" class="business-analytics__img" alt="">
+                            <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/pw.png') }}" width="40" class="business-analytics__img" alt="">
                         </div>
                     </div>
                     <div class="col-sm-6 col-lg-4">
                         <div class="business-analytics">
                             <h5 class="business-analytics__subtitle">{{ translate('withdrawn') }}</h5>
                             <h2 class="business-analytics__title">{{ $deliveryMan->wallet? setCurrencySymbol(amount: usdToDefaultCurrency(amount: $deliveryMan->wallet->total_withdraw), currencyCode: getCurrencyCode()) : setCurrencySymbol(amount: 0, currencyCode: getCurrencyCode()) }}</h2>
-                            <img src="{{ asset('public/assets/back-end/img/withdraw.png') }}" width="40" class="business-analytics__img" alt="">
+                            <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/withdraw.png') }}" width="40" class="business-analytics__img" alt="">
                         </div>
                     </div>
                 </div>
@@ -57,7 +59,7 @@
                     <div class="row align-items-center">
                         <div class="col-md-4 col-lg-6 mb-2 mb-md-0">
                             <h4 class="d-flex align-items-center text-capitalize gap-10 mb-0">
-                                {{ translate('earning_statement') }}
+                                {{ translate('earning_history') }}
                                 <span class="badge badge-soft-dark radius-50 fz-12 ml-1">{{ $orders->total() }}</span>
                             </h4>
                         </div>
@@ -96,7 +98,7 @@
                                     </thead>
 
                                     <tbody id="set-rows">
-                                    @forelse($orders as $key=>$order)
+                                    @foreach($orders as $key=>$order)
                                         <tr>
                                             <td>{{ $orders->firstItem()+$key }}</td>
                                             <td>
@@ -142,16 +144,7 @@
                                             </td>
 
                                         </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4">
-                                                <div class="text-center p-4">
-                                                    <img class="mb-3 w-160" src="{{ asset('public/assets/back-end/svg/illustrations/sorry.svg') }}" alt="Image Description">
-                                                    <p class="mb-0">{{ translate('no_earning_history_found') }}</p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforelse
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -160,6 +153,9 @@
                                     {{ $orders->links() }}
                                 </div>
                             </div>
+                            @if(count($orders)==0)
+                                @include('layouts.back-end._empty-state',['text'=>'no_order_found'],['image'=>'default'])
+                            @endif
                         </div>
                     </div>
                 </div>

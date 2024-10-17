@@ -8,5 +8,9 @@ enum EnvironmentSettings
         URI => 'environment-setup',
         VIEW => 'admin-views.business-settings.environment-index'
     ];
+    const FORCE_HTTPS = [
+        URI => 'environment-update-force-https',
+        VIEW => ''
+    ];
 
 }

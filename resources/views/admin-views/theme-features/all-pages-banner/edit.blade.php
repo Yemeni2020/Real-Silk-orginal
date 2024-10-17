@@ -8,7 +8,7 @@
 
         <div class="pb-2 mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{asset('public/assets/back-end/img/business-setup.png')}}" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/business-setup.png')}}" alt="">
                 {{translate('all_Pages_Banner')}}
             </h2>
         </div>
@@ -49,11 +49,12 @@
                                             <option value="banner_refund_policy" {{ $banner->type == "banner_refund_policy"?"selected":"" }}>{{ translate('Refund_Policy')}}</option>
                                             <option value="banner_return_policy" {{ $banner->type == "banner_return_policy"?"selected":"" }}>{{ translate('Return_Policy')}}</option>
                                             <option value="banner_cancellation_policy" {{ $banner->type == "banner_cancellation_policy"?"selected":"" }}>{{ translate('Cancellation_Policy')}}</option>
+                                            <option value="banner_shipping_policy" {{ $banner->type == "banner_shipping_policy"?"selected":"" }}>{{ translate('Shipping_Policy')}}</option>
                                             <option value="banner_about_us" {{ $banner->type == "banner_about_us"?"selected":"" }}>{{ translate('About_us')}}</option>
                                             <option value="banner_faq_page" {{ $banner->type == "banner_faq_page"?"selected":"" }}>{{ translate('FAQ')}}</option>
                                         </select>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group mb-0">
                                         <label for="name"
                                             class="title-color text-capitalize">{{ translate('image')}}</label>
                                         <span class="text-info">( {{ translate('ratio')}} 6:1 )</span>
@@ -68,16 +69,16 @@
                                 </div>
                                 <div class="col-md-6 d-flex flex-column justify-content-end">
                                     <div>
-                                        <div class="mb-30 mx-auto ratio-6:1 overflow-hidden d-flex justify-content-center align-items-center">
+                                        <div class="mx-auto ratio-5-1 rounded overflow-hidden d-flex justify-content-center align-items-center">
                                             <img
-                                                class="ratio-6:1" id="banner-image-view"
-                                                src="{{ getValidImage(path:'storage/app/public/banner/'.json_decode($banner['value'])->image,type: 'backend-basic')}}"
+                                                class="ratio-5-1 rounded" id="banner-image-view"
+                                                src="{{ getStorageImages(path:imagePathProcessing(imageData: json_decode($banner['value'])->image,path: 'banner'),type: 'backend-basic')}}"
                                                 alt=""/>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-12 d-flex justify-content-end flex-wrap gap-10">
-                                    <button class="btn btn-secondary cancel px-4" type="reset">{{ translate('reset')}}</button>
+                                    <button class="btn btn-secondary px-4" type="reset">{{ translate('reset')}}</button>
                                     <button id="update" type="submit" class="btn btn--primary text-white">{{ translate('update')}}</button>
                                 </div>
                             </div>
@@ -91,5 +92,5 @@
 @endsection
 
 @push('script')
-    <script src="{{ asset('public/assets/back-end/js/banner.js') }}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/banner.js') }}"></script>
 @endpush

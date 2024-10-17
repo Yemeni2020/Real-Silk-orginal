@@ -11,13 +11,14 @@ use App\Models\DeliveryZipCode;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Traits\CommonTrait;
-use App\User;
+use App\Models\User;
 use App\Utils\BackEndHelper;
 use App\Utils\Convert;
 use App\Utils\CustomerManager;
 use App\Utils\Helpers;
 use App\Utils\ImageManager;
 use App\Utils\OrderManager;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -38,20 +39,32 @@ class OrderController extends Controller
         $seller = $request->seller;
         $status = $request->status;
 
-        $orders = Order::with('offlinePayments')->with(['customer','shipping', 'deliveryMan'])
-            ->when($status !='all', function($q) use($status){
-                $q->where(function($query) use ($status){
-                    $query->orWhere('order_status',$status);
+        $orders = Order::with('offlinePayments')->with(['customer', 'shipping', 'deliveryMan', 'orderDetails'])
+            ->when($status != 'all', function ($q) use ($status) {
+                $q->where(function ($query) use ($status) {
+                    $query->orWhere('order_status', $status);
                 });
             })
-            ->where(['seller_is'=>'seller', 'seller_id' => $seller['id']])
+            ->where(['seller_is' => 'seller', 'seller_id' => $seller['id']])
             ->latest()
             ->paginate($request['limit'], ['*'], 'page', $request['offset']);
 
-        $orders->map(function ($data) {
-            if(isset($data['offlinePayments'])){
+        $orders?->map(function ($data) {
+            if (isset($data['offlinePayments'])) {
                 $data['offlinePayments']->payment_info = $data->offlinePayments->payment_info;
             }
+
+            $totalTaxAmount = 0;
+            $totalProductPrice = 0;
+            $totalProductDiscount = 0;
+            if (isset($data['orderDetails']) && count($data['orderDetails']) > 0) {
+                $totalTaxAmount = $data['orderDetails']->sum('tax');
+                $totalProductPrice = $data['orderDetails']->sum('price');
+                $totalProductDiscount = $data['orderDetails']->sum('discount');
+            }
+            $data['total_tax_amount'] = $totalTaxAmount;
+            $data['total_product_price'] = $totalProductPrice;
+            $data['total_product_discount'] = $totalProductDiscount;
             return $data;
         });
 
@@ -63,16 +76,21 @@ class OrderController extends Controller
         ], 200);
     }
 
-    public function details(Request $request, $id)
+    public function details(Request $request, $id): JsonResponse
     {
         $seller = $request->seller;
-
-        $details = OrderDetail::with('order.customer','order.deliveryMan','verificationImages')->where(['seller_id' => $seller['id'], 'order_id' => $id])->get();
-        foreach ($details as $det) {
-            $det['product_details'] = Helpers::product_data_formatting(json_decode($det['product_details'], true));
+        $detailsList = OrderDetail::with('order.customer', 'order.deliveryMan', 'verificationImages')->where(['seller_id' => $seller['id'], 'order_id' => $id])->get();
+        foreach ($detailsList as $detail) {
+            $product = json_decode($detail['product_details'], true);
+            $product['thumbnail_full_url'] = $detail?->productAllStatus?->thumbnail_full_url;
+            if (isset($product['product_type']) && $product['product_type'] == 'digital' && $product['digital_product_type'] == 'ready_product' && $product['digital_file_ready']) {
+                $checkFilePath = storageLink('product/digital-product', $product['digital_file_ready'], ($product['storage_path'] ?? 'public'));
+                $product['digital_file_ready_full_url'] = $checkFilePath;
+            }
+            $detail['product_details'] = Helpers::product_data_formatting_for_json_data($product);
         }
 
-        return response()->json($details, 200);
+        return response()->json($detailsList, 200);
     }
 
     public function assign_delivery_man(Request $request)
@@ -84,11 +102,11 @@ class OrderController extends Controller
         ]);
 
         if ($validator->errors()->count() > 0) {
-            return response()->json(['errors' => Helpers::error_processor($validator)]);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
         }
 
         $seller = $request->seller;
-        $order = Order::where(['seller_id' => $seller['id'], 'id' => $request['order_id']])->first();
+        $order = Order::with('deliveryMan')->where(['seller_id' => $seller['id'], 'id' => $request['order_id']])->first();
 
         $order->delivery_man_id = $request['delivery_man_id'];
         $order->delivery_type = 'self_delivery';
@@ -104,7 +122,7 @@ class OrderController extends Controller
 
         $deliveryman_charge = $request->deliveryman_charge;
 
-        $order = Order::find($request->order_id);
+        $order = Order::with('deliveryMan')->find($request->order_id);
         $db_expected_date  = $order->expected_delivery_date;
 
         $order->deliveryman_charge = $deliveryman_charge;
@@ -144,7 +162,7 @@ class OrderController extends Controller
         ]);
 
         if ($validator->errors()->count() > 0) {
-            return response()->json(['errors' => Helpers::error_processor($validator)]);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
         }
 
         $order_details = OrderDetail::find($request->order_id);
@@ -160,38 +178,34 @@ class OrderController extends Controller
     public function order_detail_status(Request $request)
     {
         $seller = $request->seller;
-
-        $order = Order::find($request->id);
+        $order = Order::with(['customer','seller.shop', 'deliveryMan'])->find($request->id);
         if(!$order->is_guest && empty($order->customer))
         {
             return response()->json(['success' => 0, 'message' => translate("Customer_account_has_been_deleted").' '.translate("you_cant_update_status")], 202);
         }
 
-        $wallet_status = Helpers::get_business_settings('wallet_status');
-        $loyalty_point_status = Helpers::get_business_settings('loyalty_point_status');
-
-        if($request->order_status=='delivered' && $order->payment_status !='paid'){
-
-            return response()->json(['success' => 0, 'message' => translate('Before delivered you need to make payment status paid!')],200);
-        }
+        $wallet_status = getWebConfig(name: 'wallet_status');
+        $loyalty_point_status = getWebConfig(name: 'loyalty_point_status');
 
         if ($order->order_status == 'delivered') {
             return response()->json(['success' => 0, 'message' => translate('order is already delivered')], 200);
         }
 
-        OrderStatusEvent::dispatch($request['order_status'], 'customer', $order);
+        event(new OrderStatusEvent(key: $request['order_status'], type: 'customer', order: $order));
         if ($request->order_status == 'canceled'){
-            OrderStatusEvent::dispatch('canceled', 'delivery_man', $order);
+            event(new OrderStatusEvent(key: 'canceled', type: 'delivery_man', order: $order));
         }
 
 
         $order->order_status = $request->order_status;
+        if ($request->order_status == 'delivered'){
+            $order->payment_status = 'paid';
+            OrderDetail::where('order_id', $order->id)->update(['delivery_status'=>'delivered','payment_status'=>'paid']);
+        }
         OrderManager::stock_update_on_order_status_change($order, $request->order_status);
         if ($request->order_status == 'delivered' && $order['seller_id'] != null) {
             OrderManager::wallet_manage_on_order_status_change($order, 'seller');
-            OrderDetail::where('order_id', $order->id)->update(
-                ['delivery_status'=>'delivered']
-            );
+
         }
 
         $order->save();
@@ -203,14 +217,14 @@ class OrderController extends Controller
             if (empty($dm_wallet)) {
                 DeliverymanWallet::create([
                     'delivery_man_id' => $order->delivery_man_id,
-                    'current_balance' => BackEndHelper::currency_to_usd($order->deliveryman_charge) ?? 0,
-                    'cash_in_hand' => BackEndHelper::currency_to_usd($cash_in_hand),
+                    'current_balance' => $order?->deliveryman_charge ?? 0,
+                    'cash_in_hand' => $cash_in_hand,
                     'pending_withdraw' => 0,
                     'total_withdraw' => 0,
                 ]);
             } else {
-                $dm_wallet->current_balance += BackEndHelper::currency_to_usd($order->deliveryman_charge) ?? 0;
-                $dm_wallet->cash_in_hand += BackEndHelper::currency_to_usd($cash_in_hand);
+                $dm_wallet->current_balance += $order?->deliveryman_charge ?? 0;
+                $dm_wallet->cash_in_hand += $cash_in_hand;
                 $dm_wallet->save();
             }
 
@@ -219,7 +233,7 @@ class OrderController extends Controller
                     'delivery_man_id' => $order->delivery_man_id,
                     'user_id' => $seller->id,
                     'user_type' => 'seller',
-                    'credit' => BackEndHelper::currency_to_usd($order->deliveryman_charge) ?? 0,
+                    'credit' => $order?->deliveryman_charge ?? 0,
                     'transaction_id' => Uuid::uuid4(),
                     'transaction_type' => 'deliveryman_charge'
                 ]);
@@ -228,7 +242,7 @@ class OrderController extends Controller
 
         if(!$order->is_guest && $wallet_status == 1 && $loyalty_point_status == 1)
         {
-            if($request->order_status == 'delivered' && $order->payment_status =='paid'){
+            if($request->order_status == 'delivered'){
                 CustomerManager::create_loyalty_point_transaction($order->customer_id, $order->id, Convert::default($order->order_amount-$order->shipping_cost), 'order_place');
             }
         }
@@ -236,7 +250,7 @@ class OrderController extends Controller
         $ref_earning_status = BusinessSetting::where('type', 'ref_earning_status')->first()->value ?? 0;
         $ref_earning_exchange_rate = BusinessSetting::where('type', 'ref_earning_exchange_rate')->first()->value ?? 0;
 
-        if(!$order->is_guest && $wallet_status == 1 && $ref_earning_status == 1 && $request->order_status == 'delivered' && $order->payment_status =='paid'){
+        if(!$order->is_guest && $wallet_status == 1 && $ref_earning_status == 1 && $request->order_status == 'delivered'){
 
             $customer = User::find($order->customer_id);
             $is_first_order = Order::where(['customer_id'=>$order->customer_id,'order_status'=>'delivered','payment_status'=>'paid'])->count();
@@ -260,7 +274,7 @@ class OrderController extends Controller
         ]);
 
         if ($validator->errors()->count() > 0) {
-            return response()->json(['errors' => Helpers::error_processor($validator)]);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
         }
 
         $order = Order::find($request->order_id);
@@ -278,19 +292,28 @@ class OrderController extends Controller
     public function update_payment_status(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'order_id'=>'required',
+            'order_id' => 'required',
             'payment_status' => 'required|in:paid,unpaid'
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)], 403);
         }
-
+        if ($request->payment_status != 'paid') {
+            return response()->json(['success' => 0, 'message' => translate('When payment status paid then you can`t change payment status paid to unpaid') . '.'], 200);
+        }
         $order = Order::find($request['order_id']);
         if (isset($order)) {
-            if($order->is_guest=='0' && empty($order->customer))
-            {
+            if ($order->is_guest == '0' && empty($order->customer)) {
                 return response()->json(['success' => 0, 'message' => translate("Customer account has been deleted. you can't update status!")], 202);
+            }
+
+            if ($order['payment_method'] == 'cash_on_delivery' && $order['order_status'] != 'delivered' && $request['payment_status'] == 'paid') {
+                return response()->json([
+                    'errors' => [
+                        ['code' => 'order', 'message' => translate('Can not change payment status before order delivered!')]
+                    ]
+                ], 404);
             }
 
             $order->payment_status = $request['payment_status'];

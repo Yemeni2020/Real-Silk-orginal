@@ -5,10 +5,10 @@
     @php($total_shipping_cost=0)
     @php($order_wise_shipping_discount=CartManager::order_wise_shipping_discount())
     @php($total_discount_on_product=0)
-    @php($cart=CartManager::get_cart())
+    @php($cart=CartManager::get_cart(type: 'checked'))
     @php($cart_group_ids=CartManager::get_cart_group_ids())
-    @php($shipping_cost=CartManager::get_shipping_cost())
-    @php($get_shipping_cost_saved_for_free_delivery=CartManager::get_shipping_cost_saved_for_free_delivery())
+    @php($shipping_cost=CartManager::get_shipping_cost(type: 'checked'))
+    @php($get_shipping_cost_saved_for_free_delivery=CartManager::get_shipping_cost_saved_for_free_delivery(type: 'checked'))
     @php($coupon_discount = session()->has('coupon_discount')?session('coupon_discount'):0)
     @php($coupon_dis=session()->has('coupon_discount')?session('coupon_discount'):0)
     @if($cart->count() > 0)
@@ -45,7 +45,7 @@
         </div>
 
         <h4 class="text-center py-3 fw-6 font-weight--600">
-            {{ translate('amount').' '.':' }} {{ Helpers::currency_converter($total_offline_amount) }}
+            {{ translate('amount').' '.':' }} {{ webCurrencyConverter($total_offline_amount) }}
         </h4>
 
         <div class="row">

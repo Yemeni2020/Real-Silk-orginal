@@ -42,16 +42,16 @@ class OrderReportExport implements FromView, ShouldAutoSize, WithStyles,WithColu
 
     public function styles(Worksheet $sheet) {
         $sheet->getStyle('A1:A2')->getFont()->setBold(true);
-        $sheet->getStyle('A3:I3')->getFont()->setBold(true)->getColor()
+        $sheet->getStyle('A3:J3')->getFont()->setBold(true)->getColor()
         ->setARGB('FFFFFF');
 
 
-        $sheet->getStyle('A3:I3')->getFill()->applyFromArray([
+        $sheet->getStyle('A3:J3')->getFill()->applyFromArray([
             'fillType' => 'solid',
             'rotation' => 0,
             'color' => ['rgb' => '063C93'],
         ]);
-        $sheet->getStyle('I4:I'.$this->data['orders']->count() + 4)->getFill()->applyFromArray([
+        $sheet->getStyle('J4:J'.$this->data['orders']->count() + 3)->getFill()->applyFromArray([
             'fillType' => 'solid',
             'rotation' => 0,
             'color' => ['rgb' => 'FFF9D1'],
@@ -60,7 +60,7 @@ class OrderReportExport implements FromView, ShouldAutoSize, WithStyles,WithColu
         $sheet->setShowGridlines(false);
         return [
             // Define the style for cells with data
-            'A1:I'.$this->data['orders']->count() + 4 => [
+            'A1:J'.$this->data['orders']->count() + 3 => [
                 'borders' => [
                     'allBorders' => [
                         'borderStyle' => Border::BORDER_THIN,
@@ -75,22 +75,22 @@ class OrderReportExport implements FromView, ShouldAutoSize, WithStyles,WithColu
     {
         return [
             AfterSheet::class => function(AfterSheet $event) {
-                $event->sheet->getStyle('A1:I1') // Adjust the range as per your needs
+                $event->sheet->getStyle('A1:J1') // Adjust the range as per your needs
                     ->getAlignment()
                     ->setHorizontal(Alignment::HORIZONTAL_CENTER)
                     ->setVertical(Alignment::VERTICAL_CENTER);
-                $event->sheet->getStyle('A3:I'.$this->data['orders']->count() + 4) // Adjust the range as per your needs
+                $event->sheet->getStyle('A3:J'.$this->data['orders']->count() + 3) // Adjust the range as per your needs
                     ->getAlignment()
                     ->setHorizontal(Alignment::HORIZONTAL_CENTER)
                     ->setVertical(Alignment::VERTICAL_CENTER);
-                $event->sheet->getStyle('A2:I2') // Adjust the range as per your needs
+                $event->sheet->getStyle('A2:J2') // Adjust the range as per your needs
                     ->getAlignment()
                     ->setHorizontal(Alignment::HORIZONTAL_LEFT)
                     ->setVertical(Alignment::VERTICAL_CENTER);
 
-                    $event->sheet->mergeCells('A1:G1');
+                    $event->sheet->mergeCells('A1:J1');
                     $event->sheet->mergeCells('A2:B2');
-                    $event->sheet->mergeCells('C2:I2');
+                    $event->sheet->mergeCells('C2:J2');
                     $event->sheet->getRowDimension(2)->setRowHeight(80);
                     $event->sheet->getDefaultRowDimension()->setRowHeight(30);
             },

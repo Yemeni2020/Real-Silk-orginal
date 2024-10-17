@@ -121,7 +121,7 @@ class PaymentConfigProvider extends ServiceProvider
 
 
             //paytm
-            $paytm = Helpers::get_business_settings('paytm');
+            $paytm = getWebConfig(name: 'paytm');
             if (isset($paytm)) {
 
                 $PAYTM_STATUS_QUERY_NEW_URL='https://securegw-stage.paytm.in/merchant-status/getTxnStatus';

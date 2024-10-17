@@ -25,8 +25,8 @@ enum Coupon
         VIEW => 'admin-views.coupon.edit'
     ];
 
-    const SELLER_LIST = [
-        URI => 'ajax-get-seller',
+    const VENDOR_LIST = [
+        URI => 'ajax-get-vendor',
         VIEW => ''
     ];
 

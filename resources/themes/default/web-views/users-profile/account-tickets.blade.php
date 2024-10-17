@@ -25,7 +25,7 @@
                         @csrf
                         <div class="form-row">
                             <div class="form-group col-md-12">
-                                <label for="firstName">{{translate('subject')}}</label>
+                                <label class="font-semibold" for="firstName">{{translate('subject')}}</label>
                                 <input type="text" class="form-control" id="ticket-subject" name="ticket_subject"
                                        required>
                             </div>
@@ -33,7 +33,7 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <div class="">
-                                    <label class="" for="inlineFormCustomSelect">{{translate('type')}}</label>
+                                    <label class="font-semibold" for="inlineFormCustomSelect">{{translate('type')}}</label>
                                     <select class="custom-select " id="ticket-type" name="ticket_type" required>
                                         <option
                                             value="Website problem">{{translate('website_problem')}}</option>
@@ -46,7 +46,7 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <div class="">
-                                    <label class="" for="inlineFormCustomSelect">{{translate('priority')}}</label>
+                                    <label class="font-semibold" for="inlineFormCustomSelect">{{translate('priority')}}</label>
                                     <select class="form-control custom-select" id="ticket-priority"
                                             name="ticket_priority" required>
                                         <option value>{{translate('choose_priority')}}</option>
@@ -60,13 +60,13 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-12">
-                                <label for="ticket-description">{{translate('describe_your_issue')}}</label>
+                                <label class="font-semibold" for="ticket-description">{{translate('describe_your_issue')}}</label>
                                 <textarea class="form-control" rows="6" id="ticket-description"
                                           name="ticket_description"></textarea>
                             </div>
                         </div>
 
-                        <label class="" for="inlineFormCustomSelect">{{translate('Attachment')}}</label>
+                        <label class="font-semibold" for="inlineFormCustomSelect">{{translate('Attachment')}}</label>
                         <div class="d-flex flex-wrap upload_images_area">
 
                             <div class="d-flex flex-wrap filearray"></div>
@@ -75,7 +75,7 @@
                             <label class="py-0 d-flex align-items-center m-0 cursor-pointer">
                                         <span class="position-relative">
                                             <img class="border rounded border-primary-light h-70px"
-                                                 src="{{asset('public/assets/front-end/img/image-place-holder.png')}}" alt="">
+                                                 src="{{theme_asset(path: 'public/assets/front-end/img/image-place-holder.png')}}" alt="">
                                         </span>
                                 <input type="file" id="attachmentfiles" class="attachmentfiles h-100 position-absolute w-100 " hidden multiple accept="image/*">
                             </label>
@@ -83,10 +83,10 @@
                         </div>
 
                         <div class="modal-footer p-0 border-0">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            <button type="button" class="btn btn-sm font-semibold btn-secondary" data-dismiss="modal">
                                 {{translate('close')}}
                             </button>
-                            <button type="submit" class="btn btn--primary">
+                            <button type="submit" class="btn btn-sm font-semibold btn--primary">
                                 {{translate('submit_a_ticket')}}
                             </button>
                         </div>
@@ -111,48 +111,59 @@
                 </div>
 
                 <div class="card __card h-100">
-                    <div class="p-md-3">
-                        <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
-                            <h5 class="mb-0">{{translate('support_ticket')}}</h5>
-                            <button type="submit" class="btn btn--primary float-end" data-toggle="modal" data-target="#open-ticket">
-                                {{translate('add_new_ticket')}}
-                            </button>
-                        </div>
-                        @if ($supportTickets->count() >0)
-                            <div class="table-responsive">
-                                <table class="table mb-0 __table-2 fs-13">
-                                    <thead class="thead-light">
+                    <div class="card-body">
+                        <div class="">
+                            <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+                                <h5 class="mb-0 fs-16 font-bold">{{ translate('support_ticket') }}</h5>
+                                <button type="submit" class="btn btn--primary btn-sm font-semibold float-end text-capitalize" data-toggle="modal" data-target="#open-ticket">
+                                    {{ translate('add_new_ticket') }}
+                                </button>
+                            </div>
+                            @if ($supportTickets->count() >0)
+                                <div class="table-responsive">
+                                    <table class="table mb-0 __table-2 fs-13">
+                                        <thead class="thead-light fs-13 font-semibold">
                                         <tr>
                                             <th class="border-0">
-                                                <span class="d-block">{{translate('topic')}}</span>
+                                                <span class="d-block fs-13 font-semibold">
+                                                    {{ translate('topic') }}
+                                                </span>
                                             </th>
                                             <th class="border-0">
-                                                <span class="d-block">{{translate('submission_date')}}</span>
+                                                <span class="d-block fs-13 font-semibold">
+                                                    {{translate('submission_date')}}
+                                                </span>
                                             </th>
                                             <th class="border-0">
-                                                <span class="d-block">{{translate('type')}}</span>
+                                                <span class="d-block fs-13 font-semibold">
+                                                    {{translate('type')}}
+                                                </span>
                                             </th>
                                             <th class="border-0">
-                                                <span class="d-block">
+                                                <span class="d-block fs-13 font-semibold">
                                                     {{translate('status')}}
                                                 </span>
                                             </th>
                                             <th class="border-0 text-center">
-                                                <span class="d-block">{{translate('action')}} </span>
+                                                <span class="d-block fs-13 font-semibold">
+                                                    {{translate('action')}}
+                                                </span>
                                             </th>
                                         </tr>
-                                    </thead>
+                                        </thead>
 
-                                    <tbody>
+                                        <tbody>
                                         @foreach($supportTickets as $ticket)
                                             <tr>
                                                 <td>
-                                                    <span class="marl">{{$ticket['subject']}}</span>
+                                                    <span class="marl fs-13 font-semibold">{{$ticket['subject']}}</span>
                                                 </td>
                                                 <td>
-                                                    <span>{{Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$ticket['created_at'])->format('Y-m-d h:i A')}}</span>
+                                                    <span class="text-secondary-50 fs-12 font-semibold">
+                                                        {{Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$ticket['created_at'])->format('Y-m-d h:i A')}}
+                                                    </span>
                                                 </td>
-                                                <td><span>{{translate($ticket['type'])}}</span></td>
+                                                <td><span class="fs-13 font-semibold">{{translate($ticket['type'])}}</span></td>
                                                 <td>
                                                     <span class="badge __badge rounded-full {{$ticket['status']=='open' ? 'badge-warning': 'badge-danger'}}">
                                                         {{translate($ticket['status'])}}
@@ -161,7 +172,7 @@
                                                 <td>
                                                     <div class="btn--container flex-nowrap justify-content-center">
                                                         <a class="__action-btn btn-shadow rounded-full text-primary"
-                                                        href="{{route('support-ticket.index',$ticket['id'])}}">
+                                                           href="{{route('support-ticket.index',$ticket['id'])}}">
                                                             <i class="fa fa-eye"></i>
                                                         </a>
                                                         <button class="__action-btn btn-shadow rounded-full text-danger marl delete-ticket-by-modal" data-link="{{ route('support-ticket.delete',['id'=>$ticket->id])}}">
@@ -172,23 +183,31 @@
                                                 </td>
                                             </tr>
                                         @endforeach
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @endif
+
+                            <div class="py-3">
+                                {!! $supportTickets->links() !!}
+                            </div>
+                        </div>
+
+                        @if ($supportTickets->count() <=0)
+                            <div class="d-flex justify-content-center align-items-center h-75">
+                                <div class="text-center pt-3 text-capitalize">
+                                    <img src="{{theme_asset(path: 'public/assets/front-end/img/icons/nodata.svg')}}" alt="" width="70">
+                                    <h5 class="fs-14 mt-4">{{translate('no_ticket_found')}}!</h5>
+                                </div>
                             </div>
                         @endif
                     </div>
-                    @if ($supportTickets->count() <=0)
-                        <div class="text-center pt-3 text-capitalize">
-                            <img src="{{asset('public/assets/front-end/img/icons/nodata.svg')}}" alt="" width="70">
-                            <h5 class="fs-14 mt-4">{{translate('no_ticket_found')}}!</h5>
-                        </div>
-                    @endif
                 </div>
             </section>
         </div>
 
-        <div class="d-flex align-items-center justify-content-between gap-2 mb-3 d-md-none">
-            <h5 class="mb-0">{{translate('support_ticket')}}</h5>
+        <div class="d-flex align-items-center justify-content-between gap-2 mb-4 d-md-none">
+            <h5 class="mb-0 fs-16 font-bold">{{translate('support_ticket')}}</h5>
 
             <button class="profile-aside-btn btn btn--primary px-2 rounded px-2 py-1 d-lg-none">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
@@ -199,22 +218,22 @@
 
         <div class="d-flex flex-column gap-3 d-md-none">
             @foreach($supportTickets as $ticket)
-            <div class="bg-white border rounded p-3 shadow-sm get-view-by-onclick" data-link="{{ route('support-ticket.index', $ticket['id']) }}">
+            <div class="bg-white rounded p-3 shadow-sm get-view-by-onclick" data-link="{{ route('support-ticket.index', $ticket['id']) }}">
                 <div class="d-flex justify-content-between gap-2 align-items-end">
                     <div class="d-flex flex-column gap-1 fs-12">
-                        <div class="d-flex gap-2">
+                        <div class="d-flex gap-2 fs-12 font-semibold">
                             <div class="text-muted">{{translate('topic')}} :</div>
                             <div>{{$ticket['subject']}}</div>
                         </div>
-                        <div class="d-flex gap-2">
+                        <div class="d-flex gap-2 fs-12 font-semibold">
                             <div class="text-muted">{{translate('submission_date')}} :</div>
                             <div>{{Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$ticket['created_at'])->format('Y-m-d h:i A')}}</div>
                         </div>
-                        <div class="d-flex gap-2">
+                        <div class="d-flex gap-2 fs-13 font-semibold">
                             <div class="text-muted">{{translate('type')}} :</div>
                             <div>{{translate($ticket['type'])}}</div>
                         </div>
-                        <div class="d-flex gap-2">
+                        <div class="d-flex gap-2 fs-12 font-semibold">
                             <div class="text-muted">{{translate('status')}} :</div>
                             <div>
                                 <span class="badge __badge rounded-full {{$ticket['status']=='open' ? 'badge-warning': 'badge-danger'}}">
@@ -224,27 +243,32 @@
                         </div>
                     </div>
                     <div>
-                        <button class="__action-btn btn-shadow rounded-full text-danger stopPropagation marl delete-ticket-by-modal" data-link="{{ route('support-ticket.delete',['id'=>$ticket->id])}}">
+                        <button class="__action-btn btn-shadow rounded-full text-danger stopPropagation marl delete-ticket-by-modal fs-15" data-link="{{ route('support-ticket.delete',['id'=>$ticket->id])}}">
                             <i class="czi-trash"></i>
                         </button>
                     </div>
                 </div>
             </div>
             @endforeach
+
             @if ($supportTickets->count() <=0)
-                <div class="text-center pt-3 text-capitalize">
-                    <img src="{{asset('public/assets/front-end/img/icons/address.svg')}}" alt="" width="70">
-                    <h5 class="fs-14 mt-2">{{translate('no_address_found')}}!</h5>
+                <div class="d-flex justify-content-center align-items-center h-100">
+                    <div class="text-center pt-3 text-capitalize">
+                        <img src="{{ theme_asset(path: 'public/assets/front-end/img/icons/nodata.svg') }}" alt="" width="70">
+                        <h5 class="fs-14 mt-4">{{ translate('no_ticket_found') }}!</h5>
+                    </div>
                 </div>
             @endif
+
+            {!! $supportTickets->links() !!}
         </div>
 
     </div>
 
     <div class="bottom-sticky_offset"></div>
     <div class="bottom-sticky_ele bg-white d-md-none p-3">
-        <button type="submit" class="btn btn--primary w-100" data-toggle="modal" data-target="#open-ticket">
-            {{translate('add_new_ticket')}}
+        <button type="submit" class="btn btn--primary w-100 font-semibold" data-toggle="modal" data-target="#open-ticket">
+            {{translate('add_New_Ticket')}}
         </button>
     </div>
 
@@ -258,7 +282,7 @@
                 </div>
                 <div class="modal-body pb-5">
                     <div class="text-center">
-                        <img src="{{asset('/public/assets/front-end/img/icons/ticket-delete.png')}}" alt="">
+                        <img src="{{theme_asset(path: 'public/assets/front-end/img/icons/ticket-delete.png')}}" alt="">
                         <h6 class="font-semibold mt-3 mb-1">{{translate('Delete_this_ticket')}}?</h6>
                         <p class="mb-4">
                             <small>{{translate('This_ticket_will_be_removed_from_this_list')}}</small>
@@ -279,5 +303,5 @@
 @endsection
 
 @push('script')
-<script src="{{ asset('public/assets/front-end/js/account-ticket.blade.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/js/account-ticket.blade.js') }}"></script>
 @endpush

@@ -3,7 +3,7 @@
 @section('title', translate('order_Details'))
 
 @push('css_or_js')
-    <link rel="stylesheet" href="{{ asset('public/assets/front-end/css/deliveryman-info.css') }}">
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/deliveryman-info.css') }}">
 @endpush
 
 @section('content')
@@ -17,8 +17,10 @@
                     <div class="bg-sm-white mt-3">
                         <div class="p-sm-3">
                             <div class="delivery-man-info-box bg-white media gap-2 gap-sm-3 shadow-sm rounded p-3">
-                                <img class="rounded-circle" width="77" alt=""
-                                     src="{{ getValidImage(path: 'storage/app/public/delivery-man/'.$order->deliveryMan->image, type: 'avatar') }}">
+                                <div class="img-avatar-parent-element">
+                                    <img class="rounded-circle" width="77" alt=""
+                                         src="{{ getStorageImages(path: $order->deliveryMan->image_full_url, type: 'avatar') }}">
+                                </div>
                                 <div class="media-body">
                                     <div
                                         class="d-flex gap-2 gap-sm-3 align-items-start align-items-sm-center justify-content-between">
@@ -47,12 +49,12 @@
                                                     data-toggle="modal"
                                                     data-target="#chatting_modal">
                                                 <img
-                                                    src="{{asset('/public/assets/front-end/img/seller-info-chat.png')}}"
+                                                    src="{{theme_asset(path: 'public/assets/front-end/img/seller-info-chat.png')}}"
                                                     alt="">
                                                 <span
                                                     class="d-none d-md-inline-block">{{translate('chat_with_delivery_man')}}</span>
                                             </button>
-                                            @if($order->order_type == 'default_type' && $order->order_status=='delivered' && $order->delivery_man_id)
+                                            @if($order->payment_status == 'paid' && $order->order_type == 'default_type' && $order->order_status=='delivered' && $order->delivery_man_id)
                                                 <button type="button" class="btn btn-sm btn-warning px-2 px-md-4"
                                                         data-toggle="modal"
                                                         data-target="#submitReviewModal">
@@ -90,10 +92,7 @@
                                         &nbsp{{$order->deliveryMan->l_name}}
                                     </h6>
                                     @foreach ($order->verificationImages as $image)
-                                        @if(file_exists(base_path("storage/app/public/delivery-man/verification-image/".$image->image)))
-                                            <img class="rounded" width="100"
-                                                 src="{{asset('public/assets/front-end/img/cod.png')}}" alt="">
-                                        @endif
+                                        <img class="rounded" width="100" src="{{ getStorageImages(path: $image->image_full_url, type: 'product') }}" alt="">
                                     @endforeach
                                 </div>
                             @endif
@@ -108,7 +107,7 @@
                                     <div class="col-sm-6 col-xl-4">
                                         <div class="media gap-3">
                                             <img alt="{{ translate('deliveryman') }}" width="20"
-                                                 src="{{ getValidImage(path: 'public/assets/front-end/img/icons/van.png', type: 'avatar') }}">
+                                                 src="{{ theme_asset(path: 'public/assets/front-end/img/icons/van.png') }}">
                                             <div class="media-body">
                                                 <div class="text-muted text-capitalize">
                                                     {{translate('delivery_service_name')}}
@@ -120,7 +119,7 @@
                                     <div class="col-sm-6 col-xl-4">
                                         <div class="media gap-3">
                                             <img alt="{{ translate('deliveryman') }}" width="20"
-                                                 src="{{ getValidImage(path:'public/assets/front-end/img/icons/track_order.png', type: 'product') }}">
+                                                 src="{{ theme_asset(path:'public/assets/front-end/img/icons/track_order.png') }}">
                                             <div class="media-body">
                                                 <div class="text-muted">{{translate('tracking_ID')}} </div>
                                                 <div class="font-weight-bold">
@@ -137,7 +136,7 @@
                     <div class="login-card">
                         <div class="text-center pt-5 text-capitalize">
 
-                            <img src="{{asset('public/assets/front-end/img/icons/delivery-man.svg')}}" alt="">
+                            <img src="{{theme_asset(path: 'public/assets/front-end/img/icons/delivery-man.svg')}}" alt="">
                             <p class="opacity-60 mt-3">
                                 @if ($order->order_type == "POS")
                                     <span>{{translate('this_order_is_a_POS_order.delivery_man_is_not_assigned_to_POS_orders')}}</span>
@@ -176,47 +175,59 @@
                         <div class="d-flex flex-column gap-2 align-items-center my-4">
                             <h5 class="text-center text-capitalize">{{translate('rate_the_delivery_quality')}}</h5>
                             <div class="rating-label-wrap position-relative">
+
+                                @php($style = '')
+                                @if(isset($order->deliveryManReview))
+                                    <?php
+                                        $rating = $order->deliveryManReview->rating;
+                                        $sessionDirection = session()->get('direction') ?? 'ltr';
+                                        if ($sessionDirection == 'ltr') {
+                                            $style = match ($rating) {
+                                                2 => 'left:36px',
+                                                3 => 'left:85px',
+                                                4 => 'left:112px',
+                                                5 => 'left:155px',
+                                                default => 'left:5px',
+                                            };
+                                        }else{
+                                            $style = match ($rating) {
+                                                2 => 'right:36px',
+                                                3 => 'right:85px',
+                                                4 => 'right:112px',
+                                                5 => 'right:155px',
+                                                default => 'right:5px',
+                                            };
+                                        }
+                                    ?>
+                                @endif
                                 <label class="rating-label">
                                     <input
                                         name="rating"
                                         class="rating cursor-pointer"
                                         max="5"
                                         min="1"
-                                        oninput="this.style.setProperty('--value', `${this.valueAsNumber}`)"
+                                        onchange="this.style.setProperty('--value', `${this.valueAsNumber}`)"
                                         step="1"
-                                        style="--value:{{isset($order->deliveryManReview) ? $order->deliveryManReview->rating : '4'}}"
+                                        style="--value:{{isset($order->deliveryManReview) ? $order->deliveryManReview->rating : 1}}"
                                         type="range"
-                                        value="5">
+                                        value="{{$rating??1}}">
                                 </label>
-                                @php($style = '')
-                                @if(isset($order->deliveryManReview))
-                                        <?php
-                                        $rating = $order->deliveryManReview->rating;
-                                        $style = match ($rating) {
-                                            1 => 'left:5px',
-                                            2 => 'left:36px',
-                                            3 => 'left:85px',
-                                            4 => 'left:112px',
-                                            default => 'left:155px',
-                                        };
-                                        ?>
-                                @endif
                                 <span class="rating_content_delivery_man text-primary fs-12 text-nowrap"
                                       style="{{$style}}">
                                     @if(isset($order->deliveryManReview))
                                             <?php
                                             $rating = $order->deliveryManReview->rating;
                                             $rating_status = match ($rating) {
-                                                1 => translate('poor'),
                                                 2 => translate('average'),
                                                 3 => translate('good'),
                                                 4 => translate('very_good'),
-                                                default => translate('excellent'),
+                                                5 => translate('excellent'),
+                                                default => translate('poor'),
                                             };
                                             ?>
                                         {{$rating_status}}
                                     @else
-                                        {{ translate('excellent') }}!
+                                        {{ translate('poor') }}
                                     @endif
                                 </span>
                             </div>
@@ -254,7 +265,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{route('messages_store')}}" method="post" id="deliveryman-chat-form">
+                        <form action="{{route('messages')}}" method="post" id="deliveryman-chat-form">
                             @csrf
                             @if($order->deliveryMan->id != 0)
                                 <input value="{{$order->deliveryMan->id}}" name="delivery_man_id" hidden>

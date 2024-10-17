@@ -6,7 +6,7 @@
 <div class="content container-fluid">
     <div class="mb-3">
         <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-            <img width="20" src="{{asset('/public/assets/back-end/img/Pages.png')}}" alt="">
+            <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/Pages.png')}}" alt="">
             {{ translate('pages') }}
         </h2>
     </div>
@@ -143,8 +143,15 @@
 
                                             <div class="mb-2 d-flex">
                                                 <div class="custom_img_upload aspect-ratio-3-15">
+                                                    <?php
+                                                        $imageArray = [
+                                                            'image_name' => $item?->icon->image_name ?? $item?->icon,
+                                                            'storage' => $item?->icon?->storage ?? 'public',
+                                                        ];
+                                                        $imagePath = storageLink('banner',$imageArray['image_name'],$imageArray['storage']);
+                                                    ?>
                                                     <img id="pre_img_header_logo{{ $card_index }}"
-                                                         src="{{ getValidImage(path: 'storage/app/public/banner/'.$item->icon, type: 'backend-basic') }}" class="w-100" alt="">
+                                                         src="{{ getStorageImages(path: $imagePath, type: 'backend-basic') }}" class="w-100" alt="">
                                                 </div>
                                             </div>
                                         </div>
@@ -221,5 +228,5 @@
 @endsection
 
 @push('script')
-    <script src="{{asset('public/assets/back-end/js/admin/business-setting/features-and-company-reliability-section.js')}}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/admin/business-setting/features-and-company-reliability-section.js') }}"></script>
 @endpush

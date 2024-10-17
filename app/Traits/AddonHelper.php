@@ -58,7 +58,7 @@ trait AddonHelper
     {
         $dir = 'Modules'; // Update the directory path to Modules/Gateways
         $directories = self::getDirectories($dir);
-        // dd($directories);
+
         $addons = [];
         foreach ($directories as $directory) {
             $sub_dirs = self::getDirectories($dir . '/' . $directory); // Use $dir instead of 'Modules/'

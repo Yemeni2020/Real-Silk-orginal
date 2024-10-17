@@ -70,16 +70,15 @@
                                     <div class="col-sm-6">
                                         <div class="form-group mb-4">
                                             <label for="message">{{ translate('contact_number') }}</label>
-                                            <input type="text" name="mobile_number" value="{{ old('mobile_number') }}"
-                                                   class="form-control" rows="6"
-                                                   placeholder="{{ translate('contact_number') }}">
+                                            <input type="text" value="{{ old('mobile_number') }}" class="form-control contact-phone-with-country-picker" placeholder="{{ translate('contact_number') }}">
+                                            <input type="hidden" name="mobile_number" value="{{ old('mobile_number') }}" class="contact-country-picker-phone-number">
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group mb-4">
                                             <label for="message">{{ translate('Subject') }}</label>
                                             <input type="text" name="subject" value="{{ old('subject') }}"
-                                                   class="form-control" rows="6"
+                                                   class="form-control"
                                                    placeholder="{{ translate('short_title') }}">
                                         </div>
                                     </div>
@@ -158,5 +157,10 @@
             })
         </script>
     @endif
+
+    <script>
+        'use strict';
+        initializePhoneInput(".contact-phone-with-country-picker", ".contact-country-picker-phone-number");
+    </script>
 @endpush
 

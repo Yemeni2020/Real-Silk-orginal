@@ -41,6 +41,7 @@ class PagesController extends BaseController
     public function updateTermsCondition(TermsConditionRequest $request): RedirectResponse
     {
         $this->businessSettingRepo->updateWhere(params: ['type'=>'terms_condition'], data: ['value' => $request['value']]);
+        clearWebConfigCacheKeys();
         Toastr::success(translate('Terms_and_Condition_Updated_successfully'));
         return back();
     }
@@ -61,9 +62,9 @@ class PagesController extends BaseController
 
     public function getPageView($page): View|RedirectResponse
     {
-        $pages = ['refund-policy', 'return-policy', 'cancellation-policy',];
-        if(in_array($page, $pages)) {
-            $data = $this->businessSettingRepo->getFirstWhere(params: ['type'=>$page]);
+        $pages = ['refund-policy', 'return-policy', 'cancellation-policy', 'shipping-policy'];
+        if (in_array($page, $pages)) {
+            $data = $this->businessSettingRepo->getFirstWhere(params: ['type' => $page]);
             return view(Pages::VIEW[VIEW], compact('page', 'data'));
         }
         Toastr::error(translate('invalid_page'));
@@ -72,12 +73,12 @@ class PagesController extends BaseController
 
     public function updatePage(PageUpdateRequest $request, $page): RedirectResponse
     {
-        $pages = ['refund-policy', 'return-policy', 'cancellation-policy',];
-        if(in_array($page, $pages)){
-            $value = json_encode(['status' => $request->get('status', 0),'content' => $request['value']]);
-            $this->businessSettingRepo->updateWhere(params: ['type'=>$page], data: ['value' => $value]);
+        $pages = ['refund-policy', 'return-policy', 'cancellation-policy', 'shipping-policy'];
+        if (in_array($page, $pages)) {
+            $value = json_encode(['status' => $request->get('status', 0), 'content' => $request['value']]);
+            $this->businessSettingRepo->updateOrInsert(type: $page, value: $value);
             Toastr::success(translate('updated_successfully'));
-        }else{
+        } else {
             Toastr::error(translate('invalid_page'));
         }
         return back();
@@ -85,7 +86,7 @@ class PagesController extends BaseController
 
     public function getAboutUsView(): View
     {
-        $pageData = $this->businessSettingRepo->getFirstWhere(params: ['type'=>'about_us']);
+        $pageData = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'about_us']);
         return view(Pages::ABOUT_US[VIEW], compact('pageData'));
     }
 

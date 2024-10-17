@@ -10,6 +10,7 @@
     use App\Models\RefundRequest;
     use App\Models\Shop;
     use App\Enums\ViewPaths\Vendor\Order as OrderEnum;
+    $shop=Shop::where(['seller_id'=>auth('seller')->id()])->first();
 @endphp
 <div id="sidebarMain" class="d-none">
     <aside style="text-align: {{Session::get('direction') === "rtl" ? 'right' : 'left'}};"
@@ -17,14 +18,13 @@
         <div class="navbar-vertical-container">
             <div class="navbar-vertical-footer-offset pb-0">
                 <div class="navbar-brand-wrapper justify-content-between side-logo">
-                    @php($shop=Shop::where(['seller_id'=>auth('seller')->id()])->first())
                     <a class="navbar-brand" href="{{route('vendor.dashboard.index')}}" aria-label="Front">
                         @if (isset($shop))
                             <img class="navbar-brand-logo-mini for-seller-logo"
-                                 src="{{getValidImage(path: 'storage/app/public/shop/'.$shop->image,type:'backend-logo')}}" alt="{{translate('logo')}}">
+                                 src="{{getStorageImages(path:$shop->image_full_url,type:'backend-logo')}}" alt="{{translate('logo')}}">
                         @else
                             <img class="navbar-brand-logo-mini for-seller-logo"
-                                 src="{{asset('public/assets/back-end/img/900x400/img1.jpg')}}"
+                                 src="{{dynamicAsset(path: 'public/assets/back-end/img/900x400/img1.jpg')}}"
                                  alt="{{translate('logo')}}">
                         @endif
                     </a>
@@ -62,10 +62,6 @@
                         @php($sellerId = $seller['id'])
                         @php($sellerPOS=getWebConfig('seller_pos'))
                         @if ($sellerPOS == 1 && $seller['pos_status'] == 1)
-                            <li class="nav-item">
-                                <small class="nav-subtitle">{{translate('POS_system')}}</small>
-                                <small class="tio-more-horizontal nav-subtitle-replacer"></small>
-                            </li>
                             <li class="navbar-vertical-aside-has-menu {{Request::is('vendor/pos*')?'active':''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link"
                                    href="{{route('vendor.pos.index')}}">
@@ -208,7 +204,7 @@
                                href="javascript:">
                                 <i class="tio-receipt-outlined nav-icon"></i>
                                 <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
-                                    {{translate('refund_Request_List')}}
+                                    {{translate('refund_Requests')}}
                                 </span>
                             </a>
                             <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
@@ -285,17 +281,42 @@
                             </a>
                             <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
                                 style="display: {{(Request::is('vendor/products*'))?'block':''}}">
-                                <li class="nav-item {{Request::is('vendor/products/'.Product::LIST[URI])|| Request::is('vendor/products/'.Product::UPDATE[URI].'*')||   Request::is('vendor/products/'.Product::VIEW[URI].'*') || Request::is('vendor/products/'.Product::STOCK_LIMIT[URI])?'active':''}}">
-                                    <a class="nav-link " href="{{route('vendor.products.list')}}">
+                                <li class="nav-item {{Request::is('vendor/products/'.Product::LIST[URI].'/all')|| Request::is('vendor/products/'.Product::UPDATE[URI].'*')||   Request::is('vendor/products/'.Product::VIEW[URI].'*') || Request::is('vendor/products/'.Product::STOCK_LIMIT[URI])?'active':''}}">
+                                    <a class="nav-link " href="{{route('vendor.products.list',['type'=>'all'])}}">
                                         <span class="tio-circle nav-indicator-icon"></span>
                                         <span class="text-truncate text-capitalize">{{translate('product_list')}}</span>
                                     </a>
                                 </li>
-                                <li class="nav-item {{Request::is('vendor/products/'.Product::ADD[URI])?'active':''}}">
+                                <li class="nav-item {{Request::is('vendor/products/'.Product::LIST[URI].'/approved')?'active':''}}">
+                                    <a class="nav-link " href="{{route('vendor.products.list',['type'=>'approved'])}}">
+                                        <span class="tio-circle nav-indicator-icon"></span>
+                                        <span class="text-truncate text-capitalize">{{translate('approved_product_list')}}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item {{Request::is('vendor/products/'.Product::LIST[URI].'/new-request')?'active':''}}">
+                                    <a class="nav-link " href="{{route('vendor.products.list',['type'=>'new-request'])}}">
+                                        <span class="tio-circle nav-indicator-icon"></span>
+                                        <span class="text-truncate text-capitalize">{{translate('new_product_request')}}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item {{Request::is('vendor/products/'.Product::LIST[URI].'/denied')?'active':''}}">
+                                    <a class="nav-link " href="{{route('vendor.products.list',['type'=>'denied'])}}">
+                                        <span class="tio-circle nav-indicator-icon"></span>
+                                        <span class="text-truncate text-capitalize">{{translate('denied_product_request')}}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item {{Request::is('vendor/products/'.Product::ADD[URI])||(Request::is('vendor/products/'.Product::UPDATE[URI].'/*') && request()->has('product-gallery')) ?'active':''}}">
                                     <a class="nav-link " href="{{route('vendor.products.add')}}">
                                         <span class="tio-circle nav-indicator-icon"></span>
                                         <span
                                             class="text-truncate text-capitalize">{{translate('add_new_product')}}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item {{Request::is('vendor/products/'.Product::PRODUCT_GALLERY[URI])?'active':''}}">
+                                    <a class="nav-link " href="{{route('vendor.products.product-gallery')}}">
+                                        <span class="tio-circle nav-indicator-icon"></span>
+                                        <span
+                                            class="text-truncate text-capitalize">{{translate('product_gallery')}}</span>
                                     </a>
                                 </li>
 
@@ -321,84 +342,39 @@
                             <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                         </li>
                         <li class="navbar-vertical-aside-has-menu {{Request::is('vendor/coupon*')?'active':''}}">
-                            <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
-                               href="javascript:" title="{{translate('offers_&_Deals')}}">
+                            <a class="nav-link"
+                               href="{{route('vendor.coupon.index')}}" title="{{translate('coupons')}}">
                                 <i class="tio-users-switch nav-icon"></i>
                                 <span
-                                    class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('offers_&_Deals')}}</span>
+                                    class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('coupons')}}</span>
                             </a>
-                            <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
-                                style="display: {{Request::is('vendor/coupon*')?'block':'none'}}">
-                                <li class="navbar-vertical-aside-has-menu {{Request::is('vendor/coupon*')?'active':''}}">
-                                    <a class="js-navbar-vertical-aside-menu-link nav-link"
-                                       href="{{route('vendor.coupon.index')}}"
-                                       title="{{translate('coupon')}}">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span
-                                            class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('coupon')}}</span>
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
                         <li class="nav-item">
-                            <small class="nav-subtitle">{{translate('help_&_support_section')}}</small>
+                            <small class="nav-subtitle">{{translate('help_&_support')}}</small>
                             <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                         </li>
                         <li class="navbar-vertical-aside-has-menu {{Request::is('vendor/messages*')?'active':''}}">
-                            <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
-                               href="javascript:">
-                                <i class="tio-user nav-icon"></i>
+                            <a class="nav-link"
+                               href="{{route('vendor.messages.index', ['type' => 'customer'])}}">
+                                <i class="tio-chat nav-icon"></i>
                                 <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
-                                    {{translate('messages')}}
-                                </span>
+                                        {{translate('inbox')}}
+                                    </span>
                             </a>
-                            <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
-                                style="display: {{Request::is('vendor/messages*')?'block':'none'}}">
-                                <li class="nav-item {{Request::is('vendor/messages/'.Chatting::INDEX[URI].'/customer')?'active':''}}">
-                                    <a class="nav-link "
-                                       href="{{route('vendor.messages.index', ['type' => 'customer'])}}">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate">{{translate('customer')}}</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item {{Request::is('vendor/messages/'.Chatting::INDEX[URI].'/delivery-man')?'active':''}}">
-                                    <a class="nav-link"
-                                       href="{{route('vendor.messages.index', ['type' => 'delivery-man'])}}">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate">{{translate('delivery-Man')}}</span>
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
                         <li class="nav-item {{(Request::is('vendor/transaction/order-list')) ? 'scroll-here':''}}">
-                            <small class="nav-subtitle text-capitalize" title="">
-                                {{translate('reports_&_analysis')}}
-                            </small>
+                            <small class="nav-subtitle">{{translate('reports_&_analytics')}}</small>
                             <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                         </li>
-                        <li class="navbar-vertical-aside-has-menu {{(Request::is('vendor/transaction/order-list') || Request::is('vendor/transaction/expense-list')) ?'active':''}}">
-                            <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle text-capitalize"
-                               href="javascript:" title="{{translate('sales_&_transaction_report')}}">
-                                <i class="tio-chart-bar-4 nav-icon"></i>
-                                <span
-                                    class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate text-capitalize">
-                                {{translate('sales_&_transaction_report')}}
-                            </span>
+                        <li class="navbar-vertical-aside-has-menu {{(Request::is('vendor/transaction/order-list') || Request::is('vendor/transaction/expense-list') || Request::is('vendor/transaction/order-history-log*'))?'active':''}}">
+                            <a class="js-navbar-vertical-aside-menu-link nav-link"
+                               href="{{route('vendor.transaction.order-list')}}"
+                               title="{{translate('transactions_Report')}}">
+                                <i class="tio-chart-bar-3 nav-icon"></i>
+                                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate text-capitalize">
+                                    {{translate('transactions_Report')}}
+                                </span>
                             </a>
-                            <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
-                                style="display: {{(Request::is('vendor/transaction/order-list') || Request::is('vendor/transaction/expense-list')) ?'block':'none'}}">
-                                <li class="navbar-vertical-aside-has-menu {{(Request::is('vendor/transaction/order-list') || Request::is('vendor/transaction/expense-list') || Request::is('vendor/transaction/order-history-log*'))?'active':''}}">
-                                    <a class="js-navbar-vertical-aside-menu-link nav-link"
-                                       href="{{route('vendor.transaction.order-list')}}"
-                                       title="{{translate('transaction_Report')}}">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span
-                                            class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate text-capitalize">
-                                     {{translate('transaction_report')}}
-                                    </span>
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
                         <li class="navbar-vertical-aside-has-menu {{ (Request::is('vendor/report/all-product') ||Request::is('vendor/report/stock-product-report')) ?'active':''}}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link text-capitalize"
@@ -431,20 +407,17 @@
                                 <a class="js-navbar-vertical-aside-menu-link nav-link"
                                    href="{{route('vendor.business-settings.shipping-method.index')}}">
                                     <i class="tio-settings nav-icon"></i>
-                                    <span
-                                        class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate text-capitalize text-capitalize">
-                                        {{translate('shipping_method')}}
+                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate text-capitalize text-capitalize">
+                                        {{translate('shipping_methods')}}
                                     </span>
                                 </a>
                             </li>
                         @endif
-
                         <li class="navbar-vertical-aside-has-menu {{Request::is('vendor/business-settings/withdraw*')?'active':''}}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link"
                                href="{{route('vendor.business-settings.withdraw.index')}}">
                                 <i class="tio-wallet-outlined nav-icon"></i>
-                                <span
-                                    class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate text-capitalize">
+                                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate text-capitalize">
                                         {{translate('withdraws')}}
                                 </span>
                             </a>
@@ -453,9 +426,8 @@
                             <a class="js-navbar-vertical-aside-menu-link nav-link"
                                href="{{route('vendor.profile.index')}}">
                                 <i class="tio-shop nav-icon"></i>
-                                <span
-                                    class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate text-capitalize">
-                                    {{translate('my_bank_info')}}
+                                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate text-capitalize">
+                                    {{translate('bank_Information')}}
                                 </span>
                             </a>
                         </li>
@@ -465,7 +437,7 @@
                                 <i class="tio-home nav-icon"></i>
                                 <span
                                     class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate text-capitalize">
-                                    {{translate('my_shop')}}
+                                    {{translate('shop_Settings')}}
                                 </span>
                             </a>
                         </li>

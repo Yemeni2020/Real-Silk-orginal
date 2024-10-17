@@ -10,6 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 class CashCollectListener
 {
     use PushNotificationTrait;
+
     /**
      * Create the event listener.
      */
@@ -25,6 +26,7 @@ class CashCollectListener
     {
         $this->sendNotification($event);
     }
+
     public function sendNotification($event): void
     {
         $key = $event->key;
@@ -32,6 +34,6 @@ class CashCollectListener
         $lang = $event->lang;
         $amount = $event->amount;
         $fcmToken = $event->fcmToken;
-        $this->cashCollectNotification(key: $key, type: $type, lang: $lang, amount: $amount,fcmToken: $fcmToken);
+        $this->cashCollectNotification(key: $key, type: $type, lang: $lang, amount: $amount, fcmToken: $fcmToken);
     }
 }

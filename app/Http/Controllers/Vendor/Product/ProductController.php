@@ -3,21 +3,29 @@
 namespace App\Http\Controllers\Vendor\Product;
 
 use App\Contracts\Repositories\AttributeRepositoryInterface;
+use App\Contracts\Repositories\AuthorRepositoryInterface;
 use App\Contracts\Repositories\BrandRepositoryInterface;
 use App\Contracts\Repositories\BusinessSettingRepositoryInterface;
 use App\Contracts\Repositories\CartRepositoryInterface;
 use App\Contracts\Repositories\CategoryRepositoryInterface;
 use App\Contracts\Repositories\ColorRepositoryInterface;
 use App\Contracts\Repositories\DealOfTheDayRepositoryInterface;
+use App\Contracts\Repositories\DigitalProductAuthorRepositoryInterface;
+use App\Contracts\Repositories\DigitalProductVariationRepositoryInterface;
 use App\Contracts\Repositories\FlashDealProductRepositoryInterface;
 use App\Contracts\Repositories\ProductRepositoryInterface;
+use App\Contracts\Repositories\ProductSeoRepositoryInterface;
+use App\Contracts\Repositories\PublishingHouseRepositoryInterface;
 use App\Contracts\Repositories\ReviewRepositoryInterface;
+use App\Contracts\Repositories\VendorRepositoryInterface;
 use App\Contracts\Repositories\WishlistRepositoryInterface;
 use App\Enums\ViewPaths\Vendor\Product;
 use App\Enums\WebConfigKey;
+use App\Exports\ProductListExport;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\ProductAddRequest;
 use App\Http\Requests\ProductUpdateRequest;
+use App\Repositories\DigitalProductPublishingHouseRepository;
 use App\Repositories\TranslationRepository;
 use App\Services\ProductService;
 use App\Traits\FileManagerTrait;
@@ -28,7 +36,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Maatwebsite\Excel\Facades\Excel;
 use Rap2hpoutre\FastExcel\FastExcel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ProductController extends BaseController
@@ -39,18 +49,26 @@ class ProductController extends BaseController
     }
 
     public function __construct(
-        private readonly CategoryRepositoryInterface         $categoryRepo,
-        private readonly BrandRepositoryInterface            $brandRepo,
-        private readonly ProductRepositoryInterface          $productRepo,
-        private readonly TranslationRepository               $translationRepo,
-        private readonly BusinessSettingRepositoryInterface  $businessSettingRepo,
-        private readonly ColorRepositoryInterface            $colorRepo,
-        private readonly AttributeRepositoryInterface        $attributeRepo,
-        private readonly ReviewRepositoryInterface           $reviewRepo,
-        private readonly CartRepositoryInterface             $cartRepo,
-        private readonly WishlistRepositoryInterface         $wishlistRepo,
-        private readonly FlashDealProductRepositoryInterface $flashDealProductRepo,
-        private readonly DealOfTheDayRepositoryInterface     $dealOfTheDayRepo,
+        private readonly AuthorRepositoryInterface                  $authorRepo,
+        private readonly PublishingHouseRepositoryInterface         $publishingHouseRepo,
+        private readonly DigitalProductAuthorRepositoryInterface    $digitalProductAuthorRepo,
+        private readonly DigitalProductPublishingHouseRepository    $digitalProductPublishingHouseRepo,
+        private readonly CategoryRepositoryInterface                $categoryRepo,
+        private readonly BrandRepositoryInterface                   $brandRepo,
+        private readonly ProductRepositoryInterface                 $productRepo,
+        private readonly DigitalProductVariationRepositoryInterface $digitalProductVariationRepo,
+        private readonly ProductSeoRepositoryInterface              $productSeoRepo,
+        private readonly TranslationRepository                      $translationRepo,
+        private readonly BusinessSettingRepositoryInterface         $businessSettingRepo,
+        private readonly ColorRepositoryInterface                   $colorRepo,
+        private readonly AttributeRepositoryInterface               $attributeRepo,
+        private readonly ReviewRepositoryInterface                  $reviewRepo,
+        private readonly CartRepositoryInterface                    $cartRepo,
+        private readonly WishlistRepositoryInterface                $wishlistRepo,
+        private readonly FlashDealProductRepositoryInterface        $flashDealProductRepo,
+        private readonly DealOfTheDayRepositoryInterface            $dealOfTheDayRepo,
+        private readonly VendorRepositoryInterface                  $vendorRepo,
+        private readonly ProductService                             $productService,
     )
     {
     }
@@ -63,10 +81,10 @@ class ProductController extends BaseController
      */
     public function index(?Request $request, string|array $type = null): View|Collection|LengthAwarePaginator|null|callable|RedirectResponse
     {
-        return $this->getListView(request: $request);
+        return $this->getListView(request: $request, type: $type);
     }
 
-    public function getListView(Request $request): View
+    public function getListView(Request $request, $type): View
     {
         $vendorId = auth('seller')->id();
         $filters = [
@@ -76,13 +94,14 @@ class ProductController extends BaseController
             'category_id' => $request['category_id'],
             'sub_category_id' => $request['sub_category_id'],
             'sub_sub_category_id' => $request['sub_sub_category_id'],
+            'request_status' => $type == 'new-request' ? 0 : ($type == 'approved' ? '1' : ($type == 'denied' ? '2' : 'all')),
         ];
         $searchValue = $request['searchValue'];
         $products = $this->productRepo->getListWhere(
             orderBy: ['id' => 'desc'],
             searchValue: $searchValue,
             filters: $filters,
-            relations: ['translations'],
+            relations: ['translations','seoInfo'],
             dataLimit: getWebConfig(name: WebConfigKey::PAGINATION_LIMIT)
         );
         $brands = $this->brandRepo->getListWhere(filters: ['status' => 1], dataLimit: 'all');
@@ -90,7 +109,7 @@ class ProductController extends BaseController
         $subCategory = $this->categoryRepo->getFirstWhere(params: ['id' => $request['sub_category_id']]);
         $subSubCategory = $this->categoryRepo->getFirstWhere(params: ['id' => $request['sub_sub_category_id']]);
 
-        return view(Product::LIST[VIEW], compact('products', 'searchValue', 'brands',
+        return view(Product::LIST[VIEW], compact('products', 'type', 'searchValue', 'brands',
             'categories', 'subCategory', 'subSubCategory', 'filters'));
     }
 
@@ -105,8 +124,11 @@ class ProductController extends BaseController
         $attributes = $this->attributeRepo->getList(orderBy: ['name' => 'desc'], dataLimit: 'all');
         $languages = getWebConfig(name: 'pnc_language') ?? null;
         $defaultLanguage = $languages[0];
+        $digitalProductFileTypes = ['audio', 'video', 'document', 'software'];
+        $digitalProductAuthors = $this->authorRepo->getListWhere(dataLimit: 'all');
+        $publishingHouseList = $this->publishingHouseRepo->getListWhere(dataLimit: 'all');
 
-        return view(Product::ADD[VIEW], compact('languages', 'categories', 'brands', 'brandSetting', 'digitalProductSetting', 'colors', 'attributes', 'languages', 'defaultLanguage'));
+        return view(Product::ADD[VIEW], compact('languages', 'categories', 'brands', 'brandSetting', 'digitalProductSetting', 'colors', 'attributes', 'languages', 'defaultLanguage', 'digitalProductFileTypes', 'digitalProductAuthors', 'publishingHouseList'));
     }
 
     public function add(ProductAddRequest $request, ProductService $service): JsonResponse|RedirectResponse
@@ -119,18 +141,29 @@ class ProductController extends BaseController
         $savedProduct = $this->productRepo->add(data: $dataArray);
         $this->productRepo->addRelatedTags(request: $request, product: $savedProduct);
         $this->translationRepo->add(request: $request, model: 'App\Models\Product', id: $savedProduct->id);
+        $this->updateProductAuthorAndPublishingHouse(request: $request, product: $savedProduct);
+
+        // Digital Product Variation
+        $digitalFileArray = $service->getAddProductDigitalVariationData(request: $request, product: $savedProduct);
+        foreach ($digitalFileArray as $digitalFile) {
+            $this->digitalProductVariationRepo->add(data: $digitalFile);
+        }
+
+        $this->productSeoRepo->add(data: $service->getProductSEOData(request: $request, product: $savedProduct, action: 'add'));
 
         Toastr::success(translate('product_added_successfully'));
-        return redirect()->route('vendor.products.list');
+        return redirect()->route('vendor.products.list', ['type' => 'all']);
     }
 
     public function getUpdateView(string|int $id): RedirectResponse|View
     {
-        $product = $this->productRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $id, 'user_id'=>auth('seller')->id(), 'added_by'=>'seller'], relations: ['translations']);
-        if(!$product){
+        $product = $this->productRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $id, 'user_id' => auth('seller')->id(), 'added_by' => 'seller'], relations: ['translations', 'seoInfo', 'digitalProductAuthors', 'digitalProductPublishingHouse']);
+        if (!$product) {
             Toastr::error(translate('invalid_product'));
-            return redirect()->route('vendor.products.list');
+            return redirect()->route('vendor.products.list', ['type' => 'all']);
         }
+        $productAuthorIds = $this->productService->getProductAuthorsInfo(product: $product)['ids'];
+        $productPublishingHouseIds = $this->productService->getProductPublishingHouseInfo(product: $product)['ids'];
 
         $product['colors'] = json_decode($product['colors']);
         $categories = $this->categoryRepo->getListWhere(filters: ['position' => 0], dataLimit: 'all');
@@ -141,8 +174,11 @@ class ProductController extends BaseController
         $attributes = $this->attributeRepo->getList(orderBy: ['name' => 'desc'], dataLimit: 'all');
         $languages = getWebConfig(name: 'pnc_language') ?? null;
         $defaultLanguage = $languages[0];
+        $digitalProductFileTypes = ['audio', 'video', 'document', 'software'];
+        $digitalProductAuthors = $this->authorRepo->getListWhere(dataLimit: 'all');
+        $publishingHouseList = $this->publishingHouseRepo->getListWhere(dataLimit: 'all');
 
-        return view(Product::UPDATE[VIEW], compact('product', 'categories', 'brands', 'brandSetting', 'digitalProductSetting', 'colors', 'attributes', 'languages', 'defaultLanguage'));
+        return view(Product::UPDATE[VIEW], compact('product', 'categories', 'brands', 'brandSetting', 'digitalProductSetting', 'colors', 'attributes', 'languages', 'defaultLanguage', 'digitalProductFileTypes', 'digitalProductAuthors', 'publishingHouseList', 'productAuthorIds', 'productPublishingHouseIds'));
     }
 
     public function update(ProductUpdateRequest $request, ProductService $service, string|int $id): JsonResponse|RedirectResponse
@@ -151,35 +187,161 @@ class ProductController extends BaseController
             return response()->json([], 200);
         }
 
-        $product = $this->productRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $id], relations: ['translations']);
+        $product = $this->productRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $id], relations: ['translations','seoInfo']);
         $dataArray = $service->getUpdateProductData(request: $request, product: $product, updateBy: 'seller');
+        $this->updateProductAuthorAndPublishingHouse(request: $request, product: $product);
 
         $this->productRepo->update(id: $id, data: $dataArray);
         $this->productRepo->addRelatedTags(request: $request, product: $product);
         $this->translationRepo->update(request: $request, model: 'App\Models\Product', id: $id);
 
+        self::getDigitalProductUpdateProcess($request, $product);
+
+        $this->productSeoRepo->updateOrInsert(
+            params: ['product_id' => $product['id']],
+            data: $service->getProductSEOData(request: $request, product: $product, action: 'update')
+        );
+
         Toastr::success(translate('product_updated_successfully'));
-        return back();
+        return redirect()->route(Product::VIEW[ROUTE], ['id' => $product['id']]);
+
     }
 
-    public function getView(string|int $id): View
+    public function updateProductAuthorAndPublishingHouse(object|array $request, object|array $product): void
     {
-        $vendorId =  auth('seller')->id();
-        $productActive = $this->productRepo->getFirstWhereActive(params: ['id' => $id, 'user_id' =>$vendorId]);
-        $relations = ['category', 'brand', 'reviews', 'rating', 'orderDetails', 'orderDelivered'];
-        $product = $this->productRepo->getFirstWhereWithCount(
-            params: ['id' => $id, 'user_id' => $vendorId],
-            withCount: ['orderDelivered','orderDetails','reviews'],
-            relations: $relations,
-        );
-        $product['orderDelivered']->map(function ($order) use ($product) {
-            $product['priceSum'] += $order->price;
-            $product['qtySum'] += $order->qty;
-            $product['discountSum'] += $order->discount;
-        });
+        if ($request['product_type'] == 'digital') {
+            if ($request->has('authors')) {
+                $authorIds = [];
+                foreach ($request['authors'] as $author) {
+                    $authorId = $this->authorRepo->updateOrCreate(params: ['name' => $author], value: ['name' => $author]);
+                    $authorIds[] = $authorId?->id;
+                }
+
+                foreach ($authorIds as $author) {
+                    $productAuthorData = ['author_id' => $author, 'product_id' => $product->id];
+                    $this->digitalProductAuthorRepo->updateOrCreate(params: $productAuthorData, value: $productAuthorData);
+                }
+
+                $this->digitalProductAuthorRepo->deleteWhereNotIn(filters: ['product_id' => $product->id], whereNotIn: ['author_id' => $authorIds]);
+            } else {
+                $this->digitalProductAuthorRepo->delete(params: ['product_id' => $product->id]);
+            }
+
+            if ($request->has('publishing_house')) {
+                $publishingHouseIds = [];
+                foreach ($request['publishing_house'] as $publishingHouse) {
+                    $publishingHouseId = $this->publishingHouseRepo->updateOrCreate(params: ['name' => $publishingHouse], value: ['name' => $publishingHouse]);
+                    $publishingHouseIds[] = $publishingHouseId?->id;
+                }
+
+                foreach ($publishingHouseIds as $publishingHouse) {
+                    $publishingHouseData = ['publishing_house_id' => $publishingHouse, 'product_id' => $product->id];
+                    $this->digitalProductPublishingHouseRepo->updateOrCreate(params: $publishingHouseData, value: $publishingHouseData);
+                }
+                $this->digitalProductPublishingHouseRepo->deleteWhereNotIn(filters: ['product_id' => $product->id], whereNotIn: ['publishing_house_id' => $publishingHouseIds]);
+            } else {
+                $this->digitalProductPublishingHouseRepo->delete(params: ['product_id' => $product->id]);
+            }
+        } else {
+            $this->digitalProductAuthorRepo->delete(params: ['product_id' => $product->id]);
+            $this->digitalProductPublishingHouseRepo->delete(params: ['product_id' => $product->id]);
+        }
+    }
+
+
+    public function getDigitalProductUpdateProcess($request, $product): void
+    {
+        if ($request->has('digital_product_variant_key') && !$request->hasFile('digital_file_ready')) {
+            $getAllVariation = $this->digitalProductVariationRepo->getListWhere(filters: ['product_id' => $product['id']]);
+            $getAllVariationKey = $getAllVariation->pluck('variant_key')->toArray();
+            $getRequestVariationKey = $request['digital_product_variant_key'];
+            $differenceFromDB = array_diff($getAllVariationKey, $getRequestVariationKey);
+            $differenceFromRequest = array_diff($getRequestVariationKey, $getAllVariationKey);
+            $newCombinations = array_merge($differenceFromDB, $differenceFromRequest);
+
+            foreach ($newCombinations as $newCombination) {
+                if (in_array($newCombination, $request['digital_product_variant_key'])) {
+                    $uniqueKey = strtolower(str_replace('-', '_', $newCombination));
+
+                    $fileItem = null;
+                    if ($request['digital_product_type'] == 'ready_product') {
+                        $fileItem = $request->file('digital_files.' . $uniqueKey);
+                    }
+                    $uploadedFile = '';
+                    if ($fileItem) {
+                        $uploadedFile = $this->fileUpload(dir: 'product/digital-product/', format: $fileItem->getClientOriginalExtension(), file: $fileItem);
+                    }
+                    $this->digitalProductVariationRepo->add(data: [
+                        'product_id' => $product['id'],
+                        'variant_key' => $request->input('digital_product_variant_key.' . $uniqueKey),
+                        'sku' => $request->input('digital_product_sku.' . $uniqueKey),
+                        'price' => currencyConverter(amount: $request->input('digital_product_price.' . $uniqueKey)),
+                        'file' => $uploadedFile,
+                    ]);
+                }
+            }
+
+            foreach ($differenceFromDB as $variation) {
+                $variation = $this->digitalProductVariationRepo->getFirstWhere(params: ['product_id' => $product['id'], 'variant_key' => $variation]);
+                if ($variation) {
+                    // $this->deleteFile(filePath: '/product/digital-product/' . $variation['file']);
+                    $this->digitalProductVariationRepo->delete(params: ['id' => $variation['id']]);
+                }
+            }
+
+            foreach ($getAllVariation as $variation) {
+                if (in_array($variation['variant_key'], $request['digital_product_variant_key'])) {
+                    $uniqueKey = strtolower(str_replace('-', '_', $variation['variant_key']));
+
+                    $fileItem = null;
+                    if ($request['digital_product_type'] == 'ready_product') {
+                        $fileItem = $request->file('digital_files.' . $uniqueKey);
+                    }
+                    $uploadedFile = $variation['file'] ?? '';
+                    $variation = $this->digitalProductVariationRepo->getFirstWhere(params: ['product_id' => $product['id'], 'variant_key' => $variation['variant_key']]);
+                    if ($fileItem) {
+                        $uploadedFile = $this->fileUpload(dir: 'product/digital-product/', format: $fileItem->getClientOriginalExtension(), file: $fileItem);
+                    }
+                    $this->digitalProductVariationRepo->updateByParams(params: ['product_id' => $product['id'], 'variant_key' => $variation['variant_key']], data: [
+                        'variant_key' => $request->input('digital_product_variant_key.' . $uniqueKey),
+                        'sku' => $request->input('digital_product_sku.' . $uniqueKey),
+                        'price' => currencyConverter(amount: $request->input('digital_product_price.' . $uniqueKey)),
+                        'file' => $uploadedFile,
+                    ]);
+                }
+
+                if ($request['product_type'] == 'physical' || $request['digital_product_type'] == 'ready_after_sell') {
+                    $variation = $this->digitalProductVariationRepo->getFirstWhere(params: ['product_id' => $product['id'], 'variant_key' => $variation['variant_key']]);
+                    if ($variation && $variation['file']) {
+                        // $this->deleteFile(filePath: '/product/digital-product/' . $variation['file']);
+                        $this->digitalProductVariationRepo->updateByParams(params: ['id' => $variation['id']], data: ['file' => '']);
+                    }
+                    if ($request['product_type'] == 'physical') {
+                        $variation->delete();
+                    }
+                }
+            }
+        } else {
+            $this->digitalProductVariationRepo->delete(params: ['product_id' => $product['id']]);
+        }
+    }
+
+    public function getView(string|int $id): View|RedirectResponse
+    {
+        $vendorId = auth('seller')->id();
+        $productActive = $this->productRepo->getFirstWhereActive(params: ['id' => $id, 'user_id' => $vendorId]);
+        $relations = ['category', 'brand', 'reviews', 'rating', 'orderDetails', 'orderDelivered', 'translations','seoInfo'];
+        $product = $this->productRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $id, 'user_id' => $vendorId], relations: $relations);
+        if (!$product) {
+            return redirect()->route('vendor.products.list', ['type' => 'all']);
+        }
+        $isActive = $this->productRepo->getWebFirstWhereActive(params: ['id' => $id]);
+        $product['priceSum'] = $product?->orderDelivered->sum('price');
+        $product['qtySum'] = $product?->orderDelivered->sum('qty');
+        $product['discountSum'] = $product?->orderDelivered->sum('discount');
 
         $productColors = [];
-        $colors = json_decode($product['colors']);
+        $colors = json_decode($product['colors'], true);
         foreach ($colors as $color) {
             $getColor = $this->colorRepo->getFirstWhere(params: ['code' => $color]);
             if ($getColor) {
@@ -187,64 +349,76 @@ class ProductController extends BaseController
             }
         }
 
-        $reviews = $this->reviewRepo->getListWhere(filters: ['product_id' => ['product_id' => $id], 'whereNull' => ['column' => 'delivery_man_id']], dataLimit: getWebConfig(name: 'pagination_limit'));
-        return view(Product::VIEW[VIEW], compact('product', 'reviews', 'productActive', 'productColors'));
+        $reviews = $this->reviewRepo->getListWhere(orderBy: ['created_at' => 'desc'], filters: ['product_id' => ['product_id' => $id], 'whereNull' => ['column' => 'delivery_man_id']], dataLimit: getWebConfig(name: 'pagination_limit'));
+        return view(Product::VIEW[VIEW], compact('product', 'reviews', 'productActive', 'productColors', 'isActive'));
     }
 
-    public function exportList(Request $request): StreamedResponse|string
+    public function exportList(Request $request, string $type): BinaryFileResponse
     {
+        $vendorId = auth('seller')->id();
+        $vendor = $this->vendorRepo->getFirstWhere(params: ['id' => $vendorId]);
         $filters = [
             'added_by' => 'seller',
-            'seller_id' => auth('seller')->id(),
+            'seller_id' => $vendorId,
             'brand_id' => $request['brand_id'],
             'category_id' => $request['category_id'],
             'sub_category_id' => $request['sub_category_id'],
             'sub_sub_category_id' => $request['sub_sub_category_id'],
+            'request_status' => $type == 'new-request' ? 0 : ($type == 'approved' ? 1 : ($type == 'denied' ? 2 : 'all')),
         ];
-        $products = $this->productRepo->getListWhere(orderBy: ['id' => 'desc'], searchValue: $request['searchValue'], filters: $filters, relations: ['translations'], dataLimit: getWebConfig(name: WebConfigKey::PAGINATION_LIMIT));
+        $products = $this->productRepo->getListWhere(orderBy: ['id' => 'desc'], searchValue: $request['searchValue'], filters: $filters, relations: ['translations'], dataLimit: 'all');
 
         //export from product
-        $storage = [];
-        foreach ($products as $item) {
-            $category_id = 0;
-            $sub_category_id = 0;
-            $sub_sub_category_id = 0;
-            foreach (json_decode($item->category_ids, true) as $category) {
-                if ($category['position'] == 1) {
-                    $category_id = $category['id'];
-                } else if ($category['position'] == 2) {
-                    $sub_category_id = $category['id'];
-                } else if ($category['position'] == 3) {
-                    $sub_sub_category_id = $category['id'];
-                }
-            }
-            $storage[] = [
-                'name' => $item->name,
-                'category_id' => $category_id,
-                'sub_category_id' => $sub_category_id,
-                'sub_sub_category_id' => $sub_sub_category_id,
-                'brand_id' => $item->brand_id,
-                'unit' => $item->unit,
-                'minimum_order_qty' => $item->minimum_order_qty,
-                'refundable' => $item->refundable,
-                'youtube_video_url' => $item->video_url,
-                'unit_price' => $item->unit_price,
-                'tax' => $item->tax,
-                'discount' => $item->discount,
-                'discount_type' => $item->discount_type,
-                'current_stock' => $item->current_stock,
-                'details' => $item->details,
-                'thumbnail' => 'thumbnail/' . $item->thumbnail
-
-            ];
-        }
-        return (new FastExcel($storage))->download('products.xlsx');
+        $category = (!empty($request['category_id']) && $request->has('category_id')) ? $this->categoryRepo->getFirstWhere(params: ['id' => $request['category_id']]) : 'all';
+        $subCategory = (!empty($request->sub_category_id) && $request->has('sub_category_id')) ? $this->categoryRepo->getFirstWhere(params: ['id' => $request['sub_category_id']]) : 'all';
+        $subSubCategory = (!empty($request->sub_sub_category_id) && $request->has('sub_sub_category_id')) ? $this->categoryRepo->getFirstWhere(params: ['id' => $request['sub_sub_category_id']]) : 'all';
+        $brand = (!empty($request->brand_id) && $request->has('brand_id')) ? $this->brandRepo->getFirstWhere(params: ['id' => $request->brand_id]) : 'all';
+        $seller = (!empty($request->seller_id) && $request->has('seller_id')) ? $this->sellerRepo->getFirstWhere(params: ['id' => $request->seller_id]) : '';
+        $data = [
+            'data-from' => 'vendor',
+            'vendor' => $vendor,
+            'products' => $products,
+            'category' => $category,
+            'sub_category' => $subCategory,
+            'sub_sub_category' => $subSubCategory,
+            'brand' => $brand,
+            'searchValue' => $request['searchValue'],
+            'type' => $request->type ?? '',
+            'seller' => $seller,
+            'status' => $request->status ?? '',
+        ];
+        return Excel::download(new ProductListExport($data), ucwords($request['type']) . '-' . 'product-list.xlsx');
     }
 
     public function getSkuCombinationView(Request $request, ProductService $service): JsonResponse
     {
-        $combinationView = $service->getSkuCombinationView(request: $request);
+        $product = $this->productRepo->getFirstWhere(params: ['id' => $request['product_id']], relations: ['digitalVariation','seoInfo']);
+        $combinationView = $service->getSkuCombinationView(request: $request, product: $product);
         return response()->json(['view' => $combinationView]);
+    }
+
+    public function getDigitalVariationCombinationView(Request $request, ProductService $service): JsonResponse
+    {
+        $product = $this->productRepo->getFirstWhere(params: ['id' => $request['product_id']], relations: ['digitalVariation']);
+        $combinationView = $service->getDigitalVariationCombinationView(request: $request, product: $product);
+        return response()->json(['view' => $combinationView]);
+    }
+
+    public function deleteDigitalVariationFile(Request $request, ProductService $service): JsonResponse
+    {
+        $variation = $this->digitalProductVariationRepo->getFirstWhere(params: ['product_id' => $request['product_id'], 'variant_key' => $request['variant_key']]);
+        if ($variation) {
+            $this->deleteFile(filePath: '/product/digital-product/' . $variation['file']);
+            $this->digitalProductVariationRepo->updateByParams(params: ['id' => $variation['id']], data: ['file' => null]);
+            return response()->json([
+                'status' => 1,
+                'message' => translate('delete_successful')
+            ]);
+        }
+        return response()->json([
+            'status' => 0,
+            'message' => translate('delete_unsuccessful')
+        ]);
     }
 
     public function getCategories(Request $request, ProductService $service): JsonResponse
@@ -283,7 +457,7 @@ class ProductController extends BaseController
 
         return response()->json([
             'success' => $success,
-            'message' => $success ? translate("status_updated_successfully") : translate("status_updated_failed").' '.translate("Product_must_be_approved"),
+            'message' => $success ? translate("status_updated_successfully") : translate("status_updated_failed") . ' ' . translate("Product_must_be_approved"),
         ], 200);
     }
 
@@ -303,7 +477,7 @@ class ProductController extends BaseController
     {
         $product = $this->productRepo->getFirstWhere(params: ['id' => $id, 'user_id' => auth('seller')->id()]);
 
-        if($product){
+        if ($product) {
             $this->translationRepo->delete(model: 'App\Models\Product', id: $id);
             $this->cartRepo->delete(params: ['product_id' => $id]);
             $this->wishlistRepo->delete(params: ['product_id' => $id]);
@@ -312,7 +486,7 @@ class ProductController extends BaseController
             $service->deleteImages(product: $product);
             $this->productRepo->delete(params: ['id' => $id]);
             Toastr::success(translate('product_removed_successfully'));
-        }else{
+        } else {
             Toastr::error(translate('invalid_product'));
         }
 
@@ -329,7 +503,7 @@ class ProductController extends BaseController
         $status = $request['status'];
         $filters = [
             'added_by' => 'seller',
-            'request_status' => $request['status'],
+            'request_status' => 1,
             'product_type' => 'physical',
             'seller_id' => $vendorId,
         ];
@@ -337,7 +511,7 @@ class ProductController extends BaseController
         $orderBy = [];
         if ($sortOrderQty == 'quantity_asc') {
             $orderBy = ['current_stock' => 'asc'];
-        }else if ($sortOrderQty == 'quantity_desc') {
+        } else if ($sortOrderQty == 'quantity_desc') {
             $orderBy = ['current_stock' => 'desc'];
         } elseif ($sortOrderQty == 'order_asc') {
             $orderBy = ['order_details_count' => 'asc'];
@@ -425,19 +599,19 @@ class ProductController extends BaseController
         return back();
     }
 
-    public function getSearchedProductsView(Request $request):JsonResponse
+    public function getSearchedProductsView(Request $request): JsonResponse
     {
         $searchValue = $request['searchValue'] ?? null;
         $products = $this->productRepo->getListWhere(
-            searchValue:$searchValue,
+            searchValue: $searchValue,
             filters: [
                 'added_by' => 'seller',
                 'seller_id' => auth('seller')->id(),
                 'status' => 1,
                 'category_id' => $request['category_id'],
-                'code' => $request['name']??null,
+                'code' => $request['name'] ?? null,
             ],
-            dataLimit:FILTER_PRODUCT_DATA_LIMIT
+            dataLimit: getWebConfig(name: 'pagination_limit')
         );
         return response()->json([
             'count' => $products->count(),
@@ -445,4 +619,67 @@ class ProductController extends BaseController
         ]);
     }
 
+
+    public function getProductGalleryView(Request $request): View
+    {
+        $vendorId = auth('seller')->id();
+        $searchValue = $request['searchValue'];
+        $filters = [
+            'added_by' => 'seller',
+            'searchValue' => $searchValue,
+            'request_status' => 1,
+            'seller_id' => $vendorId,
+            'brand_id' => $request['brand_id'],
+            'category_id' => $request['category_id'],
+        ];
+        $products = $this->productRepo->getListWhere(orderBy: ['id' => 'desc'], searchValue: $request['searchValue'], filters: $filters, relations: ['translations'], dataLimit: getWebConfig(WebConfigKey::PAGINATION_LIMIT));
+
+        $products->map(function ($product) {
+            if ($product->product_type == 'physical' && count(json_decode($product->choice_options)) > 0 || count(json_decode($product->colors)) > 0) {
+                $colorName = [];
+                $colorsCollection = collect(json_decode($product->colors));
+                $colorsCollection->map(function ($color) use (&$colorName) {
+                    $colorName[] = $this->colorRepo->getFirstWhere(['code' => $color])->name;
+                });
+                $product['colorsName'] = $colorName;
+            }
+        });
+
+        $brands = $this->brandRepo->getListWhere(filters: ['status' => 1], dataLimit: 'all');
+
+        $categories = $this->categoryRepo->getListWhere(filters: ['position' => 0], dataLimit: 'all');
+
+        return view(Product::PRODUCT_GALLERY[VIEW], compact('products', 'brands', 'categories', 'searchValue'));
+
+    }
+
+    public function getStockLimitStatus(Request $request): JsonResponse
+    {
+        $vendorId = auth('seller')->id();
+        $filters = [
+            'added_by' => 'seller',
+            'product_type' => 'physical',
+            'request_status' => $request['status'],
+            'seller_id' => $vendorId,
+        ];
+        $products = $this->productRepo->getStockLimitListWhere(filters: $filters, dataLimit: 'all');
+        if ($products->count() == 1) {
+            $product = $products->first();
+            $thumbnail = getStorageImages(path: $product->thumbnail_full_url, type: 'backend-product');
+            return response()->json(['status' => 'one_product', 'product_count' => 1, 'product' => $product, 'thumbnail' => $thumbnail]);
+        } else {
+            return response()->json(['status' => 'multiple_product', 'product_count' => $products->count()]);
+        }
+    }
+
+    public function deletePreviewFile(Request $request): JsonResponse
+    {
+        $product = $this->productRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $request['product_id']]);
+        $this->productService->deletePreviewFile(product: $product);
+        $this->productRepo->update(id: $request['product_id'], data: ['preview_file' => null]);
+        return response()->json([
+            'status' => 1,
+            'message' => translate('Preview_file_deleted')
+        ]);
+    }
 }

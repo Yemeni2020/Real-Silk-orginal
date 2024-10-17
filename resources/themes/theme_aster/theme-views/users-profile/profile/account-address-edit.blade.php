@@ -56,17 +56,19 @@
                                                 <div
                                                     class="select-wrap focus-border form-control rounded d-flex align-items-center px-0">
                                                     <input type="tel" id="phone"
-                                                           class="form-control bg-transparent px-3 border-0 focus-input"
+                                                           class="form-control bg-transparent focus-input phone-input-with-country-picker"
                                                            name="phone" value="{{ $shippingAddress['phone'] }}"
                                                            placeholder="{{translate('ex').':'.('01xxxxxxxxx')}}">
+                                                    <input type="hidden" class="country-picker-phone-number w-50" name="phone" readonly>
                                                 </div>
                                             </div>
                                             <div class="form-group mb-3">
                                                 <label for="country">{{translate('country')}}</label>
                                                 <select name="country" id="country"
                                                         class="form-select select2 select_picker">
-                                                    <option value="" disabled
-                                                            selected>{{translate('select_country')}}</option>
+                                                    <option value="" disabled selected>
+                                                        {{ translate('select_country') }}
+                                                    </option>
                                                     @if($country_restrict_status)
                                                         @foreach($delivery_countries as $country)
                                                             <option
@@ -127,13 +129,15 @@
                                                     </label>
                                                 </div>
                                             </div>
-                                            <div class="mb-3 ">
-                                                <input id="pac-input" class="controls rounded __inline-46"
-                                                       title="{{translate('search_your_location_here')}}" type="text"
-                                                       placeholder="{{translate('search_here')}}"/>
-                                                <div class="dark-support rounded w-100 __h-14rem"
-                                                     id="location_map_canvas"></div>
-                                            </div>
+                                            @if(getWebConfig('map_api_status') ==1 )
+                                                <div class="mb-3 ">
+                                                    <input id="pac-input" class="controls rounded __inline-46"
+                                                           title="{{translate('search_your_location_here')}}" type="text"
+                                                           placeholder="{{translate('search_here')}}"/>
+                                                    <div class="dark-support rounded w-100 __h-14rem"
+                                                         id="location_map_canvas"></div>
+                                                </div>
+                                            @endif
                                             <div class="form-group">
                                                 <label for="address">{{translate('Address')}}</label>
                                                 <textarea name="address" id="address" rows="5" class="form-control"
@@ -170,13 +174,15 @@
             </div>
         </div>
     </main>
-    <span id="address-latitude" data-latitude="{{$shippingAddress??'-33.8688'}}" hidden></span>
-    <span id="address-longitude" data-longitude="{{$shippingAddress??'151.2195'}}" hidden></span>
+    <span id="address-latitude" data-latitude="{{$shippingAddress['latitude']??'-33.8688'}}" hidden></span>
+    <span id="address-longitude" data-longitude="{{$shippingAddress['longitude']??'151.2195'}}" hidden></span>
 @endsection
 @push('script')
     <script src="{{ theme_asset('assets/plugins/select2/js/select2.min.js') }}"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key={{getWebConfig(name: 'map_api_key')}}&callback=initAutoComplete&libraries=places&v=3.49"
-        defer>
-    </script>
     <script src="{{ theme_asset('assets/js/address.js') }}"></script>
+    @if(getWebConfig('map_api_status') ==1 )
+        <script
+            src="https://maps.googleapis.com/maps/api/js?key={{getWebConfig('map_api_key')}}&callback=callBackFunction&loading=async&libraries=places&v=3.56" defer>
+        </script>
+    @endif
 @endpush

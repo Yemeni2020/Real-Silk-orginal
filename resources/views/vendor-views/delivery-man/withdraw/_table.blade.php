@@ -37,11 +37,12 @@
                 <td>
                     <div class="d-flex justify-content-center">
                         @if (isset($withdrawRequest->deliveryMan))
-                            <a href="{{route('vendor.delivery-man.withdraw.details',[$withdrawRequest['id']])}}"
-                               class="btn btn-outline-info btn-sm square-btn"
+                            <button
+                               class="btn btn-outline-info btn-sm square-btn withdraw-info-show"
+                               data-action="{{route('vendor.delivery-man.withdraw.details',[$withdrawRequest['id']])}}"
                                title="{{translate('view')}}">
                                 <i class="tio-invisible"></i>
-                            </a>
+                            </button>
                         @else
                             <a class="btn btn-outline-info btn-sm square-btn disabled" href="#">
                                 <i class="tio-invisible"></i>
@@ -53,16 +54,10 @@
         @endforeach
         </tbody>
     </table>
-    @if(count($withdrawRequests)==0)
-        <div class="text-center p-4">
-            <img class="mb-3 w-160"
-                 src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}"
-                 alt="{{translate('image_description')}}">
-            <p class="mb-0">{{translate('no_data_to_show')}}</p>
-        </div>
-    @endif
 </div>
-
+@if(count($withdrawRequests)==0)
+    @include('layouts.back-end._empty-state',['text'=>'no_withdraw_request_found'],['image'=>'default'])
+@endif
 <div class="table-responsive mt-4">
     <div class="px-4 d-flex justify-content-center justify-content-md-end">
         {{$withdrawRequests->links()}}

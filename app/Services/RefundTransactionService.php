@@ -21,26 +21,6 @@ class RefundTransactionService
             'refund_id'=>  $refund['id'],
         ];
     }
-    public function getRefundTransactionDataForExport(object $refundTransactions):array
-    {
-        $transactionData = [];
-        foreach ($refundTransactions as $transaction) {
-            $shop_name = $transaction->order->seller_is == 'seller' ? ($transaction->order->seller ? $transaction->order->seller->shop->name : 'Not Found') : 'inhouse';
-            $data = [
-                'Product Name' => $transaction->orderDetails->product ? $transaction->orderDetails->product->name : 'Not Found',
-                'Refund ID' => $transaction->refund_id,
-                'Order ID' => $transaction->order_id,
-                'Shop Name' => $shop_name,
-                'Payment Method' => str_replace('_', ' ', $transaction->payment_method),
-                'Payment Status' => str_replace('_', ' ', $transaction->payment_status),
-                'Paid By' => str_replace('_', ' ', $transaction->paid_by),
-                'Amount' => setCurrencySymbol(amount: usdToDefaultCurrency(amount: $transaction->amount)),
-                'Transaction Type' => str_replace('_', ' ', $transaction->transaction_type),
-            ];
-            $transactionData[] = $data;
-        }
-        return $transactionData;
-    }
     public function getPDFData(string $companyPhone,string $companyEmail,string $companyName,string $companyWebLogo,object $refundTransactions,):array
     {
         $totalAmount = 0;

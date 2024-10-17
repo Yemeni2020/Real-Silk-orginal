@@ -38,7 +38,7 @@ class DeliveryManCashCollectController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)], 403);
         }
 
         $id = $request->deliveryman_id;

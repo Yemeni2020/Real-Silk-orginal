@@ -19,10 +19,10 @@ class UserWalletController extends Controller
         ]);
 
         if ($validator->errors()->count() > 0) {
-            return response()->json(['errors' => Helpers::error_processor($validator)]);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
         }
 
-        $wallet_status = Helpers::get_business_settings('wallet_status');
+        $wallet_status = getWebConfig(name: 'wallet_status');
 
         if($wallet_status == 1)
         {

@@ -9,24 +9,36 @@ use App\Models\Order;
 use App\Models\OrderTransaction;
 use App\Models\Product;
 use App\Models\Review;
+use App\Models\ReviewReply;
 use App\Models\Seller;
 use App\Models\SellerWallet;
 use App\Models\Shop;
 use App\Models\WithdrawalMethod;
 use App\Models\WithdrawRequest;
-use App\User;
+use App\Models\User;
+use App\Repositories\OrderTransactionRepository;
+use App\Services\DashboardService;
 use App\Utils\BackEndHelper;
 use App\Utils\Convert;
 use App\Utils\Helpers;
 use App\Utils\ImageManager;
+use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class SellerController extends Controller
 {
+    public function __construct(
+        private readonly OrderTransactionRepository $orderTransactionRepo,
+        private readonly DashboardService           $dashboardService,
+    )
+    {
+    }
+
     public function shop_info(Request $request)
     {
         $seller = $request->seller;
@@ -68,21 +80,21 @@ class SellerController extends Controller
                 }
             })->pluck('id')->toArray();
 
-            $reviews = Review::whereHas('product', function($query) use($seller){
-                $query->where('added_by', 'seller')->where('user_id', $seller->id);
-            })
-                ->with(['product'])
-                ->where(function($q) use($product_id, $customer_id){
+            $reviews = Review::whereHas('product', function ($query) use ($seller) {
+                    $query->where('added_by', 'seller')->where('user_id', $seller->id);
+                })
+                ->with(['product', 'reply'])
+                ->where(function ($q) use ($product_id, $customer_id) {
                     $q->whereIn('product_id', $product_id)->orWhereIn('customer_id', $customer_id);
                 });
 
             $query_param = ['search' => $request['search']];
         } else {
-            $reviews = Review::with(['product', 'customer'])->whereHas('product', function ($query) use ($seller) {
+            $reviews = Review::with(['product', 'customer', 'reply'])->whereHas('product', function ($query) use ($seller) {
                 $query->where('user_id', $seller->id)->where('added_by', 'seller');
             })
-                ->when($request->product_id != null, function ($query) use ($request) {
-                    $query->where('product_id', $request->product_id);
+                ->when(($request['product_id'] != null && $request['product_id'] != 0), function ($query) use ($request) {
+                    $query->where('product_id', $request['product_id']);
                 })
                 ->when($request->customer_id != null, function ($query) use ($request) {
                     $query->where('customer_id', $request->customer_id);
@@ -97,7 +109,7 @@ class SellerController extends Controller
         $reviews = $reviews->latest()->paginate($request['limit'], ['*'], 'page', $request['offset']);
 
         $reviews->map(function ($data) {
-            $data['attachment'] = json_decode($data['attachment'], true);
+            $data['attachment_full_url'] = $data->attachment_full_url;
             $data['product'] = Helpers::product_data_formatting($data['product']);
             return $data;
         });
@@ -110,22 +122,51 @@ class SellerController extends Controller
         ], 200);
     }
 
+    public function shopProductReviewReply(Request $request): JsonResponse
+    {
+        $seller = $request->seller;
+        $review = ReviewReply::where(['review_id' => $request['review_id'], 'added_by' => 'seller', 'added_by_id' => $seller['id']])->first();
+        if (!$review) {
+            ReviewReply::insert([
+                'review_id' => $request['review_id'],
+                'added_by' => 'seller',
+                'added_by_id' => $seller['id'],
+                'reply_text' => $request['reply_text'],
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        } else {
+            ReviewReply::where([
+                'review_id' => $request['review_id'],
+                'added_by' => 'seller',
+                'added_by_id' => $seller['id']
+            ])->update([
+                'reply_text' => $request['reply_text'],
+                'updated_at' => Carbon::now(),
+            ]);
+        }
+
+        return response()->json(['message' => translate('Review_reply_successfully')], 200);
+    }
+
     public function shop_product_reviews_status(Request $request)
     {
         $reviews = Review::find($request->id);
         $reviews->status = $request->status;
         $reviews->save();
-        return response()->json(['message'=>translate('status updated successfully!!')],200);
+        return response()->json(['message' => translate('status updated successfully!!')], 200);
     }
 
-    public function seller_info(Request $request)
+    public function getSellerInfo(Request $request): JsonResponse
     {
         $seller = $request->seller;
-        $data = Seller::with(['wallet'])->withCount(['product', 'orders'])->find($seller['id']);
+        $data = Seller::with(['wallet'])->withCount(['product', 'orders' => function ($query) use ($seller) {
+            $query->where(['seller_id' => $seller['id'], 'seller_is' => ($seller['id'] == 0 ? 'admin' : 'seller')]);
+        }])->find($seller['id']);
 
-        $data['free_delivery_features_status'] = Helpers::get_business_settings('free_delivery_status');
-        $data['free_delivery_responsibility'] = Helpers::get_business_settings('free_delivery_responsibility');
-        $data['minimum_order_amount_by_seller'] = Helpers::get_business_settings('minimum_order_amount_by_seller');
+        $data['free_delivery_features_status'] = getWebConfig(name: 'free_delivery_status');
+        $data['free_delivery_responsibility'] = getWebConfig(name: 'free_delivery_responsibility');
+        $data['minimum_order_amount_by_seller'] = getWebConfig(name: 'minimum_order_amount_by_seller');
         $data['minimum_order_amount'] = \App\Utils\Convert::default($data->minimum_order_amount);
         $data['free_delivery_over_amount'] = \App\Utils\Convert::default($data->free_delivery_over_amount);
 
@@ -135,14 +176,14 @@ class SellerController extends Controller
     public function shop_info_update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'logo'          => 'mimes: jpg,jpeg,png,gif',
-            'banner'        => 'mimes: jpg,jpeg,png,gif',
+            'logo' => 'mimes: jpg,jpeg,png,gif',
+            'banner' => 'mimes: jpg,jpeg,png,gif',
             'bottom_banner' => 'mimes: jpg,jpeg,png,gif',
             'offer_banner' => 'mimes: jpg,jpeg,png,gif',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => Helpers::error_processor($validator)], 403);
+            return response()->json(['message' => Helpers::validationErrorProcessor($validator)], 403);
         }
 
         $seller = $request->seller;
@@ -181,19 +222,19 @@ class SellerController extends Controller
             $imageName = $old_image;
         }
 
-        if($request->has('minimum_order_amount')){
+        if ($request->has('minimum_order_amount')) {
             Seller::where(['id' => $seller['id']])->update([
                 'minimum_order_amount' => BackEndHelper::currency_to_usd($request['minimum_order_amount'])
             ]);
         }
 
-        if($request->has('free_delivery_status')){
+        if ($request->has('free_delivery_status')) {
             Seller::where(['id' => $seller['id']])->update([
                 'free_delivery_status' => $request['free_delivery_status']
             ]);
         }
 
-        if($request->has('free_delivery_over_amount')){
+        if ($request->has('free_delivery_over_amount')) {
             Seller::where(['id' => $seller['id']])->update([
                 'free_delivery_over_amount' => BackEndHelper::currency_to_usd($request['free_delivery_over_amount'])
             ]);
@@ -232,7 +273,7 @@ class SellerController extends Controller
             'branch' => $request['branch'],
             'account_no' => $request['account_no'],
             'holder_name' => $request['holder_name'],
-            'phone'=> $request['phone'],
+            'phone' => $request['phone'],
             'password' => $request['password'] != null ? bcrypt($request['password']) : Seller::where(['id' => $seller['id']])->first()->password,
             'image' => $imageName,
             'updated_at' => now()
@@ -262,7 +303,7 @@ class SellerController extends Controller
 
         $data['method_name'] = $method->method_name;
         foreach ($fields as $field) {
-            if(key_exists($field, $values)) {
+            if (key_exists($field, $values)) {
                 $data[$field] = $values[$field];
             }
         }
@@ -286,7 +327,7 @@ class SellerController extends Controller
             $wallet->save();
             return response()->json(translate('Withdraw request sent successfully!'), 200);
         }
-        return response()->json(['message'=>translate('Invalid withdraw request')], 400);
+        return response()->json(['message' => translate('Invalid withdraw request')], 400);
     }
 
     public function close_withdraw_request(Request $request)
@@ -310,21 +351,21 @@ class SellerController extends Controller
     public function transaction(Request $request)
     {
         $status = $request->status;
-        if($status == 'pending'){
+        if ($status == 'pending') {
             $status = 0;
-        }elseif($status == 'approve'){
+        } elseif ($status == 'approve') {
             $status = 1;
-        }elseif($status == 'deny'){
+        } elseif ($status == 'deny') {
             $status = 2;
         }
 
         $seller = $request->seller;
         $transaction = WithdrawRequest::where('seller_id', $seller['id'])
-            ->when(in_array($status, ['0',1,2]), function ($query) use($status){
+            ->when(in_array($status, ['0', 1, 2]), function ($query) use ($status) {
                 $query->where('approved', $status);
             })
-            ->when(($request->from && $request->to),function($query)use($request){
-                $query->whereBetween('created_at', [$request->from.' 00:00:00', $request->to.' 23:59:59']);
+            ->when(($request->from && $request->to), function ($query) use ($request) {
+                $query->whereBetween('created_at', [$request->from . ' 00:00:00', $request->to . ' 23:59:59']);
             })
             ->latest()->get();
 
@@ -334,7 +375,7 @@ class SellerController extends Controller
     public function monthly_earning(Request $request)
     {
         $seller = $request->seller;
-        $from = \Carbon\Carbon::now()->startOfYear()->format('Y-m-d');
+        $from = Carbon::now()->startOfYear()->format('Y-m-d');
         $to = Carbon::now()->endOfYear()->format('Y-m-d');
         $seller_data = '';
         $seller_earnings = OrderTransaction::where([
@@ -361,7 +402,7 @@ class SellerController extends Controller
     public function monthly_commission_given(Request $request)
     {
         $seller = $request->seller;
-        $from = \Carbon\Carbon::now()->startOfYear()->format('Y-m-d');
+        $from = Carbon::now()->startOfYear()->format('Y-m-d');
         $to = Carbon::now()->endOfYear()->format('Y-m-d');
 
         $commission_data = '';
@@ -393,7 +434,7 @@ class SellerController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)], 403);
         }
         $seller = $request->seller;
 
@@ -407,206 +448,95 @@ class SellerController extends Controller
     public function account_delete(Request $request)
     {
         $seller = $request->seller;
+        if ($this->getCountOfOngoingOrderStatus(sellerId: $request->seller->id) > 0) {
+            return response()->json(['status' => 'error', 'key' => 'ongoing_order_left', 'message' => translate('please_make_sure_you_don`t_have_any_ongoing_order')], 403);
+        }
 
-        if($seller->id){
+        if (!$this->checkAdminCommissionAmountClearance(sellerId: $request->seller->id)) {
+            return response()->json(['status' => 'error', 'key' => 'admin_commission_not_paid', 'message' => translate('please_clear_all_the_transaction_with_admin')], 403);
+        }
 
-            Coupon::where(['coupon_bearer'=>'seller','seller_id'=>$seller->id])->delete();
-
+        if ($this->getCountOfDeliveryManTransactionNotClearWithSeller(sellerId: $request->seller->id) > 0) {
+            return response()->json(['status' => 'error', 'key' => 'delivery_man_transaction_left', 'message' => translate('please_clear_all_the_transaction_with_delivery_man')], 403);
+        }
+        if ($seller->id) {
+            Coupon::where(['coupon_bearer' => 'seller', 'seller_id' => $seller->id])->delete();
             ImageManager::delete('/seller/' . $seller['image']);
             $seller->delete();
-            return response()->json(['message' => translate('Your_account_deleted_successfully!!')],200);
-
-        }else{
-            return response()->json(['message' =>'access_denied!!'],403);
+            return response()->json(['message' => translate('Your_account_deleted_successfully!!')], 200);
+        } else {
+            return response()->json(['message' => 'access_denied!!'], 403);
         }
     }
 
-    public function get_earning_statitics(Request $request){
-        $seller = $request->seller;
-        $dateType = $request->type;
-        $seller_data_final = array();
+    protected function checkAdminCommissionAmountClearance($sellerId)
+    {
+        $adminCommission = OrderTransaction::where(['seller_is' => 'seller', 'seller_id' => $sellerId])->sum('admin_commission') ?? 0;
+        $sellerGivenToAdmin = SellerWallet::where('seller_id', $sellerId)->first()->admin_commission ?? 0;
+        return $adminCommission >= $sellerGivenToAdmin;
+    }
 
-        $seller_data = array();
-        if($dateType == 'yearEarn') {
-            $number = 12;
-            $from = Carbon::now()->startOfYear()->format('Y-m-d');
-            $to = Carbon::now()->endOfYear()->format('Y-m-d');
+    protected function getCountOfDeliveryManTransactionNotClearWithSeller($sellerId): int
+    {
+        return DeliveryMan::with('wallet')->whereHas('wallet', function ($query) {
+            return $query->where('current_balance', '!=', 0)->where('cash_in_hand', '!=', 0);
+        })->where('seller_id', $sellerId)->get()->count();
+    }
 
-            $seller_earnings = OrderTransaction::where([
-                'seller_is'=>'seller',
-                'seller_id'=>$seller->id,
-                'status'=>'disburse'
-            ])->select(
-                DB::raw('IFNULL(sum(seller_amount),0) as sums'),
-                DB::raw('YEAR(created_at) year, MONTH(created_at) month')
-            )->whereBetween('created_at', [$from, $to])->groupby('year', 'month')->get()->toArray();
+    protected function getCountOfOngoingOrderStatus($sellerId): int
+    {
+        return Order::whereIn('order_status', ['pending', 'confirmed', 'out_for_delivery', 'processing'])->where(['seller_is' => 'seller', 'seller_id' => $sellerId])->get()->count();
+    }
 
-            for ($inc = 1; $inc <= $number; $inc++) {
-                $seller_data[$inc] = 0;
-                foreach ($seller_earnings as $match) {
-                    if ($match['month'] == $inc) {
-                        if($seller_data[$inc]>0){
-                            $seller_data[$inc] += $match['sums'];
-                        }else{
-                            $seller_data[$inc] = $match['sums'];
-                        }
-
-                        $seller_data[$inc] = $match['sums'];
-                    }
-                }
-            }
-
-            $seller_data_final = array_values($seller_data);
-
-        }elseif($dateType == 'MonthEarn') {
-            $from = date('Y-m-01');
-            $to = date('Y-m-t');
-            $number = date('d',strtotime($to));
-            $key_range = range(1, $number);
-
-            $seller_earnings = OrderTransaction::where([
+    protected function getVendorEarning(object|array $seller, string|Carbon $from, string|Carbon $to, array $range, string $type): array
+    {
+        $vendorEarnings = $this->orderTransactionRepo->getListWhereBetween(
+            filters: [
                 'seller_is' => 'seller',
-                'seller_id' => $seller->id,
-                'status' => 'disburse'
-            ])->select(
-                DB::raw('seller_amount'),
-                DB::raw('YEAR(created_at) year, MONTH(created_at) month, DAY(created_at) day')
-            )->whereBetween('created_at', [$from, $to])->groupby('day')->get()->toArray();
-
-            for ($inc = 1; $inc <= $number; $inc++) {
-                $seller_data[$inc] = 0;
-                foreach ($seller_earnings as $match) {
-                    if ($match['day'] == $inc) {
-                        if($seller_data[$inc]>0){
-                            $seller_data[$inc] += $match['seller_amount'];
-                        }else{
-                            $seller_data[$inc] = $match['seller_amount'];
-                        }
-                    }
-                }
-            }
-
-            $seller_data_final = array_values($seller_data);
-
-        }elseif($dateType == 'WeekEarn') {
-
-            $from = Carbon::now()->startOfWeek()->format('Y-m-d');
-            $to = Carbon::now()->endOfWeek()->format('Y-m-d');
-
-            $number_start =date('d',strtotime($from));
-            $number_end =date('d',strtotime($to));
-
-            $seller_earnings = OrderTransaction::where([
-                'seller_is' => 'seller',
-                'seller_id' => $seller->id,
-                'status' => 'disburse'
-            ])->select(
-                DB::raw('seller_amount'),
-                DB::raw('YEAR(created_at) year, MONTH(created_at) month, DAY(created_at) day')
-            )->whereBetween('created_at', [$from, $to])->get()->toArray();
-
-            for ($inc = $number_start; $inc <= $number_end; $inc++) {
-                $seller_data[$inc] = 0;
-                foreach ($seller_earnings as $match) {
-                    if ($match['day'] == $inc) {
-                        if($seller_data[$inc]>0){
-                            $seller_data[$inc] += $match['seller_amount'];
-                        }else{
-                            $seller_data[$inc] = $match['seller_amount'];
-                        }
-                    }
-                }
-            }
-            $seller_data_final = array_values($seller_data);
-        }
-
-        $commission_data = array();
-        if($dateType == 'yearEarn') {
-            $number = 12;
-            $from = Carbon::now()->startOfYear()->format('Y-m-d');
-            $to = Carbon::now()->endOfYear()->format('Y-m-d');
-
-            $commission_earnings = OrderTransaction::where([
-                'seller_is'=>'seller',
-                'seller_id'=>$seller->id,
-                'status'=>'disburse'
-            ])->select(
-                DB::raw('IFNULL(sum(admin_commission),0) as sums'),
-                DB::raw('YEAR(created_at) year, MONTH(created_at) month')
-            )->whereBetween('created_at', [$from, $to])->groupby('year', 'month')->get()->toArray();
-
-            for ($inc = 1; $inc <= $number; $inc++) {
-                $commission_data[$inc] = 0;
-                foreach ($commission_earnings as $match) {
-                    if ($match['month'] == $inc) {
-                        $commission_data[$inc] = $match['sums'];
-                    }
-                }
-            }
-
-            $commission_data_final = array_values($commission_data);
-
-        }elseif($dateType == 'MonthEarn') {
-            $from = date('Y-m-01');
-            $to = date('Y-m-t');
-            $number = date('d',strtotime($to));
-            $key_range = range(1, $number);
-
-            $commission_earnings = OrderTransaction::where([
-                'seller_is' => 'seller',
-                'seller_id' => $seller->id,
-                'status' => 'disburse'
-            ])->select(
-                DB::raw('admin_commission'),
-                DB::raw('YEAR(created_at) year, MONTH(created_at) month, DAY(created_at) day')
-            )->whereBetween('created_at', [$from, $to])->groupby('day')->get()->toArray();
-
-            for ($inc = 1; $inc <= $number; $inc++) {
-                $commission_data[$inc] = 0;
-                foreach ($commission_earnings as $match) {
-                    if ($match['day'] == $inc) {
-                        $commission_data[$inc] = $match['admin_commission'];
-                    }
-                }
-            }
-
-            $commission_data_final = array_values($commission_data);
-
-        }elseif($dateType == 'WeekEarn') {
-
-            $from = Carbon::now()->startOfWeek()->format('Y-m-d');
-            $to = Carbon::now()->endOfWeek()->format('Y-m-d');
-
-            $number_start =date('d',strtotime($from));
-            $number_end =date('d',strtotime($to));
-
-            $commission_earnings = OrderTransaction::where([
-                'seller_is' => 'seller',
-                'seller_id' => $seller->id,
-                'status' => 'disburse'
-            ])->select(
-                DB::raw('admin_commission'),
-                DB::raw('YEAR(created_at) year, MONTH(created_at) month, DAY(created_at) day')
-            )->whereBetween('created_at', [$from, $to])->get()->toArray();
-
-            for ($inc = $number_start; $inc <= $number_end; $inc++) {
-                $commission_data[$inc] = 0;
-                foreach ($commission_earnings as $match) {
-                    if ($match['day'] == $inc) {
-                        $commission_data[$inc] = $match['admin_commission'];
-                    }
-                }
-            }
-
-            $commission_data_final = array_values($commission_data);
-        }
-
-        $data = array(
-            'seller_earn' => $seller_data_final,
-            'commission_earn' => $commission_data_final
+                'seller_id' => $seller?->id,
+                'status' => 'disburse',
+            ],
+            selectColumn: 'seller_amount',
+            whereBetween: 'created_at',
+            whereBetweenFilters: [$from, $to],
+            groupBy:  $type,
         );
+        return $this->dashboardService->getDateWiseAmountInUSD(range: $range, type: $type, amountArray: $vendorEarnings);
+    }
 
-        return response()->json($data, 200);
+    protected function getAdminCommission(object|array $seller, string|Carbon $from, string|Carbon $to, array $range, string $type): array
+    {
+        $commissionGiven = $this->orderTransactionRepo->getListWhereBetween(
+            filters: [
+                'seller_is' => 'seller',
+                'seller_id' => $seller?->id,
+                'status' => 'disburse',
+            ],
+            selectColumn: 'admin_commission',
+            whereBetween: 'created_at',
+            whereBetweenFilters: [$from, $to],
+            groupBy:  $type,
+        );
+        return $this->dashboardService->getDateWiseAmountInUSD(range: $range, type: $type, amountArray: $commissionGiven);;
+    }
+
+    public function getEarningStatics(Request $request): JsonResponse
+    {
+        $dateType = $request['type'];
+        $dateTypeArray = $this->dashboardService->getDateTypeData(dateType: $dateType);
+        $from = $dateTypeArray['from'];
+        $to = $dateTypeArray['to'];
+        $type = $dateTypeArray['type'];
+        $range = $dateTypeArray['range'];
+        $vendorEarning = $this->getVendorEarning(seller: $request->seller, from: $from, to: $to, range: $range, type: $type);
+        $commissionEarn = $this->getAdminCommission(seller: $request->seller, from: $from, to: $to, range: $range, type: $type);
+        $vendorEarning = array_values($vendorEarning);
+        $commissionEarn = array_values($commissionEarn);
+
+        return response()->json([
+            'seller_earn' => $vendorEarning,
+            'commission_earn' => $commissionEarn
+        ], 200);
     }
 
     public function order_statistics(Request $request)
@@ -617,7 +547,7 @@ class SellerController extends Controller
 
         $pending = Order::where(['seller_is' => 'seller'])->where(['seller_id' => $seller->id])->where(['order_status' => 'pending'])
             ->when($today, function ($query) {
-                return $query->whereDate('created_at', \Carbon\Carbon::today());
+                return $query->whereDate('created_at', Carbon::today());
             })
             ->when($this_month, function ($query) {
                 return $query->whereMonth('created_at', Carbon::now());
@@ -695,7 +625,8 @@ class SellerController extends Controller
         return response()->json($data, 200);
     }
 
-    public function language_change(Request $request){
+    public function language_change(Request $request)
+    {
         $seller = $request->seller;
         $seller->app_language = $request->current_language;
         $seller->save();

@@ -27,18 +27,18 @@
                                         </div>
                                         <div class="dropdown">
                                             <button type="button" class="border-0 bg-transparent dropdown-toggle p-0 custom-pe-3" data-bs-toggle="dropdown" aria-expanded="false">
-                                                @if(isset($order_by) && $order_by=='desc')
+                                                @if(request('order_by') == 'desc')
                                                     {{ translate('Z-A') }}
-                                                @elseif(isset($order_by) && $order_by=='asc')
+                                                @elseif(request('order_by') == 'asc')
                                                     {{ translate('A-Z') }}
                                                 @else
-                                                    {{ translate('new_arrival') }}
+                                                    {{ translate('Default') }}
                                                 @endif
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
                                                 <li>
                                                     <a class="d-flex" href="{{ route('brands') }}">
-                                                        {{ translate('new_arrival') }}
+                                                        {{ translate('Default') }}
                                                     </a>
                                                 </li>
                                                 <li>
@@ -62,11 +62,11 @@
             </div>
             <div class="card">
                 <div class="card-body">
-                    <div class="auto-col xxl-items-6 justify-content-center gap-3">
+                    <div class="auto-col xxl-items-6 justify-content-center gap-3 max-sm-grid-col-2">
                         @foreach($brands as $brand)
                         <div class="brand-item grid-center">
                             <div class="hover__action">
-                                <a href="{{route('products',['id'=> $brand['id'],'data_from'=>'brand','page'=>1])}}" class="eye-btn mx-auto mb-3">
+                                <a href="{{route('products',['brand_id'=> $brand['id'],'data_from'=>'brand','page'=>1])}}" class="eye-btn mx-auto mb-3">
                                     <i class="bi bi-eye fs-12"></i>
                                 </a>
                                 <div class="d-flex flex-column flex-wrap gap-1 text-white">
@@ -74,14 +74,19 @@
                                     <p>{{translate('Products')}}</p>
                                 </div>
                             </div>
-                            <img width="130" loading="lazy" class="dark-support rounded text-center"
-                                 src="{{ getValidImage(path: 'storage/app/public/brand/'.$brand->image, type:'brand') }}" alt="{{$brand->name}}">
+                            <img width="130" loading="lazy" class="dark-support rounded text-center aspect-1 object-contain"
+                                 src="{{ getStorageImages(path:$brand->image_full_url, type:'brand') }}" alt="{{ $brand->image_alt_text ?? $brand->name}}">
+                            <h6 class="mt-2">{{$brand->name}}</h6>
                         </div>
                         @endforeach
-                            @if($brands->count()==0)
-                                <div class="mb-2 mt-3"><h5 class="text-center">{{ translate('not_found_anything') }}</h5></div>
-                            @endif
                     </div>
+
+                    @if($brands->count()==0)
+                        <div class="d-flex flex-column justify-content-center align-items-center gap-2 py-3 w-100">
+                            <img width="80" class="mb-3" src="{{ theme_asset('assets/img/empty-state/empty-brand.svg') }}" alt="">
+                            <h5 class="text-center text-muted">{{ translate('there_is_no_Brand') }}.</h5>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

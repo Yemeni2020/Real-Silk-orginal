@@ -86,16 +86,17 @@ class BusinessSettingRepository implements BusinessSettingRepositoryInterface
         return $dataLimit == 'all' ? $query->get() : $query->paginate($dataLimit)->appends($filters);
     }
 
-
-
     public function update(string $id, array $data): bool
     {
-        return $this->businessSetting->where('id', $id)->update($data);
+        $this->businessSetting->where('id', $id)->update($data);
+        clearWebConfigCacheKeys();
+        return true;
     }
 
     public function updateWhere(array $params, array $data): bool
     {
         $this->businessSetting->where($params)->update($data);
+        clearWebConfigCacheKeys();
         return true;
     }
 
@@ -105,7 +106,7 @@ class BusinessSettingRepository implements BusinessSettingRepositoryInterface
             'value' => $value,
             'updated_at' => now()
         ]);
-
+        clearWebConfigCacheKeys();
         return true;
     }
 

@@ -4,6 +4,7 @@ namespace App\Enums\ExportFileNames\Admin;
 
 enum Customer
 {
+    const CUSTOMER_ORDER_LIST = 'Customer-Order-List.xlsx';
     const EXPORT_XLSX = 'Customers.xlsx';
     const SUBSCRIBER_LIST_XLSX = 'Subscriber-list.xlsx';
     const LOYALTY_TRANSACTIONS_LIST_XLSX = 'Loyalty-Transactions-Report.xlsx';

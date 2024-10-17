@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\RestAPI\v2\seller\auth;
-
 use App\Http\Controllers\Controller;
 use App\Models\Seller;
 use App\Models\Shop;
@@ -30,7 +29,7 @@ class RegisterController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)], 403);
         }
 
         DB::beginTransaction();
@@ -66,8 +65,6 @@ class RegisterController extends Controller
                 'updated_at' => now(),
             ]);
             DB::commit();
-            return response()->json(['message' => translate('Shop apply successfully!')], 200);
-
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['message' => translate('Shop apply fail!')], 403);

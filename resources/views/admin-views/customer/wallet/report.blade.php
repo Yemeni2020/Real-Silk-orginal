@@ -5,7 +5,7 @@
     <div class="content container-fluid">
         <div class="mb-3 d-flex justify-content-between flex-wrap gap-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img width="20" src="{{asset('/public/assets/back-end/img/admin-wallet.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/admin-wallet.png')}}" alt="">
                 {{translate('wallet')}}
             </h2>
             @if($customerStatus == 1)
@@ -30,7 +30,7 @@
                                 <div class="col-sm-6 col-12">
                                     <div class="form-group">
                                         <label class="input-label d-flex" for="customer">{{translate('customer')}}</label>
-                                        <select id='form-customer' name="customer_id" data-placeholder="{{translate('select_customer')}}" class="get-customer-list-by-ajax-request" required>
+                                        <select id='form-customer' name="customer_id" data-placeholder="{{translate('select_customer')}}" class="get-customer-list-without-all-customer" required>
                                         </select>
                                     </div>
                                 </div>
@@ -173,7 +173,7 @@
                         <ul class="dropdown-menu dropdown-menu-right">
                             <li>
                                 <a type="submit" class="dropdown-item d-flex align-items-center gap-2 " href="{{route('admin.customer.wallet.export',['transaction_type'=>$transaction_status,'customer_id'=>request('customer_id'),'to'=>request('to'),'from'=>request('from')])}}">
-                                    <img width="14" src="{{asset('/public/assets/back-end/img/excel.png')}}" alt="">
+                                    <img width="14" src="{{dynamicAsset(path: 'public/assets/back-end/img/excel.png')}}" alt="">
                                     {{translate('excel')}}
                                 </a>
                             </li>
@@ -242,10 +242,7 @@
                 </div>
             </div>
             @if(count($transactions)==0)
-                <div class="text-center p-4">
-                    <img class="mb-3 w-160" src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}" alt="{{translate('image_description')}}">
-                    <p class="mb-0">{{ translate('no_data_to_show')}}</p>
-                </div>
+                @include('layouts.back-end._empty-state',['text'=>'no_data_found'],['image'=>'default'])
             @endif
         </div>
     </div>

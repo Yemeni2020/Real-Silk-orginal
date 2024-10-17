@@ -8,11 +8,11 @@ use App\Models\Currency;
 
 class Convert
 {
-    public static function usd($amount)
+    public static function usd($amount): float|int|null
     {
-        $currency_model = Helpers::get_business_settings('currency_model');
+        $currency_model = getWebConfig(name: 'currency_model');
         if ($currency_model == 'multi_currency') {
-            $default = Currency::find(Helpers::get_business_settings('system_default_currency'));
+            $default = Currency::find(getWebConfig(name: 'system_default_currency'));
             $usd = Currency::where('code', 'USD')->first()->exchange_rate ?? 1;
             $rate = $default['exchange_rate'] / $usd;
             $value = floatval($amount) / floatval($rate);
@@ -22,16 +22,26 @@ class Convert
 
         return $value;
     }
-    public static function usdPaymentModule($amount, $currency)
+
+    public static function usdPaymentModule($amount, $currency): float|int|null
     {
-        $currency_model = Helpers::get_business_settings('currency_model');
-        if ($currency_model == 'multi_currency') {
+        $currencyModel = getWebConfig(name: 'currency_model');
+        if ($currencyModel == 'multi_currency') {
+            if ($currency == 'USD') {
+                return floatval($amount);
+            }
 
-            $default = Currency::find(Helpers::get_business_settings('system_default_currency'));
-            $current_currency = Currency::where(['code' => $currency])->first()->exchange_rate ?? 1;
-            $rate = $default['exchange_rate'] >= $current_currency ? ($current_currency / $default['exchange_rate']) : ($default['exchange_rate'] / $current_currency);
+            $default = Currency::find(getWebConfig(name: 'system_default_currency'));
+            $currentCurrency = Currency::where(['code' => $currency])->first()->exchange_rate ?? 1;
 
-            $value = floatval($amount) * floatval($rate);
+            if ($default['code'] == 'USD') {
+                return floatval($amount) / $currentCurrency;
+            }
+            $rate = $default['exchange_rate'] >= $currentCurrency ? ($default['exchange_rate'] / $currentCurrency) : ($currentCurrency / $default['exchange_rate']);
+            $defaultAmount = $default['exchange_rate'] <= $currentCurrency ? floatval($amount) / floatval($rate) : floatval($amount) * floatval($rate);
+            $usdRate = Currency::where(['code' => 'USD'])->first()->exchange_rate;
+
+            $value = floatval($default['exchange_rate']) >= floatval($usdRate) ? floatval($defaultAmount) * floatval($usdRate) : floatval($defaultAmount) / floatval($usdRate);
         } else {
             $value = floatval($amount);
         }
@@ -41,9 +51,9 @@ class Convert
 
     public static function default($amount)
     {
-        $currency_model = Helpers::get_business_settings('currency_model');
+        $currency_model = getWebConfig(name: 'currency_model');
         if ($currency_model == 'multi_currency') {
-            $default = Currency::find(Helpers::get_business_settings('system_default_currency'));
+            $default = Currency::find(getWebConfig(name: 'system_default_currency'));
             $usd = Currency::where('code', 'USD')->first()->exchange_rate ?? 1;
             $rate = $default['exchange_rate'] / $usd;
             $value = floatval($amount) * floatval($rate);
@@ -55,7 +65,7 @@ class Convert
 
     public static function bdtTousd($amount)
     {
-        $currency_model = Helpers::get_business_settings('currency_model');
+        $currency_model = getWebConfig(name: 'currency_model');
         if ($currency_model == 'multi_currency') {
             $bdt = Currency::where(['code' => 'BDT'])->first()->exchange_rate ?? 1;
             $usd = Currency::where('code', 'USD')->first()->exchange_rate ?? 1;
@@ -70,7 +80,7 @@ class Convert
 
     public static function usdTobdt($amount)
     {
-        $currency_model = Helpers::get_business_settings('currency_model');
+        $currency_model = getWebConfig(name: 'currency_model');
         if ($currency_model == 'multi_currency') {
             $bdt = Currency::where(['code' => 'BDT'])->first()->exchange_rate ?? 1;
             $usd = Currency::where('code', 'USD')->first()->exchange_rate ?? 1;
@@ -85,7 +95,7 @@ class Convert
 
     public static function usdTomyr($amount)
     {
-        $currency_model = Helpers::get_business_settings('currency_model');
+        $currency_model = getWebConfig(name: 'currency_model');
         if ($currency_model == 'multi_currency') {
             $myr = Currency::where(['code' => 'MYR'])->first()->exchange_rate ?? 1;
             $usd = Currency::where('code', 'USD')->first()->exchange_rate ?? 1;
@@ -100,7 +110,7 @@ class Convert
 
     public static function usdTozar($amount)
     {
-        $currency_model = Helpers::get_business_settings('currency_model');
+        $currency_model = getWebConfig(name: 'currency_model');
         if ($currency_model == 'multi_currency') {
             $zar = Currency::where(['code' => 'ZAR'])->first()->exchange_rate ?? 1;
             $usd = Currency::where('code', 'USD')->first()->exchange_rate ?? 1;
@@ -115,7 +125,7 @@ class Convert
 
     public static function usdToinr($amount)
     {
-        $currency_model = Helpers::get_business_settings('currency_model');
+        $currency_model = getWebConfig(name: 'currency_model');
         if ($currency_model == 'multi_currency') {
             $inr = Currency::where(['code' => 'INR'])->first()->exchange_rate ?? 1;
             $usd = Currency::where('code', 'USD')->first()->exchange_rate ?? 1;
@@ -130,7 +140,7 @@ class Convert
 
     public static function usdToegp($amount)
     {
-        $currency_model = Helpers::get_business_settings('currency_model');
+        $currency_model = getWebConfig(name: 'currency_model');
         if ($currency_model == 'multi_currency') {
             $egp = Currency::where(['code' => 'EGP'])->first()->exchange_rate ?? 1;
             $usd = Currency::where('code', 'USD')->first()->exchange_rate ?? 1;

@@ -41,7 +41,7 @@
                                 <div class="card border flex-grow-1">
                                     <div class="card-body grid-center">
                                         <div class="text-center">
-                                            <h3 class="mb-2">{{ Helpers::currency_converter($total_wallet_balance) }}</h3>
+                                            <h3 class="mb-2">{{ webCurrencyConverter($total_wallet_balance ?? 0) }}</h3>
                                             <div class="d-flex align-items-center gap-2">
                                                 <img width="16"
                                                      src="{{theme_asset('assets/img/icons/profile-icon5.png')}}"
@@ -88,12 +88,48 @@
                                         <div class="col-md-6 col-xl-6 col-lg-6">
                                             <dl class="mb-0 flexible-grid width--7rem">
                                                 <dt class="pe-1">{{translate('phone')}}</dt>
-                                                <dd><a href="tel:{{$customer_detail['phone']}}"
-                                                       class="text-dark">{{$customer_detail['phone']}}</a></dd>
+                                                <dd class="d-flex align-items-center gap-1">
+                                                    <a href="tel:{{$customer_detail['phone']}}"
+                                                       class="text-dark">{{$customer_detail['phone']}}</a>
+
+                                                    @if($customer_detail['phone'] && getLoginConfig(key: 'phone_verification'))
+                                                        @if($customer_detail['is_phone_verified'])
+                                                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ translate('Your_phone_is_verified.') }}">
+                                                            <img width="16"
+                                                                 src="{{theme_asset('assets/img/icons/verified.svg')}}"
+                                                                 class="dark-support" alt="">
+                                                        </span>
+                                                            @else
+                                                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ translate('Phone_not_verified.') }} {{ translate('Please_verify_through_the_user_app.') }}">
+                                                            <img width="16"
+                                                                 src="{{theme_asset('assets/img/icons/verified-error.svg')}}"
+                                                                 class="dark-support" alt="">
+                                                        </span>
+                                                        @endif
+                                                    @endif
+                                                </dd>
 
                                                 <dt class="pe-1">{{translate('email')}}</dt>
-                                                <dd><a href="mailto:{{$customer_detail['email']}}"
-                                                       class="text-dark">{{$customer_detail['email']}}</a></dd>
+                                                <dd class="d-flex align-items-center gap-1">
+                                                    <a href="mailto:{{$customer_detail['email']}}"
+                                                       class="text-dark">{{$customer_detail['email']}}</a>
+
+                                                    @if($customer_detail['email'] && getLoginConfig(key: 'email_verification'))
+                                                        @if($customer_detail['is_email_verified'])
+                                                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ translate('Your_email_is_verified.') }}">
+                                                            <img width="16"
+                                                                 src="{{theme_asset('assets/img/icons/verified.svg')}}"
+                                                                 class="dark-support" alt="">
+                                                        </span>
+                                                            @else
+                                                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="{{ translate('Email_not_verified.') }} {{ translate('Please_verify_through_the_user_app.') }}">
+                                                            <img width="16"
+                                                                 src="{{theme_asset('assets/img/icons/verified-error.svg')}}"
+                                                                 class="dark-support" alt="">
+                                                        </span>
+                                                        @endif
+                                                    @endif
+                                                </dd>
                                             </dl>
                                         </div>
                                     </div>
@@ -120,7 +156,7 @@
                                                 <div
                                                     class="card-header gap-2 align-items-center d-flex justify-content-between">
                                                     <h6>{{translate($address['address_type'])}}
-                                                        ({{ $address['is_billing'] === 1 ? translate('billing_address'):translate('shipping_address')}})</h6>
+                                                        ({{ $address['is_billing'] == 1 ? translate('billing_address'):translate('shipping_address')}})</h6>
                                                     <div class="d-flex align-items-center gap-3">
                                                         <a href="{{route('address-edit',$address->id)}}" class="p-0 bg-transparent border-0">
                                                             <img src="{{theme_asset('assets/img/svg/location-edit.svg')}}"
@@ -154,6 +190,17 @@
                                         </div>
                                     @endforeach
                                 </div>
+
+                                @if(count($addresses) == 0)
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <div class="d-flex flex-column justify-content-center align-items-center gap-2 py-5 w-100">
+                                            <img width="60" class="mb-3" src="{{ theme_asset('assets/img/empty-state/empty-address.svg') }}" alt="">
+                                            <h5 class="text-center text-muted">
+                                                {{ translate('No_address_found') }}!
+                                            </h5>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>

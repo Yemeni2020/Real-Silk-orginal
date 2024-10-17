@@ -26,7 +26,7 @@ class ProductStockReportController extends Controller
         $sort = $request['sort'] ?? 'ASC';
         $category_id = $request['category_id'] ?? 'all';
 
-        $stock_limit = \App\Utils\Helpers::get_business_settings('stock_limit');
+        $stock_limit = getWebConfig(name: 'stock_limit');
         $sellers = Seller::where(['status'=>'approved'])->get();
         $categories = Category::where(['position'=>0])->get();
         $query_param = ['search' => $search, 'sort' => $sort, 'seller_id' => $seller_id, 'category_id'=>$category_id];
@@ -48,7 +48,7 @@ class ProductStockReportController extends Controller
      */
     public function export(Request $request)
     {
-        $stock_limit = Helpers::get_business_settings('stock_limit');
+        $stock_limit = getWebConfig(name: 'stock_limit');
         $products = self::common_query($request)->get();
         $seller = $request->has('seller_id') && $request['seller_id'] != 'inhouse' && $request['seller_id'] != 'all' ? (Seller::with('shop')->find($request->seller_id)) : ($request['seller_id']?? 'all');
         $category = $request->has('category_id') && $request['category_id'] != 'all' ? (Category::find($request->category_id)) : ($request['category_id'] ??'all');

@@ -37,11 +37,16 @@
         <td> {{translate('SL')}}    </td>
         <td> {{translate('order_ID')}}</td>
         <td> {{translate('order_Date')}}</td>
+        @if ($data['type'] != 'earn')
         <td> {{translate('total_Item')}}</td>
+        @endif
         @if ($data['type'] == 'earn')
             <td> {{translate('earnings')}}</td>
         @endif
-        <td> {{translate('payment_status')}}</td>
+        <td> {{translate($data['type'] == 'earn' ? 'earning_status' : 'payment_status')}}</td>
+        @if ($data['type'] == 'earn')
+            <td> {{translate('payment_method')}}</td>
+        @endif
         <td> {{translate('order_Status')}}</td>
     </tr>
     @foreach ($data['orders'] as $key=>$item)
@@ -49,11 +54,20 @@
             <td> {{++$key}}    </td>
             <td> {{$item->id}} </td>
             <td> {{ date_format( $item->created_at, 'd M ,Y, h:i:s A') }} </td>
+            @if ($data['type'] != 'earn')
             <td> {{$item->total_qty}} </td>
+            @endif
             @if ($data['type'] == 'earn')
                 <td> {{ setCurrencySymbol(amount: usdToDefaultCurrency(amount: $item?->deliveryman_charge ?? 0)) }}</td>
             @endif
-            <td> {{translate($item->payment_status)}} </td>
+            @if ($data['type'] == 'earn')
+                <td> {{translate($item->order_status == 'delivered' && $item->payment_status == 'paid' ? translate('received') : translate('not_received'))}} </td>
+            @else
+                <td> {{translate($item->payment_status)}} </td>
+            @endif
+            @if ($data['type'] == 'earn')
+                <td>{{translate($item->payment_method)}}</td>
+            @endif
             <td> {{translate($item->order_status)}}</td>
         </tr>
     @endforeach

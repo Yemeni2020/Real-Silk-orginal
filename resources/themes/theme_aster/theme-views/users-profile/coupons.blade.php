@@ -39,7 +39,7 @@
                                                         @if ($item->coupon_type == "free_delivery")
                                                             {{ translate('free_Delivery') }}
                                                         @else
-                                                            {{ ($item->discount_type == 'percentage')? $item->discount.'%'.translate('off') : Helpers::currency_converter($item->discount)}}
+                                                            {{ ($item->discount_type == 'percentage')? $item->discount.'%'.translate('off') : webCurrencyConverter($item->discount)}}
                                                         @endif
                                                     </h2>
                                                     <p class="text-capitalize">
@@ -67,11 +67,23 @@
                                                     <button
                                                         class="ticket-welcome-btn coupon-id-hide coupon-hide-id-{{ $item->code }} d-none">{{ translate('copied') }}</button>
                                                     <h6>{{ translate('valid_till') }} {{ $item->expire_date->format('d M, Y') }}</h6>
-                                                    <p class="m-0">{{ translate('available_from_minimum_purchase') }} {{Helpers::currency_converter($item->min_purchase)}}</p>
+                                                    <p class="m-0">{{ translate('available_from_minimum_purchase') }} {{webCurrencyConverter($item->min_purchase)}}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     @endforeach
+
+                                    @if(count($coupons) == 0)
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <div class="d-flex flex-column justify-content-center align-items-center gap-2 py-5 w-100">
+                                                <img width="80" class="mb-3" src="{{ theme_asset('assets/img/empty-state/empty-coupon.svg') }}" alt="">
+                                                <h5 class="text-center text-muted">
+                                                    {{ translate('No_coupon_available') }}!
+                                                </h5>
+                                            </div>
+                                        </div>
+                                    @endif
+
                                     <div class="col-md-12 mt-5">
                                         {{ $coupons->links() }}
                                     </div>

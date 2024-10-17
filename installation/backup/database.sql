@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Jan 14, 2024 at 10:42 AM
+-- Generation Time: Sep 24, 2024 at 07:57 AM
 -- Server version: 5.7.39
 -- PHP Version: 8.2.0
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `install`
+-- Database: `6valley_install`
 --
 
 -- --------------------------------------------------------
@@ -219,6 +219,19 @@ CREATE TABLE `attributes` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `authors`
+--
+
+CREATE TABLE `authors` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `banners`
 --
 
@@ -272,6 +285,8 @@ CREATE TABLE `brands` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `image` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'def.png',
+  `image_storage_type` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT 'public',
+  `image_alt_text` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -301,8 +316,6 @@ INSERT INTO `business_settings` (`id`, `type`, `value`, `created_at`, `updated_a
 (3, 'mail_config', '{\"status\":0,\"name\":\"demo\",\"host\":\"mail.demo.com\",\"driver\":\"SMTP\",\"port\":\"587\",\"username\":\"info@demo.com\",\"email_id\":\"info@demo.com\",\"encryption\":\"TLS\",\"password\":\"demo\"}', '2020-10-12 10:29:18', '2021-07-06 12:32:01'),
 (4, 'cash_on_delivery', '{\"status\":\"1\"}', NULL, '2021-05-25 21:21:15'),
 (6, 'ssl_commerz_payment', '{\"status\":\"0\",\"environment\":\"sandbox\",\"store_id\":\"\",\"store_password\":\"\"}', '2020-11-09 08:36:51', '2023-01-10 05:51:56'),
-(7, 'paypal', '{\"status\":\"0\",\"environment\":\"sandbox\",\"paypal_client_id\":\"\",\"paypal_secret\":\"\"}', '2020-11-09 08:51:39', '2023-01-10 05:51:56'),
-(8, 'stripe', '{\"status\":\"0\",\"api_key\":null,\"published_key\":null}', '2020-11-09 09:01:47', '2021-07-06 12:30:05'),
 (10, 'company_phone', '000000000', NULL, '2020-12-08 14:15:01'),
 (11, 'company_name', '', NULL, '2021-02-27 18:11:53'),
 (12, 'company_web_logo', '2021-05-25-60ad1b313a9d4.png', NULL, '2021-05-25 21:43:45'),
@@ -311,7 +324,7 @@ INSERT INTO `business_settings` (`id`, `type`, `value`, `created_at`, `updated_a
 (15, 'about_us', '<p>this is about us page. hello and hi from about page description..</p>', NULL, '2021-06-11 01:42:53'),
 (16, 'sms_nexmo', '{\"status\":\"0\",\"nexmo_key\":\"custo5cc042f7abf4c\",\"nexmo_secret\":\"custo5cc042f7abf4c@ssl\"}', NULL, NULL),
 (17, 'company_email', 'Copy@6amtech.com', NULL, '2021-03-15 12:29:51'),
-(18, 'colors', '{\"primary\":\"#1b7fed\",\"secondary\":\"black\",\"primary_light\":\"#CFDFFB\"}', '2020-10-11 13:53:02', '2024-01-14 10:22:07'),
+(18, 'colors', '{\"primary\":\"#1b7fed\",\"secondary\":\"black\",\"primary_light\":\"#CFDFFB\"}', '2020-10-11 13:53:02', '2024-09-24 07:52:16'),
 (19, 'company_footer_logo', '2021-02-20-6030c8a02a5f9.png', NULL, '2021-02-20 14:30:24'),
 (20, 'company_copyright_text', 'CopyRight 6amTech@2021', NULL, '2021-03-15 12:30:47'),
 (21, 'download_app_apple_stroe', '{\"status\":\"1\",\"link\":\"https:\\/\\/www.target.com\\/s\\/apple+store++now?ref=tgt_adv_XS000000&AFID=msn&fndsrc=tgtao&DFA=71700000012505188&CPNG=Electronics_Portable+Computers&adgroup=Portable+Computers&LID=700000001176246&LNM=apple+store+near+me+now&MT=b&network=s&device=c&location=12&targetid=kwd-81913773633608:loc-12&ds_rl=1246978&ds_rl=1248099&gclsrc=ds\"}', NULL, '2020-12-08 12:54:53'),
@@ -325,7 +338,6 @@ INSERT INTO `business_settings` (`id`, `type`, `value`, `created_at`, `updated_a
 (29, 'order_processing_message', '{\"status\":\"1\",\"message\":\"Order pro Message\"}', NULL, NULL),
 (30, 'out_for_delivery_message', '{\"status\":\"1\",\"message\":\"Order ouut Message\"}', NULL, NULL),
 (31, 'order_delivered_message', '{\"status\":\"1\",\"message\":\"Order del Message\"}', NULL, NULL),
-(32, 'razor_pay', '{\"status\":\"0\",\"razor_key\":null,\"razor_secret\":null}', NULL, '2021-07-06 12:30:14'),
 (33, 'sales_commission', '0', NULL, '2021-06-11 18:13:13'),
 (34, 'seller_registration', '1', NULL, '2021-06-04 21:02:48'),
 (35, 'pnc_language', '[\"en\"]', NULL, NULL),
@@ -337,10 +349,8 @@ INSERT INTO `business_settings` (`id`, `type`, `value`, `created_at`, `updated_a
 (43, 'terms_and_conditions', '', NULL, NULL),
 (44, 'minimum_order_value', '1', NULL, NULL),
 (45, 'privacy_policy', '<p>my privacy policy</p>\r\n\r\n<p>&nbsp;</p>', NULL, '2021-07-06 11:09:07'),
-(46, 'paystack', '{\"status\":\"0\",\"publicKey\":null,\"secretKey\":null,\"paymentUrl\":\"https:\\/\\/api.paystack.co\",\"merchantEmail\":null}', NULL, '2021-07-06 12:30:35'),
-(47, 'senang_pay', '{\"status\":\"0\",\"secret_key\":null,\"merchant_id\":null}', NULL, '2021-07-06 12:30:23'),
 (48, 'currency_model', 'single_currency', NULL, NULL),
-(49, 'social_login', '[{\"login_medium\":\"google\",\"client_id\":\"\",\"client_secret\":\"\",\"status\":\"\"},{\"login_medium\":\"facebook\",\"client_id\":\"\",\"client_secret\":\"\",\"status\":\"\"}]', NULL, NULL),
+(49, 'social_login', '[{\"login_medium\":\"google\",\"client_id\":\"\",\"client_secret\":\"\",\"status\":1},{\"login_medium\":\"facebook\",\"client_id\":\"\",\"client_secret\":\"\",\"status\":1}]', NULL, '2024-09-24 07:52:17'),
 (50, 'digital_payment', '{\"status\":\"1\"}', NULL, NULL),
 (51, 'phone_verification', '0', NULL, NULL),
 (52, 'email_verification', '0', NULL, NULL),
@@ -348,19 +358,12 @@ INSERT INTO `business_settings` (`id`, `type`, `value`, `created_at`, `updated_a
 (54, 'country_code', 'BD', NULL, NULL),
 (55, 'pagination_limit', '10', NULL, NULL),
 (56, 'shipping_method', 'inhouse_shipping', NULL, NULL),
-(57, 'paymob_accept', '{\"status\":\"0\",\"api_key\":\"\",\"iframe_id\":\"\",\"integration_id\":\"\",\"hmac\":\"\"}', NULL, NULL),
-(58, 'bkash', '{\"status\":\"0\",\"environment\":\"sandbox\",\"api_key\":\"\",\"api_secret\":\"\",\"username\":\"\",\"password\":\"\"}', NULL, '2023-01-10 05:51:56'),
 (59, 'forgot_password_verification', 'email', NULL, NULL),
-(60, 'paytabs', '{\"status\":0,\"profile_id\":\"\",\"server_key\":\"\",\"base_url\":\"https:\\/\\/secure-egypt.paytabs.com\\/\"}', NULL, '2021-11-21 03:01:40'),
 (61, 'stock_limit', '10', NULL, NULL),
-(62, 'flutterwave', '{\"status\":0,\"public_key\":\"\",\"secret_key\":\"\",\"hash\":\"\"}', NULL, NULL),
-(63, 'mercadopago', '{\"status\":0,\"public_key\":\"\",\"access_token\":\"\"}', NULL, NULL),
 (64, 'announcement', '{\"status\":null,\"color\":null,\"text_color\":null,\"announcement\":null}', NULL, NULL),
 (65, 'fawry_pay', '{\"status\":0,\"merchant_code\":\"\",\"security_key\":\"\"}', NULL, '2022-01-18 09:46:30'),
 (66, 'recaptcha', '{\"status\":0,\"site_key\":\"\",\"secret_key\":\"\"}', NULL, '2022-01-18 09:46:30'),
 (67, 'seller_pos', '0', NULL, NULL),
-(68, 'liqpay', '{\"status\":0,\"public_key\":\"\",\"private_key\":\"\"}', NULL, NULL),
-(69, 'paytm', '{\"status\":0,\"environment\":\"sandbox\",\"paytm_merchant_key\":\"\",\"paytm_merchant_mid\":\"\",\"paytm_merchant_website\":\"\",\"paytm_refund_url\":\"\"}', NULL, '2023-01-10 05:51:56'),
 (70, 'refund_day_limit', '0', NULL, NULL),
 (71, 'business_mode', 'multi', NULL, NULL),
 (72, 'mail_config_sendgrid', '{\"status\":0,\"name\":\"\",\"host\":\"\",\"driver\":\"\",\"port\":\"\",\"username\":\"\",\"email_id\":\"\",\"encryption\":\"\",\"password\":\"\"}', NULL, NULL),
@@ -390,7 +393,7 @@ INSERT INTO `business_settings` (`id`, `type`, `value`, `created_at`, `updated_a
 (96, 'temporary_block_time', '0', NULL, '2023-06-13 13:04:49'),
 (97, 'maximum_login_hit', '0', NULL, '2023-06-13 13:04:49'),
 (98, 'temporary_login_block_time', '0', NULL, '2023-06-13 13:04:49'),
-(104, 'apple_login', '[{\"login_medium\":\"apple\",\"client_id\":\"\",\"client_secret\":\"\",\"status\":0,\"team_id\":\"\",\"key_id\":\"\",\"service_file\":\"\",\"redirect_url\":\"\"}]', NULL, '2023-10-13 05:34:53'),
+(104, 'apple_login', '[{\"login_medium\":\"apple\",\"client_id\":\"\",\"client_secret\":\"\",\"status\":1,\"team_id\":\"\",\"key_id\":\"\",\"service_file\":\"\",\"redirect_url\":\"\"}]', NULL, '2024-09-24 07:52:17'),
 (105, 'ref_earning_status', '0', NULL, '2023-10-13 05:34:53'),
 (106, 'ref_earning_exchange_rate', '0', NULL, '2023-10-13 05:34:53'),
 (107, 'guest_checkout', '0', NULL, '2023-10-13 11:34:53'),
@@ -414,7 +417,36 @@ INSERT INTO `business_settings` (`id`, `type`, `value`, `created_at`, `updated_a
 (148, 'company_reliability', '[{\"item\":\"delivery_info\",\"title\":\"Fast Delivery all across the country\",\"image\":\"\",\"status\":1},{\"item\":\"safe_payment\",\"title\":\"Safe Payment\",\"image\":\"\",\"status\":1},{\"item\":\"return_policy\",\"title\":\"7 Days Return Policy\",\"image\":\"\",\"status\":1},{\"item\":\"authentic_product\",\"title\":\"100% Authentic Products\",\"image\":\"\",\"status\":1}]', NULL, NULL),
 (149, 'react_setup', '{\"status\":0,\"react_license_code\":\"\",\"react_domain\":\"\",\"react_platform\":\"\"}', NULL, '2024-01-09 04:05:15'),
 (150, 'app_activation', '{\"software_id\":\"\",\"is_active\":0}', NULL, '2024-01-09 04:05:15'),
-(151, 'shop_banner', '', NULL, '2023-10-13 11:34:53');
+(151, 'shop_banner', '', NULL, '2023-10-13 11:34:53'),
+(152, 'map_api_status', '1', NULL, '2024-03-27 03:12:32'),
+(153, 'vendor_registration_header', '{\"title\":\"Vendor Registration\",\"sub_title\":\"Create your own store.Already have store?\",\"image\":\"\"}', NULL, NULL),
+(154, 'vendor_registration_sell_with_us', '{\"title\":\"Why Sell With Us\",\"sub_title\":\"Boost your sales! Join us for a seamless, profitable experience with vast buyer reach and top-notch support. Sell smarter today!\",\"image\":\"\"}', NULL, NULL),
+(155, 'download_vendor_app', '{\"title\":\"Download Free Vendor App\",\"sub_title\":\"Download our free seller app and start reaching millions of buyers on the go! Easy setup, manage listings, and boost sales anywhere.\",\"image\":null,\"download_google_app\":null,\"download_google_app_status\":0,\"download_apple_app\":null,\"download_apple_app_status\":0}', NULL, NULL),
+(156, 'business_process_main_section', '{\"title\":\"3 Easy Steps To Start Selling\",\"sub_title\":\"Start selling quickly! Register, upload your products with detailed info and images, and reach millions of buyers instantly.\",\"image\":\"\"}', NULL, NULL),
+(157, 'business_process_step', '[{\"title\":\"Get Registered\",\"description\":\"Sign up easily and create your seller account in just a few minutes. It fast and simple to get started.\",\"image\":\"\"},{\"title\":\"Upload Products\",\"description\":\"List your products with detailed descriptions and high-quality images to attract more buyers effortlessly.\",\"image\":\"\"},{\"title\":\"Start Selling\",\"description\":\"Go live and start reaching millions of potential buyers immediately. Watch your sales grow with our vast audience.\",\"image\":\"\"}]', NULL, NULL),
+(158, 'brand_list_priority', '', '2024-05-18 10:57:03', '2024-05-18 10:57:03'),
+(159, 'category_list_priority', '', '2024-05-18 10:57:03', '2024-05-18 10:57:03'),
+(160, 'vendor_list_priority', '', '2024-05-18 10:57:03', '2024-05-18 10:57:03'),
+(161, 'flash_deal_priority', '', '2024-05-18 10:57:03', '2024-05-18 10:57:03'),
+(162, 'featured_product_priority', '', '2024-05-18 10:57:03', '2024-05-18 10:57:03'),
+(163, 'feature_deal_priority', '', '2024-05-18 10:57:03', '2024-05-18 10:57:03'),
+(164, 'new_arrival_product_list_priority', '', '2024-05-18 10:57:03', '2024-05-18 10:57:03'),
+(165, 'top_vendor_list_priority', '', '2024-05-18 10:57:03', '2024-05-18 10:57:03'),
+(166, 'category_wise_product_list_priority', '', '2024-05-18 10:57:03', '2024-05-18 10:57:03'),
+(167, 'top_rated_product_list_priority', '', '2024-05-18 10:57:03', '2024-05-18 10:57:03'),
+(168, 'best_selling_product_list_priority', '', '2024-05-18 10:57:03', '2024-05-18 10:57:03'),
+(169, 'searched_product_list_priority', '', '2024-05-18 10:57:03', '2024-05-18 10:57:03'),
+(170, 'vendor_product_list_priority', '', '2024-05-18 10:57:03', '2024-05-18 10:57:03'),
+(171, 'storage_connection_type', 'public', '2024-09-24 07:52:17', '2024-09-24 07:52:17'),
+(172, 'google_search_console_code', '', '2024-09-24 07:52:17', '2024-09-24 07:52:17'),
+(173, 'bing_webmaster_code', '', '2024-09-24 07:52:17', '2024-09-24 07:52:17'),
+(174, 'baidu_webmaster_code', '', '2024-09-24 07:52:17', '2024-09-24 07:52:17'),
+(175, 'yandex_webmaster_code', '', '2024-09-24 07:52:17', '2024-09-24 07:52:17'),
+(176, 'firebase_otp_verification', '{\"status\":0,\"web_api_key\":\"\"}', '2024-09-24 07:52:17', '2024-09-24 07:52:17'),
+(177, 'maintenance_system_setup', '{\"user_app\":0,\"user_website\":0,\"vendor_app\":0,\"deliveryman_app\":0,\"vendor_panel\":0}', '2024-09-24 07:52:17', '2024-09-24 07:52:17'),
+(178, 'maintenance_duration_setup', '{\"maintenance_duration\":\"until_change\",\"start_date\":null,\"end_date\":null}', NULL, NULL),
+(179, 'maintenance_message_setup', '{\"business_number\":1,\"business_email\":1,\"maintenance_message\":\"We are Working On Something Special\",\"message_body\":\"We apologize for any inconvenience. For immediate assistance, please contact with our support team\"}', NULL, NULL),
+(180, 'shipping-policy', '{\"status\":0,\"content\":\"\"}', '2024-09-24 07:52:17', '2024-09-24 07:52:17');
 
 -- --------------------------------------------------------
 
@@ -438,6 +470,7 @@ CREATE TABLE `carts` (
   `tax` double NOT NULL DEFAULT '1',
   `discount` double NOT NULL DEFAULT '1',
   `tax_model` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'exclude',
+  `is_checked` tinyint(1) NOT NULL DEFAULT '0',
   `slug` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `thumbnail` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -477,6 +510,7 @@ CREATE TABLE `categories` (
   `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `slug` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `icon` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `icon_storage_type` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT 'public',
   `parent_id` int(11) NOT NULL,
   `position` int(11) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -524,6 +558,8 @@ CREATE TABLE `chattings` (
   `seen_by_admin` tinyint(1) DEFAULT NULL,
   `seen_by_delivery_man` tinyint(1) DEFAULT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '1',
+  `notification_receiver` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'admin, seller, customer, deliveryman',
+  `seen_notification` tinyint(1) DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `shop_id` bigint(20) DEFAULT NULL
@@ -945,6 +981,20 @@ CREATE TABLE `delivery_zip_codes` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `digital_product_authors`
+--
+
+CREATE TABLE `digital_product_authors` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `author_id` int(11) NOT NULL,
+  `product_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `digital_product_otp_verifications`
 --
 
@@ -964,6 +1014,68 @@ CREATE TABLE `digital_product_otp_verifications` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `digital_product_publishing_houses`
+--
+
+CREATE TABLE `digital_product_publishing_houses` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `publishing_house_id` int(11) NOT NULL,
+  `product_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `digital_product_variations`
+--
+
+CREATE TABLE `digital_product_variations` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `variant_key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sku` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `price` decimal(24,8) DEFAULT NULL,
+  `file` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `email_templates`
+--
+
+CREATE TABLE `email_templates` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `template_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `template_design_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `body` text COLLATE utf8mb4_unicode_ci,
+  `banner_image` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `logo` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `button_name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `button_url` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `footer_text` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `copyright_text` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `pages` json DEFAULT NULL,
+  `social_media` json DEFAULT NULL,
+  `hide_field` json DEFAULT NULL,
+  `button_content_status` tinyint(4) NOT NULL DEFAULT '1',
+  `product_information_status` tinyint(4) NOT NULL DEFAULT '1',
+  `order_information_status` tinyint(4) NOT NULL DEFAULT '1',
+  `status` tinyint(4) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `emergency_contacts`
 --
 
@@ -971,8 +1083,26 @@ CREATE TABLE `emergency_contacts` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` bigint(20) NOT NULL,
   `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `country_code` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `phone` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
   `status` tinyint(1) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `error_logs`
+--
+
+CREATE TABLE `error_logs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `status_code` int(11) NOT NULL,
+  `url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `hit_counts` int(11) NOT NULL DEFAULT '0',
+  `redirect_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `redirect_status` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1060,6 +1190,18 @@ CREATE TABLE `guest_users` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `guest_users`
+--
+
+INSERT INTO `guest_users` (`id`, `ip_address`, `fcm_token`, `created_at`, `updated_at`) VALUES
+(1, '::1', NULL, '2024-02-19 08:35:50', NULL),
+(2, '::1', NULL, '2024-03-27 03:10:49', NULL),
+(3, '::1', NULL, '2024-03-27 03:12:35', NULL),
+(4, '::1', NULL, '2024-05-18 10:57:05', NULL),
+(5, '::1', NULL, '2024-09-24 07:51:36', '2024-09-24 07:51:36'),
+(6, '::1', NULL, '2024-09-24 07:52:19', '2024-09-24 07:52:19');
+
 -- --------------------------------------------------------
 
 --
@@ -1068,6 +1210,7 @@ CREATE TABLE `guest_users` (
 
 CREATE TABLE `help_topics` (
   `id` bigint(20) UNSIGNED NOT NULL,
+  `type` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'default',
   `question` text COLLATE utf8mb4_unicode_ci,
   `answer` text COLLATE utf8mb4_unicode_ci,
   `ranking` int(11) NOT NULL DEFAULT '1',
@@ -1075,6 +1218,20 @@ CREATE TABLE `help_topics` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `help_topics`
+--
+
+INSERT INTO `help_topics` (`id`, `type`, `question`, `answer`, `ranking`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'vendor_registration', 'How do I register as a seller?', 'To register, click on the \"Sign Up\" button, fill in your details, and verify your account via email.', 1, 1, NULL, NULL),
+(2, 'vendor_registration', 'What are the fees for selling?', 'Our platform charges a small commission on each sale. There are no upfront listing fees.', 2, 1, NULL, NULL),
+(3, 'vendor_registration', 'How do I upload products?', 'Log in to your seller account, go to the \"Upload Products\" section, and fill in the product details and images.', 3, 1, NULL, NULL),
+(4, 'vendor_registration', 'How do I handle customer inquiries?', 'You can manage customer inquiries directly through our platform\'s messaging system, ensuring quick and efficient communication.', 4, 1, NULL, NULL),
+(5, 'vendor_registration', 'How do I register as a seller?', 'To register, click on the \"Sign Up\" button, fill in your details, and verify your account via email.', 1, 1, NULL, NULL),
+(6, 'vendor_registration', 'What are the fees for selling?', 'Our platform charges a small commission on each sale. There are no upfront listing fees.', 2, 1, NULL, NULL),
+(7, 'vendor_registration', 'How do I upload products?', 'Log in to your seller account, go to the \"Upload Products\" section, and fill in the product details and images.', 3, 1, NULL, NULL),
+(8, 'vendor_registration', 'How do I handle customer inquiries?', 'You can manage customer inquiries directly through our platform\'s messaging system, ensuring quick and efficient communication.', 4, 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1091,6 +1248,30 @@ CREATE TABLE `jobs` (
   `available_at` int(10) UNSIGNED NOT NULL,
   `created_at` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `login_setups`
+--
+
+CREATE TABLE `login_setups` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `value` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `login_setups`
+--
+
+INSERT INTO `login_setups` (`id`, `key`, `value`, `created_at`, `updated_at`) VALUES
+(1, 'login_options', '{\"manual_login\":1,\"otp_login\":0,\"social_login\":0}', '2024-09-24 07:52:17', '2024-09-24 07:52:17'),
+(2, 'social_media_for_login', '{\"google\":0,\"facebook\":0,\"apple\":0}', '2024-09-24 07:52:17', '2024-09-24 07:52:17'),
+(3, 'email_verification', '0', '2024-09-24 07:52:17', '2024-09-24 07:52:17'),
+(4, 'phone_verification', '0', '2024-09-24 07:52:17', '2024-09-24 07:52:17');
 
 -- --------------------------------------------------------
 
@@ -1381,7 +1562,36 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (251, '2023_10_22_130225_add_attachment_to_support_tickets_table', 73),
 (252, '2023_10_25_113233_make_message_nullable_in_chattings_table', 73),
 (253, '2023_10_30_152005_make_attachment_column_type_change_to_reviews_table', 73),
-(254, '2024_01_14_192546_add_slug_to_shops_table', 74);
+(254, '2024_01_14_192546_add_slug_to_shops_table', 74),
+(255, '2024_01_25_175421_add_country_code_to_emergency_contacts_table', 75),
+(256, '2024_02_01_200417_add_denied_count_and_approved_count_to_refund_requests_table', 75),
+(257, '2024_03_11_130425_add_seen_notification_and_notification_receiver_to_chattings_table', 76),
+(258, '2024_03_12_123322_update_images_column_in_refund_requests_table', 76),
+(259, '2024_03_21_134659_change_denied_note_column_type_to_text', 76),
+(260, '2024_04_03_093637_create_email_templates_table', 77),
+(261, '2024_04_17_102137_add_is_checked_column_to_carts_table', 77),
+(262, '2024_04_23_130436_create_vendor_registration_reasons_table', 77),
+(263, '2024_04_24_093932_add_type_to_help_topics_table', 77),
+(264, '2024_05_20_133216_create_review_replies_table', 78),
+(265, '2024_05_20_163043_add_image_alt_text_to_brands_table', 78),
+(266, '2024_05_26_152030_create_digital_product_variations_table', 78),
+(267, '2024_05_26_152339_create_product_seos_table', 78),
+(268, '2024_05_27_184401_add_digital_product_file_types_and_digital_product_extensions_to_products_table', 78),
+(269, '2024_05_30_101603_create_storages_table', 78),
+(270, '2024_06_10_174952_create_robots_meta_contents_table', 78),
+(271, '2024_06_12_105137_create_error_logs_table', 78),
+(272, '2024_07_03_130217_add_storage_type_columns_to_product_table', 78),
+(273, '2024_07_03_153301_add_icon_storage_type_to_catogory_table', 78),
+(274, '2024_07_03_171214_add_image_storage_type_to_brands_table', 78),
+(275, '2024_07_03_185048_add_storage_type_columns_to_shop_table', 78),
+(276, '2024_07_31_133306_create_login_setups_table', 79),
+(277, '2024_08_04_123750_add_preview_file_to_products_table', 79),
+(278, '2024_08_04_123805_create_authors_table', 79),
+(279, '2024_08_04_123845_create_publishing_houses_table', 79),
+(280, '2024_08_04_124023_create_digital_product_authors_table', 79),
+(281, '2024_08_04_124046_create_digital_product_publishing_houses_table', 79),
+(282, '2024_08_25_130313_modify_email_column_as_nullable_in_users_table', 79),
+(283, '2024_08_26_130313_modify_token_column_as_text_in_phone_or_email_verifications_table', 79);
 
 -- --------------------------------------------------------
 
@@ -1444,7 +1654,7 @@ INSERT INTO `notification_messages` (`id`, `user_type`, `key`, `message`, `statu
 (4, 'customer', 'out_for_delivery_message', 'Order ouut Message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
 (5, 'customer', 'order_delivered_message', 'Order del Message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
 (6, 'customer', 'order_returned_message', 'Order hh Message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
-(7, 'customer', 'order_failed_message', 'Order fa Message', 0, '2023-10-30 11:02:55', '2024-01-14 10:22:07'),
+(7, 'customer', 'order_failed_message', 'Order fa Message', 0, '2023-10-30 11:02:55', '2024-09-24 07:52:16'),
 (8, 'customer', 'order_canceled', '', 0, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
 (9, 'customer', 'order_refunded_message', 'customize your order refunded message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
 (10, 'customer', 'refund_request_canceled_message', 'customize your refund request canceled message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
@@ -1473,7 +1683,9 @@ INSERT INTO `notification_messages` (`id`, `user_type`, `key`, `message`, `statu
 (33, 'delivery_man', 'message_from_customer', 'customize your message from customer message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
 (34, 'delivery_man', 'cash_collect_by_admin_message', 'customize your cash collect by admin message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
 (35, 'delivery_man', 'cash_collect_by_seller_message', 'customize your cash collect by seller message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
-(36, 'delivery_man', 'withdraw_request_status_message', 'customize your withdraw request status message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55');
+(36, 'delivery_man', 'withdraw_request_status_message', 'customize your withdraw request status message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(37, 'seller', 'product_request_approved_message', 'customize your product request approved message message', 1, '2024-02-19 08:35:38', '2024-02-19 08:35:38'),
+(38, 'seller', 'product_request_rejected_message', 'customize your product request rejected message message', 1, '2024-02-19 08:35:38', '2024-02-19 08:35:38');
 
 -- --------------------------------------------------------
 
@@ -1877,7 +2089,7 @@ CREATE TABLE `personal_access_tokens` (
 CREATE TABLE `phone_or_email_verifications` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `phone_or_email` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `token` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `token` text COLLATE utf8mb4_unicode_ci,
   `otp_hit_count` tinyint(4) NOT NULL DEFAULT '0',
   `is_temp_blocked` tinyint(1) NOT NULL DEFAULT '0',
   `temp_block_time` timestamp NULL DEFAULT NULL,
@@ -1909,9 +2121,13 @@ CREATE TABLE `products` (
   `refundable` tinyint(1) NOT NULL DEFAULT '1',
   `digital_product_type` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `digital_file_ready` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `digital_file_ready_storage_type` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT 'public',
   `images` longtext COLLATE utf8mb4_unicode_ci,
   `color_image` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `thumbnail` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `thumbnail_storage_type` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT 'public',
+  `preview_file` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `preview_file_storage_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT 'public',
   `featured` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `flash_deal` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `video_provider` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -1921,6 +2137,8 @@ CREATE TABLE `products` (
   `attributes` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `choice_options` text COLLATE utf8mb4_unicode_ci,
   `variation` text COLLATE utf8mb4_unicode_ci,
+  `digital_product_file_types` longtext COLLATE utf8mb4_unicode_ci,
+  `digital_product_extensions` longtext COLLATE utf8mb4_unicode_ci,
   `published` tinyint(1) NOT NULL DEFAULT '0',
   `unit_price` double NOT NULL DEFAULT '0',
   `purchase_price` double NOT NULL DEFAULT '0',
@@ -1942,7 +2160,7 @@ CREATE TABLE `products` (
   `meta_description` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `meta_image` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `request_status` tinyint(1) NOT NULL DEFAULT '0',
-  `denied_note` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `denied_note` text COLLATE utf8mb4_unicode_ci,
   `shipping_cost` double(8,2) DEFAULT NULL,
   `multiply_qty` tinyint(1) DEFAULT NULL,
   `temp_shipping_cost` double(8,2) DEFAULT NULL,
@@ -1960,6 +2178,33 @@ CREATE TABLE `product_compares` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` bigint(20) UNSIGNED NOT NULL COMMENT 'customer_id',
   `product_id` bigint(20) UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_seos`
+--
+
+CREATE TABLE `product_seos` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `index` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `no_follow` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `no_image_index` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `no_archive` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `no_snippet` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `max_snippet` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `max_snippet_value` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `max_video_preview` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `max_video_preview_value` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `max_image_preview` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `max_image_preview_value` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1998,6 +2243,19 @@ CREATE TABLE `product_tag` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `publishing_houses`
+--
+
+CREATE TABLE `publishing_houses` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `refund_requests`
 --
 
@@ -2006,11 +2264,13 @@ CREATE TABLE `refund_requests` (
   `order_details_id` bigint(20) UNSIGNED NOT NULL,
   `customer_id` bigint(20) UNSIGNED NOT NULL,
   `status` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `approved_count` tinyint(4) NOT NULL DEFAULT '0',
+  `denied_count` tinyint(4) NOT NULL DEFAULT '0',
   `amount` double(8,2) NOT NULL,
   `product_id` bigint(20) UNSIGNED NOT NULL,
   `order_id` bigint(20) UNSIGNED NOT NULL,
   `refund_reason` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `images` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `images` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `approved_note` longtext COLLATE utf8mb4_unicode_ci,
@@ -2077,6 +2337,52 @@ CREATE TABLE `reviews` (
   `rating` int(11) NOT NULL DEFAULT '0',
   `status` int(11) NOT NULL DEFAULT '1',
   `is_saved` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `review_replies`
+--
+
+CREATE TABLE `review_replies` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `review_id` int(11) NOT NULL,
+  `added_by_id` int(11) DEFAULT NULL,
+  `added_by` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'customer, seller, admin, deliveryman',
+  `reply_text` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `robots_meta_contents`
+--
+
+CREATE TABLE `robots_meta_contents` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `page_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `page_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `page_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `meta_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `meta_description` text COLLATE utf8mb4_unicode_ci,
+  `meta_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `canonicals_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `index` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `no_follow` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `no_image_index` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `no_archive` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `no_snippet` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `max_snippet` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `max_snippet_value` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `max_video_preview` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `max_video_preview_value` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `max_image_preview` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `max_image_preview_value` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -2284,8 +2590,11 @@ CREATE TABLE `shops` (
   `address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `contact` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
   `image` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'def.png',
+  `image_storage_type` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT 'public',
   `bottom_banner` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bottom_banner_storage_type` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT 'public',
   `offer_banner` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `offer_banner_storage_type` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT 'public',
   `vacation_start_date` date DEFAULT NULL,
   `vacation_end_date` date DEFAULT NULL,
   `vacation_note` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -2293,7 +2602,8 @@ CREATE TABLE `shops` (
   `temporary_close` tinyint(4) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `banner` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL
+  `banner` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `banner_storage_type` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT 'public'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -2349,6 +2659,22 @@ CREATE TABLE `soft_credentials` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `key` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `value` longtext COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `storages`
+--
+
+CREATE TABLE `storages` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `data_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `data_id` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `value` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -2469,7 +2795,7 @@ CREATE TABLE `users` (
   `l_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `phone` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
   `image` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'def.png',
-  `email` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(80) COLLATE utf8mb4_unicode_ci NOT NULL,
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -2507,6 +2833,33 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `f_name`, `l_name`, `phone`, `image`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `street_address`, `country`, `city`, `zip`, `house_no`, `apartment_no`, `cm_firebase_token`, `is_active`, `payment_card_last_four`, `payment_card_brand`, `payment_card_fawry_token`, `login_medium`, `social_id`, `is_phone_verified`, `temporary_token`, `is_email_verified`, `wallet_balance`, `loyalty_point`, `login_hit_count`, `is_temp_blocked`, `temp_block_time`, `referral_code`, `referred_by`, `app_language`) VALUES
 (0, 'walking customer', 'walking', 'customer', '000000000000', 'def.png', 'walking@customer.com', NULL, '', NULL, NULL, '2022-02-03 03:46:01', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, NULL, NULL, 0, 0, NULL, NULL, NULL, 'en');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `vendor_registration_reasons`
+--
+
+CREATE TABLE `vendor_registration_reasons` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `title` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `priority` tinyint(4) NOT NULL DEFAULT '1',
+  `status` tinyint(4) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `vendor_registration_reasons`
+--
+
+INSERT INTO `vendor_registration_reasons` (`id`, `title`, `description`, `priority`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'Millions of Users', 'Access a vast audience with millions of active users ready to buy your products.', 1, 1, NULL, NULL),
+(2, 'Free Marketing', 'Benefit from our extensive, no-cost marketing efforts to boost your visibility and sales.', 2, 1, NULL, NULL),
+(3, 'SEO Friendly', 'Enjoy enhanced search visibility with our SEO-friendly platform, driving more traffic to your listings.', 3, 1, NULL, NULL),
+(4, '24/7 Support', 'Get round-the-clock support from our dedicated team to resolve any issues and assist you anytime.', 4, 1, NULL, NULL),
+(5, 'Easy Onboarding', 'Start selling quickly with our user-friendly onboarding process designed to get you up and running fast.', 5, 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -2625,6 +2978,12 @@ ALTER TABLE `admin_wallet_histories`
 -- Indexes for table `attributes`
 --
 ALTER TABLE `attributes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `authors`
+--
+ALTER TABLE `authors`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -2766,15 +3125,45 @@ ALTER TABLE `delivery_zip_codes`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `digital_product_authors`
+--
+ALTER TABLE `digital_product_authors`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `digital_product_otp_verifications`
 --
 ALTER TABLE `digital_product_otp_verifications`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `digital_product_publishing_houses`
+--
+ALTER TABLE `digital_product_publishing_houses`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `digital_product_variations`
+--
+ALTER TABLE `digital_product_variations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `email_templates`
+--
+ALTER TABLE `email_templates`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `emergency_contacts`
 --
 ALTER TABLE `emergency_contacts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `error_logs`
+--
+ALTER TABLE `error_logs`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -2819,6 +3208,12 @@ ALTER TABLE `help_topics`
 ALTER TABLE `jobs`
   ADD PRIMARY KEY (`id`),
   ADD KEY `jobs_queue_index` (`queue`);
+
+--
+-- Indexes for table `login_setups`
+--
+ALTER TABLE `login_setups`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `loyalty_point_transactions`
@@ -2978,6 +3373,12 @@ ALTER TABLE `product_compares`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `product_seos`
+--
+ALTER TABLE `product_seos`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `product_stocks`
 --
 ALTER TABLE `product_stocks`
@@ -2987,6 +3388,12 @@ ALTER TABLE `product_stocks`
 -- Indexes for table `product_tag`
 --
 ALTER TABLE `product_tag`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `publishing_houses`
+--
+ALTER TABLE `publishing_houses`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -3011,6 +3418,18 @@ ALTER TABLE `refund_transactions`
 -- Indexes for table `reviews`
 --
 ALTER TABLE `reviews`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `review_replies`
+--
+ALTER TABLE `review_replies`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `robots_meta_contents`
+--
+ALTER TABLE `robots_meta_contents`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -3081,6 +3500,14 @@ ALTER TABLE `soft_credentials`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `storages`
+--
+ALTER TABLE `storages`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `storages_data_id_index` (`data_id`),
+  ADD KEY `storages_value_index` (`value`);
+
+--
 -- Indexes for table `subscriptions`
 --
 ALTER TABLE `subscriptions`
@@ -3124,6 +3551,12 @@ ALTER TABLE `translations`
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `users_email_unique` (`email`);
+
+--
+-- Indexes for table `vendor_registration_reasons`
+--
+ALTER TABLE `vendor_registration_reasons`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `wallet_transactions`
@@ -3190,6 +3623,12 @@ ALTER TABLE `attributes`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `authors`
+--
+ALTER TABLE `authors`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `banners`
 --
 ALTER TABLE `banners`
@@ -3211,7 +3650,7 @@ ALTER TABLE `brands`
 -- AUTO_INCREMENT for table `business_settings`
 --
 ALTER TABLE `business_settings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=152;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=181;
 
 --
 -- AUTO_INCREMENT for table `carts`
@@ -3328,15 +3767,45 @@ ALTER TABLE `delivery_zip_codes`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `digital_product_authors`
+--
+ALTER TABLE `digital_product_authors`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `digital_product_otp_verifications`
 --
 ALTER TABLE `digital_product_otp_verifications`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `digital_product_publishing_houses`
+--
+ALTER TABLE `digital_product_publishing_houses`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `digital_product_variations`
+--
+ALTER TABLE `digital_product_variations`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `email_templates`
+--
+ALTER TABLE `email_templates`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `emergency_contacts`
 --
 ALTER TABLE `emergency_contacts`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `error_logs`
+--
+ALTER TABLE `error_logs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -3367,19 +3836,25 @@ ALTER TABLE `flash_deal_products`
 -- AUTO_INCREMENT for table `guest_users`
 --
 ALTER TABLE `guest_users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `help_topics`
 --
 ALTER TABLE `help_topics`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `jobs`
 --
 ALTER TABLE `jobs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `login_setups`
+--
+ALTER TABLE `login_setups`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `loyalty_point_transactions`
@@ -3391,7 +3866,7 @@ ALTER TABLE `loyalty_point_transactions`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=255;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=284;
 
 --
 -- AUTO_INCREMENT for table `most_demandeds`
@@ -3409,7 +3884,7 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `notification_messages`
 --
 ALTER TABLE `notification_messages`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `notification_seens`
@@ -3514,6 +3989,12 @@ ALTER TABLE `product_compares`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `product_seos`
+--
+ALTER TABLE `product_seos`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `product_stocks`
 --
 ALTER TABLE `product_stocks`
@@ -3523,6 +4004,12 @@ ALTER TABLE `product_stocks`
 -- AUTO_INCREMENT for table `product_tag`
 --
 ALTER TABLE `product_tag`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `publishing_houses`
+--
+ALTER TABLE `publishing_houses`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -3547,6 +4034,18 @@ ALTER TABLE `refund_transactions`
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `review_replies`
+--
+ALTER TABLE `review_replies`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `robots_meta_contents`
+--
+ALTER TABLE `robots_meta_contents`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -3616,6 +4115,12 @@ ALTER TABLE `soft_credentials`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `storages`
+--
+ALTER TABLE `storages`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `subscriptions`
 --
 ALTER TABLE `subscriptions`
@@ -3656,6 +4161,12 @@ ALTER TABLE `translations`
 --
 ALTER TABLE `users`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `vendor_registration_reasons`
+--
+ALTER TABLE `vendor_registration_reasons`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `wallet_transactions`

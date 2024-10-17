@@ -6,7 +6,7 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{asset('/public/assets/back-end/img/employee.png')}}" width="20" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/employee.png')}}" width="20" alt="">
                 {{translate('employee_list')}}
             </h2>
         </div>
@@ -57,7 +57,7 @@
                                     </div>
                                 </form>
                             </div>
-                            <div class="">
+                            <div class="dropdown">
                                 <button type="button" class="btn btn-outline--primary text-nowrap" data-toggle="dropdown">
                                     <i class="tio-download-to"></i>
                                     {{translate('export')}}
@@ -66,7 +66,7 @@
                                 <ul class="dropdown-menu dropdown-menu-right">
                                     <li>
                                         <a class="dropdown-item" href="{{route('admin.employee.export',['role'=>request('admin_role_id'),'searchValue'=>request('searchValue')])}}">
-                                            <img width="14" src="{{asset('public/assets/back-end/img/excel.png')}}" alt="">
+                                            <img width="14" src="{{dynamicAsset(path: 'public/assets/back-end/img/excel.png')}}" alt="">
                                             {{translate('excel')}}
                                         </a>
                                     </li>
@@ -103,7 +103,7 @@
                                 <td class="text-capitalize">
                                     <div class="media align-items-center gap-10">
                                         <img class="rounded-circle avatar avatar-lg" alt=""
-                                             src="{{getValidImage(path: 'storage/app/public/admin/'.$employee['image'],type:'backend-profile')}}">
+                                             src="{{getStorageImages(path: $employee->image_full_url,type:'backend-profile')}}">
                                         <div class="media-body">
                                             {{$employee['name']}}
                                         </div>
@@ -163,6 +163,11 @@
                         {{$employees->links()}}
                     </div>
                 </div>
+                @if(count($employees)==0)
+                    <div class="w-100">
+                        @include('layouts.back-end._empty-state',['text'=>'no_employee_found'],['image'=>'default'])
+                    </div>
+                @endif
             </div>
         </div>
     </div>

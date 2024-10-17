@@ -13,6 +13,10 @@ enum EmergencyContact
         URI => 'add',
         VIEW => ''
     ];
+    const UPDATE = [
+        URI => 'update',
+        VIEW => 'admin-views.delivery-man.partials._update-emergency-contact'
+    ];
 
     const DELETE = [
         URI => 'destroy',

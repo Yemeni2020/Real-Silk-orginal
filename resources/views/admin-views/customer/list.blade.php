@@ -7,9 +7,9 @@
     <div class="content container-fluid">
         <div class="mb-4">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img width="20" src="{{asset('/public/assets/back-end/img/customer.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/customer.png')}}" alt="">
                 {{translate('customer_list')}}
-                <span class="badge badge-soft-dark radius-50">{{count($customers)}}</span>
+                <span class="badge badge-soft-dark radius-50">{{$customers->total()}}</span>
             </h2>
         </div>
         <div class="card">
@@ -41,7 +41,7 @@
                                 <li>
                                     <a class="dropdown-item"
                                        href="{{route('admin.customer.export',['searchValue'=>request('searchValue')])}}">
-                                        <img width="14" src="{{asset('/public/assets/back-end/img/excel.png')}}" alt="">
+                                        <img width="14" src="{{dynamicAsset(path: 'public/assets/back-end/img/excel.png')}}" alt="">
                                         {{translate('excel')}}
                                     </a>
                                 </li>
@@ -73,7 +73,7 @@
                             <td>
                                 <a href="{{route('admin.customer.view',[$customer['id']])}}"
                                    class="title-color hover-c1 d-flex align-items-center gap-10">
-                                    <img src="{{getValidImage(path: 'storage/app/public/profile/'.$customer->image,type:'backend-profile')}}"
+                                    <img src="{{getStorageImages(path:$customer->image_full_url,type:'backend-profile')}}"
                                          class="avatar rounded-circle " alt="" width="40">
                                     {{Str::limit($customer['f_name']." ".$customer['l_name'],20)}}
                                 </a>
@@ -151,11 +151,7 @@
                 </div>
             </div>
             @if(count($customers)==0)
-                <div class="text-center p-4">
-                    <img class="mb-3 w-160" src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}"
-                         alt="Image Description">
-                    <p class="mb-0">{{translate('no_data_to_show')}}</p>
-                </div>
+                @include('layouts.back-end._empty-state',['text'=>'no_customer_found'],['image'=>'default'])
             @endif
         </div>
     </div>

@@ -9,7 +9,7 @@
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
                 <div class="">
                     <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                        <img width="20" src="{{asset('/public/assets/back-end/img/refund-request-list.png')}}" alt="">
+                        <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/refund-request-list.png')}}" alt="">
                         {{translate('refund_request_list')}}
                         <span class="badge badge-soft-dark radius-50">{{$refundList->total()}}</span>
                     </h2>
@@ -20,8 +20,8 @@
             </div>
         </div>
         <div class="card">
-            <div class="card-header">
-                <div class="flex-between justify-content-between align-items-center flex-grow-1">
+            <div class="p-3">
+                <div class="row justify-content-between align-items-center">
                     <div class="col-12 col-md-4">
                         <form action="{{ url()->current() }}" method="GET">
                             <div class="input-group input-group-merge input-group-custom">
@@ -32,11 +32,32 @@
                                 </div>
                                 <input id="datatableSearch_" type="search" name="search" class="form-control"
                                        placeholder="{{translate('search_by_order_id_or_refund_id')}}"
-                                       aria-label="Search orders" value="{{ $searchValue }}"
-                                       required>
+                                       aria-label="Search orders" value="{{ request('searchValue') }}">
                                 <button type="submit" class="btn btn--primary">{{translate('search')}}</button>
                             </div>
                         </form>
+                    </div>
+                    <div class="col-12 mt-3 col-md-8">
+                        <div class="d-flex gap-3 justify-content-md-end">
+                            <div class="dropdown text-nowrap">
+                                <button type="button" class="btn btn-outline--primary" data-toggle="dropdown">
+                                    <i class="tio-download-to"></i>
+                                    {{translate('export')}}
+                                    <i class="tio-chevron-down"></i>
+                                </button>
+
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li>
+                                        <a type="submit" class="dropdown-item d-flex align-items-center gap-2 "
+                                           href="{{route('vendor.refund.export',['status'=>request('status'),'search'=>request('search')])}}">
+                                            <img width="14" src="{{dynamicAsset(path: 'public/assets/back-end/img/excel.png')}}"
+                                                 alt="">
+                                            {{translate('excel')}}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -46,20 +67,24 @@
                     <thead class="thead-light thead-50 text-capitalize">
                     <tr>
                         <th>{{translate('SL')}}</th>
+                        <th class="text-center">{{translate('refund_id')}}</th>
                         <th>{{translate('order_ID')}} </th>
                         <th>{{translate('product_Info')}}</th>
                         <th>{{translate('customer_Info')}}</th>
                         <th>{{translate('total_Amount')}}</th>
-                        <th>{{translate('order_Status')}}</th>
                         <th class="text-center">{{translate('action')}}</th>
                     </tr>
                     </thead>
-
                     <tbody>
                     @foreach($refundList as $key=>$refund)
                         <tr>
-                            <td>
-                                {{$refundList->firstItem()+$key}}
+                            <td> {{$refundList->firstItem()+$key}}</td>
+                            <td class="text-center">
+
+                                <a class="title-color hover-c1"
+                                   href="{{route('vendor.refund.details',['id'=>$refund['id']])}}">
+                                    {{$refund['id']}}
+                                </a>
                             </td>
                             <td>
                                 <a class="title-color hover-c1"
@@ -71,7 +96,7 @@
                                 @if ($refund->product!=null)
                                     <div class="d-flex flex-wrap gap-2">
                                         <a href="{{route('vendor.products.view',[$refund->product->id])}}">
-                                            <img src="{{getValidImage(path:'storage/app/public/product/thumbnail/'.$refund->product->thumbnail ,type:'backend-product')}}"
+                                            <img src="{{getStorageImages(path: $refund?->product?->thumbnail_full_url ,type:'backend-product')}}"
                                                  class="avatar border" alt="">
                                         </a>
                                         <div class="d-flex flex-column gap-1">
@@ -92,8 +117,12 @@
                                         <a href="javascript:void(0)" class="title-color font-weight-bold hover-c1">
                                             {{$refund->customer->f_name. ' '.$refund->customer->l_name}}
                                         </a>
-                                        <a href="tel:{{$refund->customer->phone}}"
-                                           class="title-color hover-c1 fz-12">{{$refund->customer->phone}}</a>
+                                        @if($refund->customer->phone)
+                                            <a href="tel:{{$refund->customer->phone}}" class="title-color hover-c1 fz-12">{{$refund->customer->phone}}</a>
+                                        @else
+                                            <a href="mailto:{{$refund->customer['email']}}" class="title-color hover-c1 fz-12">{{$refund->customer['email']}}</a>
+                                        @endif
+
                                     </div>
                                 @else
                                     <a href="javascript:" class="title-color hover-c1">
@@ -105,11 +134,8 @@
                                 {{setCurrencySymbol(amount: usdToDefaultCurrency(amount: $refund->amount), currencyCode: getCurrencyCode())}}
                             </td>
                             <td>
-                                {{translate($refund->status)}}
-                            </td>
-                            <td>
-                                <div class="d-flex justify-content-center gap-2">
-                                    <a class="btn btn--primary btn-sm square-btn"
+                                <div class="d-flex justify-content-center">
+                                    <a class="btn btn-outline--primary btn-sm"
                                        title="{{translate('view')}}"
                                        href="{{route('vendor.refund.details',['id'=>$refund['id']])}}">
                                         <i class="tio-invisible"></i>
@@ -127,11 +153,7 @@
                 </div>
             </div>
             @if(count($refundList)==0)
-                <div class="text-center p-4">
-                    <img class="mb-3 __w-7rem" src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}"
-                         alt="{{translate('image_description')}}">
-                    <p class="mb-0">{{ translate('no_data_to_show')}}</p>
-                </div>
+                @include('layouts.back-end._empty-state',['text'=>'no_refund_request_found'],['image'=>'default'])
             @endif
         </div>
     </div>

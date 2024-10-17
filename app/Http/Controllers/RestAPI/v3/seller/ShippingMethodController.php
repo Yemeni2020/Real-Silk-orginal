@@ -22,7 +22,7 @@ class ShippingMethodController extends Controller
         ]);
 
         if ($validator->errors()->count() > 0) {
-            return response()->json(['errors' => Helpers::error_processor($validator)]);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
         }
 
         DB::table('shipping_methods')->insert([
@@ -56,7 +56,7 @@ class ShippingMethodController extends Controller
         ]);
 
         if ($validator->errors()->count() > 0) {
-            return response()->json(['errors' => Helpers::error_processor($validator)]);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
         }
 
         ShippingMethod::where(['id' => $request['id'], 'creator_id' => $seller['id']])->update([
@@ -87,7 +87,7 @@ class ShippingMethodController extends Controller
         ]);
 
         if ($validator->errors()->count() > 0) {
-            return response()->json(['errors' => Helpers::error_processor($validator)]);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
         }
 
         DB::table('shipping_methods')->where(['id' => $id, 'creator_id' => $seller['id']])->update([

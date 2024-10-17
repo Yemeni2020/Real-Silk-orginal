@@ -4,7 +4,7 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex gap-2 align-items-center">
-                <img width="20" src="{{asset('/public/assets/back-end/img/featured_deal.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/featured_deal.png')}}" alt="">
                 {{translate('update_feature_deal')}}
             </h2>
         </div>
@@ -12,7 +12,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{route('admin.deal.update',[$deal['id']])}}"
+                        <form action="{{route('admin.deal.update-data',[$deal['id']])}}"
                               class="text-start onsubmit-disable-action-button"
                               method="post">
                             @csrf
@@ -89,5 +89,5 @@
 @endsection
 
 @push('script')
-    <script src="{{asset('public/assets/back-end/js/admin/deal.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/admin/deal.js')}}"></script>
 @endpush

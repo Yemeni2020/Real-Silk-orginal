@@ -25,7 +25,7 @@ class AdminRequest extends FormRequest
         return [
             'name' => 'required',
             'email' => 'required',
-            'phone' => 'required'
+            'phone' => 'required|max:20|min:4'
         ];
     }
 
@@ -38,6 +38,8 @@ class AdminRequest extends FormRequest
             'name.required' => translate('name_is_required').'!',
             'email.required' =>translate('email_is_required').'!',
             'phone.required' =>translate('phone_number_is_required').'!',
+            'phone.max' => translate('please_ensure_your_phone_number_is_valid_and_does_not_exceed_20_characters'),
+            'phone.min' => translate('phone_number_with_a_minimum_length_requirement_of_4_characters'),
         ];
     }
 }

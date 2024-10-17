@@ -32,3 +32,7 @@ $("#refund_status_change").on('change', function () {
 
     }
 });
+
+$('.close-alert-message').on('click',function (){
+    $('.alert--message').addClass('d-none');
+})

@@ -19,7 +19,7 @@ class AddonService
     {
         $tempFolderPath = storage_path('app/temp/');
         if (!File::exists($tempFolderPath)) {
-            File::makeDirectory($tempFolderPath);
+            File::makeDirectory($tempFolderPath, 0775, true);
         }
 
         $file = $request->file('file_upload');
@@ -41,30 +41,29 @@ class AddonService
             $getAddonFolder = explode('.', $genFolderName)[0];
 
             $zip->extractTo(storage_path('app/temp'));
-            $infoPath = storage_path('app/temp/'.$getAddonFolder.'/Addon/info.php');
+            $infoPath = storage_path('app/temp/' . $getAddonFolder . '/Addon/info.php');
 
-            if(File::exists($infoPath))
-            {
+            if (File::exists($infoPath)) {
                 $extractPath = base_path('Modules');
                 if (!File::exists($extractPath)) {
-                    File::makeDirectory($extractPath);
+                    File::makeDirectory($extractPath, 0775, true);
                 }
-                if (File::exists($extractPath.'/'.$getAddonFolder)) {
+                if (File::exists($extractPath . '/' . $getAddonFolder)) {
                     $message = translate('already_installed');
                     $status = 'error';
-                }else{
+                } else {
                     $zip->extractTo($extractPath);
                     $zip->close();
-                    File::chmod($extractPath.'/'.$getAddonFolder.'/Addon', 0777);
+                    File::chmod($extractPath . '/' . $getAddonFolder . '/Addon', 0777);
                     $status = 'success';
                     $message = translate('upload_successfully');
                 }
-            }else{
+            } else {
                 File::cleanDirectory(storage_path('app/temp'));
                 $status = 'error';
                 $message = translate('invalid_file!');
             }
-        }else{
+        } else {
             $status = 'error';
             $message = translate('file_upload_fail!');
         }
@@ -77,13 +76,13 @@ class AddonService
 
         return [
             'status' => $status,
-            'message'=> $message
+            'message' => $message
         ];
     }
 
     public function getPublishData(object $request): array
     {
-        $fullData = include($request['path'] . '/Addon/info.php');
+        $fullData = include(base_path($request['path'] . '/Addon/info.php'));
         $path = $request['path'];
         $addonName = $fullData['name'];
         if ($fullData['purchase_code'] == null || $fullData['username'] == null) {
@@ -98,7 +97,7 @@ class AddonService
 
         return [
             'status' => 'success',
-            'message'=> 'status_updated_successfully'
+            'message' => 'status_updated_successfully'
         ];
     }
 
@@ -106,7 +105,7 @@ class AddonService
     {
         $remove = ["http://", "https://", "www."];
         $url = str_replace($remove, "", url('/'));
-        $full_data = include($request['path'] . '/Addon/info.php');
+        $full_data = include(base_path($request['path'] . '/Addon/info.php'));
 
         $post = [
             base64_decode('dXNlcm5hbWU=') => $request['username'],
@@ -118,7 +117,7 @@ class AddonService
         $response = Http::post(base64_decode('aHR0cHM6Ly9jaGVjay42YW10ZWNoLmNvbS9hcGkvdjEvYWN0aXZhdGlvbi1jaGVjaw=='), $post)->json();
         $status = base64_decode($response['active']) ?? 1;
 
-        if((int)$status){
+        if ((int)$status) {
             $full_data['is_published'] = 1;
             $full_data['username'] = $request['username'];
             $full_data['purchase_code'] = $request['purchase_code'];
@@ -147,17 +146,17 @@ class AddonService
         $new = base_path('app/Traits/Payment.txt');
         copy($new, $old);
 
-        if(File::deleteDirectory($full_path)){
+        if (File::deleteDirectory($full_path)) {
             $status = 'success';
             $message = translate('file_delete_successfully');
-        }else{
+        } else {
             $status = 'error';
             $message = translate('file_delete_fail');
         }
 
         return [
             'status' => $status,
-            'message'=> $message
+            'message' => $message
         ];
     }
 }

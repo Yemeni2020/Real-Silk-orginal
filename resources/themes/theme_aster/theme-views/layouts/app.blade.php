@@ -4,13 +4,20 @@
     <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ session()->get('direction') }}">
 <head>
-    <title>@yield('title')</title>
+
     <meta name="base-url" content="{{ url('/') }}">
+    <meta name="google-site-verification" content="{{getWebConfig('google_search_console_code')}}">
+    <meta name="msvalidate.01" content="{{getWebConfig('bing_webmaster_code')}}">
+    <meta name="baidu-site-verification" content="{{getWebConfig('baidu_webmaster_code')}}">
+    <meta name="yandex-verification" content="{{getWebConfig('yandex_webmaster_code')}}">
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="robots" content="nofollow, noindex ">
     <meta name="_token" content="{{csrf_token()}}">
-    <link rel="shortcut icon" href="{{asset('storage/app/public/company')}}/{{$web_config['fav_icon']->value}}"/>
+    <link rel="shortcut icon" href="{{$web_config['fav_icon']['path']}}"/>
+
     <link rel="stylesheet" href="{{ theme_asset('assets/css/fonts-init.css') }}"/>
     <link rel="stylesheet" href="{{ theme_asset('assets/css/bootstrap.min.css') }}"/>
     <link rel="stylesheet" href="{{ theme_asset('assets/css/bootstrap-icons.min.css') }}"/>
@@ -20,8 +27,13 @@
     <link rel="stylesheet" href="{{ theme_asset('assets/css/toastr.css') }}"/>
 
     <link rel="stylesheet" href="{{ theme_asset('assets/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ theme_asset('assets/plugins/intl-tel-input/css/intlTelInput.css') }}">
     <link rel="stylesheet" href="{{ theme_asset('assets/css/style.css') }}"/>
+
     @stack('css_or_js')
+    @include(VIEW_FILE_NAMES['robots_meta_content_partials'])
+    <title>@yield('title')</title>
+
     <link rel="stylesheet" href="{{ theme_asset('assets/css/custom.css') }}"/>
     <style>
         :root {
@@ -114,9 +126,9 @@
     </noscript>
 @endif
 <div class="preloader d--none" id="loading">
-    <img width="200" alt="" src="{{ getValidImage(path: 'storage/app/public/company/'.getWebConfig(name: 'loader_gif'), type: 'source', source: theme_asset('assets/img/loader.gif')) }}">
+    <img width="200" alt="" src="{{ getStorageImages(path: getWebConfig(name: 'loader_gif'), type: 'source', source: theme_asset('assets/img/loader.gif')) }}">
 </div>
-
+@include('theme-views.layouts.partials._alert-message')
 @include('theme-views.layouts.partials._header')
 @include('theme-views.layouts.partials._settings-sidebar')
 @yield('content')
@@ -144,7 +156,9 @@
       data-refundmessage="{{ translate('you_can_refund_request_after_the_product_is_delivered') }}"
       data-textshoptemporaryclose="{{ translate('This_shop_is_temporary_closed_or_on_vacation').' '.translate('You_cannot_add_product_to_cart_from_this_shop_for_now') }}"
 ></span>
+<span class="system-default-country-code" data-value="{{ getWebConfig(name: 'country_code') ?? 'us' }}"></span>
 <span class="cannot_use_zero" data-text="{{ translate('cannot_Use_0_only') }}"></span>
+<span class="system-default-country-code" data-value="{{ getWebConfig(name: 'country_code') ?? 'us' }}"></span>
 @php($cookie = $web_config['cookie_setting'] ? json_decode($web_config['cookie_setting']['value'], true):null)
 @if($cookie && $cookie['status']==1)
     <section id="cookie-section"></section>
@@ -153,6 +167,7 @@
 @include('theme-views.layouts.partials.modal._register')
 @include('theme-views.layouts.partials.modal._login')
 @include('theme-views.layouts.partials.modal._quick-view')
+@include('theme-views.layouts.partials.modal._buy-now')
 @include('theme-views.layouts.partials.modal._initial')
 
 @php($whatsapp = getWebConfig(name: 'whatsapp'))
@@ -170,6 +185,7 @@
 @include('theme-views.layouts.partials._translate-text-for-js')
 @include('theme-views.layouts.partials._route-for-js')
 @include('theme-views.layouts.main-script')
+@include('theme-views.layouts._firebase-script')
 
 {!! Toastr::message() !!}
 @stack('script')

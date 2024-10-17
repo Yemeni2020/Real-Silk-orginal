@@ -9,9 +9,10 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\RefundRequest;
 use App\Models\RefundStatus;
-use App\User;
+use App\Models\User;
 use App\Utils\CustomerManager;
 use App\Utils\Helpers;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -34,13 +35,25 @@ class RefundController extends Controller
                     $query->where('order_id', 'like', "%{$value}%");
                 }
             })->latest()->get();
-
-        $refund_list = $refund_list->map(function($data){
-            $data['images'] = json_decode($data['images']);
-            return $data;
-        });
         return response()->json($refund_list);
     }
+
+    public function getSingleItem(Request $request): JsonResponse
+    {
+        $seller = $request->seller;
+        $refundList = RefundRequest::with('customer', 'product', 'orderDetails')
+            ->with(['order' => function ($query) {
+                $query->select('id', 'payment_method');
+            }])
+            ->whereHas('order', function ($query) use ($seller) {
+                $query->where('seller_is', 'seller')->where('seller_id', $seller['id']);
+            })
+            ->where('id', $request['id'])
+            ->first();
+
+        return response()->json($refundList);
+    }
+
     public function refund_details(Request $request)
     {
         $seller = $request->seller;
@@ -70,10 +83,7 @@ class RefundController extends Controller
             $data['subtotal'] = $subtotal;
             $data['coupon_discount'] = $coupon_discount;
             $data['refund_amount'] = $refund_amount;
-            $data['refund_request']=$refund_request->map(function($data){
-                $data['images']=json_decode($data['images']);
-                return $data;
-            });
+            $data['refund_request']=$refund_request;
             $data['deliveryman_details']= DeliveryMan::find($order->delivery_man_id);
 
             return response()->json($data, 200);
@@ -91,7 +101,7 @@ class RefundController extends Controller
         ]);
 
         if ($validator->errors()->count() > 0) {
-            return response()->json(['errors' => Helpers::error_processor($validator)]);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
         }
 
         $refund = RefundRequest::whereHas('order', function ($query) use($seller) {
@@ -100,7 +110,7 @@ class RefundController extends Controller
 
         $user = User::find($refund->customer_id);
 
-        $loyalty_point_status = Helpers::get_business_settings('loyalty_point_status');
+        $loyalty_point_status = getWebConfig(name: 'loyalty_point_status');
 
         if($loyalty_point_status == 1)
         {
@@ -118,7 +128,7 @@ class RefundController extends Controller
         }
         if($refund->status != 'refunded')
         {
-            $order_details = OrderDetail::find($refund->order_details_id);
+            $orderDetails = OrderDetail::find($refund->order_details_id);
             $refund_status = new RefundStatus;
             $refund_status->refund_request_id = $refund->id;
             $refund_status->change_by = 'seller';
@@ -127,24 +137,24 @@ class RefundController extends Controller
 
             if($request->refund_status == 'pending')
             {
-                $order_details->refund_request = 1;
+                $orderDetails->refund_request = 1;
             }
             elseif($request->refund_status == 'approved')
             {
-                $order_details->refund_request = 2;
+                $orderDetails->refund_request = 2;
                 $refund->approved_note = $request->note;
 
                 $refund_status->message = $request->note;
             }
             elseif($request->refund_status == 'rejected')
             {
-                $order_details->refund_request = 3;
+                $orderDetails->refund_request = 3;
                 $refund->rejected_note = $request->note;
 
                 $refund_status->message = $request->note;
             }
 
-            $order_details->save();
+            $orderDetails->save();
 
             $refund->status = $request->refund_status;
             $refund->change_by = 'seller';
@@ -152,10 +162,9 @@ class RefundController extends Controller
             $refund_status->save();
 
             $order = Order::find($refund->order_id);
-            RefundEvent::dispatch($request['refund_status'], $order);
+            event(new RefundEvent(status: $request['refund_status'], order: $order, refund: $refund, orderDetails: $orderDetails));
             return response()->json(['message'=>'refund status updated successfully!'], 200);
-
-        }else{
+        } else {
             return response()->json(['message'=>'refunded status can not be changed!!'],403);
         }
 

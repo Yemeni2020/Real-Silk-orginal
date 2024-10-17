@@ -6,7 +6,7 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 text-capitalize mb-1 d-flex gap-2">
-                <img src="{{ asset('public/assets/back-end/img/inhouse-product-list.png') }}" alt="">
+                <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/inhouse-product-list.png') }}" alt="">
                 {{ translate('update_product') }}
             </h2>
         </div>
@@ -63,7 +63,7 @@
                                 <tr>
                                     <th scope="row">{{ $products->firstItem()+$key}}</th>
                                     <td>
-                                        <a href="{{route('admin.products.view',[$product['id']]) }}"
+                                        <a href="{{route('admin.products.view',['addedBy'=>($product['added_by']=='seller'?'vendor' : 'in-house'),'id'=>$product['id']]) }}"
                                            class="title-color hover-c1">
                                             {{ Str::limit($product['name'],20) }}
                                         </a>
@@ -77,13 +77,15 @@
 
                                     <td>
                                         <div class="d-flex gap-10 align-items-center justify-content-center">
-                                            <button class="btn btn--primary btn-sm action-admin-products-updated-shipping"
-                                                    data-product-id="{{ $product['id'] }}"
+                                            <button class="btn btn--primary btn-sm update-status"
+                                                    data-id="{{ $product['id'] }}"
+                                                    data-message ="{{translate('want_to_approve_this_update_request').'?'}}"
                                                     data-status="1">
                                                 {{ translate('approved') }}
                                             </button>
-                                            <button class="btn btn-danger btn-sm action-admin-products-updated-shipping"
-                                                    data-product-id="{{ $product['id'] }}"
+                                            <button class="btn btn-danger btn-sm update-status"
+                                                    data-id="{{ $product['id'] }}"
+                                                    data-message ="{{translate('want_to_deny_this_update_request').'?'}}"
                                                     data-status="2">
                                                 {{ translate('denied') }}
                                             </button>
@@ -102,16 +104,12 @@
                     </div>
 
                     @if(count($products)==0)
-                        <div class="text-center p-4">
-                            <img class="mb-3 w-160" alt=""
-                                 src="{{ asset('public/assets/back-end/svg/illustrations/sorry.svg') }}">
-                            <p class="mb-0">{{ translate('no_data_to_show') }}</p>
-                        </div>
+                        @include('layouts.back-end._empty-state',['text'=>'no_product_found'],['image'=>'default'])
                     @endif
                 </div>
             </div>
         </div>
     </div>
 
-<span id="route-admin-products-updated-shipping" data-url="{{ route('admin.products.updated-shipping') }}"></span>
+<span id="get-update-status-route" data-action="{{ route('admin.products.updated-shipping') }}"></span>
 @endsection

@@ -8,18 +8,16 @@ use Illuminate\Http\Request;
 class APIGuestMiddleware
 {
     /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @param Request $request
+     * @param Closure $next
+     * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
-        if($request->header('Authorization') && app('auth')->guard('api')){
-            $request->merge(['user'=>auth('api')->user()]);
+        if ($request->header('Authorization') && app('auth')->guard('api')) {
+            $request->merge(['user' => auth('api')->user()]);
             return $next($request);
-        }elseif($request->guest_id){
+        } elseif ($request->guest_id) {
             return $next($request);
         }
 

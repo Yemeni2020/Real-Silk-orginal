@@ -1,11 +1,12 @@
 @extends('layouts.back-end.app')
 
 @section('title', translate('POS'))
-
+@push('css_or_js')
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/plugins/intl-tel-input/css/intlTelInput.css') }}">
+@endpush
 @section('content')
-
-<section class="section-content pt-5">
-    <div class="container-fluid">
+    <div class="content container-fluid">
         <div class="row">
             <div class="col-lg-7 mb-4 mb-lg-0">
                 <div class="card">
@@ -37,13 +38,13 @@
                                             </div>
                                         </div>
                                         <input id="search" autocomplete="off" type="text"
-                                               value="{{ $searchValue }}"
-                                               name="searchValue" class="form-control search-bar-input"
-                                               placeholder="{{ translate('search_by_name_or_sku') }}"
-                                               aria-label="Search here">
+                                                value="{{ $searchValue }}"
+                                                name="searchValue" class="form-control search-bar-input"
+                                                placeholder="{{ translate('search_by_name_or_sku') }}"
+                                                aria-label="Search here">
                                         <diV class="card pos-search-card w-4 position-absolute z-index-1 w-100">
                                             <div id="pos-search-box"
-                                                 class="card-body search-result-box d--none"></div>
+                                                    class="card-body search-result-box d--none"></div>
                                         </diV>
                                     </div>
                                 </form>
@@ -58,7 +59,6 @@
                             @endforeach
                         </div>
                     </div>
-
                     <div class="table-responsive mt-4">
                         <div class="px-4 d-flex justify-content-lg-end">
                             {!!$products->withQueryString()->links()!!}
@@ -72,26 +72,17 @@
                     <h5 class="p-3 m-0 bg-light">{{ translate('billing_Section') }}</h5>
                     <div class="card-body">
                         <div class="d-flex justify-content-end mb-3">
-                            <button type="button" class="btn btn-outline--primary d-flex align-items-center gap-2 action-view-all-hold-orders">
+                            <button type="button" class="btn btn-outline--primary d-flex align-items-center gap-2 action-view-all-hold-orders"
+                            data-toggle="tooltip" data-placement="top"
+                                    title="{{translate('please_resume_the_order_from_here')}}">
                                 {{ translate('view_All_Hold_Orders') }}
-                                <span class="badge badge-danger rounded-circle total_hold_orders">
-                                    <?php
-                                    $viewAllHoldOrders = 0;
-                                    if (session()->has('cart_name')) {
-                                        foreach (session('cart_name') as $item) {
-                                            if (session()->has($item) && count(session($item)) > 1) {
-                                                $viewAllHoldOrders++;
-                                            }
-                                        }
-                                    }
-                                    ?>
-                                    {{ $viewAllHoldOrders }}
+                                <span class="total_hold_orders">
+                                    {{$totalHoldOrder}}
                                 </span>
                             </button>
                         </div>
 
                         <div class="form-group d-flex gap-2">
-
                             <?php
                             $userId = 0;
                             if (Illuminate\Support\Str::contains(session('current_user'), 'saved-customer')) {
@@ -108,7 +99,7 @@
                             </select>
 
                             <button class="btn btn-success rounded text-nowrap" id="add_new_customer" type="button"
-                                    data-toggle="modal" data-target="#add-customer" title="Add New Customer">
+                                    data-toggle="modal" data-target="#add-customer" title="{{translate('add_new_customer')}}">
                                 {{ translate('add_New_Customer') }}
                             </button>
                         </div>
@@ -122,7 +113,7 @@
             </div>
         </div>
     </div>
-</section>
+
 
 <div class="modal fade pt-5" id="quick-view" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -186,8 +177,9 @@
 @endsection
 
 @push('script_2')
-    <script src="{{ asset('public/assets/back-end/js/admin/pos-script.js') }}"></script>
-
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/plugins/intl-tel-input/js/intlTelInput.js') }}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/country-picker-init.js') }}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/admin/pos-script.js') }}"></script>
     <script>
         "use strict";
         $(document).on('ready', function () {

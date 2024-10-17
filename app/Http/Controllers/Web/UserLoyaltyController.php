@@ -33,7 +33,7 @@ class UserLoyaltyController extends Controller
             $loyaltyPointExchangeRate = getWebConfig(name: 'loyalty_point_exchange_rate');
             $loyaltyPointList = $this->loyaltyPointTransactionRepo->getListWhere(
                 orderBy: ['id' => 'desc'],
-                filters: ['user_id' => auth('customer')->id(), 'transaction_type' => $request['type']],
+                filters: ['customer_id' => auth('customer')->id(), 'transaction_type' => $request['type']],
                 dataLimit: getWebConfig(name: 'pagination_limit')
             );
             return view(VIEW_FILE_NAMES['user_loyalty'], compact('totalLoyaltyPoint', 'loyaltyPointStatus', 'walletStatus', 'loyaltyPointList', 'loyaltyPointMinimumPoint', 'loyaltyPointExchangeRate'));

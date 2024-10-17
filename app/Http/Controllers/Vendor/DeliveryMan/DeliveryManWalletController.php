@@ -163,11 +163,11 @@ class DeliveryManWalletController extends BaseController
     {
         $wallet = $this->deliveryManWalletRepo->getFirstWhere(params: ['delivery_man_id' => $id]);
         if (empty($wallet) || currencyConverter($request->input('amount')) > $wallet['cash_in_hand']) {
-            Toastr::warning(translate('receive_amount_can_not_be_more_than_cash_in_hand').'!');
+            Toastr::warning(translate('receive_amount_can_not_be_more_than_cash_in_hand') . '!');
             return redirect()->back();
         }
-        $wallet['cash_in_hand'] -= $request->input('amount');
-        $amount = $request->amount ?? 0;
+        $amount = currencyConverter($request->get('amount', 0));
+        $wallet['cash_in_hand'] -= currencyConverter($request->get('amount', 0));
         $this->deliveryManTransactionRepo->add(
             $this->deliveryManTransactionService->getDeliveryManTransactionData(
                 amount: $amount,
@@ -178,7 +178,7 @@ class DeliveryManWalletController extends BaseController
         $deliveryMan = $this->deliveryManRepo->getFirstWhere(params: ['id' => $id]);
         if ($wallet->update()) {
             if (!empty($deliveryMan['fcm_token'])) {
-                CashCollectEvent::dispatch('cash_collect_by_seller_message','delivery_man',$deliveryMan['app_language'] ?? getDefaultLanguage(),$amount,$deliveryMan['fcm_token']);
+                CashCollectEvent::dispatch('cash_collect_by_seller_message', 'delivery_man', $deliveryMan['app_language'] ?? getDefaultLanguage(), $amount, $deliveryMan['fcm_token']);
             }
             Toastr::success(translate('amount_receive_successfully') . '!');
             return back();

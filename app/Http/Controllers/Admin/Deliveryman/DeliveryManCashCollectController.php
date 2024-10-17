@@ -60,18 +60,18 @@ class DeliveryManCashCollectController extends BaseController
 
     public function getCashReceive(DeliveryManCashCollectRequest $request, $id, DeliveryManCashCollectService $deliveryManCashCollectService): RedirectResponse
     {
-        $wallet = $this->deliveryManWalletRepo->getFirstWhere(params: ['delivery_man_id'=>$id]);
-        if (empty($wallet) || usdToDefaultCurrency(amount: $request['amount']) > $wallet['cash_in_hand']) {
+        $wallet = $this->deliveryManWalletRepo->getFirstWhere(params: ['delivery_man_id' => $id]);
+        if (empty($wallet) || currencyConverter(amount: $request['amount']) > $wallet['cash_in_hand']) {
             Toastr::warning(translate('receive_amount_can_not_be_more_than_cash_in_hand'));
             return back();
         }
-        $deliveryMan = $this->deliveryManRepo->getFirstWhere(params: ['id'=>$id]);
+        $deliveryMan = $this->deliveryManRepo->getFirstWhere(params: ['id' => $id]);
         $dataArray = $deliveryManCashCollectService->getIdentityImages(request: $request, deliveryMan: $deliveryMan);
         $this->deliveryManTransactionRepo->add(data: $dataArray);
-        $amount = $wallet['cash_in_hand'] - $request['amount'];
-        $this->deliveryManWalletRepo->update(id:$wallet['id'], data: ['cash_in_hand' => $amount]);
+        $amount = $wallet['cash_in_hand'] - currencyConverter(amount: $request['amount']);
+        $this->deliveryManWalletRepo->update(id: $wallet['id'], data: ['cash_in_hand' => $amount]);
         if (!empty($deliveryMan['fcm_token'])) {
-            CashCollectEvent::dispatch('cash_collect_by_admin_message','delivery_man',$deliveryMan['app_language'] ?? getDefaultLanguage(),$request['amount'],$deliveryMan['fcm_token']);
+            CashCollectEvent::dispatch('cash_collect_by_admin_message', 'delivery_man', $deliveryMan['app_language'] ?? getDefaultLanguage(), currencyConverter(amount: $request['amount']), $deliveryMan['fcm_token']);
         }
         Toastr::success(translate('amount_receive_successfully'));
         return back();

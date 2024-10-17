@@ -55,12 +55,12 @@ class LoginController extends Controller
             'role' => 'required'
         ]);
 
-        $recaptcha = Helpers::get_business_settings('recaptcha');
+        $recaptcha = getWebConfig(name: 'recaptcha');
         if (isset($recaptcha) && $recaptcha['status'] == 1) {
             $request->validate([
                 'g-recaptcha-response' => [
                     function ($attribute, $value, $fail) {
-                        $secret_key = Helpers::get_business_settings('recaptcha')['secret_key'];
+                        $secret_key = getWebConfig(name: 'recaptcha')['secret_key'];
                         $response = $value;
                         $url = 'https://www.google.com/recaptcha/api/siteverify?secret=' . $secret_key . '&response=' . $response;
                         $response = Http::get($url);
@@ -107,7 +107,7 @@ class LoginController extends Controller
         $data = $this->login_attemp($request->role, $request->email, $request->password, $request->remember);
 
         if ($data == 'admin' || $data == 'employee') {
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.dashboard.index');
         }
 
         return redirect()->back()->withInput($request->only('email', 'remember'))

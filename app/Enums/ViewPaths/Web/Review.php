@@ -14,4 +14,9 @@ enum Review
         VIEW => ''
     ];
 
+    const DELETE_REVIEW_IMAGE = [
+        URI => 'review-delete-image',
+        VIEW => ''
+    ];
+
 }

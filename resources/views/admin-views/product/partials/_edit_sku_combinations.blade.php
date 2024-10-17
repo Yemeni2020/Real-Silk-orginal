@@ -49,11 +49,11 @@
                     <input type="number" name="price_{{ $combination['type'] }}"
                            value="{{ usdToDefaultCurrency(amount: $combination['price']) }}" min="0"
                            step="0.01"
-                           class="form-control" required placeholder="{{ translate('ex') }}: {{ translate('535') }}">
+                           class="form-control" required placeholder="{{ translate('ex').': 100'}}">
                 </td>
                 <td>
                     <input type="text" name="sku_{{ $combination['type'] }}" value="{{ $combination['sku'] }}"
-                           class="form-control" placeholder="{{ translate('ex') }}: {{ translate('MCU47V593M') }}">
+                           class="form-control store-keeping-unit" required>
                 </td>
                 <td>
                     <input type="number" name="qty_{{ $combination['type'] }}"

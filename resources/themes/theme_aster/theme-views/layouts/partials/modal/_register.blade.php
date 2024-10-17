@@ -16,7 +16,7 @@
             <div class="modal-body px-4 px-lg-5">
                 <div class="mb-4 text-center">
                     <img width="200" alt="" class="dark-support"
-                        src="{{ getValidImage(path: 'storage/app/public/company/'.($web_config['web_logo']->value), type:'logo') }}">
+                        src="{{ getStorageImages(path: $web_config['web_logo'], type:'logo') }}">
                 </div>
                 <div class="mb-4">
                     <h2 class="mb-2">{{ translate('sign_up') }}</h2>
@@ -82,19 +82,21 @@
                                 <div class="form-group mb-4">
                                     <label for="phone">{{ translate('phone') }}</label>
                                     <input
-                                        type="number"
+                                        type="tel"
                                         id="phone"
                                         value="{{old('phone')}}"
-                                        name="phone"
-                                        class="form-control"
+                                        class="form-control phone-input-with-country-picker"
                                         placeholder="{{ translate('enter_phone_number') }}"
                                         required
                                     />
+                                    <input type="hidden" class="country-picker-phone-number w-50" name="phone" readonly>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="mb-4">
-                                    <label for="password">{{ translate('password') }}</label>
+                                    <label for="password">{{ translate('password') }}
+                                        <span class="text-danger mx-1 password-error"></span>
+                                    </label>
                                     <div class="input-inner-end-ele">
                                         <input
                                             type="password"
@@ -151,12 +153,15 @@
                             <div class="d-flex gap-3 justify-content-center py-2 mt-4 mb-3">
                                 <div class="">
                                     <input type="text" class="form-control border __h-40"
+                                           id="customer-regi-recaptcha-input"
                                            name="default_recaptcha_value_customer_regi" value=""
                                            placeholder="{{ translate('Enter_captcha_value') }}" autocomplete="off">
                                 </div>
                                 <div class="input-icons rounded bg-white">
                                     <a id="re-captcha-customer-register"
-                                       class="d-flex align-items-center align-items-center">
+                                       data-session="default_recaptcha_id_customer_regi"
+                                       data-input="#customer-regi-recaptcha-input"
+                                       class="d-flex align-items-center align-items-center get-session-recaptcha-auto-fill">
                                         <img
                                             src="{{ URL('/customer/auth/code/captcha/1?captcha_session_id=default_recaptcha_id_customer_regi') }}"
                                             alt="" class="input-field rounded __h-40" id="customer-regi-recaptcha-id">
@@ -166,10 +171,9 @@
                             </div>
                         @endif
                         <div class="d-flex justify-content-center mt-4">
-                            <label for="agree" class="d-flex gap-1 align-items-center mb-0">
+                            <label for="input-checked" class="d-flex gap-1 align-items-center mb-0 user-select-none">
                                 <input type="checkbox" id="input-checked" required/>
-                                {{translate('i_agree_with_the')}} <a href="{{route('terms')}}"
-                                                                     class="text-info text-capitalize">{{ translate('terms_&_conditions') }}</a>
+                                {{translate('i_agree_with_the')}} <a href="{{route('terms')}}" class="text-info text-capitalize">{{ translate('terms_&_conditions') }}</a>
                             </label>
                         </div>
                     </div>
@@ -206,6 +210,7 @@
             defer></script>
     <script>
         'use strict';
+        initializePhoneInput(".phone-input-with-country-picker", ".country-picker-phone-number");
         $('#input-checked').change(function () {
             if ($(this).is(':checked')) {
                 $('#sign-up').removeAttr('disabled');
@@ -222,7 +227,7 @@
         };
         function recaptcha_f() {
             let response = grecaptcha.getResponse($('#recaptcha-element-customer-register').attr('data-reg-id'));
-            return response.length !== 0 ;
+            return response.length !== 0;
         }
         @else
             function reCaptchaCustomerRegister()
@@ -254,14 +259,14 @@
                     success: function (data) {
                         if (data.errors) {
                             for (let index = 0; index < data.errors.length; index++) {
-                                toastr.error(data.errors[index], {
+                                toastr.error(data.errors[index].message, {
                                     CloseButton: true,
                                     ProgressBar: true
                                 });
                             }
                         } else {
                             toastr.success(
-                                '{{translate("Customeer_Added_Successfully")}}!', {
+                                '{{translate("Customer_Added_Successfully")}}!', {
                                     CloseButton: true,
                                     ProgressBar: true
                                 });
@@ -282,4 +287,5 @@
             }
         });
     </script>
+    <script src="{{theme_asset('assets/js/password-strength.js')}}"></script>
 @endpush

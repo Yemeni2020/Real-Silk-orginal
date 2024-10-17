@@ -5,29 +5,39 @@ namespace App\Http\Controllers\Admin\Customer;
 use App\Contracts\Repositories\BusinessSettingRepositoryInterface;
 use App\Contracts\Repositories\CustomerRepositoryInterface;
 use App\Contracts\Repositories\OrderRepositoryInterface;
+use App\Contracts\Repositories\PasswordResetRepositoryInterface;
+use App\Contracts\Repositories\RefundRequestRepositoryInterface;
 use App\Contracts\Repositories\SubscriptionRepositoryInterface;
 use App\Contracts\Repositories\TranslationRepositoryInterface;
 use App\Enums\ViewPaths\Admin\Customer;
 use App\Enums\ExportFileNames\Admin\Customer as CustomerExport;
+use App\Events\CustomerRegistrationEvent;
+use App\Events\CustomerStatusUpdateEvent;
 use App\Exports\CustomerListExport;
+use App\Exports\CustomerOrderListExport;
 use App\Exports\SubscriberListExport;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\CustomerRequest;
 use App\Http\Requests\Admin\CustomerUpdateSettingsRequest;
+use App\Repositories\ShippingAddressRepository;
 use App\Services\CustomerService;
+use App\Services\PasswordResetService;
+use App\Services\ShippingAddressService;
+use App\Traits\EmailTemplateTrait;
 use App\Traits\PaginatorTrait;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Contracts\View\View;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class CustomerController extends BaseController
 {
-    use PaginatorTrait;
+    use PaginatorTrait,EmailTemplateTrait;
 
     public function __construct(
         private readonly CustomerRepositoryInterface        $customerRepo,
@@ -35,6 +45,11 @@ class CustomerController extends BaseController
         private readonly OrderRepositoryInterface           $orderRepo,
         private readonly SubscriptionRepositoryInterface    $subscriptionRepo,
         private readonly BusinessSettingRepositoryInterface $businessSettingRepo,
+        private readonly RefundRequestRepositoryInterface   $refundRequestRepo,
+        private readonly PasswordResetRepositoryInterface $passwordResetRepo,
+        private readonly PasswordResetService $passwordResetService,
+        private readonly ShippingAddressRepository $shippingAddressRepo,
+        private readonly ShippingAddressService $shippingAddressService,
     )
     {
     }
@@ -67,18 +82,59 @@ class CustomerController extends BaseController
     {
         $this->customerRepo->update(id:$request['id'],data:['is_active'=>$request->get('status', 0)]);
         $this->customerRepo->deleteAuthAccessTokens(id:$request['id']);
+        $customer = $this->customerRepo->getFirstWhere(params: ['id'=>$request['id']]);
+        $data = [
+            'userName' => $customer['f_name'],
+            'userType' => 'customer',
+            'templateName'=> $customer['is_active'] ? 'account-unblock':'account-block',
+            'subject' => $customer['is_active'] ? translate('Account_Unblocked').' !' : translate('Account_Blocked').' !',
+            'title' => $customer['is_active'] ? translate('Account_Unblocked').' !' : translate('Account_Blocked').' !',
+        ];
+        event(new CustomerStatusUpdateEvent(email:$customer['email'],data: $data));
         return response()->json(['message'=> translate('update_successfully')]);
     }
 
     public function getView(Request $request, $id): View|RedirectResponse
     {
-        $customer = $this->customerRepo->getFirstWhere(params: ['id'=>$id]);
+        $customer = $this->customerRepo->getFirstWhere(params: ['id'=>$id],relations: ['addresses']);
         if (isset($customer)) {
-            $orders = $this->orderRepo->getListWhere(searchValue:$request['searchValue'], filters: ['customer_id'=>$id,'is_guest'=>'0']);
-            return view(Customer::VIEW[VIEW], ['customer'=>$customer, 'orders'=>$orders]);
+            $orders = $this->orderRepo->getListWhere(orderBy:['id'=>'desc'],searchValue:$request['searchValue'], filters: ['customer_id'=>$id,'is_guest'=>'0'],dataLimit: 'all');
+            $orderStatusArray = [
+                'total_order' => 0,
+                'ongoing' => 0,
+                'completed' => 0,
+                'returned' => 0,
+                'refunded' => count($customer->refundOrders),
+                'canceled' => 0,
+                'failed' => 0,
+            ];
+            $orders?->map(function ($order) use (&$orderStatusArray) {
+                if(in_array($order->order_status, ['pending', 'confirmed', 'processing', 'out_for_delivery'])){
+                    $orderStatusArray['ongoing']++;
+                }elseif ($order->order_status == 'delivered'){
+                    $orderStatusArray['completed']++;
+                }
+                else{
+                    $orderStatusArray[$order->order_status]++;
+                }
+                $orderStatusArray['total_order']++;
+            });
+            $orders = $this->orderRepo->getListWhere(orderBy:['id'=>'desc'],searchValue:$request['searchValue'], filters: ['customer_id'=>$id,'is_guest'=>'0'],dataLimit: getWebConfig('pagination_limit'));
+            return view(Customer::VIEW[VIEW],compact('customer','orders','orderStatusArray'));
         }
         Toastr::error(translate('customer_Not_Found'));
         return back();
+    }
+    public function exportOrderList(Request $request,$id): BinaryFileResponse
+    {
+        $customer = $this->customerRepo->getFirstWhere(params: ['id'=>$id]);
+        $orders = $this->orderRepo->getListWhere(orderBy:['id'=>'desc'],searchValue:$request['searchValue'], filters: ['customer_id'=>$id,'is_guest'=>'0'],dataLimit: 'all');
+        $data = [
+            'customer' => $customer,
+            'searchValue' => $request->get('searchValue'),
+            'orders' =>  $orders
+        ];
+        return Excel::download(new CustomerOrderListExport($data), CustomerExport::CUSTOMER_ORDER_LIST);
     }
 
     /**
@@ -88,9 +144,9 @@ class CustomerController extends BaseController
      */
     public function delete($id, CustomerService $customerService): RedirectResponse
     {
-        $customer = $this->customerRepo->getFirstWhere(params: ['id'=>$id]);
-        $customerService->deleteImage(data:$customer);
-        $this->customerRepo->delete(params:['id'=>$id]);
+        $customer = $this->customerRepo->getFirstWhere(params: ['id' => $id]);
+        $customerService->deleteImage(data: $customer);
+        $this->customerRepo->delete(params: ['id' => $id]);
         Toastr::success(translate('customer_deleted_successfully'));
         return back();
     }
@@ -155,13 +211,13 @@ class CustomerController extends BaseController
         }
         $this->businessSettingRepo->updateOrInsert(type:'wallet_status', value:$request->get('customer_wallet', 0));
         $this->businessSettingRepo->updateOrInsert(type:'loyalty_point_status', value:$request->get('customer_loyalty_point', 0));
-        $this->businessSettingRepo->updateOrInsert(type:'wallet_add_refund', value:$request->get('refund_to_wallet', getWebConfig('wallet_add_refund')));
+        $this->businessSettingRepo->updateOrInsert(type:'wallet_add_refund', value:$request->get('refund_to_wallet', 0));
         $this->businessSettingRepo->updateOrInsert(type:'loyalty_point_exchange_rate', value:$request->get('loyalty_point_exchange_rate', getWebConfig('loyalty_point_exchange_rate')));
         $this->businessSettingRepo->updateOrInsert(type:'loyalty_point_item_purchase_point', value:$request->get('item_purchase_point', getWebConfig('loyalty_point_item_purchase_point')));
         $this->businessSettingRepo->updateOrInsert(type:'loyalty_point_minimum_point', value:$request->get('minimun_transfer_point',  getWebConfig('loyalty_point_minimum_point')));
         $this->businessSettingRepo->updateOrInsert(type:'ref_earning_status', value:$request->get('ref_earning_status', 0));
         $this->businessSettingRepo->updateOrInsert(type:'ref_earning_exchange_rate', value:currencyConverter(amount:$request->get('ref_earning_exchange_rate', getWebConfig('ref_earning_exchange_rate'))));
-        $this->businessSettingRepo->updateOrInsert(type:'add_funds_to_wallet', value:$request->get('add_funds_to_wallet', getWebConfig('add_funds_to_wallet')));
+        $this->businessSettingRepo->updateOrInsert(type:'add_funds_to_wallet', value:$request->get('add_funds_to_wallet', 0));
 
         if($request->has('minimum_add_fund_amount') && $request->has('maximum_add_fund_amount'))
         {
@@ -180,16 +236,35 @@ class CustomerController extends BaseController
 
     public function getCustomerList(Request $request): JsonResponse
     {
-        $customers = $this->customerRepo->getCustomerNameList(
-            request:$request,
-            dataLimit: getWebConfig(name:'pagination_limit')
-        );
+        $allCustomer = ['id' => 'all', 'text' => 'All customer'];
+        $customers = $this->customerRepo->getCustomerNameList(request: $request)->toArray();
+        array_unshift($customers, $allCustomer);
+        return response()->json($customers);
+    }
+    public function getCustomerListWithoutAllCustomerName(Request $request): JsonResponse
+    {
+        $customers = $this->customerRepo->getCustomerNameList(request: $request)->toArray();
         return response()->json($customers);
     }
     public function add(CustomerRequest $request,CustomerService $customerService):RedirectResponse
     {
+        $token = Str::random(120);
+        $this->passwordResetRepo->add($this->passwordResetService->getAddData(identity:getWebConfig('forgot_password_verification') == 'email' ? $request['email'] : $request['phone'],token: $token,userType:'customer'));
         $this->customerRepo->add($customerService->getCustomerData(request: $request));
-        Toastr::success(('customer_added_successfully'));
+        $customer = $this->customerRepo->getFirstWhere(params: ['email'=>$request['email']]);
+        $this->shippingAddressRepo->add($this->shippingAddressService->getAddAddressData(request:$request,customerId: $customer['id'],addressType: 'home'));
+        $resetRoute = getWebConfig('forgot_password_verification') == 'email' ? url('/') . '/customer/auth/reset-password?token='.$token : route('customer.auth.recover-password');
+        $data = [
+            'userName' => $request['f_name'],
+            'userType' => 'customer',
+            'templateName'=>'registration-from-pos',
+            'subject' => translate('Customer_Registration_Successfully_Completed'),
+            'title' => translate('welcome_to').' '.getWebConfig('company_name').'!',
+            'resetPassword' => $resetRoute,
+            'message' => translate('thank_you_for_joining').' '.getWebConfig('company_name').'.'.translate('if_you_want_to_become_a_registered_customer_then_reset_your_password_below_by_using_this_').getWebConfig('forgot_password_verification').' '.(getWebConfig('forgot_password_verification') == 'email' ? $request['email'] : $request['phone']).'.'.translate('then_you’ll_be_able_to_explore_the_website_and_app_as_a_registered_customer').'.',
+        ];
+        event(new CustomerRegistrationEvent(email:$request['email'],data: $data));
+        Toastr::success(translate('customer_added_successfully'));
         return redirect()->back();
     }
 }

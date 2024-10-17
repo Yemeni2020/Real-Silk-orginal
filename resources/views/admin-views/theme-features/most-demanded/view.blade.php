@@ -7,7 +7,7 @@
 
     <div class="mb-3">
         <h2 class="h1 mb-0 text-capitalize d-flex gap-2">
-            <img width="20" src="{{ asset('public/assets/back-end/img/most-demanded.png') }}" alt="">
+            <img width="20" src="{{ dynamicAsset(path: 'public/assets/back-end/img/most-demanded.png') }}" alt="">
             {{ translate('most_demanded') }}
         </h2>
     </div>
@@ -56,7 +56,7 @@
                                 <div class="form-group">
                                     <div class="text-center mt-lg-3">
                                         <img class="border radius-10 ratio-4:1 max-w-655px w-100" id="viewer"
-                                            src="{{ asset('public/assets/back-end/img/placeholder/placeholder-4-1.png') }}" alt="banner image"/>
+                                            src="{{ dynamicAsset(path: 'public/assets/back-end/img/placeholder/placeholder-4-1.png') }}" alt="banner image"/>
                                     </div>
                                 </div>
                             </div>
@@ -126,7 +126,7 @@
                                     <td class="pl-xl-5">{{ $mostDemandedProducts->firstItem()+ $key}}</td>
                                     <td>
                                         <img class="ratio-4:1" width="80" alt=""
-                                             src="{{ getValidImage(path:'storage/app/public/most-demanded/'.$mostDemanded['banner'],type: 'backend-banner')}}">
+                                             src="{{ getStorageImages(path:$mostDemanded->banner_full_url,type: 'backend-banner')}}">
                                     </td>
                                     <td>
                                         @if(isset($mostDemanded->product->name))
@@ -171,6 +171,8 @@
                                             </a>
                                             <a class="btn btn-outline-danger btn-sm cursor-pointer most-demanded-product-delete-button"
                                             title="{{ translate('delete') }}"
+                                               data-warning-text ="{{ translate('are_you_sure_delete_this_most_demanded_product') }}"
+                                               data-text ="{{ translate('you_will_not_be_able_to_revert_this') }}"
                                             id="{{ $mostDemanded['id'] }}">
                                                 <i class="tio-delete"></i>
                                             </a>
@@ -189,12 +191,7 @@
                 </div>
                 @endif
                 @if(count($mostDemandedProducts)==0)
-                    <div class="text-center p-4">
-                        <img class="mb-3 w-160"
-                             src="{{ asset('public/assets/back-end/svg/illustrations/sorry.svg') }}"
-                             alt="Image Description">
-                        <p class="mb-0 text-capitalize">{{ translate('no_data_to_show') }}</p>
-                    </div>
+                    @include('layouts.back-end._empty-state',['text'=>'no_data_found'],['image'=>'default'])
                 @endif
             </div>
         </div>
@@ -205,5 +202,5 @@
 @endsection
 
 @push('script')
-    <script src="{{ asset('public/assets/back-end/js/banner.js') }}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/banner.js') }}"></script>
 @endpush

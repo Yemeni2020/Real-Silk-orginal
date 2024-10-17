@@ -24,6 +24,7 @@ $('#customer-verify').on('submit', function (event) {
         },
     });
 });
+
 $('#resend-otp').click(function () {
     $('input.otp-field').val('');
     let userId = $(this).data('field') === 'identity' ? $('input[name="identity"]').val(): $('input[name="id"]').val();

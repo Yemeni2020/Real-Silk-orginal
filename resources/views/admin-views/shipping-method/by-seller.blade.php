@@ -1,7 +1,7 @@
 @extends('layouts.back-end.app')
 
 @push('css_or_js')
-    <link href="{{asset('public/assets/back-end/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+    <link href="{{dynamicAsset(path: 'public/assets/back-end/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 @endpush
 
@@ -9,7 +9,7 @@
     <div class="content container-fluid __inline-6">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">{{translate('dashboard')}}</a></li>
+                <li class="breadcrumb-item"><a href="{{route('admin.dashboard.index')}}">{{translate('dashboard')}}</a></li>
                 <li class="breadcrumb-item" aria-current="page">{{translate('shipping_Method_by_Vendor')}}</li>
             </ol>
         </nav>
@@ -41,7 +41,7 @@
                                         <td>
                                             {{$method['title']}}<br>
                                             {{translate('by')}} : <a
-                                                    href="{{route('admin.sellers.view',$method->creator_id)}}">{{$method->seller->f_name??""}} {{$method->seller->l_name??""}}</a>
+                                                    href="{{route('admin.vendors.view',$method->creator_id)}}">{{$method->seller->f_name??""}} {{$method->seller->l_name??""}}</a>
                                         </td>
                                         <td>
                                             {{$method['duration']}}
@@ -88,8 +88,8 @@
 
 @push('script')
     <!-- Page level plugins -->
-    <script src="{{asset('public/assets/back-end')}}/vendor/datatables/jquery.dataTables.min.js"></script>
-    <script src="{{asset('public/assets/back-end')}}/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/vendor/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
     <!-- Page level custom scripts -->
 
 

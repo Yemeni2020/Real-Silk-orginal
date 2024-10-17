@@ -55,7 +55,7 @@ class AddonController extends BaseController
         $data = $addonService->getUploadData(request: $request);
         return response()->json([
             'status' => $data['status'],
-            'message'=> $data['message']
+            'message' => $data['message']
         ]);
     }
 
@@ -68,7 +68,12 @@ class AddonController extends BaseController
     function getDirectories(): array
     {
         $scan = scandir(base_path('Modules/'));
-        $addonsFolders = array_diff($scan, ['.', '..','.DS_Store']);
+        $addonsFolders = array_diff($scan, ['.', '..', '.DS_Store']);
+        $collection = collect($addonsFolders);
+
+        $addonsFolders = $collection->reject(function ($value, $key) {
+            return $value === "doc.txt";
+        });
         $addons = [];
         foreach ($addonsFolders as $directory) {
             $addons[] = 'Modules/' . $directory;

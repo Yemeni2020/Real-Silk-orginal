@@ -6,11 +6,11 @@
     <div class="content container-fluid">
         <div class="mb-4 pb-2">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{asset('/public/assets/back-end/img/3rd-party.png')}}" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/3rd-party.png')}}" alt="">
                 {{translate('3rd_party')}}
             </h2>
         </div>
-        @include('admin-views.business-settings.third-party-inline-menu')
+        @include('admin-views.business-settings.third-party-payment-method-menu')
         <nav>
             <div class="nav nav-tabs mb-3 border-0" role="tablist">
               <a class="nav-link {{ !request()->has('status') ? 'active':'' }}" href="{{route('admin.business-settings.offline-payment-method.index')}}">{{ translate('all') }}</a>
@@ -32,7 +32,7 @@
                                                 <i class="tio-search"></i>
                                             </div>
                                         </div>
-                                        <input id="datatableSearch_" type="search" name="searchValue" class="form-control" placeholder="{{ translate('search_by_name') }}" value="{{ request('searchValue') }}" required="">
+                                        <input id="datatableSearch_" type="search" name="searchValue" class="form-control" placeholder="{{ translate('search_by_payment_method_name') }}" value="{{ request('searchValue') }}" required="">
                                         <button type="submit" class="btn btn--primary input-group-text">{{ translate('search') }}</button>
                                     </div>
                                 </form>
@@ -124,16 +124,13 @@
                                             $modifiedLinks = $methods->links();
                                         }
                                     @endphp
-
                                     {!! $modifiedLinks !!}
-                                </div>
-                            @else
-                                <div class="text-center p-4">
-                                    <img class="mb-3 w-160" src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}" alt="{{translate('image_description')}}">
-                                    <p class="mb-0">{{ translate('no_data_to_show')}}</p>
                                 </div>
                             @endif
                         </div>
+                        @if ($methods->count() <= 0)
+                            @include('layouts.back-end._empty-state',['text'=>'no_data_found'],['image'=>'default'])
+                        @endif
                     </div>
                 </div>
             </div>

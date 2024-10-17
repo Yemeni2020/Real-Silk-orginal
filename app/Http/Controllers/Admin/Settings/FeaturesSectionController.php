@@ -57,6 +57,7 @@ class FeaturesSectionController extends BaseController
             $section_bottom = $featuresSectionService->getBottomSectionData(request: $request, featuresBottomSection: $featuresBottomSection);
             $this->businessSettingRepo->updateOrInsert(type: 'features_section_bottom', value: json_encode($section_bottom));
         }
+        clearWebConfigCacheKeys();
         return back();
     }
 
@@ -67,6 +68,7 @@ class FeaturesSectionController extends BaseController
             $newArray = $featuresSectionService->getDeleteData(request: $request, data: $featuresData);
             $this->businessSettingRepo->updateOrInsert(type: 'features_section_bottom', value: json_encode($newArray));
         }
+        clearWebConfigCacheKeys();
         return response()->json(['status'=>'success']);
     }
 
@@ -81,6 +83,7 @@ class FeaturesSectionController extends BaseController
         $data = $this->businessSettingRepo->getFirstWhere(params: ['type'=>'company_reliability']);
         $item = $featuresSectionService->getReliabilityUpdateData(request: $request, data: $data);
         $this->businessSettingRepo->updateOrInsert(type: 'company_reliability', value: json_encode($item));
+        clearWebConfigCacheKeys();
         return back();
     }
 

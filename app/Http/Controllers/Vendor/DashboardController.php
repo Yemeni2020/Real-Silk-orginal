@@ -15,6 +15,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\Vendor\WithdrawRequest;
 use App\Repositories\BrandRepository;
 use App\Repositories\OrderTransactionRepository;
+use App\Services\DashboardService;
 use App\Services\VendorWalletService;
 use App\Services\WithdrawRequestService;
 use Brian2694\Toastr\Facades\Toastr;
@@ -40,6 +41,7 @@ class DashboardController extends BaseController
         private readonly WithdrawalMethodRepositoryInterface $withdrawalMethodRepo,
         private readonly WithdrawRequestRepositoryInterface $withdrawRequestRepo,
         private readonly WithdrawRequestService $withdrawRequestService,
+        private readonly DashboardService $dashboardService,
     )
     {
     }
@@ -67,35 +69,38 @@ class DashboardController extends BaseController
                 'request_status' =>1
             ],
             relations: ['orderDetails']
-        )->take(DASHBOARD_DATA_LIMIT);
+        )->take(DASHBOARD_TOP_SELL_DATA_LIMIT);
         $topRatedProducts = $this->productRepo->getTopRatedList(
-            filters:[
-                'user_id'=>$vendorId,
-                'added_by'=>'seller',
-                'request_status' =>1
+            filters: [
+                'user_id' => $vendorId,
+                'added_by' => 'seller',
+                'request_status' => 1
             ],
             relations: ['reviews'],
         )->take(DASHBOARD_DATA_LIMIT);
         $topRatedDeliveryMan = $this->deliveryManRepo->getTopRatedList(
+            orderBy: ['delivered_orders_count' => 'desc'],
             filters: [
-                'seller_id'=>$vendorId
+                'seller_id' => $vendorId
             ],
-            whereHasFilters:[
-                'seller_is'=>'seller',
-                'seller_id'=>$vendorId
+            whereHasFilters: [
+                'seller_is' => 'seller',
+                'seller_id' => $vendorId
             ],
-            relations: ['orders'],
+            relations: ['deliveredOrders'],
         )->take(DASHBOARD_DATA_LIMIT);
 
         $from = now()->startOfYear()->format('Y-m-d');
         $to = now()->endOfYear()->format('Y-m-d');
         $range = range(1,12);
-        $vendorEarningArray = $this->getVendorEarning(from:$from ,to: $to,range: $range,type:'month');
-        $commissionGivenToAdminArray = $this->getAdminCommission(from: $from ,to: $to,range: $range,type:'month');
-        $vendorWallet = $this->vendorWalletRepo->getFirstWhere(params: ['seller_id'=>$vendorId]);
+        $vendorEarning = $this->getVendorEarning(from: $from, to: $to, range: $range, type: 'month');
+        $commissionEarn = $this->getAdminCommission(from: $from ,to: $to,range: $range,type:'month');
+        $vendorWallet = $this->vendorWalletRepo->getFirstWhere(params: ['seller_id' => $vendorId]);
+        $label = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        $dateType = 'yearEarn';
         $dashboardData = [
             'orderStatus' => $this->getOrderStatusArray(type: 'overall'),
-            'customers'=> $this->customerRepo->getList()->count(),
+                'customers'=> $this->customerRepo->getList(dataLimit: 'all')->count(),
             'products'=> $this->productRepo->getListWhere(filters: ['seller_id'=>$vendorId,'added_by'=>'seller'])->count(),
             'orders'=> $this->orderRepo->getListWhere(filters: ['seller_id'=>$vendorId,'seller_is'=>'seller'])->count(),
             'brands'=> $this->brandRepo->getListWhere(dataLimit: 'all')->count(),
@@ -110,9 +115,8 @@ class DashboardController extends BaseController
             'collectedCash' => $vendorWallet->collected_cash ?? 0,
             'collectedTotalTax' => $vendorWallet->total_tax_collected ?? 0,
         ];
-
         $withdrawalMethods = $this->withdrawalMethodRepo->getListWhere(filters:['is_active'=>1],dataLimit:'all');
-        return view(Dashboard::INDEX[VIEW],compact('dashboardData','vendorEarningArray','commissionGivenToAdminArray','withdrawalMethods'));
+        return view(Dashboard::INDEX[VIEW],compact('dashboardData','vendorEarning','commissionEarn','withdrawalMethods','dateType','label'));
     }
 
     /**
@@ -134,38 +138,19 @@ class DashboardController extends BaseController
     public function getEarningStatistics(Request $request):JsonResponse
     {
         $dateType = $request['type'];
-        $from = null; $to = null; $type = null; $range = null;
-        if ($dateType == 'yearEarn') {
-            $from = Carbon::now()->startOfYear()->format('Y-m-d');
-            $to = Carbon::now()->endOfYear()->format('Y-m-d');
-            $range = range(1, 12);
-            $type = 'month';
-            $keyRange = ["Jan", "Feb", "Mar", "April", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        } elseif ($dateType == 'MonthEarn') {
-            $from = date('Y-m-01');
-            $to = date('Y-m-t');
-            $endRange = date('d', strtotime($to));
-            $range = range(1, $endRange);
-            $type = 'day';
-            $keyRange = $range;
-        } elseif ($dateType == 'WeekEarn') {
-            $from = Carbon::now()->startOfWeek()->format('Y-m-d');
-            $to = Carbon::now()->endOfWeek()->format('Y-m-d');
-            $startRange = date('d', strtotime($from));
-            $endRange = date('d', strtotime($to));
-            $range = range($startRange, $endRange);
-            $type = 'day';
-            $keyRange = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        }
-
-        $vendorEarningArray = $this->getVendorEarning(from: $from, to: $to, range: $range, type: $type);
-        $commissionGivenToAdminArray = $this->getAdminCommission(from: $from, to: $to, range: $range, type: $type);
-        $dashboardData = [
-            'label' => $keyRange ?? [],
-            'vendorEarningArray' => array_values($vendorEarningArray),
-            'commissionGivenToAdminArray' => array_values($commissionGivenToAdminArray),
-        ];
-        return response()->json($dashboardData);
+        $dateTypeArray = $this->dashboardService->getDateTypeData(dateType: $dateType);
+        $from = $dateTypeArray['from'];
+        $to = $dateTypeArray['to'];
+        $type = $dateTypeArray['type'];
+        $range = $dateTypeArray['range'];
+        $vendorEarning = $this->getVendorEarning(from: $from, to: $to, range: $range, type: $type);
+        $commissionEarn = $this->getAdminCommission(from: $from, to: $to, range: $range, type: $type);
+        $vendorEarning = array_values($vendorEarning);
+        $commissionEarn = array_values($commissionEarn);
+        $label = $dateTypeArray['keyRange'] ?? [];
+        return response()->json([
+            'view' => view(Dashboard::EARNING_STATISTICS[VIEW], compact('vendorEarning','commissionEarn','label','dateType'))->render(),
+        ]);
     }
 
     /**
@@ -227,26 +212,21 @@ class DashboardController extends BaseController
      * @param string $type
      * @return array
      */
-    protected function getVendorEarning(string|Carbon $from, string|Carbon $to, array $range, string $type):array
+    protected function getVendorEarning(string|Carbon $from, string|Carbon $to, array $range, string $type): array
     {
         $vendorId = auth('seller')->id();
         $vendorEarnings = $this->orderTransactionRepo->getListWhereBetween(
-            filters:  [
-                'seller_is'=>'seller',
-                'seller_id'=>$vendorId,
-                'status'=>'disburse'
+            filters: [
+                'seller_is' => 'seller',
+                'seller_id' => $vendorId,
+                'status' => 'disburse',
             ],
-            selectColumn:  'seller_amount',
+            selectColumn: 'seller_amount',
             whereBetween: 'created_at',
             whereBetweenFilters: [$from, $to],
+            groupBy:  $type,
         );
-        $vendorEarningArray = [];
-        foreach ($range as $value){
-            $vendorEarnings->map(function ($earning)use($type,$range,&$vendorEarningArray,$value){
-                $vendorEarningArray[$value] = $earning[$type]== $value? $earning['sums'] : 0;
-            });
-        }
-        return $vendorEarningArray;
+        return $this->dashboardService->getDateWiseAmount(range: $range, type: $type, amountArray: $vendorEarnings);
     }
 
     /**
@@ -263,19 +243,14 @@ class DashboardController extends BaseController
             filters:  [
                 'seller_is'=>'seller',
                 'seller_id'=>$vendorId,
-                'status'=>'disburse'
+                'status'=>'disburse',
             ],
             selectColumn:  'admin_commission',
             whereBetween: 'created_at',
             whereBetweenFilters: [$from, $to],
+            groupBy:  $type,
         );
-        $commissionGivenToAdminArray = [];
-        foreach ($range as $value){
-            $commissionGiven->map(function ($earning)use($type,$range,&$commissionGivenToAdminArray,$value){
-                $commissionGivenToAdminArray[$value] = $earning[$type]== $value? $earning['sums'] : 0;
-            });
-        }
-        return $commissionGivenToAdminArray;
+        return $this->dashboardService->getDateWiseAmount(range: $range,type: $type,amountArray: $commissionGiven);;
     }
 
     /**

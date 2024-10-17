@@ -248,6 +248,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+<?php
+    $companyLogo = getWebConfig(name: 'company_web_logo');
+?>
+
 <body>
 
 <div class="max-w-595px" style="min-height: 100vh; display:flex;flex-direction: column;">
@@ -260,7 +264,7 @@
                                 style="font-weight: normal">{{ date('d/m/Y') }}</span></p>
                 </th>
                 <th class="content-position-y text-right">
-                    <img height="50" src="{{asset("storage/app/public/company/$company_web_logo")}}" alt="">
+                    <img height="50" src="{{ getStorageImages(path: $companyLogo, type: 'backend-logo') }}" alt="">
                 </th>
             </tr>
         </table>
@@ -315,16 +319,21 @@
                 </tr>
                 <tr>
                     <td>4</td>
+                    <td>{{translate('deliveryman_incentive')}}</td>
+                    <td class="text-right">{{ \App\Utils\BackEndHelper::set_symbol(\App\Utils\BackEndHelper::usd_to_currency($earning_data['deliveryman_incentive'])) }}</td>
+                </tr>
+                <tr>
+                    <td>5</td>
                     <td>{{translate('discount_Given')}}</td>
                     <td class="text-right">{{ \App\Utils\BackEndHelper::set_symbol(\App\Utils\BackEndHelper::usd_to_currency($earning_data['discount_given'])) }}</td>
                 </tr>
                 <tr>
-                    <td>5</td>
+                    <td>6</td>
                     <td>{{translate('total_Tax')}}</td>
                     <td class="text-right">{{ \App\Utils\BackEndHelper::set_symbol(\App\Utils\BackEndHelper::usd_to_currency($earning_data['total_tax'])) }}</td>
                 </tr>
                 <tr>
-                    <td>6</td>
+                    <td>7</td>
                     <td>{{translate('refund_Given')}}</td>
                     <td class="text-right">{{ \App\Utils\BackEndHelper::set_symbol(\App\Utils\BackEndHelper::usd_to_currency($earning_data['refund_given'])) }}</td>
                 </tr>
@@ -340,7 +349,7 @@
             </table>
         </div>
     </div>
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
     <div class="row" style="margin-top: auto">
         <section>

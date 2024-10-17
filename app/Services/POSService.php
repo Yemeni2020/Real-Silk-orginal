@@ -16,7 +16,9 @@ class POSService
         if (session()->has(SessionKey::CART_NAME)){
             foreach (session(SessionKey::CART_NAME) as $item){
                 if (session()->has($item) && count(session($item)) > 1){
-                    $totalHoldOrders++;
+                    if (isset(session($item)[0]) && is_array(session($item)[0]) && isset(session($item)[0]['customerOnHold']) && session($item)[0]['customerOnHold']) {
+                        $totalHoldOrders++;
+                    }
                 }
             }
         }
@@ -46,7 +48,7 @@ class POSService
         if (session()->has(session(SessionKey::CURRENT_USER)) && count($cart) > 0) {
             foreach ($cart as $cartItem) {
                 if (is_array($cartItem)) {
-                    $cartItem['customerId'] = explode('-',$cartId)[2];
+                    $cartItem['customerId'] = Str::contains($cartId, 'walking-customer') ? '0' : explode('-',$cartId)[2];
                 }
                 $cartKeeper[] = $cartItem;
             }
@@ -63,7 +65,6 @@ class POSService
             }
             session()->put(SessionKey::CART_NAME,$tempCartName);
         }
-
         session()->forget(session(SessionKey::CURRENT_USER));
         session()->put($cartId , $cartKeeper);
         session()->put(SessionKey::CURRENT_USER,$cartId);

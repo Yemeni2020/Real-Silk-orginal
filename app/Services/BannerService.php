@@ -32,7 +32,6 @@ class BannerService
 
     public function getBannerTypes(): array
     {
-        $isReactActive = getWebConfig(name: 'react_setup')['status'];
         $bannerTypes = [];
         if (theme_root_path() == 'default') {
             $bannerTypes = [
@@ -62,17 +61,6 @@ class BannerService
                 "Promo Banner Right" => translate('promo_banner_right'),
                 "Promo Banner Bottom" => translate('promo_banner_bottom'),
             ];
-        }
-
-        if($isReactActive){
-            $reactBanner = [
-                'Main Banner' => translate('main_Banner'),
-                'Main Section Banner' => translate('main_Section_Banner'),
-                'Top Side Banner' => translate('top_Side_Banner'),
-                'Footer Banner' => translate('footer_Banner'),
-                'Popup Banner' => translate('popup_Banner'),
-            ];
-            $bannerTypes = array_unique(array_merge($bannerTypes, $reactBanner));
         }
 
         return $bannerTypes;

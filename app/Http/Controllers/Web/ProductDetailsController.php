@@ -10,12 +10,15 @@ use App\Contracts\Repositories\ReviewRepositoryInterface;
 use App\Contracts\Repositories\SellerRepositoryInterface;
 use App\Contracts\Repositories\TagRepositoryInterface;
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\ProductTag;
+use App\Models\Review;
 use App\Models\Seller;
 use App\Models\Tag;
 use App\Models\Wishlist;
 use App\Repositories\DealOfTheDayRepository;
 use App\Repositories\WishlistRepository;
+use App\Services\ProductService;
 use App\Traits\ProductTrait;
 use App\Utils\Helpers;
 use App\Utils\ProductManager;
@@ -28,6 +31,7 @@ use Illuminate\Support\Facades\Auth;
 class ProductDetailsController extends Controller
 {
     use ProductTrait;
+
     public function __construct(
         private readonly ProductRepositoryInterface        $productRepo,
         private readonly WishlistRepository                $wishlistRepo,
@@ -38,13 +42,14 @@ class ProductDetailsController extends Controller
         private readonly ProductTagRepositoryInterface     $productTagRepo,
         private readonly TagRepositoryInterface            $tagRepo,
         private readonly SellerRepositoryInterface         $sellerRepo,
+        private readonly ProductService                    $productService,
     )
     {
     }
 
     /**
      * @param string $slug
-     * @return View
+     * @return View|RedirectResponse
      */
     public function index(string $slug): View|RedirectResponse
     {
@@ -60,13 +65,20 @@ class ProductDetailsController extends Controller
 
     public function getDefaultTheme(string $slug): View|RedirectResponse
     {
-        $product = $this->productRepo->getFirstWhereActive(params: ['slug' => $slug], relations: ['reviews', 'seller.shop']);
+        $product = $this->productRepo->getWebFirstWhereActive(
+            params: ['slug' => $slug, 'customer_id' => Auth::guard('customer')->user()->id ?? 0],
+            relations: ['seoInfo', 'digitalVariation', 'reviews', 'seller.shop', 'digitalProductAuthors.author', 'digitalProductPublishingHouse.publishingHouse']
+        );
         if ($product) {
+            $productAuthorsInfo = $this->productService->getProductAuthorsInfo(product: $product);
+            $productPublishingHouseInfo = $this->productService->getProductPublishingHouseInfo(product: $product);
+
             $overallRating = getOverallRating(reviews: $product->reviews);
             $wishlistStatus = $this->wishlistRepo->getListWhereCount(filters: ['product_id' => $product['id'], 'customer_id' => auth('customer')->id()]);
             $productReviews = $this->reviewRepo->getListWhere(
                 orderBy: ['id' => 'desc'],
                 filters: ['product_id' => $product['id']],
+                relations: ['reply'],
                 dataLimit: 2, offset: 1
             );
 
@@ -103,9 +115,9 @@ class ProductDetailsController extends Controller
             $countWishlist = $this->wishlistRepo->getListWhereCount(filters: ['product_id' => $product['id']]);
             $relatedProducts = $this->productRepo->getWebListWithScope(
                 scope: 'active',
-                filters: ['category_ids' => $product['category_ids']],
+                filters: ['category_id' => $product['category_id']],
                 whereNotIn: ['id' => [$product['id']]],
-                relations: ['reviews'],
+                relations: ['reviews' => 'reviews'],
                 dataLimit: 12,
                 offset: 1
             );
@@ -122,10 +134,12 @@ class ProductDetailsController extends Controller
             $inHouseVacationStatus = $product['added_by'] == 'admin' ? $inHouseVacation['status'] : false;
             $inHouseTemporaryClose = $product['added_by'] == 'admin' ? $temporaryClose['status'] : false;
 
+            $previewFileInfo = getFileInfoFromURL(url: $product?->preview_file_full_url['path']);
+
             return view(VIEW_FILE_NAMES['products_details'], compact('product', 'countWishlist', 'countOrder', 'relatedProducts',
                 'dealOfTheDay', 'currentDate', 'sellerVacationStartDate', 'sellerVacationEndDate', 'sellerTemporaryClose',
                 'inHouseVacationStartDate', 'inHouseVacationEndDate', 'inHouseVacationStatus', 'inHouseTemporaryClose', 'overallRating',
-                'wishlistStatus', 'productReviews', 'rating', 'totalReviews', 'productsForReview', 'moreProductFromSeller', 'decimalPointSettings'));
+                'wishlistStatus', 'productReviews', 'rating', 'totalReviews', 'productsForReview', 'moreProductFromSeller', 'decimalPointSettings', 'previewFileInfo', 'productAuthorsInfo', 'productPublishingHouseInfo'));
         }
 
         Toastr::error(translate('not_found'));
@@ -136,11 +150,13 @@ class ProductDetailsController extends Controller
     {
         $product = $this->productRepo->getWebFirstWhereActive(
             params: ['slug' => $slug, 'customer_id' => Auth::guard('customer')->user()->id ?? 0],
-            relations: ['reviews' => 'reviews', 'seller.shop' => 'seller.shop', 'wishList' => 'wishList', 'compareList' => 'compareList'],
+            relations: ['seoInfo', 'digitalVariation', 'reviews' => 'reviews', 'seller.shop' => 'seller.shop', 'wishList' => 'wishList', 'compareList' => 'compareList', 'digitalProductAuthors.author', 'digitalProductPublishingHouse.publishingHouse'],
             withCount: ['orderDetails' => 'orderDetails', 'wishList' => 'wishList']
         );
 
         if ($product != null) {
+            $productAuthorsInfo = $this->productService->getProductAuthorsInfo(product: $product);
+            $productPublishingHouseInfo = $this->productService->getProductPublishingHouseInfo(product: $product);
             $currentDate = date('Y-m-d H:i:s');
 
             $countOrder = $product['order_details_count'];
@@ -152,11 +168,11 @@ class ProductDetailsController extends Controller
                 scope: 'active',
                 filters: ['category_ids' => $product['category_ids'], 'customer_id' => Auth::guard('customer')->user()->id ?? 0],
                 whereNotIn: ['id' => [$product['id']]],
-                relations: ['reviews', 'flashDealProducts.flashDeal', 'wishList', 'compareList'],
+                relations: ['reviews' => 'reviews', 'flashDealProducts.flashDeal' => 'flashDealProducts.flashDeal', 'wishList' => 'wishList', 'compareList' => 'compareList'],
+                withCount: ['reviews' => 'reviews'],
                 dataLimit: 12,
                 offset: 1
             );
-
             $relatedProducts?->map(function ($product) use ($currentDate) {
                 $flash_deal_status = 0;
                 $flash_deal_end_date = 0;
@@ -193,6 +209,7 @@ class ProductDetailsController extends Controller
             $productReviews = $this->reviewRepo->getListWhere(
                 orderBy: ['id' => 'desc'],
                 filters: ['product_id' => $product['id']],
+                relations: ['reply'],
                 dataLimit: 2, offset: 1
             );
             $decimalPointSettings = getWebConfig('decimal_point_settings');
@@ -224,19 +241,25 @@ class ProductDetailsController extends Controller
                 $totalReviews += $item->reviews_count;
             }
 
-            $productIds = $this->productRepo->getProductIds(filters: ['added_by' => $product['added_by'], 'user_id' => $product['user_id']]);
+            $productIds = Product::active()->where(['added_by' => $product['added_by']])
+                ->where('user_id', $product['user_id'])->pluck('id')->toArray();
+            $vendorReviewData = Review::active()->whereIn('product_id', $productIds);
+            $ratingCount = $vendorReviewData->count();
+            $avgRating = $vendorReviewData->avg('rating');
 
-            $ratingCount = $this->reviewRepo->getCount(whereInFilters: ['product_id' => $productIds]);
-            $avgRating = $this->reviewRepo->getListWhereIn(
-                whereInFilters: ['product_id' => $productIds->toArray()],
-                dataLimit: 'all');
-            $avgRating = $ratingCount != 0 ? $avgRating->avg('rating') : 0;
-            $ratingPercentage = round(($avgRating * 100) / 5);
+            $vendorRattingStatusPositive = 0;
+            foreach ($vendorReviewData->pluck('rating') as $singleRating) {
+                ($singleRating >= 4 ? ($vendorRattingStatusPositive++) : '');
+            }
+
+            $positiveReview = $ratingCount != 0 ? ($vendorRattingStatusPositive * 100) / $ratingCount : 0;
+            $previewFileInfo = getFileInfoFromURL(url: $product?->preview_file_full_url['path']);
+
             return view(VIEW_FILE_NAMES['products_details'], compact('product', 'wishlistStatus', 'countWishlist',
                 'countOrder', 'relatedProducts', 'dealOfTheDay', 'currentDate', 'sellerVacationStartDate', 'sellerVacationEndDate',
                 'sellerTemporaryClose', 'inHouseVacationStartDate', 'inHouseVacationEndDate', 'inHouseVacationStatus', 'inHouseTemporaryClose',
                 'overallRating', 'decimalPointSettings', 'moreProductFromSeller', 'productsForReview', 'totalReviews', 'rating', 'productReviews',
-                'avgRating', 'ratingPercentage', 'compareList'));
+                'avgRating', 'compareList', 'positiveReview', 'previewFileInfo', 'productAuthorsInfo', 'productPublishingHouseInfo'));
         }
 
         Toastr::error(translate('not_found'));
@@ -248,10 +271,13 @@ class ProductDetailsController extends Controller
     {
         $product = $this->productRepo->getWebFirstWhereActive(
             params: ['slug' => $slug, 'customer_id' => Auth::guard('customer')->user()->id ?? 0],
-            relations: ['reviews' => 'reviews', 'seller.shop' => 'seller.shop', 'wishList' => 'wishList', 'compareList' => 'compareList'],
+            relations: ['seoInfo', 'digitalVariation', 'reviews' => 'reviews', 'seller.shop' => 'seller.shop', 'wishList' => 'wishList', 'compareList' => 'compareList', 'digitalProductAuthors' => 'digitalProductAuthors', 'digitalProductPublishingHouse' => 'digitalProductPublishingHouse'],
             withCount: ['orderDetails' => 'orderDetails', 'wishList' => 'wishList']
         );
+
         if ($product != null) {
+            $productAuthorsInfo = $this->productService->getProductAuthorsInfo(product: $product);
+            $productPublishingHouseInfo = $this->productService->getProductPublishingHouseInfo(product: $product);
             $tags = $this->productTagRepo->getIds(fieldName: 'tag_id', filters: ['product_id' => $product['id']]);
             $this->tagRepo->incrementVisitCount(whereIn: ['id' => $tags]);
 
@@ -261,11 +287,11 @@ class ProductDetailsController extends Controller
             $compareList = $this->compareRepo->getCount(params: ['product_id' => $product->id, 'customer_id' => auth('customer')->id()]);
             $relatedProducts = $this->productRepo->getWebListWithScope(
                 scope: 'active',
-                filters: ['category_id' => $product['category_id']],
+                filters: ['category_id' => $product['category_id'], 'customer_id' => Auth::guard('customer')->user()->id ?? 0],
                 whereNotIn: ['id' => [$product['id']]],
+                relations: ['reviews' => 'reviews', 'flashDealProducts.flashDeal' => 'flashDealProducts.flashDeal', 'wishList' => 'wishList', 'compareList' => 'compareList'],
                 dataLimit: 'all',
             )->count();
-
             $sellerVacationStartDate = ($product['added_by'] == 'seller' && isset($product->seller->shop->vacation_start_date)) ? date('Y-m-d', strtotime($product->seller->shop->vacation_start_date)) : null;
             $sellerVacationEndDate = ($product['added_by'] == 'seller' && isset($product->seller->shop->vacation_end_date)) ? date('Y-m-d', strtotime($product->seller->shop->vacation_end_date)) : null;
             $sellerTemporaryClose = ($product['added_by'] == 'seller' && isset($product->seller->shop->temporary_close)) ? $product->seller->shop->temporary_close : false;
@@ -295,50 +321,65 @@ class ProductDetailsController extends Controller
             $productReviews = $this->reviewRepo->getListWhere(
                 orderBy: ['id' => 'desc'],
                 filters: ['product_id' => $product['id']],
+                relations: ['reply'],
                 dataLimit: 2, offset: 1
             );
             $decimalPointSettings = getWebConfig('decimal_point_settings');
             $moreProductFromSeller = $this->productRepo->getWebListWithScope(
                 orderBy: ['id' => 'desc'],
                 scope: 'active',
-                filters: ['added_by' => $product['added_by'] == 'admin' ? 'in_house' : $product['added_by'], 'seller_id' => $product['user_id']],
+                filters: ['added_by' => $product['added_by'] == 'admin' ? 'in_house' : $product['added_by'], 'seller_id' => $product['user_id'], 'customer_id' => Auth::guard('customer')->user()->id ?? 0],
                 whereNotIn: ['id' => [$product['id']]],
+                relations: ['wishList' => 'wishList'],
                 dataLimit: 5,
                 offset: 1
             );
-
             if ($product['added_by'] == 'seller') {
                 $productsForReview = $this->productRepo->getWebListWithScope(
                     scope: 'active',
                     filters: ['added_by' => $product['added_by'], 'seller_id' => $product['user_id']],
                     withCount: ['reviews' => 'reviews']
                 );
+                $productsCount = $this->productRepo->getWebListWithScope(
+                    scope: 'active',
+                    filters: ['added_by' => $product['added_by'], 'seller_id' => $product['user_id']],
+                    dataLimit: 'all'
+                )->count();
             } else {
                 $productsForReview = $this->productRepo->getWebListWithScope(
                     scope: 'active',
                     filters: ['added_by' => 'in_house', 'seller_id' => $product['user_id']],
                     withCount: ['reviews' => 'reviews']
                 );
+                $productsCount = $this->productRepo->getWebListWithScope(
+                    scope: 'active',
+                    filters: ['added_by' => 'in_house', 'seller_id' => $product['user_id']],
+                    dataLimit: 'all'
+                )->count();
             }
-            $productsCount = $productsForReview->count();
             $totalReviews = 0;
             foreach ($productsForReview as $item) {
                 $totalReviews += $item->reviews_count;
             }
 
-            $productIds = $this->productRepo->getProductIds(filters: ['added_by' => $product['added_by'], 'user_id' => $product['user_id']]);
-            $ratingCount = $this->reviewRepo->getCount(whereInFilters: ['product_id' => $productIds]);
-            $avgRating = $this->reviewRepo->getListWhereIn(
-                whereInFilters: ['product_id' => $productIds->toArray()],
-                dataLimit: 'all');
-            $avgRating = $ratingCount != 0 ? $avgRating->avg('rating') : 0;
-            $ratingPercentage = round(($avgRating * 100) / 5);
+            $productIds = Product::active()->where(['added_by' => $product['added_by']])
+                ->where('user_id', $product['user_id'])->pluck('id')->toArray();
+            $vendorReviewData = Review::active()->whereIn('product_id', $productIds);
+            $ratingCount = $vendorReviewData->count();
+            $avgRating = $vendorReviewData->avg('rating');
+
+            $vendorRattingStatusPositive = 0;
+            foreach ($vendorReviewData->pluck('rating') as $singleRating) {
+                ($singleRating >= 4 ? ($vendorRattingStatusPositive++) : '');
+            }
+
+            $positiveReview = $ratingCount != 0 ? ($vendorRattingStatusPositive * 100) / $ratingCount : 0;
 
             $sellerList = $this->sellerRepo->getListWithScope(
                 scope: 'active',
                 filters: ['category_id' => $product['category_id']],
-                relations: ['shop'=>'shop', 'product.reviews'=>'product.reviews'],
-                withCount: ['product'=>'product'],
+                relations: ['shop' => 'shop', 'product.reviews' => 'product.reviews'],
+                withCount: ['product' => 'product'],
                 dataLimit: 'all',
             );
             $sellerList?->map(function ($seller) {
@@ -367,11 +408,11 @@ class ProductDetailsController extends Controller
             $productsThisStoreTopRated = $this->productRepo->getWebListWithScope(
                 orderBy: ['reviews_count' => 'DESC'],
                 scope: 'active',
-                filters: ['added_by' => $product['added_by'], 'seller_id' => $product['user_id']],
-                whereHas: ['reviews'=>'reviews'],
-                relations: ['category', 'rating', 'reviews','wishList','compare_list'],
+                filters: ['added_by' => $product['added_by'] == 'admin' ? 'in_house' : $product['added_by'], 'seller_id' => $product['user_id'], 'customer_id' => Auth::guard('customer')->user()->id ?? 0],
+                whereHas: ['reviews' => 'reviews'],
+                relations: ['category' => 'category', 'rating' => 'rating', 'reviews' => 'reviews', 'wishList' => 'wishList', 'compareList' => 'compareList'],
                 withCount: ['reviews' => 'reviews'],
-                withSum: [['relation'=>'orderDetails', 'column'=>'qty', 'whereColumn'=>'delivery_status', 'whereValue'=>'delivered']],
+                withSum: [['relation' => 'orderDetails', 'column' => 'qty', 'whereColumn' => 'delivery_status', 'whereValue' => 'delivered']],
                 dataLimit: 12,
                 offset: 1
             );
@@ -380,7 +421,8 @@ class ProductDetailsController extends Controller
                 orderBy: ['reviews_count' => 'DESC'],
                 scope: 'active',
                 filters: ['category_id' => $product['category_id'], 'customer_id' => Auth::guard('customer')->user()->id ?? 0],
-                relations: ['wishList', 'compareList'],
+                relations: ['wishList' => 'wishList', 'compareList' => 'compareList'],
+                withCount: ['reviews' => 'reviews'],
                 dataLimit: 12,
                 offset: 1
             );
@@ -389,16 +431,19 @@ class ProductDetailsController extends Controller
                 orderBy: ['id' => 'DESC'],
                 scope: 'active',
                 filters: ['category_id' => $product['category_id'], 'customer_id' => Auth::guard('customer')->user()->id ?? 0],
-                relations: ['wishList', 'compareList'],
+                whereNotIn: ['id' => [$product['id']]],
+                relations: ['wishList' => 'wishList', 'compareList' => 'compareList'],
                 dataLimit: 12,
                 offset: 1
             );
 
+            $previewFileInfo = getFileInfoFromURL(url: $product?->preview_file_full_url['path']);
+
             return view(VIEW_FILE_NAMES['products_details'], compact('product', 'wishlistStatus', 'countWishlist',
                 'relatedProducts', 'currentDate', 'sellerVacationStartDate', 'sellerVacationEndDate', 'rattingStatus', 'productsLatest',
-                'sellerTemporaryClose', 'inHouseVacationStartDate', 'inHouseVacationEndDate', 'inHouseVacationStatus', 'inHouseTemporaryClose',
+                'sellerTemporaryClose', 'inHouseVacationStartDate', 'inHouseVacationEndDate', 'inHouseVacationStatus', 'inHouseTemporaryClose', 'positiveReview',
                 'overallRating', 'decimalPointSettings', 'moreProductFromSeller', 'productsForReview', 'productsCount', 'totalReviews', 'rating', 'productReviews',
-                'avgRating', 'ratingPercentage', 'topRatedShops', 'newSellers', 'deliveryInfo', 'productsTopRated', 'productsThisStoreTopRated'));
+                'avgRating', 'topRatedShops', 'newSellers', 'deliveryInfo', 'productsTopRated', 'productsThisStoreTopRated', 'previewFileInfo', 'productAuthorsInfo', 'productPublishingHouseInfo'));
         }
 
         Toastr::error(translate('not_found'));
@@ -407,9 +452,9 @@ class ProductDetailsController extends Controller
 
     public function theme_all_purpose($slug): View|RedirectResponse
     {
-        $product = Product::active()->with(['reviews', 'seller.shop'])->where('slug', $slug)->first();
-        if ($product != null) {
+        $product = Product::active()->with(['seoInfo', 'digitalVariation', 'reviews', 'seller.shop'])->withCount('reviews')->where('slug', $slug)->first();
 
+        if ($product != null) {
             $tags = ProductTag::where('product_id', $product->id)->pluck('tag_id');
             Tag::whereIn('id', $tags)->increment('visit_count');
 
@@ -418,7 +463,7 @@ class ProductDetailsController extends Controller
             $countWishlist = Wishlist::where('product_id', $product->id)->count();
             $wishlist_status = Wishlist::where(['product_id' => $product->id, 'customer_id' => auth('customer')->id()])->count();
 
-            $relatedProducts = Product::with(['reviews', 'flashDealProducts.flashDeal'])->active()->where('category_ids', $product->category_ids)->where('id', '!=', $product->id)->limit(12)->get();
+            $relatedProducts = Product::active()->with(['reviews', 'flashDealProducts.flashDeal'])->withCount('reviews')->where('category_ids', $product->category_ids)->where('id', '!=', $product->id)->limit(12)->get();
             $relatedProducts?->map(function ($product) use ($current_date) {
                 $flash_deal_status = 0;
                 $flash_deal_end_date = 0;
@@ -440,8 +485,8 @@ class ProductDetailsController extends Controller
             $seller_vacation_end_date = ($product->added_by == 'seller' && isset($product->seller->shop->vacation_end_date)) ? date('Y-m-d', strtotime($product->seller->shop->vacation_end_date)) : null;
             $seller_temporary_close = ($product->added_by == 'seller' && isset($product->seller->shop->temporary_close)) ? $product->seller->shop->temporary_close : false;
 
-            $temporary_close = Helpers::get_business_settings('temporary_close');
-            $inhouse_vacation = Helpers::get_business_settings('vacation_add');
+            $temporary_close = getWebConfig(name: 'temporary_close');
+            $inhouse_vacation = getWebConfig(name: 'vacation_add');
             $inhouse_vacation_start_date = $product->added_by == 'admin' ? $inhouse_vacation['vacation_start_date'] : null;
             $inhouse_vacation_end_date = $product->added_by == 'admin' ? $inhouse_vacation['vacation_end_date'] : null;
             $inHouseVacationStatus = $product->added_by == 'admin' ? $inhouse_vacation['status'] : false;
@@ -463,8 +508,8 @@ class ProductDetailsController extends Controller
 
             $rating = getRating($product->reviews);
             $reviews_of_product = Review::where('product_id', $product->id)->latest()->paginate(2);
-            $decimal_point_settings = \App\Utils\Helpers::get_business_settings('decimal_point_settings');
-            $more_product_from_seller = Product::active()->where('added_by', $product->added_by)->where('id', '!=', $product->id)->where('user_id', $product->user_id)->latest()->take(5)->get();
+            $decimal_point_settings = getWebConfig(name: 'decimal_point_settings');
+            $more_product_from_seller = Product::active()->withCount('reviews')->where('added_by', $product->added_by)->where('id', '!=', $product->id)->where('user_id', $product->user_id)->latest()->take(5)->get();
             $more_product_from_seller_count = Product::active()->where('added_by', $product->added_by)->where('id', '!=', $product->id)->where('user_id', $product->user_id)->count();
 
             if ($product->added_by == 'seller') {

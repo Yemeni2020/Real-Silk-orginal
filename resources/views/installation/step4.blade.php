@@ -22,7 +22,7 @@
             <a href="#" class="d-flex align-items-center gap-1">
                 <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip"
                       data-bs-title="Click on the section to automatically import database">
-                    <img src="{{ asset('public/assets/installation/assets/img/svg-icons/info.svg') }}" alt=""
+                    <img src="{{ dynamicAsset(path: 'public/assets/installation/assets/img/svg-icons/info.svg') }}" alt=""
                          class="svg">
                 </span>
             </a>

@@ -6,7 +6,7 @@
     <div class="content container-fluid ">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img width="20" src="{{asset('/public/assets/back-end/img/order_report.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/order_report.png')}}" alt="">
                 {{ translate('transaction_report')}}
             </h2>
         </div>
@@ -50,7 +50,7 @@
                                     data-action="{{ url()->current() }}">
                                 {{translate('filter')}}
                             </button>
-                            <div>
+                            <div class="dropdown">
                                 <button type="button" class="btn btn-outline--primary text-nowrap btn-block"
                                         data-toggle="dropdown">
                                     <i class="tio-download-to"></i>
@@ -60,8 +60,8 @@
                                 <ul class="dropdown-menu dropdown-menu-right">
                                     <li>
                                         <a class="dropdown-item"
-                                           href="{{ route('admin.report.transaction.refund-transaction-export', ['payment_method'=>$paymentMethod, 'search'=>$searchValue]) }}">
-                                            <img width="14" src="{{asset('/public/assets/back-end/img/excel.png')}}"
+                                           href="{{ route('admin.report.transaction.refund-transaction-export', ['payment_method'=>$paymentMethod, 'searchValue'=>$searchValue]) }}">
+                                            <img width="14" src="{{dynamicAsset(path: 'public/assets/back-end/img/excel.png')}}"
                                                  alt="">
                                             {{translate('excel')}}
                                         </a>
@@ -98,10 +98,10 @@
                             </td>
                             <td>
                                 @if($refund_transaction->orderDetails->product)
-                                    <a href="{{route('admin.products.view',[$refund_transaction->orderDetails->product->id])}}"
+                                    <a href="{{route('admin.products.view',['addedBy'=>($refund_transaction->orderDetails->product->added_by =='seller'?'vendor' : 'in-house'),'id'=>$refund_transaction->orderDetails->product->id])}}"
                                        class="media align-items-center gap-2">
                                         <img
-                                            src="{{ getValidImage(path:productImagePath(type: 'thumbnail').'/'.$refund_transaction->orderDetails->product->thumbnail,type: 'backend-product')}}"
+                                            src="{{ getStorageImages(path: $refund_transaction->orderDetails->product->thumbnail_full_url,type: 'backend-product')}}"
                                             class="avatar border" alt="">
                                         <span class="media-body title-color hover-c1">
                                             {{ isset($refund_transaction->orderDetails->product->name) ? Str::limit($refund_transaction->orderDetails->product->name, 20) : '' }}
@@ -155,11 +155,7 @@
                     </tbody>
                 </table>
                 @if(count($refundTransactions)==0)
-                    <div class="text-center p-4">
-                        <img class="mb-3 w-160" src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}"
-                             alt="Image Description">
-                        <p class="mb-0">{{ translate('no_data_to_show')}}</p>
-                    </div>
+                    @include('layouts.back-end._empty-state',['text'=>'no_data_found'],['image'=>'default'])
                 @endif
             </div>
 

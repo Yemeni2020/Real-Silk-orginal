@@ -7,7 +7,7 @@ use App\Contracts\Repositories\DeliveryCountryCodeRepositoryInterface;
 use App\Contracts\Repositories\DeliveryZipCodeRepositoryInterface;
 use App\Enums\ViewPaths\Admin\DeliveryRestriction;
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\Admin\DeliveryCoutryCodeAddRequest;
+use App\Http\Requests\Admin\DeliveryCountryCodeAddRequest;
 use App\Http\Requests\Admin\DeliveryZipCodeAddRequest;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Contracts\View\View;
@@ -48,7 +48,7 @@ class DeliveryRestrictionController extends BaseController
         return view(DeliveryRestriction::VIEW[VIEW], compact('countries', 'storedCountries', 'storedCountryCode', 'storedZip', 'countryRestrictionStatus', 'zipCodeAreaRestrictionStatus'));
     }
 
-    public function add(DeliveryCoutryCodeAddRequest $request): RedirectResponse
+    public function add(DeliveryCountryCodeAddRequest $request): RedirectResponse
     {
         foreach ($request->input('country_code') as $code) {
             $this->deliveryCountryCodeRepo->add(data: ['country_code' => $code, 'created_at' => now()]);
@@ -108,6 +108,7 @@ class DeliveryRestrictionController extends BaseController
                 'status' => true,
             ]);
         }
+        clearWebConfigCacheKeys();
         return back();
     }
 

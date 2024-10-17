@@ -2,14 +2,14 @@
 @section('title', translate('order_List'))
 
 @push('css_or_js')
-    <link href="{{asset('public/assets/back-end/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+    <link href="{{dynamicAsset(path: 'public/assets/back-end/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
 @endpush
 
 @section('content')
     <div class="content container-fluid">
         <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
             <h2 class="h1 mb-0">
-                <img src="{{asset('/public/assets/back-end/img/all-orders.png')}}" class="mb-1 mr-1" alt="">
+                <img src="{{dynamicAsset(path: 'assets/back-end/img/all-orders.png')}}" class="mb-1 mr-1" alt="">
                 <span class="page-header-title">
                     @if($status =='processing')
                         {{translate('packaging')}}
@@ -155,7 +155,7 @@
                                     <li>
                                         <a class="dropdown-item"
                                            href="{{ route('vendor.orders.export-excel', ['delivery_man_id' => request('delivery_man_id'), 'status' => $status, 'from' => $from, 'to' => $to, 'filter' => $filter, 'searchValue' => $searchValue,'seller_id'=>$vendorId,'customer_id'=>$customerId, 'date_type'=>$dateType]) }}">
-                                            <img width="14" src="{{asset('/public/assets/back-end/img/excel.png')}}" alt="">
+                                            <img width="14" src="{{dynamicAsset(path: 'public/assets/back-end/img/excel.png')}}" alt="">
                                             {{translate('excel')}}
                                         </a>
                                     </li>
@@ -174,7 +174,11 @@
                             <th class="text-capitalize">{{translate('order_Date')}}</th>
                             <th class="text-capitalize">{{translate('customer_info')}}</th>
                             <th class="text-capitalize">{{translate('total_amount')}}</th>
-                            <th class="text-capitalize">{{translate('order_Status')}} </th>
+                            @if($status == 'all')
+                                <th class="text-capitalize">{{translate('order_Status')}} </th>
+                            @else
+                                <th class="text-capitalize">{{translate('payment_method')}} </th>
+                            @endif
                             <th class="text-center">{{translate('action')}}</th>
                         </tr>
                         </thead>
@@ -195,29 +199,27 @@
                                 <td>
                                     @if($order->is_guest)
                                         <strong class="title-name">{{translate('guest_customer')}}</strong>
+                                    @elseif($order->customer_id == 0)
+                                        <strong class="title-name">{{translate('walking_customer')}}</strong>
                                     @else
-                                        @if($order->customer_id == 0)
-                                            <strong class="title-name">{{translate('walking_customer')}}</strong>
+                                        @if($order->customer)
+                                            <span class="text-body text-capitalize" >
+                                                <strong class="title-name">{{$order->customer['f_name'].' '.$order->customer['l_name']}}</strong>
+                                            </span>
+                                            @if($order->customer['phone'])
+                                                <a class="d-block title-color" href="tel:{{ $order->customer['phone'] }}">{{ $order->customer['phone'] }}</a>
+                                            @else
+                                                <a class="d-block title-color" href="mailto:{{ $order->customer['email'] }}">{{ $order->customer['email'] }}</a>
+                                            @endif
                                         @else
-                                            <div>{{$order->customer ? $order->customer['f_name'].' '.$order->customer['l_name'] : 'Customer Data not found'}}</div>
-                                            <a class="d-block title-color"
-                                               href="tel:{{ $order->customer ? $order->customer->phone : '' }}">{{ $order->customer ? $order->customer->phone : '' }}</a>
+                                            <label class="badge badge-danger fz-12">{{translate('invalid_customer_data')}}</label>
                                         @endif
                                     @endif
                                 </td>
                                 <td>
                                     <div>
-                                        @php($discount = 0)
-                                        @if($order->coupon_discount_bearer == 'inhouse' && !in_array($order['coupon_code'], [0, NULL]))
-                                            @php($discount = $order->discount_amount)
-                                        @endif
-
-                                        @php($free_shipping = 0)
-                                        @if($order->is_shipping_free)
-                                            @php($free_shipping = $order->shipping_cost)
-                                        @endif
-
-                                        {{setCurrencySymbol(amount: usdToDefaultCurrency(amount: $order->order_amount+$discount+$free_shipping), currencyCode: getCurrencyCode())}}
+                                        @php($orderTotalPriceSummary = \App\Utils\OrderManager::getOrderTotalPriceSummary(order: $order))
+                                        {{ setCurrencySymbol(amount: usdToDefaultCurrency(amount:  $orderTotalPriceSummary['totalAmount']), currencyCode: getCurrencyCode()) }}
                                     </div>
 
                                     @if($order->payment_status=='paid')
@@ -226,28 +228,34 @@
                                         <span class="badge badge-soft-danger">{{translate('unpaid')}}</span>
                                     @endif
                                 </td>
-                                <td class="text-capitalize ">
-                                    @if($order->order_status=='pending')
-                                        <label
-                                            class="badge badge-soft-primary">{{$order['order_status']}}</label>
-                                    @elseif($order->order_status=='processing' || $order->order_status=='out_for_delivery')
-                                        <label
-                                            class="badge badge-soft-warning">{{str_replace('_',' ',$order['order_status'] == 'processing' ? 'packaging' : $order['order_status'])}}</label>
-                                    @elseif($order->order_status=='delivered' || $order->order_status=='confirmed')
-                                        <label
-                                            class="badge badge-soft-success">{{$order['order_status']}}</label>
-                                    @elseif($order->order_status=='returned')
-                                        <label
-                                            class="badge badge-soft-danger">{{$order['order_status']}}</label>
-                                    @elseif($order['order_status']=='failed')
-                                        <span class="badge badge-danger fz-12">
-                                                {{translate('failed_to_deliver')}}
-                                        </span>
-                                    @else
-                                        <label
-                                            class="badge badge-soft-danger">{{$order['order_status']}}</label>
-                                    @endif
-                                </td>
+                                @if($status == 'all')
+                                    <td class="text-capitalize">
+                                        @if($order->order_status=='pending')
+                                            <label
+                                                class="badge badge-soft-primary">{{$order['order_status']}}</label>
+                                        @elseif($order->order_status=='processing' || $order->order_status=='out_for_delivery')
+                                            <label
+                                                class="badge badge-soft-warning">{{str_replace('_',' ',$order['order_status'] == 'processing' ? 'packaging' : $order['order_status'])}}</label>
+                                        @elseif($order->order_status=='delivered' || $order->order_status=='confirmed')
+                                            <label
+                                                class="badge badge-soft-success">{{$order['order_status']}}</label>
+                                        @elseif($order->order_status=='returned')
+                                            <label
+                                                class="badge badge-soft-danger">{{$order['order_status']}}</label>
+                                        @elseif($order['order_status']=='failed')
+                                            <span class="badge badge-danger fz-12">
+                                                    {{translate('failed_to_deliver')}}
+                                            </span>
+                                        @else
+                                            <label
+                                                class="badge badge-soft-danger">{{$order['order_status']}}</label>
+                                        @endif
+                                    </td>
+                                @else
+                                    <td class="text-capitalize">
+                                        {{str_replace('_',' ',$order['payment_method'])}}
+                                    </td>
+                                @endif
                                 <td>
                                     <div class="d-flex justify-content-center gap-2">
                                         <a class="btn btn-outline--primary btn-sm square-btn"
@@ -276,11 +284,7 @@
                 </div>
 
                 @if(count($orders)==0)
-                    <div class="text-center p-4">
-                        <img class="mb-3 w-160" src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}"
-                             alt="{{translate('image_description')}}">
-                        <p class="mb-0">{{translate('no_data_to_show')}}</p>
-                    </div>
+                    @include('layouts.back-end._empty-state',['text'=>'no_order_found'],['image'=>'default'])
                 @endif
             </div>
         </div>
@@ -291,7 +295,7 @@
 @endsection
 
 @push('script')
-    <script src="{{asset('public/assets/back-end/vendor/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{asset('public/assets/back-end/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
-    <script src="{{asset('public/assets/back-end/js/vendor/order.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/vendor/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/vendor/order.js')}}"></script>
 @endpush

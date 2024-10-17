@@ -59,28 +59,35 @@ class OrderTransactionRepository implements OrderTransactionRepositoryInterface
             ->when(!empty($orderBy), function ($query) use ($orderBy) {
                 $query->orderBy(array_key_first($orderBy), array_values($orderBy)[0]);
             });
-//        dd($searchValue);
         $filters += ['searchValue' => $searchValue];
         return $dataLimit == 'all' ? $query->get() : $query->paginate($dataLimit)->appends($filters);
     }
 
-    public function getListWhereBetween(array $filters = [], string $selectColumn = null, string $whereBetween = null, array $whereBetweenFilters = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
+    public function getListWhereBetween(array $filters = [], string $selectColumn = null, string $whereBetween = null, string $groupBy = null, array $whereBetweenFilters = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
     {
         return $this->orderTransaction->with($relations)->where($filters)
             ->when($selectColumn == 'seller_amount', function ($query) {
                 $query->select(
                     DB::raw('IFNULL(sum(seller_amount),0) as sums'),
-                    DB::raw('YEAR(created_at) year, MONTH(created_at) month,DAY(created_at) day')
+                    DB::raw('YEAR(created_at) year, MONTH(created_at) month,DAY(created_at) day,DAYNAME(created_at) day_of_week')
                 );
             })
             ->when($selectColumn == 'admin_commission', function ($query) {
                 $query->select(
                     DB::raw('IFNULL(sum(admin_commission),0) as sums'),
-                    DB::raw('YEAR(created_at) year, MONTH(created_at) month,DAY(created_at) day')
+                    DB::raw('YEAR(created_at) year, MONTH(created_at) month,DAY(created_at) day,DAYNAME(created_at) day_of_week')
                 );
             })
             ->whereBetween($whereBetween, $whereBetweenFilters)
-            ->groupby('year', 'month')
+            ->when($groupBy == 'month', function ($query) use ($filters) {
+                return $query->groupBy('year', 'month');
+            })
+            ->when($groupBy == 'day', function ($query) use ($filters) {
+                return $query->groupBy('month', 'day');
+            })
+            ->when($groupBy == 'day_of_week', function ($query) use ($filters) {
+                return $query->groupBy('day_of_week');
+            })
             ->get();
     }
 

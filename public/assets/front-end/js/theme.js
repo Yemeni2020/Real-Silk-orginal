@@ -133,7 +133,7 @@ function _defineProperty(e, t, r) {
                               : t.classList.remove("navbar-stuck");
                       })
                     : window.addEventListener("scroll", function (e) {
-                          500 < e.currentTarget.pageYOffset
+                          200 < e.currentTarget.pageYOffset
                               ? ((document.body.style.paddingTop = r + "px"),
                                 t.classList.add("navbar-stuck"))
                               : ((document.body.style.paddingTop = ""),

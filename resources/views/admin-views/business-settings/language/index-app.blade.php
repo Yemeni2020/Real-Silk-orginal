@@ -3,8 +3,8 @@
 @section('title', translate('language'))
 
 @push('css_or_js')
-    <link href="{{ asset('public/assets/select2/css/select2.min.css')}}" rel="stylesheet">
-    <link href="{{ asset('public/assets/back-end/css/custom.css')}}" rel="stylesheet">
+    <link href="{{ dynamicAsset(path: 'public/assets/select2/css/select2.min.css')}}" rel="stylesheet">
+    <link href="{{ dynamicAsset(path: 'public/assets/back-end/css/custom.css')}}" rel="stylesheet">
 @endpush
 
 @section('content')
@@ -12,7 +12,7 @@
         <!-- Page Heading -->
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">{{translate('dashboard')}}</a>
+                <li class="breadcrumb-item"><a href="{{route('admin.dashboard.index')}}">{{translate('dashboard')}}</a>
                 </li>
                 <li class="breadcrumb-item" aria-current="page">{{translate('language_setting_for_app')}}</li>
             </ol>
@@ -35,9 +35,7 @@
                     <div class="card-body">
                         <form action="{{route('admin.business-settings.web-config.update-language')}}" method="post">
                             @csrf
-                            @php($language=\App\Models\BusinessSetting::where('type','pnc_language')->first())
-                            @php($language = json_decode($language->value,true) ?? [])
-
+                            @php($language= getWebConfig(name: 'pnc_language'))
                             <div class="form-group">
                                 <select name="language[]" id="language" onchange="$('#alert_box').show();"
                                         data-maximum-selection-length="3"
@@ -46,7 +44,7 @@
                                     @foreach(\Illuminate\Support\Facades\File::files(base_path('public/assets/front-end/img/flags')) as $path)
                                         <option value="{{ pathinfo($path)['filename'] }}"
                                                 {{in_array(pathinfo($path)['filename'],$language)?'selected':''}}
-                                                title="{{ asset('public/assets/front-end/img/flags/'.pathinfo($path)['filename'].'.png') }}">
+                                                title="{{ dynamicAsset(path: 'public/assets/front-end/img/flags/'.pathinfo($path)['filename'].'.png') }}">
                                             {{ strtoupper(pathinfo($path)['filename']) }}
                                         </option>
                                     @endforeach

@@ -10,11 +10,11 @@
                         <div class="media gap-3 align-items-center mn-w200">
                             <div class="avatar border rounded size-3-437rem">
                                 <img class="img-fit dark-support rounded aspect-1" alt=""
-                                    src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$product['thumbnail'], type: 'product') }}">
+                                    src="{{ getStorageImages(path: $product->thumbnail_full_url, type: 'product') }}">
                             </div>
                             <div class="media-body">
                                 <a href="{{route('product',$product['slug'])}}">
-                                    <h6 class="text-truncate text-capitalize width--20ch">{{$product['name']}}</h6>
+                                    <h6 class="text-truncate text-capitalize width--20ch link-hover-base">{{$product['name']}}</h6>
                                 </a>
                             </div>
                             @if($brand_setting)
@@ -26,7 +26,9 @@
                     </td>
                     <td>
                         <div class="product__price d-flex flex-wrap align-items-end gap-2 mb-4 ">
-                            <div class="text-primary">{!! Helpers::get_price_range_with_discount($product) !!}</div>
+                            <div class="text-primary d-flex gap-2 align-items-center">
+                                {!! getPriceRangeWithDiscount(product: $product) !!}
+                            </div>
                         </div>
                     </td>
                     <td>
@@ -51,14 +53,18 @@
                 @endif
             @endforeach
         @endif
-        @if($wishlists->count()==0)
-            <tr>
-                <td><h5 class="text-center">{{translate('not_found_anything')}}</h5></td>
-            </tr>
-        @endif
         </tbody>
     </table>
 </div>
+
+@if($wishlists->count()==0)
+    <div class="d-flex flex-column justify-content-center align-items-center gap-2 py-3 w-100">
+        <img width="80" class="mb-3" src="{{ theme_asset('assets/img/empty-state/empty-wishlist.svg') }}" alt="">
+        <h5 class="text-center text-muted">
+            {{ translate('You_have_not_added_product_to_wishlist_yet') }}!
+        </h5>
+    </div>
+@endif
 
 <div class="d-flex flex-column gap-2 d-md-none">
     @if($wishlists->count()>0)
@@ -68,17 +74,19 @@
                 <div class="media gap-3 bg-light p-3 rounded">
                     <div class="avatar border rounded size-3-437rem">
                         <img
-                            src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$product['thumbnail'], type: 'product') }}"
+                            src="{{ getStorageImages(path:$product->thumbnail_full_url, type: 'product') }}"
                             class="img-fit dark-support rounded" alt="">
                     </div>
                     <div class="media-body d-flex flex-column gap-1">
                         <a href="{{route('product',$product['slug'])}}">
-                            <h6 class="text-truncate text-capitalize width--20ch">{{$product['name']}}</h6>
+                            <h6 class="text-truncate text-capitalize width--20ch link-hover-base">{{$product['name']}}</h6>
                         </a>
                         <div>
                             {{ translate('price') }} :
                             <div class="product__price d-flex flex-wrap align-items-end gap-2 mb-4 ">
-                                <div class="text-primary">{!! Helpers::get_price_range_with_discount($product) !!}</div>
+                                <div class="text-primary d-flex gap-2 align-items-center">
+                                    {!! getPriceRangeWithDiscount(product: $product) !!}
+                                </div>
                             </div>
                         </div>
 
@@ -105,6 +113,6 @@
     @endif
 </div>
 
-<div class="card-footer border-0">
-    {{$wishlists->links()}}
+<div class="border-0">
+    {{ $wishlists->links() }}
 </div>

@@ -8,7 +8,7 @@
 
         <div class="pb-2 mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{ asset('public/assets/back-end/img/business-setup.png') }}" alt="">
+                <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/business-setup.png') }}" alt="">
                 {{ translate('All_Pages_Banner') }}
             </h2>
         </div>
@@ -44,9 +44,10 @@
                                             <option value="banner_faq_page">{{ translate('FAQ') }}</option>
                                             <option value="banner_terms_conditions">{{ translate('Terms_and_Conditions') }}</option>
                                             <option value="banner_cancellation_policy">{{ translate('Cancellation_Policy') }}</option>
+                                            <option value="banner_shipping_policy">{{ translate('Shipping_Policy') }}</option>
                                         </select>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group mb-0">
                                         <label for="name" class="title-color text-capitalize">
                                             {{ translate('Image') }}
                                         </label>
@@ -63,9 +64,9 @@
                                 </div>
                                 <div class="col-md-6 d-flex flex-column justify-content-end">
                                     <div>
-                                        <div class="mb-30 mx-auto">
-                                            <img class="ratio-6:1" id="banner-image-view"
-                                                src="{{ asset('public/assets/front-end/img/placeholder.png') }}"
+                                        <div class="mx-auto">
+                                            <img class="ratio-5-1 rounded" id="banner-image-view"
+                                                src="{{ dynamicAsset(path: 'public/assets/front-end/img/placeholder.png') }}"
                                                 alt="">
                                         </div>
                                     </div>
@@ -148,12 +149,12 @@
                                 <tr id="data-{{ $banner->id}}">
                                     <td class="pl-xl-5">{{ $pageBanners->firstItem()+$key}}</td>
                                     <td>
-                                        <img class="ratio-4:1" width="80" alt=""
-                                             src="{{ getValidImage(path:'storage/app/public/banner/'.json_decode($banner['value'])->image,type: 'backend-banner')}}">
+                                        <img class="ratio-4-2 rounded" width="80" alt=""
+                                             src="{{ getStorageImages(path:imagePathProcessing(imageData: json_decode($banner['value'])->image ,path: 'banner'),type: 'backend-banner')}}">
                                     </td>
                                     <td>{{ translate(ucwords(str_replace('_',' ',$banner->type))) }}</td>
                                     <td>
-                                        <form action="{{route('admin.business-settings.all-pages-banner-status') }}" method="post" id="banner-status{{ $banner['id']}}-form">
+                                        <form action="{{route('admin.business-settings.all-pages-banner-status') }}" method="post" id="banner-status{{ $banner['id']}}-form" data-from="all-page-banner">
                                             @csrf
                                             <input type="hidden" name="id" value="{{ $banner['id']}}">
                                             <label class="switcher">
@@ -198,12 +199,7 @@
                     </div>
 
                     @if(count($pageBanners)==0)
-                        <div class="text-center p-4">
-                            <img class="mb-3 w-160"
-                                 src="{{ asset('public/assets/back-end/svg/illustrations/sorry.svg') }}"
-                                 alt="">
-                            <p class="mb-0">{{ translate('No_data_to_show') }}</p>
-                        </div>
+                        @include('layouts.back-end._empty-state',['text'=>'no_data_found'],['image'=>'default'])
                     @endif
                 </div>
             </div>
@@ -215,5 +211,5 @@
 @endsection
 
 @push('script')
-    <script src="{{ asset('public/assets/back-end/js/banner.js') }}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/banner.js') }}"></script>
 @endpush

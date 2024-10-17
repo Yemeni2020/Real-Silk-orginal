@@ -6,7 +6,7 @@
     <div class="content container-fluid">
         <div class="mb-4 pb-2">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{asset('/public/assets/back-end/img/3rd-party.png')}}" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/3rd-party.png')}}" alt="">
                 {{translate('3rd_party')}}
             </h2>
         </div>
@@ -82,7 +82,7 @@
                                 <li>{{translate('select_reCAPTCHA_v2_as_ReCAPTCHA_Type')}}</li>
                                 <li>{{translate('select_sub_type').':'.translate('im_not_a_robot_checkbox')}}</li>
                                 <li>{{translate('add_Domain_(For_ex:_demo.6amtech.com)')}}</li>
-                                <li>{{translate('check_in_“Accept_the_reCAPTCHA_Terms_of_Service”')}}</li>
+                                <li>{{translate('check_in_Accept_the_reCAPTCHA_Terms_of_Service')}}</li>
                                 <li>{{translate('press_Submit')}}</li>
                                 <li>{{translate('copy_Site_Key_and_Secret_Key,_Paste_in_the_input_filed_below_and_Save').'.'}}</li>
                             </ol>
@@ -103,11 +103,11 @@
                     <button type="button" class="btn-close border-0" data-dismiss="modal" aria-label="Close"><i class="tio-clear"></i></button>
                 </div>
                 <div class="modal-body px-4 px-sm-5 pt-0">
-                    <div class="swiper mySwiper pb-3">
+                    <div class="swiper instruction-carousel pb-3">
                         <div class="swiper-wrapper">
                             <div class="swiper-slide">
                                 <div class="d-flex flex-column align-items-center gap-2">
-                                    <img width="80" class="mb-3" src="{{asset('/public/assets/back-end/img/smtp-server.png')}}" loading="lazy" alt="">
+                                    <img width="80" class="mb-3" src="{{dynamicAsset(path: 'public/assets/back-end/img/smtp-server.png')}}" loading="lazy" alt="">
                                     <h4 class="lh-md mb-3 text-capitalize">{{translate('find_SMTP_server_details')}}</h4>
                                     <ul class="d-flex flex-column px-4 gap-2 mb-4">
                                     <li>{{translate('contact_your_email_service_provider_or_IT_administrator_to_obtain_the_SMTP_server_details_such_as_hostname_port_username_and_password').'.'}}</li>

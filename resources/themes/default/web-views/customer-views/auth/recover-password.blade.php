@@ -3,7 +3,6 @@
 @section('title', translate('forgot_Password'))
 
 @section('content')
-    @php($verification_by = getWebConfig(name: 'forgot_password_verification'))
     <div class="container py-4 py-lg-5 my-4 rtl">
         <div class="row justify-content-center">
             <div class="col-lg-8 col-md-10 text-start">
@@ -14,52 +13,40 @@
                 <ol class="list-unstyled font-size-md p-0">
                     <li>
                         <span class="text-primary mr-2">{{ translate('1')}}.</span>
-                        {{ translate('fill_in_your_email_address_below.')}}
+                        {{ translate('use_your_registered_identity.')}}
+                        {{ '('.translate('Phone').'/'.translate('Email').')' }}
                     </li>
                     <li>
                         <span class="text-primary mr-2">{{ translate('2')}}.</span>
-                        {{ translate('we_will_email_you_a_temporary_code.')}}
+                        {{ translate('we_will_send_you_a_temporary_OTP_in_your_reference') }}.
                     </li>
                     <li>
                         <span class="text-primary mr-2">{{ translate('3')}}.</span>
-                        {{ translate('use_the_code_to_change_your_password_on_our_secure_website.')}}
+                        {{ translate('use_the_OTP_code_to_change_your_password_on_our_secure_website.')}}
                     </li>
                 </ol>
 
-                @if($verification_by == 'email')
-
-                    <div class="card py-2 mt-4">
-                        <form class="card-body needs-validation" action="{{route('customer.auth.forgot-password')}}"
-                              method="post">
-                            @csrf
-                            <div class="form-group">
-                                <label for="recover-email">{{ translate('enter_your_email_address')}}</label>
-                                <input class="form-control" type="email" name="identity" id="recover-email" required>
-                                <div class="invalid-feedback">
-                                    {{ translate('please_provide_valid_email_address.')}}
-                                </div>
+                <div class="card py-2 mt-4">
+                    <form class="card-body needs-validation" action="{{route('customer.auth.forgot-password')}}"
+                          method="post">
+                        @csrf
+                        <div class="form-group">
+                            <label for="recover-email">
+                                {{ translate('Phone').' / '.translate('Email') }}
+                            </label>
+                            <input class="form-control clean-phone-input-value" type="text" name="identity" required
+                                   placeholder="{{ translate('enter_your_phone_or_email') }}">
+                            <span class="fs-12 text-muted">* {{ translate('must_use_country_code_before_phone_number') }}</span>
+                            <div class="invalid-feedback">
+                                {{ translate('please_provide_valid_identity')}}
                             </div>
-                            <button class="btn btn--primary" type="submit">
-                                {{ translate('get_new_password')}}
-                            </button>
-                        </form>
-                    </div>
-                @else
-                    <div class="card py-2 mt-4">
-                        <form class="card-body needs-validation" action="{{route('customer.auth.forgot-password')}}"
-                              method="post">
-                            @csrf
-                            <div class="form-group">
-                                <label for="recover-email">{{ translate('enter_your_phone_number')}}</label>
-                                <input class="form-control" type="text" name="identity" required>
-                                <div class="invalid-feedback">
-                                    {{ translate('please_provide_valid_phone_number')}}
-                                </div>
-                            </div>
-                            <button class="btn btn--primary" type="submit">{{ translate('proceed')}}</button>
-                        </form>
-                    </div>
-                @endif
+                        </div>
+                        @if($web_config['firebase_otp_verification'] && $web_config['firebase_otp_verification']['status'])
+                            <div id="recaptcha-container-verify-token" class="my-2"></div>
+                        @endif
+                        <button class="btn btn--primary" type="submit">{{ translate('send_OTP')}}</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

@@ -55,15 +55,20 @@ class VendorRepository implements VendorRepositoryInterface
 
     public function getListWhere(array $orderBy=[], string $searchValue = null, array $filters = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null):  Collection|LengthAwarePaginator
     {
-        $query = $this->vendor->where($filters)->with($relations)
-            ->when($searchValue, function ($query) use($searchValue){
-                $query->orWhere('f_name', 'like', "%$searchValue%")
-                    ->orWhere('l_name', 'like', "%$searchValue%")
-                    ->orWhere('phone', 'like', "%$searchValue%")
-                    ->orWhere('email', 'like', "%$searchValue%")
-                    ->orWhereHas('shop', function ($query) use($searchValue) {
-                        $query->where('name', 'like', "%$searchValue%");
-                    });
+        $query = $this->vendor->with($relations)->where($filters)
+            ->when($searchValue, function ($query) use ($searchValue) {
+                $searchTerms = explode(' ', $searchValue);
+                $query->where(function ($query) use ($searchTerms) {
+                    foreach ($searchTerms as $term) {
+                        $query->orWhere('f_name', 'like', "%$term%")
+                            ->orWhere('l_name', 'like', "%$term%")
+                            ->orWhere('phone', 'like', "%$term%")
+                            ->orWhere('email', 'like', "%$term%")
+                            ->orWhereHas('shop', function ($query) use ($term) {
+                                $query->where('name', 'like', "%$term%");
+                            });
+                    }
+                });
             })
             ->when(!empty($relations) && in_array('product', $relations), function ($query) {
                 $query->withCount('product');
@@ -81,7 +86,7 @@ class VendorRepository implements VendorRepositoryInterface
 
     public function update(string $id, array $data): bool
     {
-        return $this->vendor->where(['id'=>$id])->update($data);
+        return $this->vendor->find($id)->update($data);
     }
 
     public function delete(array $params): bool

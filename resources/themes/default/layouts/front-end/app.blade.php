@@ -5,28 +5,38 @@
     <meta charset="utf-8">
     <title>@yield('title')</title>
     <meta name="_token" content="{{csrf_token()}}">
+    <meta name="robots" content="nofollow, noindex ">
+
+    <meta name="google-site-verification" content="{{getWebConfig('google_search_console_code')}}">
+    <meta name="msvalidate.01" content="{{getWebConfig('bing_webmaster_code')}}">
+    <meta name="baidu-site-verification" content="{{getWebConfig('baidu_webmaster_code')}}">
+    <meta name="yandex-verification" content="{{getWebConfig('yandex_webmaster_code')}}">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{asset('storage/app/public/company')}}/{{$web_config['fav_icon']->value}}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{asset('storage/app/public/company')}}/{{$web_config['fav_icon']->value}}">
-    <link rel="stylesheet" media="screen" href="{{ asset('public/assets/front-end/vendor/simplebar/dist/simplebar.min.css') }}">
-    <link rel="stylesheet" media="screen" href="{{ asset('public/assets/front-end/vendor/tiny-slider/dist/tiny-slider.css') }}">
-    <link rel="stylesheet" media="screen" href="{{ asset('public/assets/front-end/vendor/drift-zoom/dist/drift-basic.min.css') }}">
-    <link rel="stylesheet" media="screen" href="{{ asset('public/assets/front-end/vendor/lightgallery.js/dist/css/lightgallery.min.css') }}">
-    <link rel="stylesheet" media="screen" href="{{ asset('public/assets/front-end/css/theme.css') }}">
-    <link rel="stylesheet" media="screen" href="{{ asset('public/assets/front-end/css/slick.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/assets/front-end/css/font-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/assets/back-end/css/toastr.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('public/assets/front-end/css/master.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('public/assets/front-end/css/roboto-font.css')  }}">
-    <link rel="stylesheet" href="{{ asset('public/css/lightbox.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/assets/back-end/vendor/icon-set/style.css') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ $web_config['fav_icon']['path'] }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ $web_config['fav_icon']['path'] }}">
+    <link rel="stylesheet" media="screen" href="{{ theme_asset(path: 'public/assets/front-end/vendor/simplebar/dist/simplebar.min.css') }}">
+    <link rel="stylesheet" media="screen" href="{{ theme_asset(path: 'public/assets/front-end/vendor/tiny-slider/dist/tiny-slider.css') }}">
+    <link rel="stylesheet" media="screen" href="{{ theme_asset(path: 'public/assets/front-end/vendor/drift-zoom/dist/drift-basic.min.css') }}">
+    <link rel="stylesheet" media="screen" href="{{ theme_asset(path: 'public/assets/front-end/vendor/lightgallery.js/dist/css/lightgallery.min.css') }}">
+    <link rel="stylesheet" media="screen" href="{{ theme_asset(path: 'public/assets/front-end/css/theme.css') }}">
+    <link rel="stylesheet" media="screen" href="{{ theme_asset(path: 'public/assets/front-end/css/slick.css') }}">
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/back-end/css/toastr.css') }}"/>
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/master.css') }}"/>
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/roboto-font.css')  }}">
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/css/lightbox.css') }}">
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/back-end/vendor/icon-set/style.css') }}">
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/owl.carousel.min.css') }}">
 
     @stack('css_or_js')
 
-    <link rel="stylesheet" href="{{ asset('public/assets/front-end/css/home.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('public/assets/front-end/css/responsive1.css') }}"/>
+    @include(VIEW_FILE_NAMES['robots_meta_content_partials'])
 
-    <link rel="stylesheet" href="{{ asset('public/assets/front-end/css/style.css') }}">
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/home.css') }}"/>
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/responsive1.css') }}"/>
+
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/style.css') }}">
 
     <style>
         :root {
@@ -42,7 +52,7 @@
             --text-align-direction-alt: {{ Session::get('direction') === "rtl" ? 'left' : 'right'}};
         }
 
-        .dropdown-menu {
+        .dropdown-menu:not(.m-0) {
             margin-{{ Session::get('direction') === "rtl" ? 'right' : 'left' }}: -8px !important;
         }
 
@@ -53,16 +63,22 @@
         }
     </style>
 
-    <link rel="stylesheet" href="{{asset('public/assets/front-end/css/custom.css')}}">
+    <link rel="stylesheet" href="{{theme_asset(path: 'public/assets/front-end/css/custom.css')}}">
 
     @php($google_tag_manager_id = getWebConfig(name: 'google_tag_manager_id'))
     @if($google_tag_manager_id )
     <!-- Google Tag Manager -->
-        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','{{$google_tag_manager_id}}');</script>
+    <script>
+        try {
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','{{$google_tag_manager_id}}');
+        } catch (e) {
+            console.log(e)
+        }
+    </script>
     <!-- End Google Tag Manager -->
     @endif
 
@@ -101,8 +117,10 @@
 @include('layouts.front-end.partials._modals')
 
 @include('layouts.front-end.partials._quick-view-modal')
+@include('layouts.front-end.partials.modal._buy-now')
 
 @include('layouts.front-end.partials._header')
+@include('layouts.front-end.partials._alert-message')
 
 <span id="authentication-status" data-auth="{{ auth('customer')->check() ? 'true' : 'false' }}"></span>
 
@@ -111,7 +129,7 @@
         <div id="loading" class="d--none">
            <div class="text-center">
             <img width="200" alt=""
-                 src="{{ getValidImage(path: 'storage/app/public/company/'.getWebConfig(name: 'loader_gif'), type: 'source', source: asset('public/assets/front-end/img/loader.gif')) }}">
+                 src="{{ getStorageImages(path: getWebConfig(name: 'loader_gif'), type: 'source', source: theme_asset(path: 'public/assets/front-end/img/loader.gif')) }}">
             </div>
         </div>
     </div>
@@ -141,7 +159,7 @@
 <span id="message-sorry-the-minimum-order-quantity-not-match" data-text="{{ translate('sorry_the_minimum_order_quantity_does_not_match') }}"></span>
 <span id="message-cart" data-text="{{ translate('cart') }}"></span>
 
-<span id="route-messages-store" data-url="{{ route('messages_store') }}"></span>
+<span id="route-messages-store" data-url="{{ route('messages') }}"></span>
 <span id="route-address-update" data-url="{{ route('address-update') }}"></span>
 <span id="route-coupon-apply" data-url="{{ route('coupon.apply') }}"></span>
 <span id="route-cart-add" data-url="{{ route('cart.add') }}"></span>
@@ -161,7 +179,16 @@
 <span id="route-quick-view" data-url="{{ route('quick-view') }}"></span>
 <span id="route-checkout-details" data-url="{{ route('checkout-details') }}"></span>
 <span id="route-checkout-payment" data-url="{{ route('checkout-payment') }}"></span>
+<span id="route-set-shipping-id" data-url="{{ route('customer.set-shipping-method') }}"></span>
 <span id="route-order-note" data-url="{{ route('order_note') }}"></span>
+<span id="route-get-session-recaptcha-code"
+      data-route="{{ route('get-session-recaptcha-code') }}"
+      data-mode="{{ env('APP_MODE') }}"
+></span>
+<span id="password-error-message" data-max-character="{{translate('at_least_8_characters').'.'}}" data-uppercase-character="{{translate('at_least_one_uppercase_letter_').'(A...Z)'.'.'}}" data-lowercase-character="{{translate('at_least_one_uppercase_letter_').'(a...z)'.'.'}}"
+      data-number="{{translate('at_least_one_number').'(0...9)'.'.'}}" data-symbol="{{translate('at_least_one_symbol').'(!...%)'.'.'}}"></span>
+<span class="system-default-country-code" data-value="{{ getWebConfig(name: 'country_code') ?? 'us' }}"></span>
+<span id="system-session-direction" data-value="{{ session()->get('direction') ?? 'ltr' }}"></span>
 
 <span id="is-request-customer-auth-sign-up" data-value="{{ Request::is('customer/auth/sign-up*') ? 1:0 }}"></span>
 <span id="is-customer-auth-active" data-value="{{ auth('customer')->check() ? 1:0 }}"></span>
@@ -171,39 +198,43 @@
 @include('layouts.front-end.partials._footer')
 @include('layouts.front-end.partials.modal._dynamic-modals')
 
-<a class="btn-scroll-top btn--primary" href="#top" data-scroll>
-    <span class="btn-scroll-top-tooltip text-muted font-size-sm mr-2">{{ translate('top')}}</span>
-    <i class="btn-scroll-top-icon czi-arrow-up"></i>
-</a>
-<div class="__floating-btn">
-    @php($whatsapp = getWebConfig(name: 'whatsapp'))
-    @if(isset($whatsapp['status']) && $whatsapp['status'] == 1 )
-        <div class="wa-widget-send-button">
-            <a href="https://wa.me/{{ $whatsapp['phone'] }}?text=Hello%20there!" target="_blank">
-                <img src="{{asset('public/assets/front-end/img/whatsapp.svg')}}" class="wa-messenger-svg-whatsapp wh-svg-icon" alt="{{ translate('Chat_with_us_on_WhatsApp') }}">
-            </a>
-        </div>
-    @endif
+<div class="floating-btn-grp">
+    <div class="__floating-btn">
+        @php($whatsapp = getWebConfig(name: 'whatsapp'))
+        @if(isset($whatsapp['status']) && $whatsapp['status'] == 1 )
+            <div class="wa-widget-send-button">
+                <a href="https://wa.me/{{ $whatsapp['phone'] }}?text=Hello%20there!" target="_blank">
+                    <img src="{{theme_asset(path: 'public/assets/front-end/img/whatsapp.svg')}}" class="wa-messenger-svg-whatsapp wh-svg-icon" alt="{{ translate('Chat_with_us_on_WhatsApp') }}">
+                </a>
+            </div>
+        @endif
+    </div>
+    <a class="btn-scroll-top btn--primary" href="#top" data-scroll>
+        <i class="btn-scroll-top-icon czi-arrow-up"></i>
+    </a>
 </div>
 
-<script src="{{ asset('public/assets/front-end/vendor/jquery/dist/jquery-2.2.4.min.js') }}"></script>
-<script src="{{ asset('public/assets/front-end/vendor/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('public/assets/front-end/vendor/bs-custom-file-input/dist/bs-custom-file-input.min.js') }}"></script>
-<script src="{{ asset('public/assets/front-end/vendor/simplebar/dist/simplebar.min.js') }}"></script>
-<script src="{{ asset('public/assets/front-end/vendor/tiny-slider/dist/min/tiny-slider.js') }}"></script>
-<script src="{{ asset('public/assets/front-end/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js') }}"></script>
-<script src="{{ asset('public/js/lightbox.min.js') }}"></script>
-<script src="{{ asset('public/assets/front-end/vendor/drift-zoom/dist/Drift.min.js') }}"></script>
-<script src="{{ asset('public/assets/front-end/vendor/lightgallery.js/dist/js/lightgallery.min.js') }}"></script>
-<script src="{{ asset('public/assets/front-end/vendor/lg-video.js/dist/lg-video.min.js') }}"></script>
-<script src="{{ asset("public/assets/back-end/js/toastr.js" )}}"></script>
-<script src="{{ asset('public/assets/front-end/js/theme.js') }}"></script>
-<script src="{{ asset('public/assets/front-end/js/slick.js') }}"></script>
-<script src="{{ asset('public/assets/front-end/js/sweet_alert.js') }}"></script>
-<script src="{{ asset("public/assets/back-end/js/toastr.js") }}"></script>
-<script src="{{ asset('public/assets/front-end/js/custom.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/jquery/dist/jquery-2.2.4.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/bs-custom-file-input/dist/bs-custom-file-input.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/simplebar/dist/simplebar.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/tiny-slider/dist/min/tiny-slider.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/js/lightbox.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/drift-zoom/dist/Drift.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/lightgallery.js/dist/js/lightgallery.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/lg-video.js/dist/lg-video.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/js/owl.carousel.min.js')}}"></script>
+<script src="{{ theme_asset(path: "public/assets/back-end/js/toastr.js" )}}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/js/theme.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/js/slick.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/js/sweet_alert.js') }}"></script>
+<script src="{{ theme_asset(path: "public/assets/back-end/js/toastr.js") }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/js/custom.js') }}"></script>
 
 {!! Toastr::message() !!}
+
+@include('layouts.front-end.partials._firebase-script')
 
 <script>
     "use strict";
@@ -259,8 +290,8 @@
                         <div>{{ $cookie ? $cookie['cookie_text'] : '' }}</div>
                     </div>
                     <div class="btn-wrapper">
-                        <span class="text-white cursor-pointer" id="cookie-reject">{{ translate("no_thanks")}}</span>
-                        <button class="btn btn-success cookie-accept" id="cookie-accept">{{ translate('yes_i_Accept')}}</button>
+                        <button class="btn bg-dark text-white cursor-pointer" id="cookie-reject">{{ translate("no_thanks")}}</button>
+                        <button class="btn btn-success cookie-accept" id="cookie-accept">{{ translate('i_Accept')}}</button>
                     </div>
                 </div>
             </div>
@@ -283,6 +314,21 @@
         }
     });
 </script>
+@if(env('APP_MODE') == 'demo')
+    <script>
+        'use strict'
+        function checkDemoResetTime() {
+            let currentMinute = new Date().getMinutes();
+            if (currentMinute > 55 && currentMinute <= 60) {
+                $('#demo-reset-warning').addClass('active');
+            } else {
+                $('#demo-reset-warning').removeClass('active');
+            }
+        }
+        checkDemoResetTime();
+        setInterval(checkDemoResetTime, 60000);
+    </script>
+@endif
 
 @stack('script')
 

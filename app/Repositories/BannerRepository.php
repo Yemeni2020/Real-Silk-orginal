@@ -43,7 +43,11 @@ class BannerRepository implements BannerRepositoryInterface
             })
             ->when(!empty($orderBy), function ($query) use ($orderBy) {
                 return $query->orderBy(array_key_first($orderBy),array_values($orderBy)[0]);
-            })->when($filters['theme'], function ($query) use($filters){
+            })
+            ->when(isset($filters['resource_type']) && isset($filters['resource_id']), function ($query) use($filters){
+                return $query->where(['resource_type'=>$filters['resource_type'],'resource_id'=>$filters['resource_id']]);
+            })
+            ->when(isset($filters['theme']), function ($query) use($filters){
                 return $query->where('theme', $filters['theme']);
             });
 
@@ -79,7 +83,7 @@ class BannerRepository implements BannerRepositoryInterface
 
     public function update(string $id, array $data): bool
     {
-        $this->banner->where('id', $id)->update($data);
+        $this->banner->find($id)->update($data);
         return true;
     }
 

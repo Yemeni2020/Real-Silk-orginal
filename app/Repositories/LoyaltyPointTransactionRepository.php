@@ -48,11 +48,11 @@ class LoyaltyPointTransactionRepository implements LoyaltyPointTransactionReposi
             ->when(isset($filters['transaction_id']), function ($query) use ($filters) {
                 $query->where('transaction_id', $filters['transaction_id']);
             })
-            ->when(isset($filters['transaction_type']), function ($query) use ($filters) {
+            ->when(isset($filters['transaction_type']) && $filters['transaction_type'] != 'all', function ($query) use ($filters) {
                 $query->where('transaction_type', $filters['transaction_type']);
             })
-            ->when(isset($filters['user_id']), function ($query) use ($filters) {
-                $query->where('user_id', $filters['user_id']);
+            ->when(isset($filters['customer_id']) && $filters['customer_id'] != 'all', function ($query) use ($filters) {
+                $query->where('user_id', $filters['customer_id']);
             })
             ->when(!empty($orderBy), function ($query) use ($orderBy) {
                 $query->orderBy(array_key_first($orderBy), array_values($orderBy)[0]);
@@ -70,7 +70,7 @@ class LoyaltyPointTransactionRepository implements LoyaltyPointTransactionReposi
             ->when($filters['transaction_type'], function ($query) use ($filters) {
                 $query->where('transaction_type', $filters['transaction_type']);
             })
-            ->when($filters['customer_id'], function ($query) use ($filters) {
+            ->when(isset($filters['customer_id']) && $filters['customer_id'] != 'all', function ($query) use ($filters) {
                 $query->where('user_id', $filters['customer_id']);
             })->latest();
 
@@ -103,6 +103,10 @@ class LoyaltyPointTransactionRepository implements LoyaltyPointTransactionReposi
             $debit = $amount;
         } else if ($transactionType == 'refund_order') {
             $debit = $amount;
+        }
+
+        if($credit == 0 && $debit == 0){
+            return false;
         }
         $currentBalance = $user['loyalty_point'] + $credit - $debit;
 

@@ -21,23 +21,23 @@
                         <div class="bg-section rounded d-flex gap-2 align-items-start justify-content-between p-3 ">
                             <div class="support_ticket_head-media media flex-wrap gap-2 gap-sm-3">
                                 <div class="rounded-circle overflow-hidden">
-                                    <img class="rounded other-store-logo" width="50"  alt="{{ translate('product') }}"
-                                         src="{{ getValidImage(path: 'storage/app/public/profile/'.\App\Utils\customer_info()->image, type: 'avatar') }}">
+                                    <img class="rounded other-store-logo aspect-1" width="50"  alt="{{ translate('product') }}"
+                                         src="{{ getStorageImages(path: \App\Utils\customer_info()->image_full_url, type: 'avatar') }}">
                                 </div>
                                 <div class="media-body">
                                     <div class="d-flex flex-column">
                                         <div class="d-flex gap-2 align-items-center">
-                                            <h6 class="text-capitalize m-0">{{ \App\Utils\customer_info()->f_name }} {{ \App\Utils\customer_info()->l_name }}</h6>
+                                            <h6 class="text-capitalize m-0 fs-14 font-semibold">{{ \App\Utils\customer_info()->f_name }} {{ \App\Utils\customer_info()->l_name }}</h6>
                                             <div class="d-none d-sm-block">
                                                 <span
                                                     @if($ticket->priority == 'Urgent')
-                                                        class="badge badge-danger rounded text-capitalize"
+                                                        class="py-2 badge badge-danger rounded text-capitalize"
                                                     @elseif($ticket->priority == 'High')
-                                                        class="badge badge-warning rounded text-capitalize"
+                                                        class="py-2 badge badge-warning rounded text-capitalize"
                                                     @elseif($ticket->priority == 'Medium')
-                                                        class="badge badge-success rounded text-capitalize"
+                                                        class="py-2 badge badge-success rounded text-capitalize"
                                                     @else
-                                                        class="badge badge-info rounded text-capitalize"
+                                                        class="py-2 badge badge-info rounded text-capitalize"
                                                     @endif
                                                     >{{ translate($ticket->type) }}</span>
                                             </div>
@@ -66,7 +66,7 @@
                                 </div>
                             </div>
                             @if($ticket->status != 'close')
-                                <a href="{{route('support-ticket.close',[$ticket['id']])}}" class="btn btn-outline-danger d-none d-sm-inline-block">{{ translate('close_this_ticket') }}</a>
+                                <a href="{{route('support-ticket.close',[$ticket['id']])}}" class="btn btn-sm fs-14 font-semibold text-capitalize btn-outline-danger d-none d-sm-inline-block">{{ translate('close_this_ticket') }}</a>
                                 <a href="{{route('support-ticket.close',[$ticket['id']])}}" class="btn btn-outline-danger btn-sm d-sm-none">{{ translate('close') }}</a>
                             @endif
                         </div>
@@ -82,7 +82,7 @@
                                     <div class="media-body d-flex">
 
                                         <img class="rounded-circle __img-40 mt-2 text-align-direction" alt=""
-                                             src="{{ getValidImage(path: 'storage/app/public/admin/'.$admin['image'], type: 'avatar') }}">
+                                             src="{{ getStorageImages(path: $admin->image_full_url, type: 'avatar') }}">
                                         <div class="mx-1 __incoming-msg">
 
                                             @if ($conversation['admin_message'])
@@ -91,14 +91,14 @@
                                             </div>
                                             @endif
 
-                                            @if ($conversation['attachment'] !=null && count(json_decode($conversation['attachment'])) > 0)
+                                            @if ($conversation['attachment'] !=null && count($conversation->attachment_full_url) > 0)
                                                 <div class="row g-2 flex-wrap mt-3 justify-content-start">
-                                                    @foreach (json_decode($conversation['attachment']) as $key => $photo)
+                                                    @foreach ($conversation->attachment_full_url as $key => $photo)
                                                         <div class="col-sm-6 col-md-4 position-relative img_row{{$key}}">
-                                                            <a data-lightbox="mygallery" href="{{asset("storage/app/public/support-ticket/".$photo)}}"
+                                                            <a data-lightbox="mygallery" href="{{$photo['path']}}"
                                                                class="aspect-1 overflow-hidden d-block border rounded">
                                                                 <img class="img-fit" alt="{{ translate('ticket') }}"
-                                                                     src="{{ getValidImage(path: 'storage/app/public/support-ticket/'.$photo, type: 'product') }}">
+                                                                     src="{{ getStorageImages(path:$photo, type: 'product') }}">
                                                             </a>
                                                         </div>
                                                     @endforeach
@@ -121,14 +121,14 @@
                                             </div>
                                         @endif
 
-                                        @if ($conversation['attachment'] !=null && count(json_decode($conversation['attachment'])) > 0)
+                                        @if ($conversation['attachment'] !=null && count($conversation->attachment_full_url) > 0)
                                             <div class="row g-2 flex-wrap mt-3 justify-content-end">
-                                                @foreach (json_decode($conversation['attachment']) as $key => $photo)
+                                                @foreach ($conversation->attachment_full_url as $key => $photo)
                                                     <div class="col-sm-6 col-md-4 position-relative img_row{{$key}}">
-                                                        <a data-lightbox="mygallery" href="{{asset("storage/app/public/support-ticket/".$photo)}}"
+                                                        <a data-lightbox="mygallery" href="{{$photo['path']}}"
                                                            class="aspect-1 overflow-hidden d-block border rounded">
                                                             <img class="img-fit" alt="{{ translate('ticket') }}"
-                                                                 src="{{ getValidImage(path: 'storage/app/public/support-ticket/'.$photo, type: 'product') }}">
+                                                                 src="{{ getStorageImages(path: $photo, type: 'product') }}">
                                                         </a>
                                                     </div>
                                                 @endforeach
@@ -151,14 +151,14 @@
                                     </div>
                                 @endif
 
-                                @if ($ticket['attachment'] !=null && count(json_decode($ticket['attachment'])) > 0)
+                                @if ($ticket['attachment'] != null && $ticket->attachment_full_url && count($ticket->attachment_full_url) > 0)
                                     <div class="row g-2 flex-wrap mt-3 justify-content-end">
-                                        @foreach (json_decode($ticket['attachment']) as $key => $photo)
+                                        @foreach ($ticket->attachment_full_url as $key => $photo)
                                             <div class="col-sm-6 col-md-4 position-relative img_row{{$key}}">
-                                                <a data-lightbox="mygallery" href="{{asset("storage/app/public/support-ticket/".$photo)}}"
+                                                <a data-lightbox="mygallery" href="{{$photo['path']}}"
                                                    class="aspect-1 overflow-hidden d-block border rounded">
                                                     <img class="img-fit" alt="{{ translate('ticket') }}"
-                                                         src="{{ getValidImage(path: 'storage/app/public/support-ticket/'.$photo, type: 'product') }}">
+                                                         src="{{ getStorageImages(path: $photo, type: 'product') }}">
                                                 </a>
                                             </div>
                                         @endforeach
@@ -171,6 +171,7 @@
                         </div>
 
                     </div>
+                    @if($ticket->status != 'close')
                     <div class="card-footer py-0 px-0">
                         <form class="needs-validation" href="{{route('support-ticket.comment',[$ticket['id']])}}" enctype="multipart/form-data"
                             method="post" novalidate>
@@ -201,6 +202,7 @@
                             </div>
                         </form>
                     </div>
+                    @endif
                 </div>
             </section>
         </div>
@@ -209,5 +211,5 @@
 @endsection
 
 @push('script')
-    <script src="{{ asset('public/assets/front-end/js/ticket-view.js') }}"></script>
+    <script src="{{ theme_asset(path: 'public/assets/front-end/js/ticket-view.js') }}"></script>
 @endpush

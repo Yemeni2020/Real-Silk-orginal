@@ -5,9 +5,14 @@
     <meta http-equiv="Content-Type" content="text/html;"/>
     <meta charset="UTF-8">
 
-    <link rel="stylesheet" href="{{asset('public/assets/back-end/css/google-fonts.css')}}">
-    <link rel="stylesheet" href="{{ asset('public/assets/back-end/css/vendor/order-transaction.css') }}">
+    <link rel="stylesheet" href="{{dynamicAsset(path: 'public/assets/back-end/css/google-fonts.css')}}">
+    <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/css/vendor/order-transaction.css') }}">
 </head>
+
+<?php
+    $companyLogo = getWebConfig(name: 'company_web_logo');
+?>
+
 <body>
 <table class="content-position">
     <tr>
@@ -15,10 +20,10 @@
             <table class="bs-0">
                 <tr>
                     <th class="h3 p-0 text-left">
-                        {{translate('oder_Transaction_Statement')}}
+                        {{translate('order_Transaction_Statement')}}
                     </th>
                     <th class="p-0 text-right">
-                        <img class="logo" src="{{getValidImage(path: 'storage/app/public/company/'.$company_web_logo,type:'backend-logo')}}" alt="">
+                        <img class="logo" src="{{ getStorageImages(path: $companyLogo, type: 'backend-logo') }}" alt="">
                     </th>
                 </tr>
             </table>
@@ -159,6 +164,13 @@
                     <td>{{translate('total_Delivery_Charge')}}</td>
                     <td class="text-right">
                         {{setCurrencySymbol(amount: usdToDefaultCurrency(amount: $data['total_delivery_charge']), currencyCode: getCurrencyCode()) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center">6</td>
+                    <td>{{translate('total_Deliveryman_incentive')}}</td>
+                    <td class="text-right">
+                        {{setCurrencySymbol(amount: usdToDefaultCurrency(amount: $data['total_deliveryman_incentive']), currencyCode: getCurrencyCode()) }}
                     </td>
                 </tr>
                 <tr>

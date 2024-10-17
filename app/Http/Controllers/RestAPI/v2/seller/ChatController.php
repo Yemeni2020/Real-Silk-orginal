@@ -8,7 +8,7 @@ use App\Models\Chatting;
 use App\Models\DeliveryMan;
 use App\Models\Seller;
 use App\Models\Shop;
-use App\User;
+use App\Models\User;
 use App\Utils\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -141,7 +141,7 @@ class ChatController extends Controller
             'limit' => 'required',
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)], 403);
         }
         $data = Helpers::get_seller_by_token($request);
 
@@ -196,7 +196,7 @@ class ChatController extends Controller
             'message.required' => translate('type something!')
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)], 403);
         }
         $data = Helpers::get_seller_by_token($request);
 
@@ -210,35 +210,37 @@ class ChatController extends Controller
 
 
         $shop_id = Shop::where('seller_id', $seller['id'])->first()->id;
-        $message_form = Seller::find($seller['id']);
+        $messageForm = Seller::find($seller['id']);
 
         $chatting = new Chatting();
         $chatting->seller_id = $seller->id;
-        $chatting->message = $request->message;
+        $chatting->message = $request['message'];
         $chatting->sent_by_seller = 1;
         $chatting->seen_by_seller = 1;
         $chatting->shop_id = $shop_id;
 
         if ($type == 'delivery-man') {
-            $chatting->delivery_man_id = $request->id;
-            $chatting->seen_by_delivery_man = 0;
+            $chatting->delivery_man_id          = $request->id;
+            $chatting->seen_by_delivery_man     = 0;
+            $chatting->notification_receiver    = 'deliveryman';
 
-            $delivery_man = DeliveryMan::find($request->id);
-            ChattingEvent::dispatch('message_from_customer', 'delivery_man', $delivery_man, $message_form);
+            $deliveryMan = DeliveryMan::find($request->id);
+            event(new ChattingEvent(key: 'message_from_customer', type: 'delivery_man', userData: $deliveryMan, messageForm: $messageForm));
         } elseif ($type == 'customer') {
-            $chatting->user_id = $request->id;
-            $chatting->seen_by_customer = 0;
+            $chatting->user_id                  = $request->id;
+            $chatting->seen_by_customer         = 0;
+            $chatting->notification_receiver    = 'customer';
 
             $customer = User::find($request->id);
-            ChattingEvent::dispatch('message_from_customer', 'customer', $customer, $message_form);
+            event(new ChattingEvent(key: 'message_from_customer', type: 'customer', userData: $customer, messageForm: $messageForm));
         } else {
-            return response()->json(translate('Invalid Chatting Type!'), 403);
+            return response()->json(translate('Invalid_Chatting_Type'), 403);
         }
 
         if ($chatting->save()) {
-            return response()->json(['message' => $request->message, 'time' => now()], 200);
+            return response()->json(['message' => $request['message'], 'time' => now()], 200);
         } else {
-            return response()->json(['message' => translate('Message sending failed')], 403);
+            return response()->json(['message' => translate('Message_sending_failed')], 403);
         }
     }
 }

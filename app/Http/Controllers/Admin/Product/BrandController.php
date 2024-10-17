@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Product;
 
 use App\Contracts\Repositories\BrandRepositoryInterface;
+use App\Contracts\Repositories\ProductRepositoryInterface;
 use App\Contracts\Repositories\TranslationRepositoryInterface;
 use App\Enums\ExportFileNames\Admin\Brand as BrandExport;
 use App\Enums\ViewPaths\Admin\Brand;
@@ -25,6 +26,7 @@ class BrandController extends BaseController
 {
     public function __construct(
         private readonly BrandRepositoryInterface           $brandRepo,
+        private readonly ProductRepositoryInterface           $productRepo,
         private readonly TranslationRepositoryInterface     $translationRepo,
     )
     {
@@ -43,7 +45,11 @@ class BrandController extends BaseController
 
     public function getList(Request $request): Application|Factory|View
     {
-        $brands = $this->brandRepo->getListWhere(searchValue:$request->get('searchValue'), dataLimit: getWebConfig(name: 'pagination_limit'));
+        $brands = $this->brandRepo->getListWhere(
+            orderBy:['id'=>'desc'],
+            searchValue:$request->get('searchValue'),
+            relations: ['storage'],
+            dataLimit: getWebConfig(name: 'pagination_limit'));
         return view(Brand::LIST[VIEW], compact('brands'));
     }
 
@@ -54,9 +60,9 @@ class BrandController extends BaseController
         return view(Brand::ADD[VIEW], compact( 'language', 'defaultLanguage'));
     }
 
-    public function getUpdateView(string|int $id): View
+    public function getUpdateView(string|int $id): View|RedirectResponse
     {
-        $brand = $this->brandRepo->getFirstWhere(params:['id'=>$id], relations: ['translations']);
+        $brand = $this->brandRepo->getFirstWhere(params:['id'=>$id], relations: ['translations','storage']);
         $language = getWebConfig(name: 'pnc_language') ?? null;
         $defaultLanguage = $language[0];
         return view(Brand::UPDATE[VIEW], compact('brand', 'language', 'defaultLanguage'));
@@ -71,13 +77,15 @@ class BrandController extends BaseController
         return response()->json(['success' => 1, 'message' => translate('status_updated_successfully')], 200);
     }
 
-    public function delete(Request $request, BrandService $brandService): JsonResponse
+    public function delete(Request $request, BrandService $brandService): RedirectResponse
     {
+        $this->productRepo->updateByParams(params:['brand_id'=>$request['id']],data:['brand_id' =>$request['brand_id'],'sub_category_id'=>null,'sub_sub_category_id'=>null]);
         $brand = $this->brandRepo->getFirstWhere(params:['id'=>$request['id']]);
         $brandService->deleteImage(data:$brand);
         $this->translationRepo->delete(model:'App\Models\Brand', id:$request['id']);
         $this->brandRepo->delete(params: ['id'=>$request['id']]);
-        return response()->json(['message' => translate('brand_deleted_successfully')], 200);
+        Toastr::success(translate('brand_deleted_successfully'));
+        return redirect()->back();
     }
 
 
@@ -88,18 +96,18 @@ class BrandController extends BaseController
         $this->translationRepo->add(request:$request, model:'App\Models\Brand', id:$savedAttributes->id);
 
         Toastr::success(translate('brand_added_successfully'));
-        return back();
+        return redirect()->route('admin.brand.list');
     }
 
     public function update(BrandUpdateRequest $request, $id, BrandService $brandService): RedirectResponse
     {
-        $brand = $this->brandRepo->getFirstWhere(params:['id'=>$request['id']]);
+        $brand = $this->brandRepo->getFirstWhere(params:['id'=>$request['id']],relations: ['storage']);
         $dataArray = $brandService->getUpdateData(request: $request, data:$brand);
         $this->brandRepo->update(id:$request['id'], data:$dataArray);
         $this->translationRepo->update(request:$request, model:'App\Models\Brand', id:$request['id']);
 
         Toastr::success(translate('brand_updated_successfully'));
-        return back();
+        return redirect()->route('admin.brand.list');
     }
 
     public function exportList(Request $request): BinaryFileResponse

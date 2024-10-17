@@ -4,8 +4,12 @@ namespace App\Http\Controllers\Vendor\DeliveryMan;
 
 use App\Contracts\Repositories\DeliveryManRepositoryInterface;
 use App\Contracts\Repositories\ReviewRepositoryInterface;
+use App\Contracts\Repositories\VendorRepositoryInterface;
+use App\Enums\ExportFileNames\Admin\DeliveryMan as DeliveryManExport;
 use App\Enums\ViewPaths\Vendor\Dashboard;
 use App\Enums\ViewPaths\Vendor\DeliveryMan;
+use App\Enums\WebConfigKey;
+use App\Exports\DeliveryManListExport;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Vendor\DeliveryManRequest;
 use App\Http\Requests\Vendor\DeliveryManUpdateRequest;
@@ -17,6 +21,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class DeliveryManController extends BaseController
 {
@@ -29,6 +35,7 @@ class DeliveryManController extends BaseController
         private readonly DeliveryManRepositoryInterface $deliveryManRepo,
         private readonly ReviewRepositoryInterface      $reviewRepo,
         private readonly DeliveryManService             $deliveryManService,
+        private readonly VendorRepositoryInterface      $vendorRepo,
     )
     {
     }
@@ -58,17 +65,20 @@ class DeliveryManController extends BaseController
 
     /**
      * @param DeliveryManRequest $request
-     * @return RedirectResponse
+     * @return JsonResponse
      * @function add  is the adding request data to delivery_men table
      */
-    public function add(DeliveryManRequest $request):RedirectResponse
+    public function add(DeliveryManRequest $request):JsonResponse
     {
+        $deliveryMan = $this->deliveryManRepo->getFirstWhere(params:['phone' => $request['phone']]);
+        if ($deliveryMan) {
+            return response()->json(['errors'=>translate('this_phone_number_is_already_taken')]);
+        }
         $this->deliveryManRepo->add($this->deliveryManService->getDeliveryManAddData(
             request:$request,
             addedBy:'seller')
         );
-        Toastr::success(translate('Deliveryman_added_successfully'));
-        return redirect()->route(DeliveryMan::LIST[ROUTE]);
+        return response()->json(['message'=>translate('delivery_man_added_successfully')]);
     }
     /**
      * @param Request $request
@@ -108,20 +118,24 @@ class DeliveryManController extends BaseController
     /**
      * @param DeliveryManUpdateRequest $request
      * @param string|int $id
-     * @return RedirectResponse
+     * @return JsonResponse
      * @function update ,update the deliveryMan data
      */
-    public function update(DeliveryManUpdateRequest $request , string|int $id):RedirectResponse
+    public function update(DeliveryManUpdateRequest $request , string|int $id):JsonResponse
     {
+
         $deliveryMan = $this->deliveryManRepo->getFirstWhere(params:['seller_id' => auth('seller')->id(), 'id' => $id]);
+        $deliveryManExists = $this->deliveryManRepo->getFirstWhere(params:['phone' => $request['phone'], 'country_code' => $request['country_code']]);
+        if (isset($deliveryManExists) && $deliveryManExists['id'] != $deliveryMan['id']) {
+            return response()->json(['errors'=>translate('this_phone_number_is_already_taken')]);
+        }
         $this->deliveryManRepo->update($id,$this->deliveryManService->getDeliveryManUpdateData(
             request:$request,
             addedBy:'seller',
             identityImages: $deliveryMan['identity_image'],
             deliveryManImage: $deliveryMan['image'])
         );
-        return redirect()->route(DeliveryMan::LIST[ROUTE]);
-
+        return response()->json(['message'=>translate('delivery_man_updated_successfully')]);
     }
     /**
      * @param Request $request
@@ -200,5 +214,29 @@ class DeliveryManController extends BaseController
             'five'
         ));
 
+    }
+
+    public function exportList(Request $request): BinaryFileResponse
+    {
+        $vendorId = auth('seller')->id();
+        $vendor = $this->vendorRepo->getFirstWhere(params:['id' => $vendorId]);
+        $searchValue = $request['search'];
+        $deliveryMens = $this->deliveryManRepo->getListWhere(
+            orderBy: ['id'=>'desc'],
+            searchValue: $searchValue,
+            filters: ['seller_id' => $vendorId],
+            dataLimit: getWebConfig(name: 'pagination_limit')
+        );
+        $active = $deliveryMens->where('is_active',1)->count();
+        $inactive = $deliveryMens->where('is_active',0)->count();
+        return Excel::download(new DeliveryManListExport([
+            'data-from' => 'vendor',
+            'vendor' => $vendor,
+            'delivery_men' => $deliveryMens,
+            'search' => $request['search'],
+            'active' => $active,
+            'inactive' => $inactive,
+        ]), DeliveryManExport::EXPORT_XLSX
+        );
     }
 }

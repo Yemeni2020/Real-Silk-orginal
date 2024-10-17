@@ -374,6 +374,7 @@ const TELEPHONE_CODES = [
     ["name" => 'Marshall Islands (+692)', "code" => '692'],
     ["name" => 'Martinique (+596)', "code" => '596'],
     ["name" => 'Mauritania (+222)', "code" => '222'],
+    ["name" => 'Mauritius (+230)', "code" => '230'],
     ["name" => 'Mayotte (+269)', "code" => '269'],
     ["name" => 'Mexico (+52)', "code" => '52'],
     ["name" => 'Micronesia (+691)', "code" => '691'],
@@ -465,7 +466,7 @@ const TELEPHONE_CODES = [
     ["name" => 'Zimbabwe (+263)', "code" => '263'],
 ];
 
-const SOFTWARE_VERSION = '14.3.1';
+const SOFTWARE_VERSION = '14.8';
 
 const THEME_RATIO = [
     'default' => [
@@ -558,6 +559,9 @@ const GATEWAYS_PAYMENT_METHODS = [
     ['key' => 'payfast', 'value' => 'Pay Fast'],
     ['key' => 'worldpay', 'value' => 'World Pay'],
     ['key' => 'sixcash', 'value' => 'Six Cash'],
+    ['key' => 'instamojo', 'value' => 'Instamojo'],
+    ['key' => 'phonepe', 'value' => 'PhonePe'],
+    ['key' => 'cashfree', 'value' => 'Cashfree'],
 ];
 
 //currencies

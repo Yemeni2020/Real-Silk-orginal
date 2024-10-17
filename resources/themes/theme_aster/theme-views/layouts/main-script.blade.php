@@ -9,7 +9,23 @@
 <script src="{{ theme_asset('assets/plugins/easyzoom/easyzoom.min.js') }}"></script>
 <script src="{{ theme_asset('assets/js/toastr.js') }}"></script>
 <script src="{{ theme_asset('assets/js/main.js') }}"></script>
-
+<script src="{{ theme_asset('assets/plugins/intl-tel-input/js/intlTelInput.js') }}"></script>
+<script src="{{ theme_asset('assets/js/country-picker-init.js') }}"></script>
+@if(env('APP_MODE') == 'demo')
+    <script>
+        'use strict'
+        function checkDemoResetTime() {
+            let currentMinute = new Date().getMinutes();
+            if (currentMinute > 55 && currentMinute <= 60) {
+                $('#demo-reset-warning').addClass('active');
+            } else {
+                $('#demo-reset-warning').removeClass('active');
+            }
+        }
+        checkDemoResetTime();
+        setInterval(checkDemoResetTime, 60000);
+    </script>
+@endif
 <script>
     @if(Request::is('/') &&  Cookie::has('popup_banner')===false)
         $(document).ready(function () {

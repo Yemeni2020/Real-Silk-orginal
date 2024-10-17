@@ -6,7 +6,7 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{asset('/public/assets/back-end/img/coupon_setup.png')}}" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/coupon_setup.png')}}" alt="">
                 {{translate('coupon_setup')}}
             </h2>
         </div>
@@ -172,22 +172,23 @@
                                 </div>
                             </form>
                             <div>
-                                <button type="button" class="btn btn-outline--primary text-nowrap btn-block"
-                                        data-toggle="dropdown">
-                                    <i class="tio-download-to"></i>
-                                    {{translate('export')}}
-                                    <i class="tio-chevron-down"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-right">
-                                    <li>
-                                        <a class="dropdown-item"
-                                           href="{{ route('admin.coupon.export',['searchValue'=>request('searchValue')]) }}">
-                                            <img width="14" src="{{asset('/public/assets/back-end/img/excel.png')}}"
-                                                 alt="">
-                                            {{translate('excel')}}
-                                        </a>
-                                    </li>
-                                </ul>
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-outline--primary" data-toggle="dropdown">
+                                        <i class="tio-download-to"></i>
+                                        {{ translate('export') }}
+                                        <i class="tio-chevron-down"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <li>
+                                            <a class="dropdown-item"
+                                               href="{{ route('admin.coupon.export',['searchValue'=>request('searchValue')]) }}">
+                                                <img width="14" src="{{ dynamicAsset(path: 'public/assets/back-end/img/excel.png') }}"
+                                                     alt="">
+                                                {{ translate('excel') }}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -202,7 +203,7 @@
                                 <th>{{translate('coupon_type')}}</th>
                                 <th>{{translate('duration')}}</th>
                                 <th>{{translate('user_limit')}}</th>
-                                <th>{{translate('discount_bearer')}}</th>
+                                <th class="text-center">{{translate('discount_bearer')}}</th>
                                 <th>{{translate('status')}}</th>
                                 <th class="text-center">{{translate('action')}}</th>
                             </tr>
@@ -231,7 +232,7 @@
                                             <strong>{{ $coupon['order_count'] }}</strong>
                                         </span>
                                     </td>
-                                    <td>{{ $coupon['coupon_bearer'] == 'inhouse' ? 'admin':$coupon['coupon_bearer'] }}</td>
+                                    <td class="text-center">{{ translate($coupon['coupon_bearer'] == 'inhouse' ? 'admin':$coupon['coupon_bearer']) }}</td>
                                     <td>
                                         <form
                                             action="{{route('admin.coupon.status',[$coupon['id'],$coupon['status']?0:1])}}"
@@ -257,7 +258,7 @@
                                     <td>
                                         <div class="d-flex gap-10 justify-content-center">
                                             <button class="btn btn-outline--primary square-btn btn-sm mr-1 get-quick-view" data-id="{{ $coupon['id'] }}">
-                                                <img src="{{asset('/public/assets/back-end/img/eye.svg')}}" class="svg" alt="">
+                                                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/eye.svg')}}" class="svg" alt="">
                                             </button>
                                             <a class="btn btn-outline--primary btn-sm edit"
                                                href="{{route('admin.coupon.update',[$coupon['id']])}}"
@@ -299,22 +300,17 @@
                     </div>
 
                     @if(count($coupons)==0)
-                        <div class="text-center p-4">
-                            <img class="mb-3 w-160"
-                                 src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}"
-                                 alt="{{translate('image_description')}}">
-                            <p class="mb-0">{{translate('no_data_to_show')}}</p>
-                        </div>
+                        @include('layouts.back-end._empty-state',['text'=>'no_coupon_found'],['image'=>'default'])
                     @endif
                 </div>
             </div>
         </div>
     </div>
 
-    <span id="coupon-bearer-url" data-url="{{route('admin.coupon.ajax-get-seller')}}"></span>
+    <span id="coupon-bearer-url" data-url="{{route('admin.coupon.ajax-get-vendor')}}"></span>
     <span id="get-detail-url" data-url="{{ route('admin.coupon.quick-view-details') }}"></span>
 @endsection
 
 @push('script')
-    <script src="{{asset('public/assets/back-end/js/admin/coupon.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/admin/coupon.js')}}"></script>
 @endpush

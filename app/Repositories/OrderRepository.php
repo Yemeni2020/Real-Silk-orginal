@@ -87,9 +87,10 @@ class OrderRepository implements OrderRepositoryInterface
                         return $query;
                     })
                     ->when($filters['filter'] == 'POS', function ($query) {
-                        return $query->whereHas('details', function ($query) {
-                            return $query->where('order_type', 'POS');
-                        });
+                        return $query->where('order_type', 'POS');
+                    })
+                    ->when($filters['filter'] == 'default_type', function ($query) {
+                        return $query->where('order_type', 'default_type');
                     })
                     ->when($filters['filter'] == 'admin' || $filters['filter'] == 'seller', function ($query) use ($filters) {
                         return $query->whereHas('details', function ($query) use ($filters) {
@@ -135,6 +136,12 @@ class OrderRepository implements OrderRepositoryInterface
                 return $query->whereHas('deliveryMan', function($query) use ($filters){
                     $query->where('seller_id',$filters['whereHas_deliveryMan']);
                 });
+            })
+            ->when(isset($filters['whereIn_order_status']) && $filters['whereIn_order_status'] != 'all', function ($query) use($filters) {
+                $query->whereIn('order_status',$filters['whereIn_order_status']);
+            })
+            ->when(isset($filters['whereIn_payment_status']) && $filters['whereIn_payment_status'] != 'all', function ($query) use($filters) {
+                $query->whereIn('payment_status',$filters['whereIn_payment_status']);
             })
             ->when(!empty($orderBy), function ($query) use ($orderBy) {
                 $query->orderBy(array_key_first($orderBy), array_values($orderBy)[0]);
@@ -526,6 +533,20 @@ class OrderRepository implements OrderRepositoryInterface
         }
 
         return true;
+    }
+
+    public function getListWhereBetween(array $filters = [], string $selectColumn = null, string $whereBetween = null, array $whereBetweenFilters = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
+    {
+        return $this->order->with($relations)->where($filters)
+            ->when($selectColumn == 'order_amount', function ($query) {
+                $query->select(
+                    DB::raw('IFNULL(sum(order_amount),0) as sums'),
+                    DB::raw('YEAR(created_at) year, MONTH(created_at) month,DAY(created_at) day,DAYNAME(created_at) day_of_week')
+                );
+            })
+            ->whereBetween($whereBetween, $whereBetweenFilters)
+            ->groupby('year', 'month','day_of_week')
+            ->get();
     }
 
     public function getTopCustomerList(array $filters = [] ,array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator

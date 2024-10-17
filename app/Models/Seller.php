@@ -2,16 +2,21 @@
 
 namespace App\Models;
 
+use App\Traits\StorageTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @property int $id
  * @property string $f_name
  * @property string $l_name
+ * @property string $country_code
  * @property string $phone
  * @property string $image
  * @property string $email
@@ -33,16 +38,40 @@ use Illuminate\Support\Carbon;
  */
 class Seller extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable,StorageTrait;
 
     protected $fillable = [
+        'f_name',
+        'l_name',
+        'country_code',
+        'phone',
+        'email',
         'free_delivery_over_amount',
+        'image',
+        'password',
+        'status',
+        'bank_name',
+        'branch',
+        'account_no',
+        'holder_name',
+        'auth_token',
+        'sales_commission_percentage',
+        'gst',
+        'cm_firebase_token',
+        'pos_status',
+        'minimum_order_amount',
+        'free_delivery_status',
+        'app_language',
     ];
+
     protected $casts = [
         'id' => 'integer',
+        'f_name' => 'string',
+        'l_name' => 'string',
+        'country_code' => 'string',
         'orders_count' => 'integer',
         'product_count' => 'integer',
-        'pos+status' => 'integer'
+        'pos_status' => 'integer'
     ];
 
     public function scopeApproved($query)
@@ -81,6 +110,38 @@ class Seller extends Authenticatable
             ->where(['coupon_bearer'=>'seller', 'status'=>1])
             ->whereDate('start_date','<=',date('Y-m-d'))
             ->whereDate('expire_date','>=',date('Y-m-d'));
+    }
+
+    public function getImageFullUrlAttribute(): array
+    {
+        if ($this->id == 0) {
+            return getWebConfig(name: 'company_fav_icon');
+        }
+        $value = $this->image;
+        if (count($this->storage) > 0 ) {
+            $storage = $this->storage->where('key','image')->first();
+        }
+        return $this->storageLink('seller', $value, $storage['value'] ?? 'public');
+    }
+
+    protected $appends = ['image_full_url'];
+    protected static function boot(): void
+    {
+        parent::boot();
+        static::saved(function ($model) {
+            if($model->isDirty('image')){
+                $storage = config('filesystems.disks.default') ?? 'public';
+                DB::table('storages')->updateOrInsert([
+                    'data_type' => get_class($model),
+                    'data_id' => $model->id,
+                    'key' => 'image',
+                ], [
+                    'value' => $storage,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        });
     }
 
 }

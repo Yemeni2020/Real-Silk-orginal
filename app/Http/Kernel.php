@@ -13,7 +13,6 @@ use App\Http\Middleware\GuestMiddleware;
 use App\Http\Middleware\InstallationMiddleware;
 use App\Http\Middleware\MaintenanceModeMiddleware;
 use App\Http\Middleware\ModulePermissionMiddleware;
-use App\Http\Middleware\ReactValidMiddleware;
 use App\Http\Middleware\SellerApiAuthMiddleware;
 use App\Http\Middleware\SellerMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -87,7 +86,6 @@ class Kernel extends HttpKernel
         'seller_api_auth' => SellerApiAuthMiddleware::class,
         'guestCheck' => GuestMiddleware::class,
         'apiGuestCheck' => APIGuestMiddleware::class,
-        'react' => ReactValidMiddleware::class,
     ];
 
     /**

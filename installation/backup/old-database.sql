@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Oct 26, 2023 at 12:04 PM
+-- Generation Time: May 16, 2024 at 03:54 AM
 -- Server version: 5.7.39
 -- PHP Version: 8.2.0
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `install`
+-- Database: `6valley_install`
 --
 
 -- --------------------------------------------------------
@@ -301,8 +301,6 @@ INSERT INTO `business_settings` (`id`, `type`, `value`, `created_at`, `updated_a
 (3, 'mail_config', '{\"status\":0,\"name\":\"demo\",\"host\":\"mail.demo.com\",\"driver\":\"SMTP\",\"port\":\"587\",\"username\":\"info@demo.com\",\"email_id\":\"info@demo.com\",\"encryption\":\"TLS\",\"password\":\"demo\"}', '2020-10-12 10:29:18', '2021-07-06 12:32:01'),
 (4, 'cash_on_delivery', '{\"status\":\"1\"}', NULL, '2021-05-25 21:21:15'),
 (6, 'ssl_commerz_payment', '{\"status\":\"0\",\"environment\":\"sandbox\",\"store_id\":\"\",\"store_password\":\"\"}', '2020-11-09 08:36:51', '2023-01-10 05:51:56'),
-(7, 'paypal', '{\"status\":\"0\",\"environment\":\"sandbox\",\"paypal_client_id\":\"\",\"paypal_secret\":\"\"}', '2020-11-09 08:51:39', '2023-01-10 05:51:56'),
-(8, 'stripe', '{\"status\":\"0\",\"api_key\":null,\"published_key\":null}', '2020-11-09 09:01:47', '2021-07-06 12:30:05'),
 (10, 'company_phone', '000000000', NULL, '2020-12-08 14:15:01'),
 (11, 'company_name', '', NULL, '2021-02-27 18:11:53'),
 (12, 'company_web_logo', '2021-05-25-60ad1b313a9d4.png', NULL, '2021-05-25 21:43:45'),
@@ -311,7 +309,7 @@ INSERT INTO `business_settings` (`id`, `type`, `value`, `created_at`, `updated_a
 (15, 'about_us', '<p>this is about us page. hello and hi from about page description..</p>', NULL, '2021-06-11 01:42:53'),
 (16, 'sms_nexmo', '{\"status\":\"0\",\"nexmo_key\":\"custo5cc042f7abf4c\",\"nexmo_secret\":\"custo5cc042f7abf4c@ssl\"}', NULL, NULL),
 (17, 'company_email', 'Copy@6amtech.com', NULL, '2021-03-15 12:29:51'),
-(18, 'colors', '{\"primary\":\"#1b7fed\",\"secondary\":\"black\",\"primary_light\":\"#CFDFFB\"}', '2020-10-11 13:53:02', '2023-10-26 12:04:19'),
+(18, 'colors', '{\"primary\":\"#1b7fed\",\"secondary\":\"black\",\"primary_light\":\"#CFDFFB\"}', '2020-10-11 13:53:02', '2024-05-16 03:52:50'),
 (19, 'company_footer_logo', '2021-02-20-6030c8a02a5f9.png', NULL, '2021-02-20 14:30:24'),
 (20, 'company_copyright_text', 'CopyRight 6amTech@2021', NULL, '2021-03-15 12:30:47'),
 (21, 'download_app_apple_stroe', '{\"status\":\"1\",\"link\":\"https:\\/\\/www.target.com\\/s\\/apple+store++now?ref=tgt_adv_XS000000&AFID=msn&fndsrc=tgtao&DFA=71700000012505188&CPNG=Electronics_Portable+Computers&adgroup=Portable+Computers&LID=700000001176246&LNM=apple+store+near+me+now&MT=b&network=s&device=c&location=12&targetid=kwd-81913773633608:loc-12&ds_rl=1246978&ds_rl=1248099&gclsrc=ds\"}', NULL, '2020-12-08 12:54:53'),
@@ -325,7 +323,6 @@ INSERT INTO `business_settings` (`id`, `type`, `value`, `created_at`, `updated_a
 (29, 'order_processing_message', '{\"status\":\"1\",\"message\":\"Order pro Message\"}', NULL, NULL),
 (30, 'out_for_delivery_message', '{\"status\":\"1\",\"message\":\"Order ouut Message\"}', NULL, NULL),
 (31, 'order_delivered_message', '{\"status\":\"1\",\"message\":\"Order del Message\"}', NULL, NULL),
-(32, 'razor_pay', '{\"status\":\"0\",\"razor_key\":null,\"razor_secret\":null}', NULL, '2021-07-06 12:30:14'),
 (33, 'sales_commission', '0', NULL, '2021-06-11 18:13:13'),
 (34, 'seller_registration', '1', NULL, '2021-06-04 21:02:48'),
 (35, 'pnc_language', '[\"en\"]', NULL, NULL),
@@ -337,8 +334,6 @@ INSERT INTO `business_settings` (`id`, `type`, `value`, `created_at`, `updated_a
 (43, 'terms_and_conditions', '', NULL, NULL),
 (44, 'minimum_order_value', '1', NULL, NULL),
 (45, 'privacy_policy', '<p>my privacy policy</p>\r\n\r\n<p>&nbsp;</p>', NULL, '2021-07-06 11:09:07'),
-(46, 'paystack', '{\"status\":\"0\",\"publicKey\":null,\"secretKey\":null,\"paymentUrl\":\"https:\\/\\/api.paystack.co\",\"merchantEmail\":null}', NULL, '2021-07-06 12:30:35'),
-(47, 'senang_pay', '{\"status\":\"0\",\"secret_key\":null,\"merchant_id\":null}', NULL, '2021-07-06 12:30:23'),
 (48, 'currency_model', 'single_currency', NULL, NULL),
 (49, 'social_login', '[{\"login_medium\":\"google\",\"client_id\":\"\",\"client_secret\":\"\",\"status\":\"\"},{\"login_medium\":\"facebook\",\"client_id\":\"\",\"client_secret\":\"\",\"status\":\"\"}]', NULL, NULL),
 (50, 'digital_payment', '{\"status\":\"1\"}', NULL, NULL),
@@ -348,19 +343,12 @@ INSERT INTO `business_settings` (`id`, `type`, `value`, `created_at`, `updated_a
 (54, 'country_code', 'BD', NULL, NULL),
 (55, 'pagination_limit', '10', NULL, NULL),
 (56, 'shipping_method', 'inhouse_shipping', NULL, NULL),
-(57, 'paymob_accept', '{\"status\":\"0\",\"api_key\":\"\",\"iframe_id\":\"\",\"integration_id\":\"\",\"hmac\":\"\"}', NULL, NULL),
-(58, 'bkash', '{\"status\":\"0\",\"environment\":\"sandbox\",\"api_key\":\"\",\"api_secret\":\"\",\"username\":\"\",\"password\":\"\"}', NULL, '2023-01-10 05:51:56'),
 (59, 'forgot_password_verification', 'email', NULL, NULL),
-(60, 'paytabs', '{\"status\":0,\"profile_id\":\"\",\"server_key\":\"\",\"base_url\":\"https:\\/\\/secure-egypt.paytabs.com\\/\"}', NULL, '2021-11-21 03:01:40'),
 (61, 'stock_limit', '10', NULL, NULL),
-(62, 'flutterwave', '{\"status\":0,\"public_key\":\"\",\"secret_key\":\"\",\"hash\":\"\"}', NULL, NULL),
-(63, 'mercadopago', '{\"status\":0,\"public_key\":\"\",\"access_token\":\"\"}', NULL, NULL),
 (64, 'announcement', '{\"status\":null,\"color\":null,\"text_color\":null,\"announcement\":null}', NULL, NULL),
 (65, 'fawry_pay', '{\"status\":0,\"merchant_code\":\"\",\"security_key\":\"\"}', NULL, '2022-01-18 09:46:30'),
 (66, 'recaptcha', '{\"status\":0,\"site_key\":\"\",\"secret_key\":\"\"}', NULL, '2022-01-18 09:46:30'),
 (67, 'seller_pos', '0', NULL, NULL),
-(68, 'liqpay', '{\"status\":0,\"public_key\":\"\",\"private_key\":\"\"}', NULL, NULL),
-(69, 'paytm', '{\"status\":0,\"environment\":\"sandbox\",\"paytm_merchant_key\":\"\",\"paytm_merchant_mid\":\"\",\"paytm_merchant_website\":\"\",\"paytm_refund_url\":\"\"}', NULL, '2023-01-10 05:51:56'),
 (70, 'refund_day_limit', '0', NULL, NULL),
 (71, 'business_mode', 'multi', NULL, NULL),
 (72, 'mail_config_sendgrid', '{\"status\":0,\"name\":\"\",\"host\":\"\",\"driver\":\"\",\"port\":\"\",\"username\":\"\",\"email_id\":\"\",\"encryption\":\"\",\"password\":\"\"}', NULL, NULL),
@@ -390,11 +378,6 @@ INSERT INTO `business_settings` (`id`, `type`, `value`, `created_at`, `updated_a
 (96, 'temporary_block_time', '0', NULL, '2023-06-13 13:04:49'),
 (97, 'maximum_login_hit', '0', NULL, '2023-06-13 13:04:49'),
 (98, 'temporary_login_block_time', '0', NULL, '2023-06-13 13:04:49'),
-(99, 'maximum_otp_hit', '0', NULL, '2023-10-13 05:34:53'),
-(100, 'otp_resend_time', '0', NULL, '2023-10-13 05:34:53'),
-(101, 'temporary_block_time', '0', NULL, '2023-10-13 05:34:53'),
-(102, 'maximum_login_hit', '0', NULL, '2023-10-13 05:34:53'),
-(103, 'temporary_login_block_time', '0', NULL, '2023-10-13 05:34:53'),
 (104, 'apple_login', '[{\"login_medium\":\"apple\",\"client_id\":\"\",\"client_secret\":\"\",\"status\":0,\"team_id\":\"\",\"key_id\":\"\",\"service_file\":\"\",\"redirect_url\":\"\"}]', NULL, '2023-10-13 05:34:53'),
 (105, 'ref_earning_status', '0', NULL, '2023-10-13 05:34:53'),
 (106, 'ref_earning_exchange_rate', '0', NULL, '2023-10-13 05:34:53'),
@@ -416,30 +399,29 @@ INSERT INTO `business_settings` (`id`, `type`, `value`, `created_at`, `updated_a
 (122, 'delivery_man_app_version_control', '{\"for_android\":{\"status\":1,\"version\":\"14.1\",\"link\":\"\"},\"for_ios\":{\"status\":1,\"version\":\"14.1\",\"link\":\"\"}}', NULL, '2023-10-13 11:34:53'),
 (123, 'whatsapp', '{\"status\":1,\"phone\":\"00000000000\"}', NULL, '2023-10-13 11:34:53'),
 (124, 'currency_symbol_position', 'left', NULL, '2023-10-13 11:34:53'),
-(125, 'maximum_otp_hit', '0', NULL, '2023-10-26 12:04:19'),
-(126, 'otp_resend_time', '0', NULL, '2023-10-26 12:04:19'),
-(127, 'temporary_block_time', '0', NULL, '2023-10-26 12:04:19'),
-(128, 'maximum_login_hit', '0', NULL, '2023-10-26 12:04:19'),
-(129, 'temporary_login_block_time', '0', NULL, '2023-10-26 12:04:19'),
-(130, 'ref_earning_status', '0', NULL, '2023-10-26 12:04:19'),
-(131, 'ref_earning_exchange_rate', '0', NULL, '2023-10-26 12:04:19'),
-(132, 'guest_checkout', '0', NULL, '2023-10-26 12:04:19'),
-(133, 'minimum_order_amount', '0', NULL, '2023-10-26 12:04:19'),
-(134, 'minimum_order_amount_by_seller', '0', NULL, '2023-10-26 12:04:19'),
-(135, 'minimum_order_amount_status', '0', NULL, '2023-10-26 12:04:19'),
-(136, 'admin_login_url', 'admin', NULL, '2023-10-26 12:04:19'),
-(137, 'employee_login_url', 'employee', NULL, '2023-10-26 12:04:19'),
-(138, 'free_delivery_status', '0', NULL, '2023-10-26 12:04:19'),
-(139, 'free_delivery_responsibility', 'admin', NULL, '2023-10-26 12:04:19'),
-(140, 'free_delivery_over_amount', '0', NULL, '2023-10-26 12:04:19'),
-(141, 'free_delivery_over_amount_seller', '0', NULL, '2023-10-26 12:04:19'),
-(142, 'add_funds_to_wallet', '0', NULL, '2023-10-26 12:04:19'),
-(143, 'minimum_add_fund_amount', '0', NULL, '2023-10-26 12:04:19'),
-(144, 'maximum_add_fund_amount', '0', NULL, '2023-10-26 12:04:19'),
-(145, 'user_app_version_control', '{\"for_android\":{\"status\":1,\"version\":\"14.1\",\"link\":\"\"},\"for_ios\":{\"status\":1,\"version\":\"14.1\",\"link\":\"\"}}', NULL, '2023-10-26 12:04:19'),
-(146, 'seller_app_version_control', '{\"for_android\":{\"status\":1,\"version\":\"14.1\",\"link\":\"\"},\"for_ios\":{\"status\":1,\"version\":\"14.1\",\"link\":\"\"}}', NULL, '2023-10-26 12:04:19'),
-(147, 'delivery_man_app_version_control', '{\"for_android\":{\"status\":1,\"version\":\"14.1\",\"link\":\"\"},\"for_ios\":{\"status\":1,\"version\":\"14.1\",\"link\":\"\"}}', NULL, '2023-10-26 12:04:19'),
-(148, 'company_reliability', '[{\"item\":\"delivery_info\",\"title\":\"Fast Delivery all across the country\",\"image\":\"\",\"status\":1},{\"item\":\"safe_payment\",\"title\":\"Safe Payment\",\"image\":\"\",\"status\":1},{\"item\":\"return_policy\",\"title\":\"7 Days Return Policy\",\"image\":\"\",\"status\":1},{\"item\":\"authentic_product\",\"title\":\"100% Authentic Products\",\"image\":\"\",\"status\":1}]', NULL, NULL);
+(148, 'company_reliability', '[{\"item\":\"delivery_info\",\"title\":\"Fast Delivery all across the country\",\"image\":\"\",\"status\":1},{\"item\":\"safe_payment\",\"title\":\"Safe Payment\",\"image\":\"\",\"status\":1},{\"item\":\"return_policy\",\"title\":\"7 Days Return Policy\",\"image\":\"\",\"status\":1},{\"item\":\"authentic_product\",\"title\":\"100% Authentic Products\",\"image\":\"\",\"status\":1}]', NULL, NULL),
+(149, 'react_setup', '{\"status\":0,\"react_license_code\":\"\",\"react_domain\":\"\",\"react_platform\":\"\"}', NULL, '2024-01-09 04:05:15'),
+(150, 'app_activation', '{\"software_id\":\"\",\"is_active\":0}', NULL, '2024-01-09 04:05:15'),
+(151, 'shop_banner', '', NULL, '2023-10-13 11:34:53'),
+(152, 'map_api_status', '1', NULL, '2024-03-27 03:12:32'),
+(153, 'vendor_registration_header', '', '2024-05-16 03:52:50', '2024-05-16 03:52:50'),
+(154, 'vendor_registration_sell_with_us', '', '2024-05-16 03:52:50', '2024-05-16 03:52:50'),
+(155, 'business_process_step', '', '2024-05-16 03:52:50', '2024-05-16 03:52:50'),
+(156, 'business_process_main_section', '', '2024-05-16 03:52:50', '2024-05-16 03:52:50'),
+(157, 'download_vendor_app', '', '2024-05-16 03:52:50', '2024-05-16 03:52:50'),
+(158, 'brand_list_priority', '', '2024-05-16 03:52:50', '2024-05-16 03:52:50'),
+(159, 'category_list_priority', '', '2024-05-16 03:52:50', '2024-05-16 03:52:50'),
+(160, 'vendor_list_priority', '', '2024-05-16 03:52:50', '2024-05-16 03:52:50'),
+(161, 'flash_deal_priority', '', '2024-05-16 03:52:50', '2024-05-16 03:52:50'),
+(162, 'featured_product_priority', '', '2024-05-16 03:52:50', '2024-05-16 03:52:50'),
+(163, 'feature_deal_priority', '', '2024-05-16 03:52:50', '2024-05-16 03:52:50'),
+(164, 'new_arrival_product_list_priority', '', '2024-05-16 03:52:50', '2024-05-16 03:52:50'),
+(165, 'top_vendor_list_priority', '', '2024-05-16 03:52:50', '2024-05-16 03:52:50'),
+(166, 'category_wise_product_list_priority', '', '2024-05-16 03:52:50', '2024-05-16 03:52:50'),
+(167, 'top_rated_product_list_priority', '', '2024-05-16 03:52:50', '2024-05-16 03:52:50'),
+(168, 'best_selling_product_list_priority', '', '2024-05-16 03:52:50', '2024-05-16 03:52:50'),
+(169, 'searched_product_list_priority', '', '2024-05-16 03:52:50', '2024-05-16 03:52:50'),
+(170, 'vendor_product_list_priority', '', '2024-05-16 03:52:50', '2024-05-16 03:52:50');
 
 -- --------------------------------------------------------
 
@@ -463,6 +445,7 @@ CREATE TABLE `carts` (
   `tax` double NOT NULL DEFAULT '1',
   `discount` double NOT NULL DEFAULT '1',
   `tax_model` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'exclude',
+  `is_checked` tinyint(1) NOT NULL DEFAULT '0',
   `slug` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `thumbnail` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -549,6 +532,8 @@ CREATE TABLE `chattings` (
   `seen_by_admin` tinyint(1) DEFAULT NULL,
   `seen_by_delivery_man` tinyint(1) DEFAULT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '1',
+  `notification_receiver` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'admin, seller, customer, deliveryman',
+  `seen_notification` tinyint(1) DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `shop_id` bigint(20) DEFAULT NULL
@@ -989,6 +974,37 @@ CREATE TABLE `digital_product_otp_verifications` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `email_templates`
+--
+
+CREATE TABLE `email_templates` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `template_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `template_design_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `body` text COLLATE utf8mb4_unicode_ci,
+  `banner_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `logo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `button_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `button_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `footer_text` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `copyright_text` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `pages` json DEFAULT NULL,
+  `social_media` json DEFAULT NULL,
+  `hide_field` json DEFAULT NULL,
+  `button_content_status` tinyint(4) NOT NULL DEFAULT '1',
+  `product_information_status` tinyint(4) NOT NULL DEFAULT '1',
+  `order_information_status` tinyint(4) NOT NULL DEFAULT '1',
+  `status` tinyint(4) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `emergency_contacts`
 --
 
@@ -996,6 +1012,7 @@ CREATE TABLE `emergency_contacts` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `user_id` bigint(20) NOT NULL,
   `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `country_code` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `phone` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
   `status` tinyint(1) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -1090,8 +1107,10 @@ CREATE TABLE `guest_users` (
 --
 
 INSERT INTO `guest_users` (`id`, `ip_address`, `fcm_token`, `created_at`, `updated_at`) VALUES
-(1, '::1', NULL, '2023-10-13 05:34:54', NULL),
-(2, '::1', NULL, '2023-10-26 12:04:20', NULL);
+(1, '::1', NULL, '2024-02-19 08:35:50', NULL),
+(2, '::1', NULL, '2024-03-27 03:10:49', NULL),
+(3, '::1', NULL, '2024-03-27 03:12:35', NULL),
+(4, '::1', NULL, '2024-05-16 03:52:53', NULL);
 
 -- --------------------------------------------------------
 
@@ -1101,6 +1120,7 @@ INSERT INTO `guest_users` (`id`, `ip_address`, `fcm_token`, `created_at`, `updat
 
 CREATE TABLE `help_topics` (
   `id` bigint(20) UNSIGNED NOT NULL,
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'default',
   `question` text COLLATE utf8mb4_unicode_ci,
   `answer` text COLLATE utf8mb4_unicode_ci,
   `ranking` int(11) NOT NULL DEFAULT '1',
@@ -1412,7 +1432,18 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (249, '2023_10_21_123433_add_app_language_column_to_sellers_table', 73),
 (250, '2023_10_21_124657_add_app_language_column_to_delivery_men_table', 73),
 (251, '2023_10_22_130225_add_attachment_to_support_tickets_table', 73),
-(252, '2023_10_25_113233_make_message_nullable_in_chattings_table', 73);
+(252, '2023_10_25_113233_make_message_nullable_in_chattings_table', 73),
+(253, '2023_10_30_152005_make_attachment_column_type_change_to_reviews_table', 73),
+(254, '2024_01_14_192546_add_slug_to_shops_table', 74),
+(255, '2024_01_25_175421_add_country_code_to_emergency_contacts_table', 75),
+(256, '2024_02_01_200417_add_denied_count_and_approved_count_to_refund_requests_table', 75),
+(257, '2024_03_11_130425_add_seen_notification_and_notification_receiver_to_chattings_table', 76),
+(258, '2024_03_12_123322_update_images_column_in_refund_requests_table', 76),
+(259, '2024_03_21_134659_change_denied_note_column_type_to_text', 76),
+(260, '2024_04_03_093637_create_email_templates_table', 77),
+(261, '2024_04_17_102137_add_is_checked_column_to_carts_table', 77),
+(262, '2024_04_23_130436_create_vendor_registration_reasons_table', 77),
+(263, '2024_04_24_093932_add_type_to_help_topics_table', 77);
 
 -- --------------------------------------------------------
 
@@ -1469,43 +1500,44 @@ CREATE TABLE `notification_messages` (
 --
 
 INSERT INTO `notification_messages` (`id`, `user_type`, `key`, `message`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'customer', 'order_pending_message', 'order pen message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(2, 'customer', 'order_confirmation_message', 'Order con Message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(3, 'customer', 'order_processing_message', 'Order pro Message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(4, 'customer', 'out_for_delivery_message', 'Order ouut Message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(5, 'customer', 'order_delivered_message', 'Order del Message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(6, 'customer', 'order_returned_message', 'Order hh Message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(7, 'customer', 'order_failed_message', 'Order fa Message', 0, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(8, 'customer', 'order_canceled', '', 0, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(9, 'customer', 'order_refunded_message', 'customize your order refunded message message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(10, 'customer', 'refund_request_canceled_message', 'customize your refund request canceled message message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(11, 'customer', 'message_from_delivery_man', 'customize your message from delivery man message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(12, 'customer', 'message_from_seller', 'customize your message from seller message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(13, 'customer', 'fund_added_by_admin_message', 'customize your fund added by admin message message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(14, 'seller', 'new_order_message', 'customize your new order message message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(15, 'seller', 'order_cancellation_message', 'customize your order cancellation message message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(16, 'seller', 'refund_request_message', 'customize your refund request message message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(17, 'seller', 'order_edit_message', 'customize your order edit message message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(18, 'seller', 'withdraw_request_status_message', 'customize your withdraw request status message message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(19, 'seller', 'message_from_customer', 'customize your message from customer message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(20, 'seller', 'delivery_man_assign_by_admin_message', 'customize your delivery man assign by admin message message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(21, 'seller', 'order_delivered_message', 'customize your order delivered message message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(22, 'seller', 'order_canceled', 'customize your order canceled message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(23, 'seller', 'order_refunded_message', 'customize your order refunded message message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(24, 'seller', 'refund_request_canceled_message', 'customize your refund request canceled message message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(25, 'seller', 'refund_request_status_changed_by_admin', 'customize your refund request status changed by admin message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(26, 'delivery_man', 'new_order_assigned_message', '', 0, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(27, 'delivery_man', 'expected_delivery_date', '', 0, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(28, 'delivery_man', 'delivery_man_charge', 'customize your delivery man charge message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(29, 'delivery_man', 'order_canceled', 'customize your order canceled message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(30, 'delivery_man', 'order_rescheduled_message', 'customize your order rescheduled message message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(31, 'delivery_man', 'order_edit_message', 'customize your order edit message message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(32, 'delivery_man', 'message_from_seller', 'customize your message from seller message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(33, 'delivery_man', 'message_from_admin', 'customize your message from admin message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(34, 'delivery_man', 'message_from_customer', 'customize your message from customer message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(35, 'delivery_man', 'cash_collect_by_admin_message', 'customize your cash collect by admin message message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(36, 'delivery_man', 'cash_collect_by_seller_message', 'customize your cash collect by seller message message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19'),
-(37, 'delivery_man', 'withdraw_request_status_message', 'customize your withdraw request status message message', 1, '2023-10-26 12:04:19', '2023-10-26 12:04:19');
+(1, 'customer', 'order_pending_message', 'order pen message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(2, 'customer', 'order_confirmation_message', 'Order con Message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(3, 'customer', 'order_processing_message', 'Order pro Message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(4, 'customer', 'out_for_delivery_message', 'Order ouut Message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(5, 'customer', 'order_delivered_message', 'Order del Message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(6, 'customer', 'order_returned_message', 'Order hh Message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(7, 'customer', 'order_failed_message', 'Order fa Message', 0, '2023-10-30 11:02:55', '2024-05-16 03:52:50'),
+(8, 'customer', 'order_canceled', '', 0, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(9, 'customer', 'order_refunded_message', 'customize your order refunded message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(10, 'customer', 'refund_request_canceled_message', 'customize your refund request canceled message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(11, 'customer', 'message_from_delivery_man', 'customize your message from delivery man message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(12, 'customer', 'message_from_seller', 'customize your message from seller message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(13, 'customer', 'fund_added_by_admin_message', 'customize your fund added by admin message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(14, 'seller', 'new_order_message', 'customize your new order message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(15, 'seller', 'refund_request_message', 'customize your refund request message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(16, 'seller', 'order_edit_message', 'customize your order edit message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(17, 'seller', 'withdraw_request_status_message', 'customize your withdraw request status message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(18, 'seller', 'message_from_customer', 'customize your message from customer message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(19, 'seller', 'delivery_man_assign_by_admin_message', 'customize your delivery man assign by admin message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(20, 'seller', 'order_delivered_message', 'customize your order delivered message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(21, 'seller', 'order_canceled', 'customize your order canceled message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(22, 'seller', 'order_refunded_message', 'customize your order refunded message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(23, 'seller', 'refund_request_canceled_message', 'customize your refund request canceled message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(24, 'seller', 'refund_request_status_changed_by_admin', 'customize your refund request status changed by admin message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(25, 'delivery_man', 'new_order_assigned_message', '', 0, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(26, 'delivery_man', 'expected_delivery_date', '', 0, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(27, 'delivery_man', 'delivery_man_charge', 'customize your delivery man charge message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(28, 'delivery_man', 'order_canceled', 'customize your order canceled message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(29, 'delivery_man', 'order_rescheduled_message', 'customize your order rescheduled message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(30, 'delivery_man', 'order_edit_message', 'customize your order edit message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(31, 'delivery_man', 'message_from_seller', 'customize your message from seller message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(32, 'delivery_man', 'message_from_admin', 'customize your message from admin message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(33, 'delivery_man', 'message_from_customer', 'customize your message from customer message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(34, 'delivery_man', 'cash_collect_by_admin_message', 'customize your cash collect by admin message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(35, 'delivery_man', 'cash_collect_by_seller_message', 'customize your cash collect by seller message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(36, 'delivery_man', 'withdraw_request_status_message', 'customize your withdraw request status message message', 1, '2023-10-30 11:02:55', '2023-10-30 11:02:55'),
+(37, 'seller', 'product_request_approved_message', 'customize your product request approved message message', 1, '2024-02-19 08:35:38', '2024-02-19 08:35:38'),
+(38, 'seller', 'product_request_rejected_message', 'customize your product request rejected message message', 1, '2024-02-19 08:35:38', '2024-02-19 08:35:38');
 
 -- --------------------------------------------------------
 
@@ -1974,7 +2006,7 @@ CREATE TABLE `products` (
   `meta_description` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `meta_image` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `request_status` tinyint(1) NOT NULL DEFAULT '0',
-  `denied_note` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `denied_note` text COLLATE utf8mb4_unicode_ci,
   `shipping_cost` double(8,2) DEFAULT NULL,
   `multiply_qty` tinyint(1) DEFAULT NULL,
   `temp_shipping_cost` double(8,2) DEFAULT NULL,
@@ -2038,11 +2070,13 @@ CREATE TABLE `refund_requests` (
   `order_details_id` bigint(20) UNSIGNED NOT NULL,
   `customer_id` bigint(20) UNSIGNED NOT NULL,
   `status` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `approved_count` tinyint(4) NOT NULL DEFAULT '0',
+  `denied_count` tinyint(4) NOT NULL DEFAULT '0',
   `amount` double(8,2) NOT NULL,
   `product_id` bigint(20) UNSIGNED NOT NULL,
   `order_id` bigint(20) UNSIGNED NOT NULL,
   `refund_reason` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `images` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `images` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `approved_note` longtext COLLATE utf8mb4_unicode_ci,
@@ -2105,7 +2139,7 @@ CREATE TABLE `reviews` (
   `delivery_man_id` bigint(20) DEFAULT NULL,
   `order_id` bigint(20) DEFAULT NULL,
   `comment` mediumtext COLLATE utf8mb4_unicode_ci,
-  `attachment` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `attachment` json DEFAULT NULL,
   `rating` int(11) NOT NULL DEFAULT '0',
   `status` int(11) NOT NULL DEFAULT '1',
   `is_saved` tinyint(1) NOT NULL DEFAULT '0',
@@ -2312,6 +2346,7 @@ CREATE TABLE `shops` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `seller_id` bigint(20) NOT NULL,
   `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'en',
   `address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `contact` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
   `image` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'def.png',
@@ -2538,6 +2573,22 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `f_name`, `l_name`, `phone`, `image`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`, `street_address`, `country`, `city`, `zip`, `house_no`, `apartment_no`, `cm_firebase_token`, `is_active`, `payment_card_last_four`, `payment_card_brand`, `payment_card_fawry_token`, `login_medium`, `social_id`, `is_phone_verified`, `temporary_token`, `is_email_verified`, `wallet_balance`, `loyalty_point`, `login_hit_count`, `is_temp_blocked`, `temp_block_time`, `referral_code`, `referred_by`, `app_language`) VALUES
 (0, 'walking customer', 'walking', 'customer', '000000000000', 'def.png', 'walking@customer.com', NULL, '', NULL, NULL, '2022-02-03 03:46:01', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, NULL, NULL, 0, 0, NULL, NULL, NULL, 'en');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `vendor_registration_reasons`
+--
+
+CREATE TABLE `vendor_registration_reasons` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `priority` tinyint(4) NOT NULL DEFAULT '1',
+  `status` tinyint(4) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2800,6 +2851,12 @@ ALTER TABLE `delivery_zip_codes`
 -- Indexes for table `digital_product_otp_verifications`
 --
 ALTER TABLE `digital_product_otp_verifications`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `email_templates`
+--
+ALTER TABLE `email_templates`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -3157,6 +3214,12 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `users_email_unique` (`email`);
 
 --
+-- Indexes for table `vendor_registration_reasons`
+--
+ALTER TABLE `vendor_registration_reasons`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `wallet_transactions`
 --
 ALTER TABLE `wallet_transactions`
@@ -3242,7 +3305,7 @@ ALTER TABLE `brands`
 -- AUTO_INCREMENT for table `business_settings`
 --
 ALTER TABLE `business_settings`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=149;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=171;
 
 --
 -- AUTO_INCREMENT for table `carts`
@@ -3365,6 +3428,12 @@ ALTER TABLE `digital_product_otp_verifications`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `email_templates`
+--
+ALTER TABLE `email_templates`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `emergency_contacts`
 --
 ALTER TABLE `emergency_contacts`
@@ -3398,7 +3467,7 @@ ALTER TABLE `flash_deal_products`
 -- AUTO_INCREMENT for table `guest_users`
 --
 ALTER TABLE `guest_users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `help_topics`
@@ -3422,7 +3491,7 @@ ALTER TABLE `loyalty_point_transactions`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=253;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=264;
 
 --
 -- AUTO_INCREMENT for table `most_demandeds`
@@ -3440,7 +3509,7 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `notification_messages`
 --
 ALTER TABLE `notification_messages`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `notification_seens`
@@ -3687,6 +3756,12 @@ ALTER TABLE `translations`
 --
 ALTER TABLE `users`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `vendor_registration_reasons`
+--
+ALTER TABLE `vendor_registration_reasons`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `wallet_transactions`

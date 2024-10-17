@@ -9,7 +9,7 @@
 
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex gap-2 align-items-center">
-                <img width="20" src="{{asset('/public/assets/back-end/img/seller_sale.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/seller_sale.png')}}" alt="">
                 {{translate('product_Report')}}
             </h2>
         </div>
@@ -84,7 +84,7 @@
                             <button type="submit" class="btn btn--primary">{{translate('search')}}</button>
                         </div>
                     </form>
-                    <div>
+                    <div class="dropdown">
                         <button type="button" class="btn btn-outline--primary text-nowrap btn-block"
                                 data-toggle="dropdown">
                             <i class="tio-download-to"></i>
@@ -95,7 +95,7 @@
                             <li>
                                 <a class="dropdown-item"
                                    href="{{ route('admin.stock.product-stock-export', ['sort' => request('sort'), 'category_id' => request('category_id'), 'seller_id' => request('seller_id'), 'search' => request('search')]) }}">
-                                    <img width="14" src="{{asset('/public/assets/back-end/img/excel.png')}}" alt="">
+                                    <img width="14" src="{{dynamicAsset(path: 'public/assets/back-end/img/excel.png')}}" alt="">
                                     {{translate('excel')}}
                                 </a>
                             </li>
@@ -129,7 +129,7 @@
                                 <td>{{$products->firstItem()+$key}}</td>
                                 <td>
                                     <div class="p-name">
-                                        <a href="{{route('admin.products.view',[$data['id']])}}"
+                                        <a href="{{route('admin.products.view',['addedBy'=>($data['added_by'] =='seller'?'vendor' : 'in-house'),'id'=>$data['id']])}}"
                                            class="media align-items-center gap-2 title-color">
                                             <span>{{\Illuminate\Support\Str::limit($data['name'],20)}}</span>
                                         </a>
@@ -150,18 +150,6 @@
                                 </td>
                             </tr>
                         @endforeach
-                        @if(count($products)==0)
-                            <tr>
-                                <td colspan="5">
-                                    <div class="text-center p-4">
-                                        <img class="mb-3 w-160"
-                                             src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}"
-                                             alt="Image Description">
-                                        <p class="mb-0">{{ translate('no_data_to_show')}}</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endif
                         </tbody>
                     </table>
                 </div>
@@ -170,6 +158,9 @@
                         {!! $products->links() !!}
                     </div>
                 </div>
+                @if(count($products)==0)
+                    @include('layouts.back-end._empty-state',['text'=>'no_product_found'],['image'=>'default'])
+                @endif
             </div>
         </div>
     </div>

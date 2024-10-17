@@ -38,12 +38,13 @@
                                                 @endif
                                             </div>
                                             <h2 class="fs-36 absolute-white d-flex align-items-center">
-                                                {{Helpers::currency_converter($total_wallet_balance)}}
+                                                {{webCurrencyConverter($total_wallet_balance ?? 0)}}
                                                 @if ($add_funds_to_wallet)
-                                                    <span class="ms-2 fs-18">
-                                                    <i class="bi bi-info-circle" data-bs-toggle="tooltip"
-                                                       data-bs-placement="right"
-                                                       title="{{ translate('if_you_want_to_add_fund_to_your_wallet_then_click_add_fund_button') }}"></i>
+                                                    <span class="ms-2 fs-18 d-none d-sm-block" data-bs-toggle="tooltip"
+                                                          data-bs-placement="top"
+                                                          title="{{ translate('this_wallet_balance_can_be_used_for_product_purchase_and_if_want_to_add_more_fund_to_wallet_click_on_add_fund') }}"
+                                                    >
+                                                    <i class="bi bi-info-circle"></i>
                                                 </span>
                                                 @endif
 
@@ -68,10 +69,10 @@
                                                                 </div>
                                                                 <div>
                                                                     @if ($bonus->bonus_type == 'percentage')
-                                                                        <p>{{ translate('add_fund_to_wallet') }} {{ Helpers::currency_converter($bonus->min_add_money_amount) }} {{ translate('and_enjoy') }} {{ $bonus->bonus_amount }}
+                                                                        <p>{{ translate('add_fund_to_wallet') }} {{ webCurrencyConverter($bonus->min_add_money_amount) }} {{ translate('and_enjoy') }} {{ $bonus->bonus_amount }}
                                                                             % {{ translate('bonus') }}</p>
                                                                     @else
-                                                                        <p>{{ translate('add_fund_to_wallet') }} {{ Helpers::currency_converter($bonus->min_add_money_amount) }} {{ translate('and_enjoy') }} {{ Helpers::currency_converter($bonus->bonus_amount) }} {{ translate('bonus') }}</p>
+                                                                        <p>{{ translate('add_fund_to_wallet') }} {{ webCurrencyConverter($bonus->min_add_money_amount) }} {{ translate('and_enjoy') }} {{ webCurrencyConverter($bonus->bonus_amount) }} {{ translate('bonus') }}</p>
                                                                     @endif
                                                                     <p class="fw-bold text-primary mb-0">{{ $bonus->description ? Str::limit($bonus->description, 50):'' }}</p>
                                                                 </div>
@@ -117,40 +118,40 @@
                                                     <button type="button"
                                                             class="border-0 bg-transparent dropdown-toggle text-dark p-0 custom-pe-3 text-capitalize"
                                                             data-bs-toggle="dropdown" aria-expanded="false">
-                                                        {{ request()->has('type') ? (request('type') == 'all'? translate('all_transactions') : ucwords(translate(request('type')))):translate('all_transactions')}}
+                                                        {{ request()->has('type') ? (request('type') == 'all' ? translate('all_transactions') : ucwords(translate(request('type')))):translate('all_transactions')}}
                                                     </button>
                                                     <ul class="dropdown-menu dropdown-menu-end">
 
-                                                        <li>
+                                                        <li class="{{!request()->has('type') || request('type') == 'all' ? 'bg--light':'' }}">
                                                             <a class="d-flex text-capitalize" href="{{route('wallet')}}/?type=all">
                                                                 {{translate('all_transaction')}}
                                                             </a>
                                                         </li>
-                                                        <li>
+                                                        <li class="{{request('type') == 'order_transactions' ? 'bg--light':'' }}">
                                                             <a class="d-flex text-capitalize"
                                                                href="{{route('wallet')}}/?type=order_transactions">
                                                                 {{translate('order_transactions')}}
                                                             </a>
                                                         </li>
-                                                        <li>
+                                                        <li class="{{request('type') == 'order_refund' ? 'bg--light':'' }}">
                                                             <a class="d-flex"
                                                                href="{{route('wallet')}}/?type=order_refund">
                                                                 {{translate('order_refund')}}
                                                             </a>
                                                         </li>
-                                                        <li>
+                                                        <li class="{{request('type') == 'converted_from_loyalty_point' ? 'bg--light':'' }}">
                                                             <a class="d-flex"
                                                                href="{{route('wallet')}}/?type=converted_from_loyalty_point">
                                                                 {{translate('converted_from_loyalty_point')}}
                                                             </a>
                                                         </li>
-                                                        <li>
+                                                        <li class="{{request('type') == 'added_via_payment_method' ? 'bg--light':'' }}">
                                                             <a class="d-flex"
                                                                href="{{route('wallet')}}/?type=added_via_payment_method">
                                                                 {{translate('added_via_payment_method')}}
                                                             </a>
                                                         </li>
-                                                        <li>
+                                                        <li class="{{request('type') == 'add_fund_by_admin' ? 'bg--light':'' }}">
                                                             <a class="d-flex"
                                                                href="{{route('wallet')}}/?type=add_fund_by_admin">
                                                                 {{translate('add_fund_by_admin')}}
@@ -172,7 +173,7 @@
                                                             <img
                                                                 src="{{ theme_asset('assets/img/icons/coin-success.png') }}"
                                                                 width="25" alt="">
-                                                             {{'+'. Helpers::currency_converter($item['admin_bonus']) }}
+                                                             {{'+'. webCurrencyConverter($item['admin_bonus']) }}
                                                         </h4>
                                                         <h6 class="text-muted">
                                                             {{translate('admin_bonus')}}
@@ -204,7 +205,9 @@
                                                                 width="25" alt="">
                                                         @endif
 
-                                                        {{ $item['debit'] != 0 ? ' - '.Helpers::currency_converter($item['debit']) : ' + '.Helpers::currency_converter($item['credit']) }}
+                                                        <span class="absolute-ltr font-bold fs-18">
+                                                            {{ $item['debit'] != 0 ? ' - '.webCurrencyConverter(amount: $item['debit']): ' + '.webCurrencyConverter(amount: $item['credit']) }}
+                                                        </span>
                                                     </h4>
                                                     <h6 class="text-muted">
                                                         @if ($item['transaction_type'] == 'add_fund_by_admin')
@@ -325,7 +328,7 @@
                                                 @php( $payment_method_img = !empty($gateway->additional_data) ? json_decode($gateway->additional_data)->gateway_image : '' )
                                                 <div class="form-check-label gap-3 d-flex align-items-center">
                                                     <img width="60" alt=""
-                                                         src="{{ getValidImage(path: 'storage/app/public/payment_modules/gateway_image/'.$payment_method_img, type: 'banner') }}">
+                                                         src="{{ getValidImage(path: 'storage/app/public/payment_modules/gateway_image/'.$payment_method_img, type:'banner') }}">
                                                     <span>{{ $payment_method_title }}</span>
                                                 </div>
                                             </label>

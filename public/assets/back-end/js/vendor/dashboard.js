@@ -1,113 +1,7 @@
 "use strict";
-
-// INITIALIZATION OF CHARTJS
-// =======================================================
-Chart.plugins.unregister(ChartDataLabels);
-
-$('.js-chart').each(function () {
-    $.HSCore.components.HSChartJS.init($(this));
-});
-
-var updatingChart = $.HSCore.components.HSChartJS.init($('#updatingData'));
-
-$(".earning-statistics").on("click", function () {
-    earningStatisticsUpdate(this);
-});
-
-function earningStatisticsUpdate(t) {
-    let value = $(t).attr('data-earn-type');
-    let url = $('#earning-statistics-url').data('url');
-
-    $.ajax({
-        url: url,
-        type: 'GET',
-        data: {
-            type: value
-        },
-        beforeSend: function () {
-            $('#loading').fadeIn();
-        },
-        success: function (response_data) {
-            document.getElementById("updatingData").remove();
-            let graph = document.createElement('canvas');
-            graph.setAttribute("id", "updatingData");
-            document.getElementById("set-new-graph").appendChild(graph);
-
-            var ctx = document.getElementById("updatingData").getContext("2d");
-            var options = {
-                responsive: true,
-                bezierCurve: false,
-                maintainAspectRatio: false,
-                scales: {
-                    xAxes: [{
-                        gridLines: {
-                            color: "rgba(180, 208, 224, 0.5)",
-                            zeroLineColor: "rgba(180, 208, 224, 0.5)",
-                        }
-                    }],
-                    yAxes: [{
-                        gridLines: {
-                            color: "rgba(180, 208, 224, 0.5)",
-                            zeroLineColor: "rgba(180, 208, 224, 0.5)",
-                            borderDash: [8, 4],
-                        }
-                    }]
-                },
-                legend: {
-                    display: true,
-                    position: "top",
-                    labels: {
-                        usePointStyle: true,
-                        boxWidth: 6,
-                        fontColor: "#758590",
-                        fontSize: 14
-                    }
-                },
-                plugins: {
-                    datalabels: {
-                        display: false
-                    }
-                },
-            };
-            var myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: [],
-                    datasets: [
-                        {
-                            label: $('#seller-text').data('text'),
-                            data: [],
-                            backgroundColor: "#0177CD",
-                            borderColor: "#0177CD",
-                            fill: false,
-                            lineTension: 0.3,
-                            radius: 0
-                        },
-                        {
-                            label: $('#in-house-text').data('text'),
-                            data: [],
-                            backgroundColor: "#FFB36D",
-                            borderColor: "#FFB36D",
-                            fill: false,
-                            lineTension: 0.3,
-                            radius: 0
-                        }
-                    ]
-                },
-                options: options
-            });
-
-            myChart.data.labels = response_data.label;
-            myChart.data.datasets[0].data = response_data.vendorEarningArray;
-            myChart.data.datasets[1].data = response_data.commissionGivenToAdminArray;
-
-            myChart.update();
-        },
-        complete: function () {
-            $('#loading').fadeOut();
-        }
-    });
-}
+let isMonthCheckedForEarningStatistic = false;
+let countLabel = 0;
+let currencySymbol = $('#get-currency-symbol').data('currency-symbol')
 
 $(document).ready(function () {
     let method_id = $('#withdraw_method').val();
@@ -128,15 +22,9 @@ $(document).ready(function () {
         console.log(url.replace(':type', type))
         $.get({
             url: url.replace(':type', type),
-            beforeSend: function () {
-                $('#loading').fadeIn();
-            },
             success: function (data) {
                 $('#order_stats').html(data.view)
             },
-            complete: function () {
-                $('#loading').fadeOut();
-            }
         });
     });
 });
@@ -175,102 +63,150 @@ function withdraw_method_field(method_id){
     });
 }
 
-try{
-    var ctx = document.getElementById('business-overview');
-    var myChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: [
-                '$("#customer-text").data("text") ',
-                '$("#store-text").data("text") ',
-                '$("#product-text").data("text") ',
-                '$("#order-text").data("text") ',
-                '$("#brand-text").data("text") ',
-            ],
-            datasets: [{
-                label: '$("#business-text").data("text")',
-                data: ['$("#customers-text").data("text")','$("#products-text").data("text")', '$("#orders-text").data("text")', '$("#brands-text").data("text")'],
-                backgroundColor: [
-                    '#041562',
-                    '#DA1212',
-                    '#EEEEEE',
-                    '#11468F',
-                    '#000000',
-                ],
-                hoverOffset: 4
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
+function earningStatistics(){
+    $('.earn-statistics').on('click', function () {
+        let value = $(this).attr('data-date-type');
+        let url = $('#earn-statistics').data('action');
+        $.ajax({
+            url: url,
+            type: 'GET',
+            data: {
+                type: value
+            },
+            beforeSend: function () {
+                $('#loading').fadeIn();
+            },
+            success: function (data) {
+                $('#earn-statistics-div').empty().html(data.view);
+                setMonthResponsiveDataForEarningStatistic();
+                countLabel = parseInt($('input[name=earn_statistics_label_count]').val());
+                earningStatisticsApexChart();
+                earningStatistics();
+            },
+            complete: function () {
+                $('#loading').fadeOut();
             }
-        }
+        });
     });
-}catch (e) {
 }
-
-$(function () {
-
-    //get the doughnut chart canvas
-    var ctx1 = $("#user_overview");
-
-    //doughnut chart data
-    var data1 = {
-        labels: ["Customer", "Vendor", "Delivery Man"],
-        datasets: [
-            {
-                label: "User Overview",
-                data: [88297, 34546, 15000],
-                backgroundColor: [
-                    "#017EFA",
-                    "#51CBFF",
-                    "#56E7E7",
-                ],
-                borderColor: [
-                    "#017EFA",
-                    "#51CBFF",
-                    "#56E7E7",
-                ],
-                borderWidth: [1, 1, 1]
-            }
-        ]
-    };
-
-    //options
-    var options = {
-        responsive: true,
-        legend: {
-            display: true,
-            position: "bottom",
-            align: "start",
-            maxWidth: 100,
-            labels: {
-                usePointStyle: true,
-                boxWidth: 6,
-                fontColor: "#758590",
-                fontSize: 14
-            }
-        },
-        plugins: {
-            datalabels: {
-                display: false
-            }
-        },
-    };
-
-    //create Chart class object
-    var chart1 = new Chart(ctx1, {
-        type: "doughnut",
-        data: data1,
-        options: options
+earningStatistics();
+function setMonthResponsiveDataForEarningStatistic() {
+    $('.earn-statistics-option input:radio[name="statistics"]').change(function() {
+        isMonthCheckedForEarningStatistic = $('input:radio[name="statistics"][value="MonthEarn"]').is(':checked');
     });
-});
+}
+setMonthResponsiveDataForEarningStatistic();
+let windowSize = getWindowSize();
 
-// function call_duty() {
-//     toastr.warning('{{translate('update_your_bank_info_first')}}!', '{{translate('warning')}}!', {
-//         CloseButton: true,
-//         ProgressBar: true
-//     });
-// }
+function earningStatisticsApexChart(){
+    let earnStatisticsData = $('#earn-statistics-data');
+    const vendorEarn = earnStatisticsData.data('vendor-earn');
+    const commissionEarn = earnStatisticsData.data('commission-earn');
+    let label = earnStatisticsData.data('label');
+    if (windowSize.width < 767){
+        label =  getLabelData(label,countLabel,isMonthCheckedForEarningStatistic)
+    }
+    var options = {
+        series: [
+            {
+                name: earnStatisticsData.data('vendor-text'),
+                data: Object.values(vendorEarn)
+            },
+            {
+                name: earnStatisticsData.data('commission-text'),
+                data: Object.values(commissionEarn)
+            }
+        ],
+        chart: {
+            height: 386,
+            type: 'line',
+            dropShadow: {
+                enabled: true,
+                color: '#000',
+                top: 18,
+                left: 7,
+                blur: 10,
+                opacity: 0.2
+            },
+            toolbar: {
+                show: false
+            }
+        },
+        yaxis: {
+            labels: {
+                offsetX: 0,
+                formatter: function(value) {
+                    return  currencySymbol+value
+                }
+            },
+        },
+        colors: ['#4FA7FF', '#82C662'],
+        dataLabels: {
+            enabled: false,
+        },
+        stroke: {
+            curve: 'smooth',
+        },
+        grid: {
+            xaxis: {
+                lines: {
+                    show: true
+                }
+            },
+            yaxis: {
+                lines: {
+                    show: true
+                }
+            },
+            borderColor: '#CAD2FF',
+            strokeDashArray: 5,
+        },
+        markers: {
+            size: 1
+        },
+        theme: {
+            mode: 'light',
+        },
+        xaxis: {
+            categories: Object.values(label)
+        },
+        legend: {
+            position: 'top',
+            horizontalAlign: 'center',
+            floating: false,
+            offsetY: -10,
+            offsetX: 0,
+            itemMargin: {
+                horizontal: 10,
+                vertical: 10
+            },
+        },
+        padding: {
+            top: 0,
+            right: 0,
+            bottom: 200,
+            left: 10
+        },
+    };
+    var chart = new ApexCharts(document.getElementById("earning-apex-line-chart"), options);
+    chart.render();
+}
+earningStatisticsApexChart();
+
+function getLabelData(label,count,status){
+    let mod = (count % 5);
+    if (status === true ) {
+        label.forEach((val, index) => {
+            if (val % 5 === 0 || val === count) {
+                label[index] = (val !== count && mod <= 1 && (count - mod === val) ? '' : val);
+            }else{
+                label[index]='';
+            }
+        });
+    }else {
+        label.forEach((val, index) => {
+            label[index]=val.substring(0,3);
+        });
+    }
+    return label;
+}

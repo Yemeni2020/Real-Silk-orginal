@@ -6,7 +6,7 @@
     <div class="content container-fluid">
         <div class="mb-4 pb-2">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{asset('/public/assets/back-end/img/system-setting.png')}}" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/system-setting.png')}}" alt="">
                 {{translate('system_setup')}}
             </h2>
         </div>
@@ -16,10 +16,10 @@
                 <div class="card">
                     <div class="border-bottom px-4 py-3">
                         <h5 class="mb-0 text-capitalize d-flex align-items-center gap-2">
-                            <img width="20" src="{{asset('/public/assets/back-end/img/environment.png')}}" alt="">
+                            <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/environment.png')}}" alt="">
                             {{translate('upload_the_updated_file')}}
                             <span class="ml-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{translate('this_module_will_run_for_updates_after_version_13.1')}}">
-                                <img class="info-img w-200" src="{{asset('/public/assets/back-end/img/info-circle.svg')}}" alt="img">
+                                <img class="info-img w-200" src="{{dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg')}}" alt="img">
                             </span>
                         </h5>
                     </div>
@@ -67,7 +67,7 @@
                                     </button>
                                 </div>
                             @else
-                                <div class="row">
+                                <div class="row" id="update-error-message">
                                     <div class="col-12">
                                         <div class="alert alert-soft-{{($conditionOne)?'success':'danger'}}" role="alert">
                                             {{'1.'.' '.translate('please_make_sure').' '.','.' '.translate('your_server_php').' '.','.' '.'"'.translate('upload_max_filesize').'"'.' '.translate('value_is_greater_or_equal_to').' '.'180M'.'.'.translate('current_value_is').'-'.ini_get('upload_max_filesize')}}
@@ -76,6 +76,11 @@
                                             {{'2.'.' '.translate('please_make_sure').' '.','.' '.translate('your_server_php').' '.','.' '.'"'.translate('post_max_size').'"'.' '.translate('value_is_greater_or_equal_to').' '.'200M'.'.'.translate('current_value_is').'-'.ini_get('post_max_size')}}
                                         </div>
                                     </div>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-end flex-wrap gap-10">
+                                    <button type="button" class="btn btn--primary px-4" id="update-button-message">
+                                        {{translate('upload_&_update')}}
+                                    </button>
                                 </div>
                             @endif
                         </form>
@@ -88,5 +93,5 @@
 @endsection
 
 @push('script')
-    <script src="{{asset('public/assets/back-end/js/admin/business-setting/business-setting.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/admin/business-setting/business-setting.js')}}"></script>
 @endpush

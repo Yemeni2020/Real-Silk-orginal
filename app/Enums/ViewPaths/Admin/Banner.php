@@ -26,6 +26,7 @@ enum Banner
 
     const UPDATE = [
         URI => 'update',
-        VIEW => 'admin-views.banner.edit'
+        VIEW => 'admin-views.banner.edit',
+        ROUTE => 'admin.banner.list'
     ];
 }

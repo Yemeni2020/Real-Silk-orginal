@@ -2,13 +2,13 @@
 
 namespace App\Http\Requests\Vendor;
 
-use App\Enums\SessionKey;
-use App\Http\Requests\Request;
-use App\Traits\RecaptchaTrait;
+use App\Traits\ResponseHandler;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
-class LoginRequest extends Request
+class LoginRequest extends FormRequest
 {
-    use RecaptchaTrait;
+    use ResponseHandler;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -29,14 +29,25 @@ class LoginRequest extends Request
     {
         return [
             'email' => 'required|email',
-            'password' => 'required|min:6',
+            'password' => 'required|min:8',
         ];
     }
 
+    /**
+     * @return array
+     * Get the validation error message
+     */
     public function messages(): array
     {
         return [
-            'required' => translate('the') . ' :attribute '.translate('field is required').'.'
+            'email.required' => translate('The_email_field_is_required'),
+            'password.required' => translate('The_password_field_is_required'),
+            'password.min' => translate('The_password_must_be_at_least_8_characters'),
         ];
+    }
+
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        throw new HttpResponseException(response()->json(['errors' => $this->errorProcessor($validator)]));
     }
 }

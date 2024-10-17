@@ -16,8 +16,6 @@
                 {{ translate('the_products_are_shown_in_this_list,_which_quantity_is_below') }} {{ $stockLimit }}
             </p>
         </div>
-
-
         <div class="row mt-30">
             <div class="col-md-12">
                 <div class="card">
@@ -33,7 +31,7 @@
                                         </div>
                                         <input id="datatableSearch_" type="search" name="searchValue"
                                                class="form-control"
-                                               placeholder="{{ translate('search_Product_Name') }}"
+                                               placeholder="{{ translate('search_by_Product_Name') }}"
                                                aria-label="Search orders"
                                                value="{{ $searchValue }}" required>
                                         <button type="submit" class="btn btn--primary">
@@ -47,19 +45,19 @@
                                 <select name="qty_order_sort" class="form-control action-select-onchange-get-view"
                                         data-url-prefix="{{ route('vendor.products.stock-limit-list') }}/?sortOrderQty=">
                                     <option value="default" {{ $sortOrderQty== "default"?'selected':''}}>
-                                        {{ translate('default_sort') }}
+                                        {{ translate('default') }}
                                     </option>
                                     <option value="quantity_asc" {{ $sortOrderQty== "quantity_asc"?'selected':''}}>
-                                        {{ translate('quantity_sort_by_(low_to_high)') }}
+                                        {{ translate('inventory_quantity(low_to_high)') }}
                                     </option>
                                     <option value="quantity_desc" {{ $sortOrderQty== "quantity_desc"?'selected':''}}>
-                                        {{ translate('quantity_sort_by_(high_to_low)') }}
+                                        {{ translate('inventory_quantity(high_to_low)') }}
                                     </option>
                                     <option value="order_asc" {{ $sortOrderQty== "order_asc"?'selected':''}}>
-                                        {{ translate('order_sort_by_(low_to_high)') }}
+                                        {{ translate('order_volume(low_to_high)') }}
                                     </option>
                                     <option value="order_desc" {{ $sortOrderQty== "order_desc"?'selected':''}}>
-                                        {{ translate('order_sort_by_(high_to_low)') }}
+                                        {{ translate('order_volume(high_to_low)') }}
                                     </option>
                                 </select>
                             </div>
@@ -74,12 +72,12 @@
                                 <tr>
                                     <th>{{ translate('SL') }}</th>
                                     <th>{{ translate('product_Name') }}</th>
-                                    <th>{{ translate('product_Type') }}</th>
-                                    <th>{{ translate('selling_price') }}</th>
+                                    <th>{{ translate('unit_price') }}</th>
                                     <th>{{ translate('verify_status') }}</th>
-                                    <th class="text-center">{{ translate('active_Status') }}</th>
                                     <th class="text-center">{{ translate('quantity') }}</th>
                                     <th class="text-center">{{ translate('orders') }}</th>
+                                    <th class="text-center">{{ translate('active_Status') }}</th>
+                                    <th class="text-center">{{ translate('action') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -89,16 +87,14 @@
                                     <td>
                                         <a href="{{route('vendor.products.view',[$product['id']]) }}"
                                            class="media align-items-center gap-2">
-                                            <img
-                                                src="{{ productImagePath(type: 'thumbnail') }}/{{ $product['thumbnail']}}"
-                                                data-onerror="{{ asset('/public/assets/back-end/img/brand-logo.png') }}"
-                                                class="avatar border onerror-image" alt="">
+                                            <img src="{{ getStorageImages(path:$product->thumbnail_full_url,type: 'backend-product')}}"
+                                                data-onerror="{{ dynamicAsset(path: '/public/assets/back-end/img/brand-logo.png') }}"
+                                                class="avatar border object-fit-cover" alt="">
                                             <span class="media-body title-color hover-c1">
                                                 {{ Str::limit($product['name'], 20) }}
                                             </span>
                                         </a>
                                     </td>
-                                    <td>{{ ucfirst($product['product_type']) }}</td>
                                     <td>
                                         {{ setCurrencySymbol(amount: usdToDefaultCurrency(amount: $product['unit_price']), currencyCode: getCurrencyCode()) }}
                                     </td>
@@ -117,7 +113,22 @@
                                             </label>
                                         @endif
                                     </td>
-
+                                    <td>
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            {{ $product['current_stock']}}
+                                            <button class="btn py-0 px-2 fz-18 action-update-product-quantity"
+                                                    id="{{ $product['id'] }}"
+                                                    data-url="{{ route('vendor.products.get-variations').'?id='.$product['id'] }}"
+                                                    type="button" data-toggle="modal" data-target="#update-quantity"
+                                                    title="{{ translate('update_quantity') }}"
+                                            >
+                                                <i class="tio-add-circle c1"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        {{ $product['order_details_count']}}
+                                    </td>
                                     <td class="text-center">
                                         <form action="{{route('vendor.products.status-update') }}" method="post"
                                               id="product-status{{ $product['id']}}-form"
@@ -142,20 +153,27 @@
                                         </form>
                                     </td>
                                     <td>
-                                        <div class="d-flex align-items-center justify-content-center">
-                                            {{ $product['current_stock']}}
-                                            <button class="btn py-0 px-2 fz-18 action-update-product-quantity"
-                                                    id="{{ $product['id'] }}"
-                                                    data-url="{{ route('vendor.products.get-variations').'?id='.$product['id'] }}"
-                                                    type="button" data-toggle="modal" data-target="#update-quantity"
-                                                    title="{{ translate('update_quantity') }}"
-                                            >
-                                                <i class="tio-add-circle c1"></i>
-                                            </button>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a class="btn btn-outline-info btn-sm square-btn"
+                                               title="{{ translate('barcode') }}"
+                                               href="{{ route('vendor.products.barcode', [$product['id']]) }}">
+                                                <i class="tio-barcode"></i>
+                                            </a>
+                                            <a class="btn btn-outline--primary btn-sm square-btn"
+                                               title="{{ translate('edit') }}"
+                                               href="{{route('vendor.products.update',[$product['id']]) }}">
+                                                <i class="tio-edit"></i>
+                                            </a>
+                                            <span class="btn btn-outline-danger btn-sm square-btn delete-data"
+                                                  title="{{ translate('delete') }}"
+                                                  data-id="product-{{ $product['id']}}">
+                                                <i class="tio-delete"></i>
+                                            </span>
                                         </div>
-                                    </td>
-                                    <td class="text-center">
-                                        {{ $product['order_details_count']}}
+                                        <form action="{{ route('vendor.products.delete', [$product['id']]) }}"
+                                              method="post" id="product-{{ $product['id']}}">
+                                            @csrf @method('delete')
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
@@ -170,12 +188,7 @@
                     </div>
 
                     @if(count($products)==0)
-                        <div class="text-center p-4">
-                            <img class="mb-3 w-160"
-                                 src="{{ asset('public/assets/back-end/svg/illustrations/sorry.svg') }}"
-                                 alt="Image Description">
-                            <p class="mb-0">{{ translate('no_data_to_show') }}</p>
-                        </div>
+                        @include('layouts.back-end._empty-state',['text'=>'no_product_found'],['image'=>'default'])
                     @endif
                 </div>
             </div>

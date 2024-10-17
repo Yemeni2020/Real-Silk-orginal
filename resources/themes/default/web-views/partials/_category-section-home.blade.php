@@ -20,12 +20,12 @@
                                 @foreach($categories as $key => $category)
                                     @if ($key<10)
                                         <div class="text-center __m-5px __cate-item">
-                                            <a href="{{route('products',['id'=> $category['id'],'data_from'=>'category','page'=>1])}}">
+                                            <a href="{{route('products',['category_id'=> $category['id'],'data_from'=>'category','page'=>1])}}">
                                                 <div class="__img">
                                                     <img alt="{{ $category->name }}"
-                                                         src="{{ getValidImage(path: 'storage/app/public/category/'.$category->icon, type: 'category') }}">
+                                                         src="{{ getStorageImages(path:$category->icon_full_url, type: 'category') }}">
                                                 </div>
-                                                <p class="text-center small mt-2">{{Str::limit($category->name, 12)}}</p>
+                                                <p class="text-center fs-13 font-semibold mt-2">{{Str::limit($category->name, 12)}}</p>
                                             </a>
                                         </div>
                                     @endif
@@ -37,10 +37,10 @@
                                 @foreach($categories as $key => $category)
                                     @if ($key<10)
                                         <div class="text-center m-0 __cate-item w-100">
-                                            <a href="{{route('products',['id'=> $category['id'],'data_from'=>'category','page'=>1])}}">
+                                            <a href="{{route('products',['category_id'=> $category['id'],'data_from'=>'category','page'=>1])}}">
                                                 <div class="__img mw-100 h-auto">
                                                     <img alt="{{ $category->name }}"
-                                                         src="{{ getValidImage(path: 'storage/app/public/category/'.$category->icon, type: 'category') }}">
+                                                         src="{{ getStorageImages(path: $category->icon_full_url, type: 'category') }}">
                                                 </div>
                                                 <p class="text-center small mt-2">{{Str::limit($category->name, 12)}}</p>
                                             </a>

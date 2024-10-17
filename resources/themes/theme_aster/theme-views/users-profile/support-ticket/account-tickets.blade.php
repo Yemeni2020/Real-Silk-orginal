@@ -21,7 +21,7 @@
                                         <div class="media gap-2 gap-sm-3">
                                             <div class="avatar">
                                                 <img loading="lazy" class="img-fit dark-support" alt=""
-                                                    src="{{ getValidImage(path: 'storage/app/public/profile/'.(customer_info()->image), type:'avatar' ) }}">
+                                                    src="{{ getStorageImages(path: customer_info()->image_full_url, type:'avatar' ) }}">
                                             </div>
                                             <div class="media-body">
                                                 <div class="d-flex flex-column gap-1">
@@ -70,7 +70,14 @@
                                 </div>
                             @endforeach
                             @if($supportTickets->count()==0)
-                                <h5 class="text-center">{{translate('not_found_anything')}}</h5>
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <div class="d-flex flex-column justify-content-center align-items-center gap-2 py-5 w-100">
+                                        <img width="80" class="mb-3" src="{{ theme_asset('assets/img/empty-state/empty-ticket.svg') }}" alt="">
+                                        <h5 class="text-center text-muted">
+                                            {{ translate('No_ticket_created_yet') }}!
+                                        </h5>
+                                    </div>
+                                </div>
                             @endif
                             <div class="border-0">
                                 {{$supportTickets->links() }}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Vendor\Order;
 
+use App\Contracts\Repositories\BusinessSettingRepositoryInterface;
 use App\Contracts\Repositories\CustomerRepositoryInterface;
 use App\Contracts\Repositories\DeliveryCountryCodeRepositoryInterface;
 use App\Contracts\Repositories\DeliveryManRepositoryInterface;
@@ -18,6 +19,7 @@ use App\Enums\GlobalConstant;
 use App\Enums\ViewPaths\Vendor\Order;
 use App\Enums\WebConfigKey;
 use App\Events\OrderStatusEvent;
+use App\Exports\OrderExport;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UploadDigitalFileAfterSellRequest;
@@ -25,11 +27,13 @@ use App\Repositories\WalletTransactionRepository;
 use App\Services\DeliveryCountryCodeService;
 use App\Services\DeliveryManTransactionService;
 use App\Services\DeliveryManWalletService;
+use App\Services\OrderService;
 use App\Services\OrderStatusHistoryService;
 use App\Traits\CustomerTrait;
 use App\Traits\FileManagerTrait;
 use App\Traits\PdfGenerator;
 use Brian2694\Toastr\Facades\Toastr;
+use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
@@ -37,7 +41,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\View as PdfView;
+use Maatwebsite\Excel\Facades\Excel;
 use Rap2hpoutre\FastExcel\FastExcel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class OrderController extends BaseController
@@ -63,6 +69,8 @@ class OrderController extends BaseController
         private readonly OrderStatusHistoryRepositoryInterface      $orderStatusHistoryRepo,
         private readonly OrderTransactionRepositoryInterface        $orderTransactionRepo,
         private readonly LoyaltyPointTransactionRepositoryInterface $loyaltyPointTransactionRepo,
+        private readonly BusinessSettingRepositoryInterface              $businessSettingRepo,
+
     )
     {
     }
@@ -138,13 +146,9 @@ class OrderController extends BaseController
         ));
     }
 
-    public function exportList(Request $request, $status): StreamedResponse|string|RedirectResponse
+    public function exportList(Request $request, $status): BinaryFileResponse|RedirectResponse
     {
         $vendorId = auth('seller')->id();
-        $searchValue = $request['searchValue'];
-        $status = $request['status'];
-        $relation = ['customer', 'shipping', 'shippingAddress', 'deliveryMan', 'billingAddress'];
-
         $filters = [
             'order_status' => $status,
             'filter' => $request['filter'] ?? 'all',
@@ -156,67 +160,70 @@ class OrderController extends BaseController
             'seller_id' => $vendorId,
             'seller_is' => 'seller',
         ];
-        $orders = $this->orderRepo->getListWhere(orderBy: ['id' => 'desc'], searchValue: $searchValue, filters: $filters, relations: $relation, dataLimit: 'all');
 
-        if ($orders->count() == 0) {
-            Toastr::warning(translate('order_data_is_not_available'));
-            return back();
-        }
+        $orders = $this->orderRepo->getListWhere(orderBy: ['id' => 'desc'], searchValue: $request['searchValue'], filters: $filters, relations: ['customer','seller.shop'], dataLimit: 'all');
 
-        $storage = [];
-        foreach ($orders as $item) {
-            $order_amount = $item->order_amount;
-            $discount_amount = $item->discount_amount;
-            $shipping_cost = $item->shipping_cost;
-            $extra_discount = $item->extra_discount;
-
-            if ($item->order_status == 'processing') {
-                $order_status = 'packaging';
-            } elseif ($item->order_status == 'failed') {
-                $order_status = 'Failed To Deliver';
-            } else {
-                $order_status = $item->order_status;
+        /** order status count  */
+        $status_array = [
+            'pending' => 0,
+            'confirmed' => 0,
+            'processing' => 0,
+            'out_for_delivery' => 0,
+            'delivered' => 0,
+            'returned' => 0,
+            'failed' => 0,
+            'canceled' => 0,
+        ];
+        $orders?->map(function ($order) use (&$status_array) { // Pass by reference using &
+            if (isset($status_array[$order->order_status])) {
+                $status_array[$order->order_status]++;
             }
+            $order?->orderDetails?->map(function ($details) use ($order) {
+                $order['total_qty'] += $details->qty;
+                $order['total_price'] += $details->qty * $details->price + ($details->tax_model == 'include' ? $details->qty * $details->tax : 0);
+                $order['total_discount'] += $details->discount;
+                $order['total_tax'] += $details->tax_model == 'exclude' ? $details->tax : 0;
+            });
 
-            $storage[] = [
-                'order_id' => $item->id,
-                'Customer Id' => $item->customer_id,
-                'Customer Name' => isset($item->customer) ? $item->customer->f_name . ' ' . $item->customer->l_name : 'not found',
-                'Order Group Id' => $item->order_group_id,
-                'Order Status' => $order_status,
-                'Order Amount' => usdToDefaultCurrency(amount: $order_amount),
-                'Order Type' => $item->order_type,
-                'Coupon Code' => $item->coupon_code,
-                'Discount Amount' => usdToDefaultCurrency(amount: $discount_amount),
-                'Discount Type' => $item->discount_type,
-                'Extra Discount' => usdToDefaultCurrency(amount: $extra_discount),
-                'Extra Discount Type' => $item->extra_discount_type,
-                'Payment Status' => $item->payment_status,
-                'Payment Method' => $item->payment_method,
-                'Transaction_ref' => $item->transaction_ref,
-                'Verification Code' => $item->verification_code,
-                'Billing Address' => isset($item->billingAddress) ? $item->billingAddress->address : 'not found',
-                'Billing Address Data' => $item->billing_address_data,
-                'Shipping Type' => $item->shipping_type,
-                'Shipping Address' => isset($item->shippingAddress) ? $item->shippingAddress->address : 'not found',
-                'Shipping Method Id' => $item->shipping_method_id,
-                'Shipping Method Name' => isset($item->shipping) ? $item->shipping->title : 'not found',
-                'Shipping Cost' => usdToDefaultCurrency(amount: $shipping_cost),
-                'Seller Id' => $item->seller_id,
-                'Seller Name' => isset($item->seller) ? $item->seller->f_name . ' ' . $item->seller->l_name : 'not found',
-                'Seller Email' => isset($item->seller) ? $item->seller->email : 'not found',
-                'Seller Phone' => isset($item->seller) ? $item->seller->phone : 'not found',
-                'Seller Is' => $item->seller_is,
-                'Shipping Address Data' => $item->shipping_address_data,
-                'Delivery Type' => $item->delivery_type,
-                'Delivery Man Id' => $item->delivery_man_id,
-                'Delivery Service Name' => $item->delivery_service_name,
-                'Third Party Delivery Tracking Id' => $item->third_party_delivery_tracking_id,
-                'Checked' => $item->checked,
-            ];
+        });
+        /** order status count  */
+
+        /** date */
+        $date_type = $request->date_type ?? '';
+        $from = match ($date_type) {
+            'this_year' => date('Y-01-01'),
+            'this_month' => date('Y-m-01'),
+            'this_week' => Carbon::now()->subDays(7)->startOfWeek()->format('Y-m-d'),
+            default => $request['from'] ?? '',
+        };
+        $to = match ($date_type) {
+            'this_year' => date('Y-12-31'),
+            'this_month' => date('Y-m-t'),
+            'this_week' => Carbon::now()->startOfWeek()->format('Y-m-d'),
+            default => $request['to'] ?? '',
+        };
+        /** end  */
+        $seller = $this->vendorRepo->getFirstWhere(['id' => $vendorId]);
+        $customer = [];
+        if ($request['customer_id'] != 'all' && $request->has('customer_id')) {
+            $customer = $this->customerRepo->getFirstWhere(['id' => $request['customer_id']]);
         }
 
-        return (new FastExcel($storage))->download('Order_All_details.xlsx');
+        $data = [
+            'data-from' => 'vendor',
+            'orders' => $orders,
+            'order_status' => $status,
+            'seller' => $seller,
+            'customer' => $customer,
+            'status_array' => $status_array,
+            'searchValue' => $request['searchValue'],
+            'order_type' => $request['filter'] ?? 'all',
+            'from' => $from,
+            'to' => $to,
+            'date_type' => $date_type,
+            'defaultCurrencyCode'=>getCurrencyCode(),
+        ];
+        return Excel::download(new OrderExport($data), 'Orders.xlsx');
     }
 
     public function getCustomers(Request $request): JsonResponse
@@ -240,14 +247,14 @@ class OrderController extends BaseController
         $params = ['id' => $id, 'seller_id' => $vendorId, 'seller_is' => 'seller'];
         $relations = ['details', 'customer', 'shipping', 'seller'];
         $order = $this->orderRepo->getFirstWhere(params: $params, relations: $relations);
-
+        $invoiceSettings = json_decode(json: $this->businessSettingRepo->getFirstWhere(params: ['type' => 'invoice_settings'])?->value);
         $mpdf_view = PdfView::make(Order::GENERATE_INVOICE[VIEW],
-            compact('order', 'vendor', 'companyPhone', 'companyEmail', 'companyName', 'companyWebLogo')
+            compact('order', 'vendor', 'companyPhone', 'companyEmail', 'companyName', 'companyWebLogo', 'invoiceSettings')
         );
-        $this->generatePdf($mpdf_view, 'order_invoice_', $order['id']);
+        $this->generatePdf(view: $mpdf_view, filePrefix: 'order_invoice_', filePostfix: $order['id'], pdfType: 'invoice');
     }
 
-    public function getView(string|int $id, DeliveryCountryCodeService $service): View
+    public function getView(string|int $id, DeliveryCountryCodeService $service, OrderService $orderService): View
     {
         $vendorId = auth('seller')->id();
         $countryRestrictStatus = getWebConfig(name: 'delivery_country_restriction');
@@ -285,10 +292,11 @@ class OrderController extends BaseController
             'seller_id' => $sellerId,
         ];
         $deliveryMen = $this->deliveryManRepo->getListWhere(filters: $filters, dataLimit: 'all');
+        $isOrderOnlyDigital = $orderService->getCheckIsOrderOnlyDigital(order: $order);
         if ($order['order_type'] == 'default_type') {
             $orderCount = $this->orderRepo->getListWhereCount(filters: ['customer_id' => $order['customer_id']]);
             return view(Order::VIEW[VIEW], compact('order', 'linkedOrders',
-                'deliveryMen', 'totalDelivered', 'physicalProduct',
+                'deliveryMen', 'totalDelivered', 'physicalProduct', 'isOrderOnlyDigital',
                 'countryRestrictStatus', 'zipRestrictStatus', 'countries', 'zipCodes', 'orderCount'));
         } else {
             $orderCount = $this->orderRepo->getListWhereCount(filters: ['customer_id' => $order['customer_id'], 'order_type' => 'POS']);
@@ -303,35 +311,42 @@ class OrderController extends BaseController
         OrderStatusHistoryService     $orderStatusHistoryService,
     ): JsonResponse
     {
-        $order = $this->orderRepo->getFirstWhere(params: ['id' => $request['id']], relations: ['customer','seller.shop']);
+        $order = $this->orderRepo->getFirstWhere(params: ['id' => $request['id']], relations: ['customer', 'seller.shop', 'deliveryMan']);
 
         if (!$order['is_guest'] && !isset($order['customer'])) {
             return response()->json(['customer_status' => 0], 200);
         }
 
-        if ($request['order_status'] == 'delivered' && $order['payment_status'] != 'paid') {
+        if ($order['payment_method'] != 'cash_on_delivery' && $request['order_status'] == 'delivered' && $order['payment_status'] != 'paid') {
             return response()->json(['payment_status' => 0], 200);
+        }
+
+        if ($order['order_status'] == 'delivered') {
+            return response()->json(['success' => 0, 'message' => translate('order_is_already_delivered.')], 200);
         }
 
         $this->orderRepo->updateStockOnOrderStatusChange($request['id'], $request['order_status']);
         $this->orderRepo->update(id: $request['id'], data: ['order_status' => $request['order_status']]);
-
-        OrderStatusEvent::dispatch($request['order_status'], 'customer', $order);
-        if ($request->order_status == 'canceled') {
-            OrderStatusEvent::dispatch('canceled', 'delivery_man', $order);
+        if ($request['order_status'] == 'delivered') {
+            $this->orderRepo->update(id: $request['id'], data: ['payment_status' => 'paid']);
+            $this->orderDetailRepo->updateWhere(params: ['order_id' => $order['id']], data: ['delivery_status' => $request['order_status'], 'payment_status' => 'paid']);
+        }
+        event(new OrderStatusEvent(key: $request['order_status'], type: 'customer', order: $order));
+        if ($request['order_status'] == 'canceled') {
+            event(new OrderStatusEvent(key: 'canceled', type: 'delivery_man', order: $order));
         }
 
         $walletStatus = getWebConfig(name: 'wallet_status');
         $loyaltyPointStatus = getWebConfig(name: 'loyalty_point_status');
 
-        if ($walletStatus == 1 && $loyaltyPointStatus == 1 && !$order['is_guest'] && $request['order_status'] == 'delivered' && $order['payment_status'] == 'paid' && $order['seller_id'] != null) {
+        if ($walletStatus == 1 && $loyaltyPointStatus == 1 && !$order['is_guest'] && $request['order_status'] == 'delivered' && $order['seller_id'] != null) {
             $this->loyaltyPointTransactionRepo->addLoyaltyPointTransaction(userId: $order['customer_id'], reference: $order['id'], amount: usdToDefaultCurrency(amount: $order['order_amount'] - $order['shipping_cost']), transactionType: 'order_place');
         }
 
         $refEarningStatus = getWebConfig(name: 'ref_earning_status') ?? 0;
         $refEarningExchangeRate = getWebConfig(name: 'ref_earning_exchange_rate') ?? 0;
 
-        if (!$order['is_guest'] && $refEarningStatus == 1 && $request['order_status'] == 'delivered' && $order['payment_status'] == 'paid') {
+        if (!$order['is_guest'] && $refEarningStatus == 1 && $request['order_status'] == 'delivered') {
 
             $customer = $this->customerRepo->getFirstWhere(params: ['id' => $order['customer_id']]);
             $isFirstOrder = $this->orderRepo->getListWhereCount(filters: ['customer_id' => $order['customer_id'], 'order_status' => 'delivered', 'payment_status' => 'paid']);
@@ -346,7 +361,7 @@ class OrderController extends BaseController
             }
         }
 
-        if ($order['delivery_man_id'] && $request->order_status == 'delivered') {
+        if ($order['delivery_man_id'] && $request['order_status'] == 'delivered') {
             $deliverymanWallet = $this->deliveryManWalletRepo->getFirstWhere(params: ['delivery_man_id' => $order['delivery_man_id']]);
             $cashInHand = $order['payment_method'] == 'cash_on_delivery' ? $order['order_amount'] : 0;
 
@@ -355,8 +370,8 @@ class OrderController extends BaseController
                 $this->deliveryManWalletRepo->add(data: $deliverymanWalletData);
             } else {
                 $deliverymanWalletData = [
-                    'current_balance' => $deliverymanWallet['current_balance'] + currencyConverter($order['deliveryman_charge']) ?? 0,
-                    'cash_in_hand' => $deliverymanWallet['cash_in_hand'] + currencyConverter($cashInHand) ?? 0,
+                    'current_balance' => $deliverymanWallet['current_balance'] + $order['deliveryman_charge'] ?? 0,
+                    'cash_in_hand' => $deliverymanWallet['cash_in_hand'] + $cashInHand ?? 0,
                 ];
 
                 $this->deliveryManWalletRepo->updateWhere(params: ['delivery_man_id' => $order['delivery_man_id']], data: $deliverymanWalletData);
@@ -378,8 +393,6 @@ class OrderController extends BaseController
 
         if ($request['order_status'] == 'delivered' && $order['seller_id'] != null) {
             $this->orderRepo->manageWalletOnOrderStatusChange(order: $order, receivedBy: 'seller');
-
-            $this->orderDetailRepo->updateWhere(params: ['order_id' => $order['id']], data: ['delivery_status' => 'delivered']);
         }
 
         return response()->json($request['order_status']);
@@ -387,7 +400,7 @@ class OrderController extends BaseController
 
     public function updateAddress(Request $request): RedirectResponse
     {
-        $order = $this->orderRepo->getFirstWhere(params: ['id' => $request['order_id']]);
+        $order = $this->orderRepo->getFirstWhere(params: ['id' => $request['order_id']], relations: ['deliveryMan']);
         $shippingAddressData = json_decode(json_encode($order['shipping_address_data']), true);
         $billingAddressData = json_decode(json_encode($order['billing_address_data']), true);
         $commonAddressData = [
@@ -419,24 +432,26 @@ class OrderController extends BaseController
             $this->orderRepo->update(id: $request['order_id'], data: $updateData);
         }
 
+        if ($order->delivery_type=='self_delivery' && $order->delivery_man_id) {
+            OrderStatusEvent::dispatch('order_edit_message', 'delivery_man', $order);
+        }
+
         Toastr::success(translate('successfully_updated'));
         return back();
     }
 
     public function updatePaymentStatus(Request $request): JsonResponse
     {
-        if ($request->ajax()) {
-            $order = $this->orderRepo->getFirstWhere(params: ['id' => $request['id']]);
-
-            if ($order['is_guest'] == '0' && !isset($order['customer'])) {
-                return response()->json(['customer_status' => 0], 200);
-            }
-
-            $this->orderRepo->update(id: $request['id'], data: ['payment_status' => $request['payment_status']]);
-            return response()->json($request['payment_status']);
+        $order = $this->orderRepo->getFirstWhere(params: ['id' => $request['id']]);
+        if ($order['payment_status'] == 'paid'){
+            return response()->json(['error'=>translate('when_payment_status_paid_then_you_can`t_change_payment_status_paid_to_unpaid').'.']);
         }
 
-        return response()->json(['message' => translate('invalid_access')], 401);
+        if ($order['is_guest'] == '0' && !isset($order['customer'])) {
+            return response()->json(['customer_status' => 0], 200);
+        }
+        $this->orderRepo->update(id: $request['id'], data: ['payment_status' => $request['payment_status']]);
+        return response()->json($request['payment_status']);
     }
 
     public function updateDeliverInfo(Request $request): RedirectResponse
@@ -474,7 +489,9 @@ class OrderController extends BaseController
         $params = ['seller_id' => auth('seller')->id(), 'id' => $order_id];
         $this->orderRepo->updateWhere(params: $params, data: $orderData);
 
-        OrderStatusEvent::dispatch('new_order_assigned_message', 'delivery_man', $order);
+        $order = $this->orderRepo->getFirstWhere(params: ['id' => $order_id], relations: ['deliveryMan']);
+        event(new OrderStatusEvent(key: 'new_order_assigned_message', type: 'delivery_man', order: $order));
+
         return response()->json(['status' => true], 200);
     }
 
@@ -490,10 +507,11 @@ class OrderController extends BaseController
             OrderStatusEvent::dispatch('expected_delivery_date', 'delivery_man', $order);
             $message = translate("expected_delivery_date_added_successfully");
         } elseif ($fieldName == 'deliveryman_charge') {
+            OrderStatusEvent::dispatch('delivery_man_charge', 'delivery_man', $order);
             $message = translate("deliveryman_charge_added_successfully");
         }
 
-        return response()->json(['status' => $status, 'message'=>$message], $status ? 200 : 403);
+        return response()->json(['status' => $status, 'message' => $message], $status ? 200 : 403);
     }
 
     public function uploadDigitalFileAfterSell(UploadDigitalFileAfterSellRequest $request): RedirectResponse

@@ -1,4 +1,12 @@
 'use strict';
+
+$("#update-error-message").hide();
+
+$("#update-button-message").click(function(){
+    $("#update-error-message").slideDown();
+});
+
+
 $('#addon-upload-form').on('submit', function(event){
     event.preventDefault();
     if ($('#input-file').prop('files').length === 0) {

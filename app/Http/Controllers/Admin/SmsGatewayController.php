@@ -40,6 +40,7 @@ class SmsGatewayController extends Controller
                     'updated_at' => now()
                 ]);
             }
+            clearWebConfigCacheKeys();
         }
 
         return back();

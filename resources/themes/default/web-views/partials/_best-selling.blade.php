@@ -3,7 +3,7 @@
         <div class="card-body p-xl-35">
             <div class="row d-flex justify-content-between mx-1 mb-3">
                 <div>
-                    <img class="size-30" src="{{asset("public/assets/front-end/png/best-sellings.png")}}"
+                    <img class="size-30" src="{{theme_asset(path: "public/assets/front-end/png/best-sellings.png")}}"
                          alt="">
                     <span class="font-bold pl-1">{{ translate('best_sellings')}}</span>
                 </div>
@@ -21,19 +21,21 @@
                             <a class="__best-selling" href="{{route('product',$bestSell->product->slug)}}">
                                 @if($bestSell->product->discount > 0)
                                     <div class="d-flex">
-                                        <span class="for-discount-value p-1 pl-2 pr-2">
-                                            @if ($bestSell->product->discount_type == 'percent')
-                                                {{round($bestSell->product->discount)}}%
-                                            @elseif($bestSell->product->discount_type =='flat')
-                                                {{ webCurrencyConverter(amount: $bestSell->product->discount) }}
-                                            @endif {{translate('off')}}
+                                        <span class="for-discount-value p-1 pl-2 pr-2 font-bold fs-13">
+                                            <span class="direction-ltr d-block">
+                                                @if ($bestSell->product->discount_type == 'percent')
+                                                    -{{round($bestSell->product->discount)}}%
+                                                @elseif($bestSell->product->discount_type =='flat')
+                                                    -{{ webCurrencyConverter(amount: $bestSell->product->discount) }}
+                                                @endif
+                                            </span>
                                         </span>
                                     </div>
                                 @endif
                                 <div class="d-flex flex-wrap">
                                     <div class="best-selleing-image">
                                         <img class="rounded"
-                                             src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$bestSell->product['thumbnail'], type: 'product') }}"
+                                             src="{{ getStorageImages(path: $bestSell?->product?->thumbnail_full_url, type: 'product') }}"
                                              alt="{{ translate('product') }}"/>
                                     </div>
                                     <div class="best-selling-details">
@@ -55,7 +57,7 @@
                                                         <i class="tio-star-outlined text-warning"></i>
                                                     @endif
                                                 @endfor
-                                                <label class="badge-style">( {{$bestSell->product->reviews_count}} )</label>
+                                                <label class="badge-style">( {{ count($bestSell->product['reviews']) }} )</label>
                                             </span>
                                             </div>
                                         @endif

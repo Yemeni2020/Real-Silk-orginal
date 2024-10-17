@@ -1,15 +1,5 @@
 "use strict";
 
-
-// Bar Charts
-Chart.plugins.unregister(ChartDataLabels);
-
-$('.js-chart').each(function () {
-    $.HSCore.components.HSChartJS.init($(this));
-});
-
-var updatingChart = $.HSCore.components.HSChartJS.init($('#updatingData'));
-
 $('#from_date,#to_date').change(function () {
     let from_date = $('#from_date').val();
     let to_date = $('#to_date').val();

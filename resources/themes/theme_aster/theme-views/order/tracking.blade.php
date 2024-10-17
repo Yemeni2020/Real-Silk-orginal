@@ -34,11 +34,13 @@
                                             class="bar progress three"
                                         @elseif($orderDetails['order_status']=='delivered')
                                             class="bar progress four"
+                                        @elseif(in_array($orderDetails['order_status'], ['returned', 'canceled', 'failed']))
+                                            class="bar progress four"
                                         @else
                                             class="bar progress one"
                                         @endif
                                     ></div>
-                                    <div class="state">
+                                    <div class="state" style="{{ in_array($orderDetails['order_status'], ['returned', 'canceled', 'failed']) ? '--items: 2;' : '' }}">
                                         <ul>
                                             <li>
                                                 <div class="state-img">
@@ -55,71 +57,118 @@
                                                         class="mt-2 fs-12">{{date('d M, Y h:i A',strtotime($orderDetails->created_at))}}</div>
                                                 </div>
                                             </li>
-                                            <li>
-                                                <div class="state-img">
-                                                    <img width="30" src="{{theme_asset('assets/img/icons/track2.png')}}"
-                                                         class="dark-support" alt="">
-                                                </div>
-                                                <div
-                                                    class="{{($orderDetails['order_status']=='processing') || ($orderDetails['order_status']=='processed') || ($orderDetails['order_status']=='out_for_delivery') || ($orderDetails['order_status']=='delivered')?'badge active' : 'badge'}}">
-                                                    <span>{{translate('2')}}</span>
-                                                    <i class="bi bi-check"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="state-text">{{translate('packaging_order')}}</div>
-                                                    @if(($orderDetails['order_status']=='processing') || ($orderDetails['order_status']=='processed') || ($orderDetails['order_status']=='out_for_delivery') || ($orderDetails['order_status']=='delivered'))
+
+                                            @if ($orderDetails['order_status']!='returned' && $orderDetails['order_status']!='failed' && $orderDetails['order_status']!='canceled')
+                                                <li>
+                                                    <div class="state-img">
+                                                        <img width="30" src="{{theme_asset('assets/img/icons/track2.png')}}"
+                                                             class="dark-support" alt="">
+                                                    </div>
+                                                    <div
+                                                        class="{{($orderDetails['order_status']=='processing') || ($orderDetails['order_status']=='processed') || ($orderDetails['order_status']=='out_for_delivery') || ($orderDetails['order_status']=='delivered')?'badge active' : 'badge'}}">
+                                                        <span>{{translate('2')}}</span>
+                                                        <i class="bi bi-check"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="state-text">{{translate('packaging_order')}}</div>
+                                                        @if(($orderDetails['order_status']=='processing') || ($orderDetails['order_status']=='processed') || ($orderDetails['order_status']=='out_for_delivery') || ($orderDetails['order_status']=='delivered'))
+                                                            <div class="mt-2 fs-12">
+                                                                @if(order_status_history($orderDetails['id'],'processing'))
+                                                                    {{date('d M, Y h:i A',strtotime(order_status_history($orderDetails['id'],'processing')))}}
+                                                                @endif
+                                                            </div>
+                                                        @endif
+
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="state-img">
+                                                        <img width="30" src="{{theme_asset('assets/img/icons/track4.png')}}"
+                                                             class="dark-support" alt="">
+                                                    </div>
+                                                    <div
+                                                        class="{{($orderDetails['order_status']=='out_for_delivery') || ($orderDetails['order_status']=='delivered')?'badge active' : 'badge'}}">
+                                                        <span>{{translate('3')}}</span>
+                                                        <i class="bi bi-check"></i>
+                                                    </div>
+                                                    <div class="state-text">{{translate('Order_is_on_the_way')}}</div>
+                                                    @if(($orderDetails['order_status']=='out_for_delivery') || ($orderDetails['order_status']=='delivered'))
                                                         <div class="mt-2 fs-12">
-                                                            @if(order_status_history($orderDetails['id'],'processing'))
-                                                                {{date('d M, Y h:i A',strtotime(order_status_history($orderDetails['id'],'processing')))}}
+                                                            @if(order_status_history($orderDetails['id'],'out_for_delivery'))
+                                                                {{date('d M, Y h:i A',strtotime(order_status_history($orderDetails['id'],'out_for_delivery')))}}
                                                             @endif
                                                         </div>
                                                     @endif
+                                                </li>
+                                                <li>
+                                                    <div class="state-img">
+                                                        <img width="30" src="{{theme_asset('assets/img/icons/track5.png')}}"
+                                                             class="dark-support" alt="">
+                                                    </div>
+                                                    <div
+                                                        class="{{($orderDetails['order_status']=='delivered')?'badge active' : 'badge'}}">
+                                                        <span>{{translate('4')}}</span>
+                                                        <i class="bi bi-check"></i>
+                                                    </div>
+                                                    <div class="state-text">{{translate('Order_Delivered')}}</div>
+                                                    @if($orderDetails['order_status']=='delivered')
+                                                        <div class="mt-2 fs-12">
+                                                            @if(order_status_history($orderDetails['id'], 'delivered'))
+                                                                {{date('d M, Y h:i A',strtotime(order_status_history($orderDetails['id'], 'delivered')))}}
+                                                            @endif
+                                                        </div>
+                                                    @endif
+                                                </li>
+                                            @elseif(in_array($orderDetails['order_status'], ['returned', 'canceled']))
+                                                <li>
+                                                    <div class="state-img">
+                                                        <img width="30"
+                                                             src="{{theme_asset('assets/img/icons/'.$orderDetails['order_status'].'.png')}}"
+                                                             class="dark-support" alt="">
+                                                    </div>
+                                                    <div class="badge active">
+                                                        <span>{{translate('2')}}</span>
+                                                        <i class="bi bi-check"></i>
+                                                    </div>
+                                                    <div class="state-text">
+                                                        {{ translate('order') }} {{ translate($orderDetails['order_status']) }}
+                                                    </div>
 
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="state-img">
-                                                    <img width="30" src="{{theme_asset('assets/img/icons/track4.png')}}"
-                                                         class="dark-support" alt="">
-                                                </div>
-                                                <div
-                                                    class="{{($orderDetails['order_status']=='out_for_delivery') || ($orderDetails['order_status']=='delivered')?'badge active' : 'badge'}}">
-                                                    <span>{{translate('3')}}</span>
-                                                    <i class="bi bi-check"></i>
-                                                </div>
-                                                <div class="state-text">{{translate('Order_is_on_the_way')}}</div>
-                                                @if(($orderDetails['order_status']=='out_for_delivery') || ($orderDetails['order_status']=='delivered'))
-                                                    <div class="mt-2 fs-12">
-                                                        @if(order_status_history($orderDetails['id'],'out_for_delivery'))
-                                                            {{date('d M, Y h:i A',strtotime(order_status_history($orderDetails['id'],'out_for_delivery')))}}
-                                                        @endif
+                                                    @if(\App\Utils\order_status_history($orderDetails['id'], $orderDetails['order_status']))
+                                                        <div class="mt-2 fs-12">
+                                                            {{ date('h:i A, d M Y', strtotime(\App\Utils\order_status_history($orderDetails['id'], $orderDetails['order_status']))) }}
+                                                        </div>
+                                                    @endif
+                                                </li>
+                                            @else
+                                                <li>
+                                                    <div class="state-img">
+                                                        <img width="30"
+                                                             src="{{theme_asset('assets/img/icons/'.$orderDetails['order_status'].'.png')}}"
+                                                             class="dark-support" alt="">
                                                     </div>
-                                                @endif
-                                            </li>
-                                            <li>
-                                                <div class="state-img">
-                                                    <img width="30" src="{{theme_asset('assets/img/icons/track5.png')}}"
-                                                         class="dark-support" alt="">
-                                                </div>
-                                                <div
-                                                    class="{{($orderDetails['order_status']=='delivered')?'badge active' : 'badge'}}">
-                                                    <span>{{translate('4')}}</span>
-                                                    <i class="bi bi-check"></i>
-                                                </div>
-                                                <div class="state-text">{{translate('Order_Delivered')}}</div>
-                                                @if($orderDetails['order_status']=='delivered')
-                                                    <div class="mt-2 fs-12">
-                                                        @if(order_status_history($orderDetails['id'], 'delivered'))
-                                                            {{date('d M, Y h:i A',strtotime(order_status_history($orderDetails['id'], 'delivered')))}}
-                                                        @endif
+                                                    <div class="badge active">
+                                                        <span>{{translate('2')}}</span>
+                                                        <i class="bi bi-check"></i>
                                                     </div>
-                                                @endif
-                                            </li>
+                                                    <div class="state-text">
+                                                        {{ translate('order') }} {{ translate($orderDetails['order_status']) }}
+                                                    </div>
+
+                                                    @if(\App\Utils\order_status_history($orderDetails['id'], $orderDetails['order_status']))
+                                                        <div class="mt-2 fs-12">
+                                                            {{ date('h:i A, d M Y', strtotime(\App\Utils\order_status_history($orderDetails['id'], $orderDetails['order_status']))) }}
+                                                        </div>
+                                                    @endif
+                                                </li>
+                                            @endif
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        @if ($orderDetails['order_status']!='returned' && $orderDetails['order_status']!='failed' && $orderDetails['order_status']!='canceled')
                         <div class="mt-5 bg-light p-3 p-sm-4">
                             <div class="d-flex justify-content-between">
                                 <h5 class="mb-4">{{ translate('order_details') }}</h5>
@@ -194,6 +243,7 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -239,7 +289,7 @@
                                             <td>
                                                 <div class="media align-items-center gap-3">
                                                     <img class="rounded border" alt="{{ translate('product') }}"
-                                                         src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$productDetails->thumbnail, type: 'product') }}"
+                                                         src="{{ getStorageImages(path: $orderDetail?->productAllStatus?->thumbnail_full_url, type: 'product') }}"
                                                          width="100px">
                                                     <div class="get-view-by-onclick" data-link="{{route('product',$productDetails->slug)}}">
                                                         <a href="{{route('product',$productDetails->slug)}}">
@@ -248,7 +298,7 @@
                                                         <div class="d-flex flex-column">
                                                             <small>
                                                                 <strong>{{translate('unit_price')}} :</strong>
-                                                                {{Helpers::currency_converter($orderDetail['price'])}}
+                                                                {{webCurrencyConverter($orderDetail['price'])}}
                                                                 @if ($orderDetail->tax_model =='include')
                                                                     ({{translate('tax_incl.')}})
                                                                 @else
@@ -292,7 +342,7 @@
                                                 {{$orderDetail->qty}}
                                             </td>
                                             <td class="text-end">
-                                                {{Helpers::currency_converter($orderDetail['price']*$orderDetail['qty'])}}
+                                                {{webCurrencyConverter($orderDetail['price']*$orderDetail['qty'])}}
                                             </td>
                                         </tr>
                                         @php($sub_total+=$orderDetail['price']*$orderDetail['qty'])
@@ -337,31 +387,31 @@
                                     <tbody>
                                     <tr>
                                         <td class="text-dark">
-                                            {{Helpers::currency_converter($sub_total)}}
+                                            {{webCurrencyConverter($sub_total)}}
                                         </td>
                                         @if ($orderDetails['order_type'] == 'default_type')
                                             <td class="text-dark">
-                                                {{Helpers::currency_converter($orderDetails['is_shipping_free'] ? $total_shipping_cost-$orderDetails['extra_discount']:$total_shipping_cost)}}
+                                                {{webCurrencyConverter($orderDetails['is_shipping_free'] ? $total_shipping_cost-$orderDetails['extra_discount']:$total_shipping_cost)}}
                                             </td>
 
                                         @endif
 
                                         <td class="text-dark">
-                                            {{Helpers::currency_converter($total_tax)}}
+                                            {{webCurrencyConverter($total_tax)}}
                                         </td>
                                         <td class="text-dark">
-                                            -{{Helpers::currency_converter($total_discount_on_product)}}
+                                            -{{webCurrencyConverter($total_discount_on_product)}}
                                         </td>
                                         <td class="text-dark">
-                                            - {{Helpers::currency_converter($coupon_discount)}}
+                                            - {{webCurrencyConverter($coupon_discount)}}
                                         </td>
                                         @if ($orderDetails['order_type'] == 'POS')
                                             <td class="text-dark">
-                                                - {{Helpers::currency_converter($extra_discount)}}
+                                                - {{webCurrencyConverter($extra_discount)}}
                                             </td>
                                         @endif
                                         <td class="text-dark">
-                                            {{Helpers::currency_converter($sub_total+$total_tax+$total_shipping_cost-($orderDetails->discount)-$total_discount_on_product - $coupon_discount - $extra_discount)}}
+                                            {{webCurrencyConverter($sub_total+$total_tax+$total_shipping_cost-($orderDetails->discount)-$total_discount_on_product - $coupon_discount - $extra_discount)}}
                                         </td>
                                     </tr>
                                     </tbody>

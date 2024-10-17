@@ -10,6 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 class OrderStatusListener
 {
     use PushNotificationTrait;
+
     /**
      * Create the event listener.
      */
@@ -26,7 +27,8 @@ class OrderStatusListener
         $this->sendNotification($event);
     }
 
-    private function sendNotification(OrderStatusEvent $event):void{
+    private function sendNotification(OrderStatusEvent $event): void
+    {
         $key = $event->key;
         $type = $event->type;
         $order = $event->order;

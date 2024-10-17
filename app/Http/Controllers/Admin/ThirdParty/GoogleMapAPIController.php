@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\ThirdParty;
 use App\Contracts\Repositories\BusinessSettingRepositoryInterface;
 use App\Enums\ViewPaths\Admin\GoogleMapAPI;
 use App\Http\Controllers\BaseController;
+use App\Utils\Helpers;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -32,13 +33,17 @@ class GoogleMapAPIController extends BaseController
 
     public function getView(): View
     {
-        return view(GoogleMapAPI::VIEW[VIEW]);
+       $mapAPIKey=getWebConfig(name: 'map_api_key');
+       $mapAPIKeyServer=getWebConfig(name: 'map_api_key_server');
+       $mapAPIStatus = $this->businessSettingRepo->getFirstWhere(['type'=>'map_api_status']);
+       return view(GoogleMapAPI::VIEW[VIEW],compact('mapAPIKey','mapAPIKeyServer','mapAPIStatus'));
     }
 
     public function update(Request $request): RedirectResponse
     {
-        $this->businessSettingRepo->updateOrInsert(type: 'map_api_key', value: $request['map_api_key']);
-        $this->businessSettingRepo->updateOrInsert(type: 'map_api_key_server', value: $request['map_api_key_server']);
+        $this->businessSettingRepo->updateOrInsert(type: 'map_api_key', value: $request['map_api_key'] ?? '');
+        $this->businessSettingRepo->updateOrInsert(type: 'map_api_key_server', value: $request['map_api_key_server'] ?? '');
+        $this->businessSettingRepo->updateOrInsert(type: 'map_api_status', value: $request->get('status', 0));
         Toastr::success(translate('config_data_updated'));
         return back();
     }

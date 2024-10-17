@@ -7,6 +7,7 @@ use App\Enums\ViewPaths\Admin\EmergencyContact;
 use App\Enums\WebConfigKey;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\EmergencyContactRequest;
+use App\Services\EmergencyContactService;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -20,6 +21,7 @@ class EmergencyContactController extends BaseController
      */
     public function __construct(
         private readonly EmergencyContactRepositoryInterface    $emergencyContactRepo,
+        private readonly EmergencyContactService    $emergencyContactService,
     )
     {
     }
@@ -47,13 +49,20 @@ class EmergencyContactController extends BaseController
 
     public function add(EmergencyContactRequest $request): RedirectResponse
     {
-        $this->emergencyContactRepo->add(data: [
-            'user_id' => 0,
-            'name' => $request['name'],
-            'phone' => $request['phone'],
-            'status' => 1
-        ]);
+        $this->emergencyContactRepo->add(data:$this->emergencyContactService->getEmergencyContactData(request:$request,id:0 ));
         Toastr::success(translate('emergency_contact_added_successfully'));
+        return back();
+    }
+    public function getUpdateView($id):JsonResponse
+    {
+        $emergencyContact = $this->emergencyContactRepo->getFirstWhere(params: ['id'=>$id]);
+        return response()->json(['view'=>view(EmergencyContact::UPDATE[VIEW],compact('emergencyContact'))->render()]);
+
+    }
+    public function update(EmergencyContactRequest $request,$id): RedirectResponse
+    {
+        $this->emergencyContactRepo->update(id:$id,data:$this->emergencyContactService->getEmergencyContactUpdateData(request:$request));
+        Toastr::success(translate('emergency_contact_update_successfully'));
         return back();
     }
 

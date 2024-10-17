@@ -26,7 +26,7 @@ class AdminUpdateRequest extends FormRequest
             ],
         ];
         if ($this['password']) {
-            $rules['password'] = 'required|same:confirm_password|min:8';
+            $rules['password'] = 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)(?!.*\s).{8,}$/|same:confirm_password';
         }
         return $rules;
     }
@@ -39,6 +39,7 @@ class AdminUpdateRequest extends FormRequest
             'email.required' => translate('email_is_required'),
             'email.email' => translate('email_must_be_valid'),
             'email.unique' => translate('email_already_taken'),
+            'password.regex' => translate('The_password_must_be_at_least_8_characters_long_and_contain_at_least_one_uppercase_letter').','.translate('_one_lowercase_letter').','.translate('_one_digit_').','.translate('_one_special_character').','.translate('_and_no_spaces').'.',
         ];
     }
 

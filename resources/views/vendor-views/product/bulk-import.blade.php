@@ -7,7 +7,7 @@
 
         <div class="mb-4">
             <h2 class="h1 mb-1 text-capitalize d-flex gap-2">
-                <img src="{{asset('/public/assets/back-end/img/bulk-import.png')}}" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/bulk-import.png')}}" alt="">
                 {{translate('bulk_Import')}}
             </h2>
         </div>
@@ -37,7 +37,7 @@
                     <div class="card rest-part">
                         <div class="px-3 py-4 d-flex flex-wrap align-items-center gap-10 justify-content-center">
                             <h4 class="mb-0">{{translate("do_not_have_the_template")}} ?</h4>
-                            <a href="{{asset('public/assets/product_bulk_format.xlsx')}}" download=""
+                            <a href="{{dynamicAsset(path: 'public/assets/product_bulk_format.xlsx')}}" download=""
                                class="btn-link text-capitalize fz-16 font-weight-medium">{{translate('download_Format')}}</a>
                         </div>
                         <div class="card-body">

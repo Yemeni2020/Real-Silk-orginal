@@ -7,7 +7,7 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img width="20" src="{{asset('/public/assets/back-end/img/shop-info.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/shop-info.png')}}" alt="">
                 {{translate('shop_info')}}
             </h2>
         </div>
@@ -64,11 +64,11 @@
                             @if($shop->image=='def.png')
                                 <div class="text-start">
                                     <img height="200" width="200" class="rounded-circle border"
-                                         src="{{asset('public/assets/back-end/img/shop.png')}}" alt="">
+                                         src="{{dynamicAsset(path: 'public/assets/back-end/img/shop.png')}}" alt="">
                                 </div>
                             @else
                                 <div class="text-start">
-                                    <img src="{{getValidImage(path:'storage/app/public/shop/'.$shop->image,type: 'backend-basic')}}"
+                                    <img src="{{getStorageImages(path:$shop->image_full_url,type: 'backend-basic')}}"
                                          class="rounded-circle border"
                                          height="200" width="200" alt="">
                                 </div>

@@ -3,7 +3,7 @@
 @section('title', $product->name . ' '.translate('barcode').' ' . date('Y/m/d'))
 
 @push('css_or_js')
-    <link rel="stylesheet" href="{{ asset('public/assets/back-end/css/barcode.css') }}"/>
+    <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/css/barcode.css') }}"/>
 @endpush
 
 @section('content')
@@ -11,7 +11,7 @@
         <div class="col-sm-12 col-lg-12 mb-3 mb-lg-2">
             <div class="mb-3">
                 <h2 class="h1 mb-0 text-capitalize d-flex gap-2">
-                    <img src="{{ asset('public/assets/back-end/img/inhouse-product-list.png') }}" alt="">
+                    <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/inhouse-product-list.png') }}" alt="">
                     {{ translate('generate_Barcode') }}
                 </h2>
             </div>

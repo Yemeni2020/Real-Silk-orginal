@@ -15,17 +15,17 @@
                 </ol>
                 <div class="card py-2 mt-4">
                     <form class="card-body needs-validation" novalidate method="POST"
-                          action="{{request('customer.auth.password-recovery')}}">
+                          action="{{ request('customer.auth.password-recovery') }}">
                         @csrf
                         <div class="form-group d-none">
-                            <input type="text" name="reset_token" value="{{$token}}" required>
+                            <input type="text" name="reset_token" value="{{ $token }}" required>
                         </div>
 
                         <div class="form-group">
                             <label for="si-password">{{ translate('new_password')}}</label>
                             <div class="password-toggle">
                                 <input class="form-control rtl" name="password" type="password" id="si-password"
-                                       required>
+                                       required placeholder="{{ translate('enter_new_password') }}">
                                 <label class="password-toggle-btn">
                                     <input class="custom-control-input" type="checkbox"><i
                                         class="czi-eye password-toggle-indicator"></i><span
@@ -38,7 +38,7 @@
                             <label for="si-password">{{ translate('confirm_password')}}</label>
                             <div class="password-toggle rtl">
                                 <input class="form-control" name="confirm_password" type="password" id="si-password"
-                                       required>
+                                       required placeholder="{{ translate('enter_confirm_password') }}">
                                 <label class="password-toggle-btn">
                                     <input class="custom-control-input" type="checkbox"><i
                                         class="czi-eye password-toggle-indicator"></i><span

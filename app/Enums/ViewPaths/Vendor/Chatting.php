@@ -12,4 +12,9 @@ enum Chatting
         URI => 'message',
         VIEW => 'vendor-views.chatting.index',
     ];
+
+    const NEW_NOTIFICATION = [
+        URI => 'new-notification',
+        VIEW => '',
+    ];
 }

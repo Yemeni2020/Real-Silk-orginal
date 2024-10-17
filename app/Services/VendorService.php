@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Traits\FileManagerTrait;
+use Illuminate\Support\Str;
 
 class VendorService
 {
@@ -24,10 +25,10 @@ class VendorService
     /**
      * @return array
      */
-    public function getInitialWalletData(): array
+    public function getInitialWalletData(int $vendorId): array
     {
         return [
-            'seller_id' => auth('seller')->id(),
+            'seller_id' => $vendorId,
             'withdrawn' => 0,
             'commission_given' => 0,
             'total_earning' => 0,
@@ -104,6 +105,18 @@ class VendorService
             'branch' => $request['branch'],
             'holder_name' => $request['holder_name'],
             'account_no' => $request['account_no'],
+        ];
+    }
+    public function getAddData(object $request):array
+    {
+        return [
+            'f_name' => $request['f_name'],
+            'l_name' => $request['l_name'],
+            'phone' => $request['phone'],
+            'email' => $request['email'],
+            'image' => $this->upload(dir: 'seller/', format: 'webp', image: $request->file('image')),
+            'password' => bcrypt($request['password']),
+            'status' => $request['status'] == 'approved' ? 'approved' : 'pending',
         ];
     }
 }

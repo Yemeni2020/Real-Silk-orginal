@@ -127,7 +127,7 @@ html[dir="rtl"] .for-discount-div {
 }
 
 .simplebar-content {
-    padding-right: 0 !important;
+    padding: 0 !important;
 }
 
 .footer_banner {
@@ -161,7 +161,7 @@ html[dir="rtl"] .footer_banner:nth-child(5) {
     overflow: hidden;
     max-height: 1.2em;
     line-height: 1.2em;
-    font-weight: 400;
+    font-weight: 600;
     font-size: 13px;
 }
 
@@ -647,6 +647,15 @@ html[dir="rtl"] .footer_banner:nth-child(5) {
 
     .profile-aside-overlay.active {
         transform: translateX(0);
+    }
+
+    #shop-sidebar .shop-sidebar-scroll {
+        max-height: 90vh;
+        overflow: auto;
+    }
+
+    #shop-sidebar .shop-sidebar-scroll::-webkit-scrollbar {
+        width: 0;
     }
 }
 

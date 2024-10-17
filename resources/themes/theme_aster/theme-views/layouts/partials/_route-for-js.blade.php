@@ -9,3 +9,7 @@
 <span id="set-shipping-url" data-url="{{url('/')}}/customer/set-shipping-method"></span>
 <span id="digital-product-download-otp-reset" data-route="{{ route('digital-product-download-otp-reset') }}"></span>
 <span id="order_again_url" data-action="{{ route('cart.order-again') }}"></span>
+<span id="route-get-session-recaptcha-code"
+      data-route="{{ route('get-session-recaptcha-code') }}"
+      data-mode="{{ env('APP_MODE') }}"
+></span>

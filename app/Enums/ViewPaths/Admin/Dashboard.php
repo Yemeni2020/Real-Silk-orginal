@@ -11,9 +11,12 @@ enum Dashboard
 
     const EARNING_STATISTICS = [
         URI => 'earning-statistics',
-        VIEW => ''
+        VIEW => 'admin-views.system.partials.earning-statistics'
     ];
-
+    const ORDER_STATISTICS = [
+        URI => 'order-statistics',
+        VIEW => 'admin-views.system.partials.order-statistics'
+    ];
     const ORDER_STATUS = [
         URI => 'order-status',
         VIEW => ''

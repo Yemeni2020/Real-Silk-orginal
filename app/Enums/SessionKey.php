@@ -5,9 +5,7 @@ namespace App\Enums;
 enum SessionKey
 {
     const ADMIN_RECAPTCHA_KEY = 'adminRecaptchaSessionKey';
-    const VENDOR_RECAPTCHA_KEY = 'sellerRecaptchaSessionKey';
-    const factory_RECAPTCHA_KEY = 'factoryRecaptchaSessionKey';
-
+    const VENDOR_RECAPTCHA_KEY = 'vendorRecaptchaSessionKey';
     const CURRENT_USER = 'current_user';
     const CART_NAME = 'cart_name';
     const LAST_ORDER = 'last_order';

@@ -12,9 +12,11 @@ use App\Services\VendorService;
 use App\Traits\RecaptchaTrait;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -23,7 +25,7 @@ class LoginController extends Controller
     public function __construct(
         private readonly VendorRepositoryInterface $vendorRepo,
         private readonly VendorService             $vendorService,
-        private readonly VendorWalletRepository    $vendorWalletRepository,
+        private readonly VendorWalletRepository    $vendorWalletRepo,
 
     )
     {
@@ -50,10 +52,9 @@ class LoginController extends Controller
         return view(Auth::VENDOR_LOGIN[VIEW], compact('recaptchaBuilder', 'recaptcha'));
     }
 
-    public function login(LoginRequest $request): RedirectResponse
+    public function login(LoginRequest $request): JsonResponse
     {
         $recaptcha = getWebConfig(name: 'recaptcha');
-
         if (isset($recaptcha) && $recaptcha['status'] == 1) {
             $request->validate([
                 'g-recaptcha-response' => [
@@ -71,39 +72,36 @@ class LoginController extends Controller
             ]);
         } else {
             if ($recaptcha['status'] != 1 && strtolower($request->vendorRecaptchaKey) != strtolower(Session(SessionKey::VENDOR_RECAPTCHA_KEY))) {
-                Session::forget(SessionKey::VENDOR_RECAPTCHA_KEY);
-                return back()->withErrors(translate('captcha_failed'));
+                return response()->json(['error'=>translate('captcha_failed').'!']);
             }
         }
-
         $vendor = $this->vendorRepo->getFirstWhere(['identity' => $request['email']]);
-        if (isset($vendor) && $vendor['status'] !== 'approved') {
-            $statusMessages = [
-                'pending' => translate('your_account_is_not_approved_yet') . '.',
-                'suspended' => translate('your_account_has_been_suspended') . '!'
-            ];
-            return redirect()->back()
-                ->withInput($request->only('email', 'remember'))
-                ->withErrors([$statusMessages[$vendor->status]]);
+        if (!$vendor){
+            return response()->json(['error'=>translate('credentials_doesnt_match').'!']);
         }
-
+        $passwordCheck = Hash::check($request['password'],$vendor['password']);
+        if ($passwordCheck && $vendor['status'] !== 'approved') {
+            return response()->json(['status' => $vendor['status']]);
+        }
         if ($this->vendorService->isLoginSuccessful($request->email, $request->password, $request->remember)) {
-            if ($this->vendorWalletRepository->getFirstWhere(params:['id'=>auth('seller')->id()]) === false) {
-                $this->vendorWalletRepository->add($this->vendorService->getInitialWalletData());
+            if ($this->vendorWalletRepo->getFirstWhere(params:['id'=>auth('seller')->id()]) === false) {
+                $this->vendorWalletRepo->add($this->vendorService->getInitialWalletData(vendorId:auth('seller')->id()));
             }
-            Toastr::info(translate('welcome_to_your_dashboard') . '!');
-            return redirect()->route('vendor.dashboard.index');
-        }
+            Toastr::info(translate('welcome_to_your_dashboard').'.');
+            return response()->json([
+                'success' =>translate('login_successful') . '!',
+                'redirectRoute'=>route('vendor.dashboard.index'),
+            ]);
+        }else{
+            return response()->json(['error'=>translate('credentials_doesnt_match').'!']);
 
-        return redirect()->back()
-            ->withInput($request->only('email', 'remember'))
-            ->withErrors([translate('credentials_do_not_match_or_your_account_has_been_suspended')]);
+        }
     }
 
     public function logout(): RedirectResponse
     {
         $this->vendorService->logout();
-        session()->flash('success', translate('logged_out_successfully'));
+        Toastr::success(translate('logged_out_successfully').'.');
         return redirect()->route('vendor.auth.login');
     }
 }

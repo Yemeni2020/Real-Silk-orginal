@@ -3,8 +3,8 @@
 @section('title',translate('refund_request'))
 
 @push('css_or_js')
-    <link href="{{asset('public/assets/back-end/css/tags-input.min.css')}}" rel="stylesheet">
-    <link href="{{ asset('public/assets/select2/css/select2.min.css')}}" rel="stylesheet">
+    <link href="{{theme_asset(path: 'public/assets/back-end/css/tags-input.min.css')}}" rel="stylesheet">
+    <link href="{{ theme_asset(path: 'public/assets/select2/css/select2.min.css')}}" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 @endpush
 
@@ -35,7 +35,7 @@
                                 <div class="row">
                                     <div class="col-3 col-sm-2">
                                         <img class="d-block"
-                                             src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$product['thumbnail'], type: 'product') }}"
+                                             src="{{ getStorageImages(path: $product->thumbnail_full_url, type: 'product') }}"
                                              alt="{{ translate('product') }}" width="60">
                                     </div>
                                     <div class="col-9 col-sm-7 text-left">
@@ -111,7 +111,7 @@
 @endsection
 
 @push('script')
-    <script src="{{asset('public/assets/front-end/js/spartan-multi-image-picker.js')}}"></script>
+    <script src="{{theme_asset(path: 'public/assets/front-end/js/spartan-multi-image-picker.js')}}"></script>
     <script type="text/javascript">
         "use strict";
 
@@ -123,7 +123,7 @@
                 groupClassName: 'col-md-4',
                 maxFileSize: '',
                 placeholderImage: {
-                    image: '{{asset('public/assets/front-end/img/image-place-holder.png')}}',
+                    image: '{{theme_asset(path: 'public/assets/front-end/img/image-place-holder.png')}}',
                     width: '100%'
                 },
                 dropFileLabel: "{{translate('drop_here')}}",

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Utils\Helpers;
 use App\Http\Controllers\Controller;
 use App\Models\OrderTransaction;
-use App\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Rap2hpoutre\FastExcel\FastExcel;
 
@@ -84,7 +84,7 @@ class TransactionController extends Controller
         $tranData = array();
         foreach($transactions as $tran){
             if($tran['seller_is'] == 'admin'){
-                $seller_name = \App\Utils\Helpers::get_business_settings('company_name');
+                $seller_name = getWebConfig(name: 'company_name');
             }else{
                 $seller_name = $tran->seller ? $tran->seller->f_name .' '. $tran->seller->l_name : translate('not_found');
             }

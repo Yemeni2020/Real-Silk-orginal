@@ -21,7 +21,7 @@ class DeliveryManTransactionService
             'delivery_man_id' => $id,
             'user_id' => $addedBy == 'seller' ? auth('seller')->id() : 0,
             'user_type' => $addedBy,
-            'credit' => currencyConverter($amount),
+            'credit' => $amount,
             'transaction_id' => Uuid::uuid4(),
             'transaction_type' => $transactionType,
             'created_at' => now(),

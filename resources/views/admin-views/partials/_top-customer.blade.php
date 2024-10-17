@@ -1,7 +1,7 @@
 <!-- Header -->
 <div class="card-header">
     <h4 class="d-flex align-items-center text-capitalize gap-10 mb-0">
-        <img src="{{asset('/public/assets/back-end/img/top-customers.png')}}" alt="">
+        <img src="{{dynamicAsset(path: 'public/assets/back-end/img/top-customers.png')}}" alt="">
         {{translate('top_customer')}}
     </h4>
 </div>
@@ -15,11 +15,11 @@
                         <div class="grid-card basic-box-shadow">
                             <div class="text-center">
                                 <img class="avatar rounded-circle avatar-lg"
-                                     src="{{getValidImage(path: 'storage/app/public/profile/'.$item->customer->image,type:'backend-profile')}}"
+                                     src="{{ getStorageImages(path: $item->customer->image_full_url,type:'backend-profile')}}"
                                      alt="">
                             </div>
 
-                            <h5 class="mb-0">{{$item->customer['f_name']??'Not exist'}}</h5>
+                            <h5 class="mb-0">{{$item->customer['f_name']??translate('not_exist')}}</h5>
 
                             <div class="orders-count d-flex gap-1">
                                 <div>{{translate('orders')}} : </div>
@@ -33,7 +33,7 @@
     @else
         <div class="text-center">
             <p class="text-muted">{{translate('no_Top_Selling_Products')}}</p>
-            <img class="w-75" src="{{asset('/public/assets/back-end/img/no-data.png')}}" alt="">
+            <img class="w-75" src="{{dynamicAsset(path: 'public/assets/back-end/img/no-data.png')}}" alt="">
         </div>
     @endif
 </div>

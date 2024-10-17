@@ -10,7 +10,7 @@ class BusinessSetting extends Model
 {
 //    use Rememberable;
 
-    protected $fillable = ['type', 'value'];
+    protected $fillable = ['type', 'value', 'created_at', 'updated_at'];
 
     protected $casts = [
         'id' => 'integer',
@@ -21,6 +21,6 @@ class BusinessSetting extends Model
     protected static function boot(): void
     {
         parent::boot();
-//        static::addGlobalScope(new RememberScope);
+        // static::addGlobalScope(new RememberScope);
     }
 }

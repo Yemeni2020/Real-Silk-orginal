@@ -2,11 +2,14 @@
 
 namespace App\Http\Requests\Vendor;
 
+use App\Traits\ResponseHandler;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class PasswordResetRequest extends FormRequest
 {
+    use ResponseHandler;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -31,5 +34,9 @@ class PasswordResetRequest extends FormRequest
         return [
             'identity.required' => translate('identity_is_required').'!',
         ];
+    }
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        throw new HttpResponseException(response()->json(['errors' => $this->errorProcessor($validator)]));
     }
 }

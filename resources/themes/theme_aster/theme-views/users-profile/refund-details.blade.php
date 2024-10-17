@@ -22,7 +22,7 @@
                                         <div class="media align-items-center gap-3">
                                             <div class="avatar avatar-xxl rounded border overflow-hidden">
                                                 <img class="dark-support img-fit rounded" alt=""
-                                                    src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$product['thumbnail'], type: 'product') }}">
+                                                    src="{{ getStorageImages(path:$product->thumbnail_full_url, type: 'product') }}">
                                             </div>
                                             <div class="media-body d-flex gap-1 flex-column">
                                                 <h6 class="text-truncate width--20ch">
@@ -51,10 +51,10 @@
                                             </div>
                                         </div>
                                         <div class="d-flex flex-column gap-1 fs-12">
-                                            <span>{{ translate('QTY') }} : {{Helpers::currency_converter($order_details->qty)}}</span>
-                                            <span>{{ translate('price') }} : {{Helpers::currency_converter($order_details->price)}}</span>
-                                            <span>{{ translate('discount') }} : {{Helpers::currency_converter($order_details->discount)}}</span>
-                                            <span>{{ translate('tax') }} : {{Helpers::currency_converter($order_details->tax)}}</span>
+                                            <span>{{ translate('QTY') }} : {{webCurrencyConverter($order_details->qty)}}</span>
+                                            <span>{{ translate('price') }} : {{webCurrencyConverter($order_details->price)}}</span>
+                                            <span>{{ translate('discount') }} : {{webCurrencyConverter($order_details->discount)}}</span>
+                                            <span>{{ translate('tax') }} : {{webCurrencyConverter($order_details->tax)}}</span>
                                         </div>
 
                                         <?php
@@ -68,9 +68,9 @@
                                         $refund_amount = $subtotal - $coupon_discount;
                                         ?>
                                         <div class="d-flex flex-column gap-1 fs-12">
-                                            <span>{{translate('subtotal')}}: {{Helpers::currency_converter($subtotal)}}</span>
-                                            <span>{{translate('coupon_discount')}}: {{Helpers::currency_converter($coupon_discount)}}</span>
-                                            <span>{{translate('total_refundable_amount')}}:{{Helpers::currency_converter($refund_amount)}}</span>
+                                            <span>{{translate('subtotal')}}: {{webCurrencyConverter($subtotal)}}</span>
+                                            <span>{{translate('coupon_discount')}}: {{webCurrencyConverter($coupon_discount)}}</span>
+                                            <span>{{translate('total_refundable_amount')}}:{{webCurrencyConverter($refund_amount)}}</span>
                                         </div>
                                     </div>
                                     <div class="form-group mb-4">
@@ -80,13 +80,13 @@
                                     <div class="form-group">
                                         <h6 class="mb-2">{{translate('attachment')}}</h6>
                                         <div class="d-flex flex-column gap-3">
-                                            @if ($refund['images'] !=null)
-                                                <div class="gallery">
-                                                    @foreach (json_decode($refund['images']) as $key => $photo)
-                                                        <a href="{{ getValidimage(path: 'storage/app/public/refund/'.$photo, type:'product') }}"
+                                            @if (count($refund->images_full_url)>0)
+                                                <div class="gallery custom-image-popup-init">
+                                                    @foreach ($refund->images_full_url as $key => $photo)
+                                                        <a href="{{ getStorageImages(path: $photo, type:'product') }}"
                                                            class="custom-image-popup">
                                                             <img alt="" class="img-w-h-100"
-                                                                src="{{ getValidimage(path: 'storage/app/public/refund/'.$photo, type:'product') }}">
+                                                                src="{{ getStorageImages(path: $photo, type:'product') }}">
                                                         </a>
                                                     @endforeach
                                                 </div>

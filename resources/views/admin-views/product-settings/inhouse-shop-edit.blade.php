@@ -6,7 +6,7 @@
     <div class="content container-fluid">
         <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{ asset('public/assets/back-end/img/business-setup.png') }}" alt="">
+                <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/business-setup.png') }}" alt="">
                 {{ translate('business_Setup') }}
             </h2>
 
@@ -22,15 +22,13 @@
 
                 <div class="dropdown-menu dropdown-menu-right bg-aliceblue border border-color-primary-light p-4 dropdown-w-lg">
                     <div class="d-flex align-items-center gap-2 mb-3">
-                        <img width="20" src="{{ asset('public/assets/back-end/img/note.png') }}" alt="">
+                        <img width="20" src="{{ dynamicAsset(path: 'public/assets/back-end/img/note.png') }}" alt="">
                         <h5 class="text-primary mb-0">{{ translate('note') }}</h5>
                     </div>
                     <p class="title-color font-weight-medium mb-0">{{ translate('please_click_the_Save_button_below_to_save_all_the_changes') }}</p>
                 </div>
             </div>
         </div>
-
-        @include('admin-views.business-settings.business-setup-inline-menu')
 
         <div class="card mb-3">
             <div class="card-body">
@@ -88,7 +86,7 @@
                             <div class="col-md-6">
                                 <div class="text-center">
                                     <img class="upload-img-view upload-img-view__banner" id="viewerBanner"
-                                         src="{{getValidImage(path: 'storage/app/public/shop/'.getWebConfig(name: 'shop_banner')??'',type:'backend-banner')}}"
+                                         src="{{getStorageImages(path: getWebConfig(name: 'shop_banner'),type:'backend-banner')}}"
                                          alt="">
                                 </div>
                                 <div class="position-relative mt-4">
@@ -112,7 +110,7 @@
                                 <div class="col-lg-6 form-group">
                                     <div class="text-center">
                                         <img class="upload-img-view upload-img-view__banner" id="viewerBottomBanner"
-                                             src="{{getValidImage(path: 'storage/app/public/shop/'.getWebConfig(name: 'bottom_banner')??'',type:'backend-banner')}}"
+                                             src="{{getStorageImages(path: getWebConfig(name: 'bottom_banner'),type:'backend-banner')}}"
                                              alt="{{translate('banner_image')}}"/>
                                     </div>
                                     <div class="mt-4">
@@ -135,7 +133,7 @@
                                 <div class="col-lg-6 form-group">
                                     <div class="text-center mx-auto">
                                         <img class="upload-img-view upload-img-view__banner" id="viewerOfferBanner"
-                                             src="{{ getValidImage(path: 'storage/app/public/shop/'.getWebConfig(name: 'offer_banner') ?? '',type: 'backend-banner') }}"
+                                             src="{{ getStorageImages(path:getWebConfig(name: 'offer_banner'),type: 'backend-banner') }}"
                                              alt="">
                                     </div>
 

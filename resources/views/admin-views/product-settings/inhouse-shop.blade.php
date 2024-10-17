@@ -7,7 +7,7 @@
 
         <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{ asset('public/assets/back-end/img/business-setup.png') }}" alt="">
+                <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/business-setup.png') }}" alt="">
                 {{ translate('business_Setup') }}
             </h2>
 
@@ -22,15 +22,13 @@
 
                 <div class="dropdown-menu dropdown-menu-right bg-aliceblue border border-color-primary-light p-4 dropdown-w-lg">
                     <div class="d-flex align-items-center gap-2 mb-3">
-                        <img width="20" src="{{ asset('public/assets/back-end/img/note.png') }}" alt="">
+                        <img width="20" src="{{ dynamicAsset(path: 'public/assets/back-end/img/note.png') }}" alt="">
                         <h5 class="text-primary mb-0">{{ translate('note') }}</h5>
                     </div>
                     <p class="title-color font-weight-medium mb-0">{{ translate('please_click_the_Save_button_below_to_save_all_the_changes') }}</p>
                 </div>
             </div>
         </div>
-
-        @include('admin-views.business-settings.business-setup-inline-menu')
 
         <div class="card mb-3">
             <div class="card-body">
@@ -82,12 +80,12 @@
                     </div>
                 </div>
 
-                <div class="pt-10 rounded bg-position-center bg-soft-secondary"
-                     data-bg-img="{{ getValidImage(path: 'storage/app/public/shop/'. getWebConfig(name: 'shop_banner'), type:'backend-banner') }}">
+                <div class="pt-10 rounded bg-position-center bg-soft-secondary admin-inhouse-banner"
+                     data-bg-img="{{ getStorageImages(path:getWebConfig(name: 'shop_banner'), type:'backend-banner') }}">
                     <div class="media flex-wrap align-items-end gap-3 p-2">
-                        <div class="bg-white rounded py-4 px-5 shadow-lg">
-                            <img width="80"
-                                 src="{{ getValidImage(path: 'storage/app/public/company/'.getWebConfig(name: 'company_fav_icon'), type: 'backend-logo') }}"
+                        <div class="bg-white rounded py-3 px-5 shadow-lg">
+                            <img height="50px"
+                                 src="{{ getStorageImages(path: getWebConfig(name: 'company_fav_icon'), type: 'backend-logo') }}"
                                  alt="">
                         </div>
                         <div class="media-body">
@@ -126,7 +124,7 @@
                                                               data-toggle="tooltip" data-placement="right"
                                                               title="{{ translate('set_the_minimum_order_amount_a_customer_must_order_from_the_inhouse_shop') }}">
                                                     <img width="16"
-                                                         src="{{ asset('/public/assets/back-end/img/info-circle.svg') }}"
+                                                         src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}"
                                                          alt="">
                                                 </span>
                                                     </label>

@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
     <a href="javascript:">
-        <img src="{{ asset("public/assets/front-end/img/media/OTP-Verification-fail.png")}}" alt="{{ translate('logo') }}" class="img-fluid" width="220">
+        <img src="{{ theme_asset(path: "public/assets/front-end/img/media/OTP-Verification-fail.png")}}" alt="{{ translate('logo') }}" class="img-fluid" width="220">
     </a>
 </div>
 <h3 class="title text-center my-3 text-capitalize">{{ translate('something_went_wrong') }} !</h3>

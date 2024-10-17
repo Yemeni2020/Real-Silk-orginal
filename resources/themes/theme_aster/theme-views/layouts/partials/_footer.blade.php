@@ -6,7 +6,7 @@
             <div class="row gy-3 align-items-center">
                 <div class="col-lg-3 col-sm-3 text-center text-lg-start">
                     <img width="180" loading="lazy" alt="{{translate('image')}}"
-                         src="{{ getValidImage(path: 'storage/app/public/company/'.($web_config['footer_logo']->value), type:'logo') }}">
+                         src="{{ getStorageImages(path: $web_config['footer_logo'], type:'logo') }}">
                 </div>
                 <div
                     class="col-lg-6 col-sm-6 d-flex justify-content-center justify-content-sm-start justify-content-lg-center">
@@ -92,7 +92,7 @@
                                 <h6 class="text-uppercase mb-2 font-weight-bold footer-heder">{{translate('newsletter')}}</h6>
                                 <i class="bi bi-send-fill mt-n1"></i>
                             </div>
-                            <p>{{translate('subscribe_our_newsletter_to_get_latest_updates')}}</p>
+                            <p class="text-start">{{translate('subscribe_our_newsletter_to_get_latest_updates')}}</p>
                         </div>
                         <form class="newsletter-form" action="{{ route('subscription') }}" method="post">
                             @csrf
@@ -113,10 +113,10 @@
                             <div class="widget widget--nav absolute-white">
                                 <h4 class="widget__title">{{translate('accounts')}}</h4>
                                 <ul class="d-flex flex-column gap-3">
-                                    @if($web_config['seller_registration'])
+                                    @if($web_config['business_mode'] == 'multi' && $web_config['seller_registration'])
                                         <li>
                                             <a class="text-capitalize"
-                                               href="{{route('shop.apply')}}">{{translate('open_your_store')}}</a>
+                                               href="{{route('vendor.auth.registration.index')}}">{{translate('open_your_store')}}</a>
                                         </li>
                                     @endif
                                     <li>
@@ -150,8 +150,13 @@
                                         <a class="text-capitalize"
                                            href="{{route('products',['data_from'=>'featured','page'=>1])}}">{{translate('featured_products')}}</a>
                                     </li>
-                                    <li><a class="text-capitalize"
-                                           href="{{route('vendors')}}">{{translate('top_stores')}}</a></li>
+                                        @if($web_config['business_mode'] == 'multi')
+                                            <li>
+                                                <a class="text-capitalize" href="{{route('vendors')}}">
+                                                    {{ translate('top_stores') }}
+                                                </a>
+                                            </li>
+                                        @endif
                                     <li>
                                         <a class="text-capitalize"
                                            href="{{route('products',['data_from'=>'latest'])}}">{{translate('latest_products')}}</a>
@@ -189,6 +194,14 @@
                                         <li>
                                             <a class="text-capitalize"
                                                href="{{route('cancellation-policy')}}">{{translate('cancellation_policy')}}</a>
+                                        </li>
+                                    @endif
+
+                                    @if(isset($web_config['shipping_policy']['status']) && $web_config['shipping_policy']['status'] == 1)
+                                        <li>
+                                            <a class="text-capitalize" href="{{route('shipping-policy')}}">
+                                                {{ translate('shipping_policy') }}
+                                            </a>
                                         </li>
                                     @endif
 

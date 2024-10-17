@@ -8,7 +8,10 @@ enum PaymentMethod
         URI => '/',
         VIEW => 'admin-views.business-settings.payment-method.index'
     ];
-
+    const PAYMENT_OPTION = [
+        URI => 'payment-option',
+        VIEW => 'admin-views.business-settings.payment-method.payment-option'
+    ];
     const UPDATE = [
         URI => '/',
         VIEW => ''

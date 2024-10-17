@@ -10,7 +10,7 @@
     <div class="content container-fluid">
         <div class="mb-4 pb-2">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{asset('/public/assets/back-end/img/system-setting.png')}}" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/system-setting.png')}}" alt="">
                 {{translate('system_setup')}}
             </h2>
         </div>
@@ -24,9 +24,12 @@
                     <div class="px-3 py-4">
                         <div class="row justify-content-between align-items-center flex-grow-1">
                             <div class="col-sm-4 col-md-6 col-lg-8 mb-2 mb-sm-0">
-                                <h5 class="mb-0 d-flex">
+                                <span class="title-color text-capitalize font-weight-bold float-start">
                                     {{translate('language_table')}}
-                                </h5>
+                                    <span class="input-label-secondary cursor-pointer" data-toggle="tooltip" data-placement="right" title="{{translate('after_adding_a_new_language,_you_need_to_translate_the_key_contents_for_users_to_experience_this_feature').' . '.translate('to_translate_a_language_click_the_action_button_from_the_language_table_&_click_translate').'.'.translate('then_change_the_key_language_value_manually_or_click_the_‘Auto_Translate’_button').'.'.translate('Finally,_click_‘Update’_to_save_the_changes').'.'}}">
+                                        <img width="16" src="{{dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg')}}" alt="">
+                                    </span>
+                                </span>
                             </div>
                             <div class="col-sm-8 col-md-6 col-lg-4">
                                 <div class="d-flex gap-10 justify-content-sm-end">
@@ -72,8 +75,7 @@
                                             </label>
                                         @else
                                             <form action="{{ route('admin.business-settings.language.update-status') }}"
-                                                  method="post" id="language-id-{{$data['id']}}-form"
-                                                  class="update-status" >
+                                                  method="post" id="language-id-{{$data['id']}}-form">
                                                 @csrf
                                                 <input type="hidden" name="code" value="{{$data['code']}}">
                                                 <label class="switcher mx-auto">
@@ -102,8 +104,7 @@
                                         @elseif(array_key_exists('default', $data) && $data['default']===false)
                                             <form
                                                 action="{{route('admin.business-settings.language.update-default-status', ['code'=>$data['code']])}}"
-                                                method="get" id="language-default-id-{{$data['id']}}-form"
-                                                class="update-status" data-from="default-language">
+                                                method="get" id="language-default-id-{{$data['id']}}-form" data-from="default-language">
                                                 @csrf
                                                 <input type="hidden" name="code" value="{{$data['code']}}">
                                                 <label class="switcher mx-auto">
@@ -126,12 +127,12 @@
                                         <div class="dropdown">
                                             <button class="btn btn-seconary btn-sm dropdown-toggle"
                                                     type="button"
-                                                    id="dropdownMenuButton" data-toggle="dropdown"
+                                                    data-toggle="dropdown"
                                                     aria-haspopup="true"
                                                     aria-expanded="false">
                                                 <i class="tio-settings"></i>
                                             </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <div class="dropdown-menu">
                                                 @if($data['code']!='en')
                                                     <a class="dropdown-item" data-toggle="modal"
                                                        data-target="#lang-modal-update-{{$data['code']}}">{{translate('update')}}</a>
@@ -178,7 +179,7 @@
                                     <div class="form-group">
                                         <label for="recipient-name"
                                                class="col-form-label">{{translate('language')}} </label>
-                                        <input type="text" class="form-control" id="recipient-name" name="name">
+                                        <input type="text" class="form-control" id="recipient-name" name="name" placeholder="{{translate('language_name')}}">
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -189,7 +190,7 @@
                                             @foreach(File::files(base_path('public/assets/front-end/img/flags')) as $path)
                                                 @if(pathinfo($path)['filename'] !='en')
                                                     <option value="{{ pathinfo($path)['filename'] }}"
-                                                            title="{{ asset('public/assets/front-end/img/flags/'.pathinfo($path)['filename'].'.png') }}">
+                                                            title="{{ dynamicAsset(path: 'public/assets/front-end/img/flags/'.pathinfo($path)['filename'].'.png') }}">
                                                         {{ strtoupper(pathinfo($path)['filename']) }}
                                                     </option>
                                                 @endif
@@ -250,7 +251,7 @@
                                                 @foreach(File::files(base_path('public/assets/front-end/img/flags')) as $path)
                                                     @if(pathinfo($path)['filename'] !='en' && $data['code']==pathinfo($path)['filename'])
                                                         <option value="{{ pathinfo($path)['filename'] }}"
-                                                                title="{{ asset('public/assets/front-end/img/flags/'.pathinfo($path)['filename'].'.png') }}">
+                                                                title="{{ dynamicAsset(path: 'public/assets/front-end/img/flags/'.pathinfo($path)['filename'].'.png') }}">
                                                             {{ strtoupper(pathinfo($path)['filename']) }}
                                                         </option>
                                                     @endif
@@ -289,5 +290,5 @@
     </div>
 @endsection
 @push('script')
-    <script src="{{asset('public/assets/back-end/js/admin/business-setting/language.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/admin/business-setting/language.js')}}"></script>
 @endpush

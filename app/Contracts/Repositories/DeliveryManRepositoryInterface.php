@@ -16,7 +16,7 @@ interface DeliveryManRepositoryInterface extends RepositoryInterface
      * @param int|null $offset
      * @return Collection|LengthAwarePaginator
      */
-    public function getTopRatedList(array $filters = [], array $whereHasFilters = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator;
+    public function getTopRatedList(array$orderBy = [] ,array $filters = [], array $whereHasFilters = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator;
 
 
     /**

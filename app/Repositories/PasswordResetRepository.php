@@ -38,7 +38,12 @@ class PasswordResetRepository implements PasswordResetRepositoryInterface
 
     public function update(string $id, array $data): bool
     {
-        // TODO: Implement update() method.
+        return $this->passwordReset->find($id)->update($data);
+    }
+
+    public function updateOrCreate(array $params, array $value): mixed
+    {
+        return $this->passwordReset->updateOrCreate($params, $value);
     }
 
     public function delete(array $params): bool

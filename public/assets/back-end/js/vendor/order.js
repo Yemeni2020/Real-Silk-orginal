@@ -4,7 +4,9 @@ $(window).on('load',function () {
     $('.js-select2-custom').siblings('.select2-container').addClass('border-0');
     $('.js-select2-custom').siblings('.select2-container').find('.border-0').removeClass('border-0').addClass('border');
 });
-
+$('input[name=deliveryman_charge]').mousewheel(function(event) {
+    event.preventDefault();
+});
 $(document).ready(function () {
     $('#dataTable').DataTable();
 
@@ -76,6 +78,8 @@ $('.js-data-example-ajax').select2({
 $(document).ready(function () {
     $('.select2-container--default').addClass('form-control').addClass('p-0');
     $('.select2-selection').addClass('border-0');
+    initializePhoneInput(".phone-input-with-country-picker-2", ".country-picker-phone-number-2");
+
 });
 
 $("#date_type").change(function () {
@@ -93,15 +97,16 @@ $("#date_type").change(function () {
         $('.filter-btn').attr('class', 'col-sm-6 col-md-3 filter-btn');
     }
 }).change();
-
-
-$(".payment_status").on('click', function (e) {
+$('.payment-status-alert').on('click',function (){
+    toastr.info($('#payment-status-alert-message').data('message'));
+})
+$(".payment-status").on('click', function (e) {
     e.preventDefault();
     let id = $(this).data('id');
     let value = $(this).val();
     Swal.fire({
-        title: $("#message-status-title-text").data('text'),
-        text: $("#message-status-subtitle-text").data('text'),
+        title: $("#payment-status-message").data('title'),
+        text: $("#payment-status-message").data('message'),
         showCancelButton: true,
         confirmButtonColor: '#377dff',
         cancelButtonColor: 'secondary',
@@ -127,10 +132,11 @@ $(".payment_status").on('click', function (e) {
                     "payment_status": value
                 },
                 success: function (data) {
-
                     if (data.customer_status == 0) {
                         location.reload();
                         toastr.warning($("#message-status-warning-text").data('text'));
+                    }else if(data.error){
+                        toastr.warning(data.error);
                     } else {
                         location.reload();
                         toastr.success($("#message-status-success-text").data('text'));
@@ -167,7 +173,7 @@ $("#order_status").on('change', function (e) {
                 },
                 success: function (data) {
                     if (data.success == 0) {
-                        toastr.success($("#message-order-status-delivered-text").data('text'));
+                        toastr.warning($("#message-order-status-delivered-text").data('text'));
                         location.reload();
                     } else {
                         if (data.payment_status == 0) {
@@ -234,11 +240,19 @@ $("#addDeliveryMan").on('change', function () {
         }
     });
 });
-
-$("#deliveryman_charge").on('keyup', function () {
-    amountDateUpdate(this);
+$('input[name=deliveryman_charge]').on('keyup',function(event) {
+    if (event.which === 13) {
+        let value = $(this);
+        amountDateUpdate(value);
+    }
 });
-
+$(".deliveryman-charge").on('click', function () {
+    let value = $('input[name=deliveryman_charge]');
+    amountDateUpdate(value);
+});
+$('.deliveryman-charge-alert').on('click',function (){
+    toastr.info($('#deliveryman-charge-alert-message').data('message'))
+})
 $("#expected_delivery_date").on('change', function () {
     amountDateUpdate(this);
 });
@@ -266,6 +280,7 @@ function amountDateUpdate(t){
                     CloseButton: true,
                     ProgressBar: true
                 });
+                location.reload();
             } else {
                 toastr.error($("#message-deliveryman-charge-error-text").data('text'), {
                     CloseButton: true,
@@ -284,26 +299,28 @@ function amountDateUpdate(t){
 
 
 /** shipping address  map */
-function initAutocomplete() {
+async function shippingAddressMap() {
     let latitude = $("#shipping-latitude").data('latitude');
     let longitude = $("#shipping-longitude").data('longitude');
     let myLatLng = {
         lat: latitude,
         lng: longitude
     };
-
+    const { Map } = await google.maps.importLibrary("maps");
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
     const map = new google.maps.Map(document.getElementById("location_map_canvas_shipping"), {
         center: {
             lat: latitude,
             lng: longitude
         },
         zoom: 13,
-        mapTypeId: "roadmap",
+        mapId: 'roadmap'
     });
 
-    var marker = new google.maps.Marker({
+    var marker = new AdvancedMarkerElement({
+        map,
         position: myLatLng,
-        map: map,
+
     });
 
     marker.setMap(map);
@@ -312,7 +329,7 @@ function initAutocomplete() {
         var coordinates = JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2);
         var coordinates = JSON.parse(coordinates);
         var latlng = new google.maps.LatLng(coordinates['lat'], coordinates['lng']);
-        marker.setPosition(latlng);
+        marker.position={lat:coordinates['lat'], lng:coordinates['lng']};
         map.panTo(latlng);
 
         document.getElementById('latitude').value = coordinates['lat'];
@@ -351,7 +368,7 @@ function initAutocomplete() {
                 console.log("Returned place contains no geometry");
                 return;
             }
-            var mrkr = new google.maps.Marker({
+            var mrkr = new AdvancedMarkerElement({
                 map,
                 title: place.name,
                 position: place.geometry.location,
@@ -380,23 +397,24 @@ $(document).on("keydown", "input", function (e) {
 });
 
 /** billing address  map */
-function billing_map() {
+async function billingAddressMap() {
     let latitude = $("#billing-latitude").data('latitude');
     let longitude = $("#billing-longitude").data('longitude');
     var myLatLng = {
         lat: latitude,
         lng: longitude
     };
-
+    const { Map } = await google.maps.importLibrary("maps");
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
     const map = new google.maps.Map(document.getElementById("location_map_canvas_billing"), {
         center: {lat: latitude, lng: longitude},
         zoom: 13,
-        mapTypeId: "roadmap",
+        mapId: 'roadmap'
     });
 
-    var marker = new google.maps.Marker({
+    var marker = new AdvancedMarkerElement({
+        map,
         position: myLatLng,
-        map: map,
     });
 
     marker.setMap(map);
@@ -405,7 +423,7 @@ function billing_map() {
         var coordinates = JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2);
         var coordinates = JSON.parse(coordinates);
         var latlng = new google.maps.LatLng(coordinates['lat'], coordinates['lng']);
-        marker.setPosition(latlng);
+        marker.position = {lat:coordinates['lat'], lng:coordinates['lng']};
         map.panTo(latlng);
 
         document.getElementById('billing_latitude').value = coordinates['lat'];
@@ -415,7 +433,6 @@ function billing_map() {
             if (status == google.maps.GeocoderStatus.OK) {
                 if (results[1]) {
                     document.getElementById('billing_address').value = results[1].formatted_address;
-                    console.log(results[1].formatted_address);
                 }
             }
         });
@@ -444,7 +461,7 @@ function billing_map() {
                 console.log("Returned place contains no geometry");
                 return;
             }
-            var mrkr = new google.maps.Marker({
+            var mrkr = new AdvancedMarkerElement({
                 map,
                 title: place.name,
                 position: place.geometry.location,
@@ -473,54 +490,44 @@ $(document).on("keydown", "input", function (e) {
     if (e.which == 13) e.preventDefault();
 });
 
-function show_location_map() {
+async function locationShowingMap() {
     let latitude = $("#shipping-latitude").data('latitude');
     let longitude = $("#shipping-longitude").data('longitude');
-    let customer_name = $("#customer-name").data('text');
-    let location_icon = $("#location-icon").data('path');
-    let shipping_address = $("#shipping-address").data('text');
-    var myLatLng = {
+    let myLatLng = {
         lat: latitude,
         lng: longitude
     };
-
+    const { Map } = await google.maps.importLibrary("maps");
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
     const map = new google.maps.Map(document.getElementById("location_map_canvas"), {
         center: {
-            lat: latitude, lng: longitude,
-            zoom: 13,
-            mapTypeId: "roadmap",
-        }
+            lat: latitude,
+            lng: longitude
+        },
+        zoom: 13,
+        mapId: 'roadmap'
     });
 
-    if ($("#is-shipping-exist").data('status') === 'true') {
-        var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(latitude, longitude),
-            map: map,
-            title: customer_name,
-            icon: location_icon
-        });
-
-        google.maps.event.addListener(marker, 'click', (function (marker) {
-            return function () {
-                infowindow.setContent("<div class='float-left'><img class='__inline-5' src=''></div><div class='float-right __p-10'><b>customer_name</b><br/>shipping-address</div>"
-                );
-                infowindow.open(map, marker);
-            }
-        })(marker));
-        locationbounds.extend(marker.getPosition());
-    }
-    google.maps.event.addListenerOnce(map, 'idle', function () {
-        map.fitBounds(locationbounds);
+    var marker = new AdvancedMarkerElement({
+        position: myLatLng,
+        map: map,
     });
 
+    marker.setMap(map);
+    var geocoder = geocoder = new google.maps.Geocoder();
+    google.maps.event.addListener(map, 'click', function (mapsMouseEvent) {
+        var latlng = new google.maps.LatLng(latitude, longitude);
+        marker.position = {lat:latitude,lng:longitude};
+        map.panTo(latlng);
+    });
 }
 
 /*End Show location on map*/
 
-function map_callback_fucntion() {
-    initAutocomplete();
-    billing_map();
-    show_location_map();
+async function mapCallBackFunction() {
+    shippingAddressMap();
+    billingAddressMap();
+    locationShowingMap();
 }
 
 
@@ -535,4 +542,7 @@ $(".readUrl").on('change', function () {
         }
         reader.readAsDataURL(input.files[0]);
     }
+});
+$('input[type=number]').on('mousewheel', function(e) {
+    $(e.target).blur();
 });

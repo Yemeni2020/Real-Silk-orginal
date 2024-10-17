@@ -10,10 +10,12 @@
     <div class="content container-fluid">
         <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
             <h2 class="h1 mb-1 text-capitalize d-flex align-items-center gap-2">
-                <img width="20" src="{{ asset('public/assets/back-end/img/banner.png') }}" alt="">
+                <img width="20" src="{{ dynamicAsset(path: 'public/assets/back-end/img/banner.png') }}" alt="">
                 {{ translate('banner_Setup') }}
                 <small>
-                    <strong class="text--primary"> ({{str_replace("_", " ", theme_root_path()) }})</strong>
+                    <strong class="text--primary text-capitalize">
+                        ({{str_replace("_", " ", (theme_root_path() == "theme_fashion" ? "theme_lifestyle" : theme_root_path())) }})
+                    </strong>
                 </small>
             </h2>
             <div class="btn-group">
@@ -26,7 +28,7 @@
 
                 <div class="dropdown-menu dropdown-menu-right bg-aliceblue border border-color-primary-light p-4 dropdown-w-lg-30">
                     <div class="d-flex align-items-center gap-2 mb-3">
-                        <img width="20" src="{{ asset('public/assets/back-end/img/note.png') }}" alt="">
+                        <img width="20" src="{{ dynamicAsset(path: 'public/assets/back-end/img/note.png') }}" alt="">
                         <h5 class="text-primary mb-0">{{ translate('note') }}</h5>
                     </div>
                     <p class="title-color font-weight-medium mb-0">{{ translate('currently_you_are_managing_banners_for') }} {{ucwords(str_replace("_", " ", theme_root_path())) }}.{{ translate('these_saved_data_is_only_applicable_only_for_') }}{{ucwords(str_replace("_", " ", theme_root_path())) }}.{{ translate('if_you_change_theme_from_theme_setup_these_banners_will_not_be_shown_in_changed_theme._You_have_upload_all_the_banners_over_again _according_to_the_new_theme_ratio_and_sizes._If_you_switch_back_to_') }}{{ucwords(str_replace("_", " ", theme_root_path())) }}{{ translate('_again_,_you_will_see_the_saved_data.') }}</p>
@@ -134,7 +136,7 @@
                                         <div class="mx-auto text-center">
                                             <div class="uploadDnD">
                                                 <div class="form-group inputDnD input_image" data-title="{{ 'Drag and drop file or Browse file' }}">
-                                                    <input type="file" name="image" class="form-control-file text--primary font-weight-bold" onchange="readUrl(this)" accept=".jpg, .png, .jpeg, .gif, .bmp, .webp |image/*">
+                                                    <input type="file" name="image" class="form-control-file text--primary font-weight-bold" id="banner" accept=".jpg, .png, .jpeg, .gif, .bmp, .webp |image/*">
                                                 </div>
                                             </div>
                                         </div>
@@ -235,8 +237,8 @@
                                 <tr id="data-{{ $banner->id}}">
                                     <td class="pl-xl-5">{{ $banners->firstItem()+$key}}</td>
                                     <td>
-                                        <img class="ratio-4:1" width="80" alt=""
-                                             src="{{ getValidImage(path: 'storage/app/public/banner/'.$banner['photo'] , type: 'backend-banner') }}">
+                                        <img class="ratio-4-2 rounded" width="80" alt=""
+                                             src="{{ getStorageImages(path: $banner->photo_full_url , type: 'backend-banner') }}">
                                     </td>
                                     <td>{{ translate(str_replace('_',' ',$banner->banner_type)) }}</td>
                                     <td>
@@ -285,12 +287,7 @@
                     </div>
 
                     @if(count($banners)==0)
-                        <div class="text-center p-4">
-                            <img class="mb-3 w-160"
-                                 src="{{ asset('public/assets/back-end/svg/illustrations/sorry.svg') }}"
-                                 alt="Image Description">
-                            <p class="mb-0">{{ translate('no_data_to_show') }}</p>
-                        </div>
+                        @include('layouts.back-end._empty-state',['text'=>'no_banner_found'],['image'=>'default'])
                     @endif
                 </div>
             </div>
@@ -302,7 +299,7 @@
 @endsection
 
 @push('script')
-    <script src="{{ asset('public/assets/back-end/js/banner.js') }}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/banner.js') }}"></script>
     <script>
         "use strict";
 

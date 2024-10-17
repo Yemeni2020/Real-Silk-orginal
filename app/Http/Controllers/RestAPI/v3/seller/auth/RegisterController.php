@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\RestAPI\v3\seller\auth;
 
+use App\Events\VendorRegistrationEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Seller;
 use App\Models\Shop;
@@ -32,9 +33,10 @@ class RegisterController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => Helpers::error_processor($validator)], 403);
+            return response()->json(['message' => Helpers::validationErrorProcessor($validator)], 403);
         }
 
+        $storage = config('filesystems.disks.default') ?? 'public';
         DB::beginTransaction();
         try {
             $seller = new Seller();
@@ -53,8 +55,11 @@ class RegisterController extends Controller
             $shop->address = $request->shop_address;
             $shop->contact = $request->phone;
             $shop->image = ImageManager::upload('shop/', 'webp', $request->file('logo'));
+            $shop->image_storage_type = $request->has('logo') ? $storage : null;
             $shop->banner = ImageManager::upload('shop/banner/', 'webp', $request->file('banner'));
+            $shop->banner_storage_type = $request->has('banner') ? $storage : null;
             $shop->bottom_banner = ImageManager::upload('shop/banner/', 'webp', $request->file('bottom_banner'));
+            $shop->bottom_banner_storage_type = $request->has('bottom_banner') ? $storage : null;
             $shop->save();
 
             DB::table('seller_wallets')->insert([
@@ -69,6 +74,15 @@ class RegisterController extends Controller
                 'updated_at' => now(),
             ]);
             DB::commit();
+            $data = [
+                'vendorName' => $request['f_name'],
+                'status' => 'pending',
+                'subject' => translate('Vendor_Registration_Successfully_Completed'),
+                'title' => translate('Vendor_Registration_Successfully_Completed'),
+                'userType' => 'vendor',
+                'templateName' => 'registration',
+            ];
+            event(new VendorRegistrationEvent(email:$request['email'],data: $data));
             return response()->json(['message' => 'Shop apply successfully!'], 200);
 
         } catch (\Exception $e) {

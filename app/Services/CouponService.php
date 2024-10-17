@@ -10,7 +10,7 @@ class CouponService
      * @return array
      * This array return column name and there value when add coupon
      */
-    public function getCouponData($request,$addedBy): array
+    public function getCouponData($request, $addedBy): array
     {
         return [
             'added_by' => $addedBy,
@@ -116,13 +116,13 @@ class CouponService
 
         return $data;
     }
-    public function checkConditions(object $request):bool
+
+    public function checkConditions(object $request): bool
     {
-        if ( $request['coupon_type'] == 'discount_on_purchase' && $request['discount_type'] == 'amount' && $request['discount'] > $request['min_purchase']) {
+        if ($request['coupon_type'] == 'discount_on_purchase' && $request['discount_type'] == 'amount' && $request['discount'] > $request['min_purchase']) {
             Toastr::error(translate('the_minimum_purchase_amount_must_be_greater_than_discount_amount'));
             return false;
-        }elseif ($request['discount_type'] == 'percentage' && $request['discount'] >= 100 )
-        {
+        } elseif ($request['discount_type'] == 'percentage' && $request['discount'] >= 100) {
             Toastr::error(translate('when_discount_type percentage,discount_amount_will_be_less_than_100'));
             return false;
         }

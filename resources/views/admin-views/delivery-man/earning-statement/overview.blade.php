@@ -5,7 +5,7 @@
     <div class="content container-fluid">
         <div class="mb-4 pb-2">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{asset('/public/assets/back-end/img/add-new-seller.png')}}" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/add-new-seller.png')}}" alt="">
                 {{translate('earning_statement')}}
             </h2>
         </div>
@@ -17,7 +17,7 @@
                 <div class="row justify-content-between align-items-center g-2 mb-3">
                     <div class="col-sm-6">
                         <h4 class="d-flex align-items-center text-capitalize gap-10 mb-0">
-                            <img width="20" class="mb-1" src="{{asset('/public/assets/back-end/img/admin-wallet.png')}}" alt="">
+                            <img width="20" class="mb-1" src="{{dynamicAsset(path: 'public/assets/back-end/img/admin-wallet.png')}}" alt="">
                             {{translate('deliveryman_Wallet')}}
                         </h4>
                     </div>
@@ -27,7 +27,7 @@
                     <div class="col-lg-4">
                         <div class="card h-100 d-flex justify-content-center align-items-center">
                             <div class="card-body d-flex flex-column gap-10 align-items-center justify-content-center">
-                                <img width="48" src="{{asset('/public/assets/back-end/img/cc.png')}}" alt="">
+                                <img width="48" src="{{dynamicAsset(path: 'public/assets/back-end/img/cc.png')}}" alt="">
                                 <h3 class="for-card-count mb-0 fz-24">{{ $deliveryMan->wallet ? setCurrencySymbol(amount: usdToDefaultCurrency(amount: $deliveryMan->wallet->cash_in_hand), currencyCode: getCurrencyCode()) : setCurrencySymbol(amount: 0, currencyCode: getCurrencyCode()) }}</h3>
                                 <div class="font-weight-bold text-capitalize mb-30">
                                     {{translate('cash_in_hand')}}
@@ -46,7 +46,7 @@
                                             <div class="text-capitalize mb-0">{{translate('current_balance')}}</div>
                                         </div>
                                         <div>
-                                            <img width="40" src="{{asset('/public/assets/back-end/img/withdraw-icon.png')}}" alt="">
+                                            <img width="40" src="{{dynamicAsset(path: 'public/assets/back-end/img/withdraw-icon.png')}}" alt="">
                                         </div>
                                     </div>
                                 </div>
@@ -59,7 +59,7 @@
                                             <div class="text-capitalize mb-0">{{translate('total_withdrawn')}}</div>
                                         </div>
                                         <div>
-                                            <img width="40" src="{{asset('/public/assets/back-end/img/aw.png')}}" alt="">
+                                            <img width="40" src="{{dynamicAsset(path: 'public/assets/back-end/img/aw.png')}}" alt="">
                                         </div>
                                     </div>
                                 </div>
@@ -72,7 +72,7 @@
                                             <div class="text-capitalize mb-0">{{translate('pending_withdraw')}}</div>
                                         </div>
                                         <div>
-                                            <img width="40" class="mb-2" src="{{asset('/public/assets/back-end/img/pw.png')}}" alt="">
+                                            <img width="40" class="mb-2" src="{{dynamicAsset(path: 'public/assets/back-end/img/pw.png')}}" alt="">
                                         </div>
                                     </div>
                                 </div>
@@ -87,7 +87,7 @@
                                             <div class="text-capitalize mb-0">{{translate('withdrawable_balance')}}</div>
                                         </div>
                                         <div>
-                                            <img width="40" class="mb-2" src="{{asset('/public/assets/back-end/img/withdraw.png')}}" alt="">
+                                            <img width="40" class="mb-2" src="{{dynamicAsset(path: 'public/assets/back-end/img/withdraw.png')}}" alt="">
                                         </div>
                                     </div>
                                 </div>
@@ -193,7 +193,6 @@
                             </form>
                         </div>
                         <hr class="non-printable">
-
                     </div>
                 </div>
             </div>

@@ -9,6 +9,15 @@ $(document).ready(function () {
         let cardBody = $('[name="billing_method_id"]:checked').parents('.card-header').siblings('.card-body')
         billingMethodSelect(cardBody);
     }
+
+    try {
+        initializePhoneInput(".phone-input-with-country-picker-shipping", ".country-picker-phone-number-shipping");
+    } catch (error) {
+    }
+    try {
+        initializePhoneInput(".phone-input-with-country-picker-billing", ".country-picker-phone-number-billing");
+    } catch (error) {
+    }
 });
 
 $('[name="shipping_method_id"]').on('change', function () {
@@ -32,6 +41,7 @@ function shippingMethodSelect(cardBody) {
 
     $('#name').val(shippingPerson);
     $('#phoneNumber').val(shippingPhone);
+    $('#phoneNumber').keypress();
     $('#address').val(shippingAddress);
     $('#city').val(shippingCity);
     $('#zip').val(shippingZip);
@@ -62,7 +72,8 @@ function billingMethodSelect(cardBody) {
                 <input type="checkbox" name="update_billing_address" id="update-billing-address">${updateThisAddress}`;
     $('#billing-contact-person-name').val(billingPerson);
     $('#billing-phone').val(billingPhone);
-    $('#billing-address').val(billingAddress);
+    $('#billing-phone').keypress()
+    $('#billing_address').val(billingAddress);
     $('#billing-city').val(billingCity);
     $('#billing-zip').val(billingZip);
     $('#select2-billing_zip-container').text(billingZip);
@@ -81,21 +92,22 @@ $('#same-as-shipping-address').on('click', function () {
     }
 })
 
-function initAutoComplete() {
+async function initAutoComplete() {
     let myLatLng = {
         lat: $('#shipping-address-location').data('latitude'),
         lng: $('#shipping-address-location').data('longitude'),
     };
-
+    const { Map } = await google.maps.importLibrary("maps");
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
     const map = new google.maps.Map(document.getElementById("location_map_canvas"), {
         center: myLatLng,
         zoom: 13,
-        mapTypeId: "roadmap",
+        mapId: "roadmap",
     });
 
-    let marker = new google.maps.Marker({
+    let marker = new AdvancedMarkerElement({
+        map,
         position: myLatLng,
-        map: map,
     });
 
     marker.setMap(map);
@@ -104,7 +116,7 @@ function initAutoComplete() {
         var coordinate = JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2);
         var coordinates = JSON.parse(coordinate);
         var latlng = new google.maps.LatLng(coordinates['lat'], coordinates['lng']);
-        marker.setPosition(latlng);
+        marker.position={lat:coordinates['lat'], lng:coordinates['lng']};
         map.panTo(latlng);
 
         document.getElementById('latitude').value = coordinates['lat'];
@@ -146,7 +158,7 @@ function initAutoComplete() {
                 console.log("Returned place contains no geometry");
                 return;
             }
-            var mrkr = new google.maps.Marker({
+            var mrkr = new AdvancedMarkerElement({
                 map,
                 title: place.name,
                 position: place.geometry.location,
@@ -170,20 +182,22 @@ function initAutoComplete() {
     });
 };
 
-function billingMap() {
+async function billingMap() {
     let myLatLng = {
         lat: $('#shipping-address-location').data('latitude'),
         lng: $('#shipping-address-location').data('longitude'),
     };
+    const { Map } = await google.maps.importLibrary("maps");
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
     const map = new google.maps.Map(document.getElementById("billing-location-map-canvas"), {
         center: myLatLng,
         zoom: 13,
-        mapTypeId: "roadmap",
+        mapId: "roadmap",
     });
 
-    let marker = new google.maps.Marker({
+    let marker = new AdvancedMarkerElement({
+        map,
         position: myLatLng,
-        map: map,
     });
 
     marker.setMap(map);
@@ -192,7 +206,7 @@ function billingMap() {
         var coordinate = JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2);
         var coordinates = JSON.parse(coordinate);
         var latlng = new google.maps.LatLng(coordinates['lat'], coordinates['lng']);
-        marker.setPosition(latlng);
+        marker.position={lat:coordinates['lat'], lng:coordinates['lng']};
         map.panTo(latlng);
 
         document.getElementById('billing-latitude').value = coordinates['lat'];
@@ -234,7 +248,7 @@ function billingMap() {
                 console.log("Returned place contains no geometry");
                 return;
             }
-            var mrkr = new google.maps.Marker({
+            var mrkr = new AdvancedMarkerElement({
                 map,
                 title: place.name,
                 position: place.geometry.location,
@@ -310,6 +324,10 @@ $('#proceed-to-next-action').on('click', function () {
     let redirectUrl = $(this).data('checkout-payment');
     let formUrl = $(this).data('goto-checkout');
 
+    let isCheckCreateAccount = $('#is_check_create_account');
+    let customerPassword = $('#customer_password');
+    let customerConfirmPassword = $('#customer_confirm_password');
+
     $.ajaxSetup({
         headers: {
             "X-CSRF-TOKEN": $('meta[name="_token"]').attr("content"),
@@ -321,7 +339,10 @@ $('#proceed-to-next-action').on('click', function () {
             physical_product: physicalProduct,
             shipping: physicalProduct === 'yes' ? $('#address-form').serialize() : null,
             billing: $('#billing-address-form').serialize(),
-            billing_addresss_same_shipping: billingAddressSameAsShipping
+            billing_addresss_same_shipping: billingAddressSameAsShipping,
+            is_check_create_account: isCheckCreateAccount && isCheckCreateAccount.prop("checked") ? 1 : 0,
+            customer_password: customerPassword ? customerPassword.val() : null,
+            customer_confirm_password: customerConfirmPassword ? customerConfirmPassword.val() : null,
         },
 
         beforeSend: function () {
@@ -350,4 +371,12 @@ $('#proceed-to-next-action').on('click', function () {
             });
         }
     });
+});
+
+$('#is_check_create_account').on('change', function() {
+    if($(this).is(':checked')) {
+        $('.is_check_create_account_password_group').fadeIn();
+    } else {
+        $('.is_check_create_account_password_group').fadeOut();
+    }
 });

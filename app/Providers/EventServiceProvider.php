@@ -3,23 +3,39 @@
 namespace App\Providers;
 
 use App\Events\AddFundToWalletEvent;
+use App\Events\CashCollectEvent;
+use App\Events\CustomerRegistrationEvent;
+use App\Events\CustomerStatusUpdateEvent;
 use App\Events\DeliverymanPasswordResetEvent;
-use App\Events\DigitalProductOtpVerificationMailEvent;
+use App\Events\DigitalProductDownloadEvent;
+use App\Events\DigitalProductOtpVerificationEvent;
 use App\Events\EmailVerificationEvent;
+use App\Events\MaintenanceModeNotificationEvent;
 use App\Events\OrderPlacedEvent;
-use App\Events\PasswordResetMailEvent;
+use App\Events\PasswordResetEvent;
 use App\Events\ChattingEvent;
 use App\Events\OrderStatusEvent;
+use App\Events\ProductRequestStatusUpdateEvent;
 use App\Events\RefundEvent;
+use App\Events\VendorRegistrationEvent;
+use App\Events\WithdrawStatusUpdateEvent;
 use App\Listeners\AddFundToWalletListener;
+use App\Listeners\CashCollectListener;
+use App\Listeners\CustomerRegistrationListener;
+use App\Listeners\CustomerStatusUpdateListener;
 use App\Listeners\DeliverymanPasswordResetListener;
-use App\Listeners\DigitalProductOtpVerificationMailListener;
+use App\Listeners\DigitalProductDownloadListener;
+use App\Listeners\DigitalProductOtpVerificationListener;
 use App\Listeners\EmailVerificationListener;
+use App\Listeners\MaintenanceModeNotificationListener;
 use App\Listeners\OrderPlacedListener;
-use App\Listeners\PasswordResetMailListener;
+use App\Listeners\PasswordResetListener;
 use App\Listeners\ChattingListener;
 use App\Listeners\OrderStatusListener;
+use App\Listeners\ProductRequestStatusUpdateListener;
 use App\Listeners\RefundListener;
+use App\Listeners\VendorRegistrationListener;
+use App\Listeners\WithdrawStatusUpdateListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -33,8 +49,8 @@ class EventServiceProvider extends ServiceProvider
         AddFundToWalletEvent::class => [
             AddFundToWalletListener::class,
         ],
-        DigitalProductOtpVerificationMailEvent::class => [
-            DigitalProductOtpVerificationMailListener::class,
+        DigitalProductOtpVerificationEvent::class => [
+            DigitalProductOtpVerificationListener::class,
         ],
         DeliverymanPasswordResetEvent::class => [
             DeliverymanPasswordResetListener::class,
@@ -42,8 +58,8 @@ class EventServiceProvider extends ServiceProvider
         EmailVerificationEvent::class => [
             EmailVerificationListener::class,
         ],
-        PasswordResetMailEvent::class => [
-            PasswordResetMailListener::class,
+        PasswordResetEvent::class => [
+            PasswordResetListener::class,
         ],
         OrderPlacedEvent::class => [
             OrderPlacedListener::class,
@@ -56,6 +72,30 @@ class EventServiceProvider extends ServiceProvider
         ],
         RefundEvent::class => [
             RefundListener::class,
+        ],
+        VendorRegistrationEvent::class => [
+            VendorRegistrationListener::class,
+        ],
+        CustomerRegistrationEvent::class => [
+            CustomerRegistrationListener::class,
+        ],
+        CustomerStatusUpdateEvent::class => [
+            CustomerStatusUpdateListener::class,
+        ],
+        WithdrawStatusUpdateEvent::class => [
+            WithdrawStatusUpdateListener::class,
+        ],
+        CashCollectEvent::class => [
+            CashCollectListener::class,
+        ],
+        ProductRequestStatusUpdateEvent::class => [
+            ProductRequestStatusUpdateListener::class,
+        ],
+        DigitalProductDownloadEvent::class => [
+            DigitalProductDownloadListener::class,
+        ],
+        MaintenanceModeNotificationEvent::class => [
+            MaintenanceModeNotificationListener::class,
         ],
     ];
 

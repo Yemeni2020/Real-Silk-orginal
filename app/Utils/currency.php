@@ -17,6 +17,10 @@ if (!function_exists('loadCurrency')) {
             session()->put('currency_code', $currency->code);
             session()->put('currency_symbol', $currency->symbol);
             session()->put('currency_exchange_rate', $currency->exchange_rate);
+            session()->forget('usd');
+            session()->forget('default');
+            $usd = exchangeRate(USD);
+            session()->put('usd', $usd);
         }
     }
 }
@@ -45,10 +49,10 @@ if (!function_exists('currencyConverter')) {
 if (!function_exists('usdToDefaultCurrency')) {
     /**
      * system usd currency to default convert
-     * @param float|int $amount
+     * @param float|int|null $amount
      * @return float|int
      */
-    function usdToDefaultCurrency(float|int $amount): float|int
+    function usdToDefaultCurrency(float|int|null $amount = 0): float|int
     {
         $currencyModel = getWebConfig('currency_model');
         if ($currencyModel == MULTI_CURRENCY) {
@@ -79,11 +83,12 @@ if (!function_exists('usdToDefaultCurrency')) {
 if (!function_exists('webCurrencyConverter')) {
     /**
      * currency convert for web panel
-     * @param string|int|float $amount
+     * @param string|int|float|null $amount
      * @return float|string
      */
-    function webCurrencyConverter(string|int|float $amount): float|string
+    function webCurrencyConverter(string|int|float|null $amount = 0): float|string
     {
+        loadCurrency();
         $currencyModel = getWebConfig('currency_model');
         if ($currencyModel == MULTI_CURRENCY) {
             if (session()->has('usd')) {
@@ -98,7 +103,35 @@ if (!function_exists('webCurrencyConverter')) {
             $rate = 1;
         }
 
-        return setCurrencySymbol(amount: round($amount * $rate, 2), currencyCode: getCurrencyCode(type: 'web'));
+        return setCurrencySymbol(amount: round($amount * $rate, 2), currencyCode: getCurrencyCode(type: 'web'), type: 'web');
+    }
+}
+
+
+if (!function_exists('webCurrencyConverterOnlyDigit')) {
+    /**
+     * currency convert for web panel
+     * @param string|int|float|null $amount
+     * @return float|string
+     */
+    function webCurrencyConverterOnlyDigit(string|int|float|null $amount = 0): float|string
+    {
+        loadCurrency();
+        $currencyModel = getWebConfig('currency_model');
+        if ($currencyModel == MULTI_CURRENCY) {
+            if (session()->has('usd')) {
+                $usd = session('usd');
+            } else {
+                $usd = Currency::where(['code' => 'USD'])->first()->exchange_rate;
+                session()->put('usd', $usd);
+            }
+            $myCurrency = \session('currency_exchange_rate');
+            $rate = $myCurrency / $usd;
+        } else {
+            $rate = 1;
+        }
+
+        return round($amount * $rate, 2);
     }
 }
 
@@ -116,12 +149,13 @@ if (!function_exists('exchangeRate')) {
 if (!function_exists('getCurrencySymbol')) {
     /**
      * @param string $currencyCode
+     * @param string $type
      * @return float|int|string
      */
-    function getCurrencySymbol(string $currencyCode = USD): float|int|string
+    function getCurrencySymbol(string $currencyCode = USD, string $type = 'default'): float|int|string
     {
         loadCurrency();
-        if (session()->has('currency_symbol')) {
+        if ($type == 'web' && session()->has('currency_symbol')) {
             $currentSymbol = session('currency_symbol');
         } else {
             $systemDefaultCurrencyInfo = session('system_default_currency_info');
@@ -135,16 +169,17 @@ if (!function_exists('setCurrencySymbol')) {
     /**
      * @param string|int|float $amount
      * @param string $currencyCode
+     * @param string $type
      * @return string
      */
-    function setCurrencySymbol(string|int|float $amount, string $currencyCode=USD): string
+    function setCurrencySymbol(string|int|float $amount, string $currencyCode = USD, string $type = 'default'): string
     {
-        $decimal_point_settings = getWebConfig('decimal_point_settings');
+        $decimalPointSettings = getWebConfig('decimal_point_settings');
         $position = getWebConfig('currency_symbol_position');
         if ($position === 'left') {
-            $string = getCurrencySymbol(currencyCode: $currencyCode) . '' . number_format($amount, (!empty($decimal_point_settings) ? $decimal_point_settings : 0));
+            $string = getCurrencySymbol(currencyCode: $currencyCode, type: $type) . '' . number_format($amount, (!empty($decimalPointSettings) ? $decimalPointSettings : 0));
         } else {
-            $string = number_format($amount, !empty($decimal_point_settings) ? $decimal_point_settings : 0) . '' . getCurrencySymbol(currencyCode: $currencyCode);
+            $string = number_format($amount, !empty($decimalPointSettings) ? $decimalPointSettings : 0) . '' . getCurrencySymbol(currencyCode: $currencyCode, type: $type);
         }
         return $string;
     }
@@ -155,14 +190,14 @@ if (!function_exists('getCurrencyCode')) {
      * @param string $type default,web
      * @return string
      */
-    function getCurrencyCode(string $type='default'): string
+    function getCurrencyCode(string $type = 'default'): string
     {
-        if($type == 'web'){
+        if ($type == 'web') {
             $currencyCode = session('currency_code');
-        }else{
-            if (session()->has('system_default_currency_info')){
+        } else {
+            if (session()->has('system_default_currency_info')) {
                 $currencyCode = session('system_default_currency_info')->code;
-            }else{
+            } else {
                 $currencyId = getWebConfig('system_default_currency');
                 $currencyCode = Currency::where('id', $currencyId)->first()->code;
             }
@@ -182,7 +217,7 @@ if (!function_exists('getFormatCurrency')) {
         foreach ($suffixes as $suffix => $factor) {
             if ($amount >= $factor) {
                 $div = $amount / $factor;
-                $formattedValue = number_format($div,1 ) . $suffix;
+                $formattedValue = number_format($div, 1) . $suffix;
                 break;
             }
         }

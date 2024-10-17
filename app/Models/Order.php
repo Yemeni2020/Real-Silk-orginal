@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-use App\User;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -187,7 +187,6 @@ class Order extends Model
         return $this->belongsTo(ShippingAddress::class, 'billing_address');
     }
 
-    /* delivery_man -> deliveryMan */
     public function deliveryMan(): BelongsTo
     {
         return $this->belongsTo(DeliveryMan::class,'delivery_man_id');
@@ -195,7 +194,7 @@ class Order extends Model
     /* delivery_man_review -> deliveryManReview */
     public function deliveryManReview():HasOne
     {
-        return $this->hasOne(Review::class,'order_id');
+        return $this->hasOne(Review::class,'order_id')->whereNotNull('delivery_man_id');
     }
     /* order_transaction -> orderTransaction */
     public function orderTransaction() : HasOne

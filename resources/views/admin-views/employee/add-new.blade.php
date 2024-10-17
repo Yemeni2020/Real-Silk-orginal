@@ -1,18 +1,20 @@
 @extends('layouts.back-end.app')
 
 @section('title', translate('employee Add'))
-
+@push('css_or_js')
+    <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/plugins/intl-tel-input/css/intlTelInput.css') }}">
+@endpush
 @section('content')
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{asset('/public/assets/back-end/img/add-new-employee.png')}}" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/add-new-employee.png')}}" alt="">
                 {{translate('add_new_employee')}}
             </h2>
         </div>
         <div class="row">
             <div class="col-md-12">
-                <form action="{{route('admin.employee.add-new')}}" method="post" enctype="multipart/form-data" class="text-start">
+                <form action="{{route('admin.employee.add-new-post')}}" method="post" enctype="multipart/form-data" class="text-start">
                     @csrf
                     <div class="card">
                         <div class="card-body">
@@ -31,9 +33,14 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="phone" class="title-color">{{translate('phone')}}</label>
-                                        <input type="number" name="phone" value="{{old('phone')}}" class="form-control"
-                                               id="phone"
-                                               placeholder="{{translate('ex').':'. '+88017********'}}" required>
+                                        <div class="mb-3">
+                                            <input class="form-control form-control-user phone-input-with-country-picker"
+                                                   type="tel" id="exampleInputPhone" value="{{old('phone')}}"
+                                                   placeholder="{{ translate('enter_phone_number') }}" required>
+                                            <div class="">
+                                                <input type="text" class="country-picker-phone-number w-50" value="{{old('phone')}}" name="phone" hidden  readonly>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="role_id" class="title-color">{{translate('role')}}</label>
@@ -64,7 +71,7 @@
                                     <div class="form-group">
                                         <div class="text-center mb-3">
                                             <img class="upload-img-view" id="viewer"
-                                                 src="{{asset('public\assets\back-end\img\400x400\img2.jpg')}}"
+                                                 src="{{dynamicAsset(path: 'public/assets/back-end/img/400x400/img2.jpg')}}"
                                                  alt=""/>
                                         </div>
                                         <label for="customFileUpload" class="title-color">{{translate('employee_image')}}</label>
@@ -105,11 +112,14 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="user_password"
-                                               class="title-color">{{translate('password')}}</label>
-
+                                        <label for="user_password" class="title-color d-flex align-items-center">
+                                            {{translate('password')}}
+                                            <span class="input-label-secondary cursor-pointer" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{translate('The_password_must_be_at_least_8_characters_long_and_contain_at_least_one_uppercase_letter').','.translate('_one_lowercase_letter').','.translate('_one_digit_').','.translate('_one_special_character').','.translate('_and_no_spaces').'.'}}">
+                                                <img alt="" width="16" src={{dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }} alt="" class="m-1">
+                                            </span>
+                                        </label>
                                         <div class="input-group input-group-merge">
-                                            <input type="password" class="js-toggle-password form-control"
+                                            <input type="password" class="js-toggle-password form-control password-check"
                                                    name="password" required id="user_password"
                                                    placeholder="{{ translate('password_minimum_8_characters') }}"
                                                    data-hs-toggle-password-options='{
@@ -124,6 +134,7 @@
                                                 </a>
                                             </div>
                                         </div>
+                                        <span class="text-danger mx-1 password-error"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -163,7 +174,7 @@
         </div>
     </div>
     <span id="get-multiple-image-data"
-          data-image="{{asset("public/assets/back-end/img/400x400/img2.jpg")}}"
+          data-image="{{dynamicAsset(path: "public/assets/back-end/img/400x400/img2.jpg")}}"
           data-width="100%"
           data-group-class="col-6 col-lg-4"
           data-row-height="auto"
@@ -173,6 +184,8 @@
 @endsection
 
 @push('script')
-    <script src="{{asset('public/assets/back-end/js/spartan-multi-image-picker.js')}}"></script>
-    <script src="{{asset('public/assets/back-end/js/select-multiple-image.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/spartan-multi-image-picker.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/select-multiple-image.js')}}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/plugins/intl-tel-input/js/intlTelInput.js') }}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/country-picker-init.js') }}"></script>
 @endpush

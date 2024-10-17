@@ -42,3 +42,20 @@ $('.contact_status_form').on('submit', function (event){
         }
     });
 });
+$('.emergency-contact-update-view').on('click',function (){
+    $.ajax({
+        url: $(this).data('action'),
+        type: 'GET',
+        beforeSend: function () {
+            $('#loading').fadeIn();
+        },
+        success: function(response) {
+            $('.emergency-contact-update-modal').html(response.view);
+            $('.js-select2-custom').select2();
+            $('.emergency-contact-update-modal').modal('show');
+        },
+        complete: function () {
+            $('#loading').fadeOut();
+        }
+    })
+})

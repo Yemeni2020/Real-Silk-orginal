@@ -21,11 +21,22 @@ enum Product
 
     const VIEW = [
         URI => 'view',
-        VIEW => 'vendor-views.product.view'
+        VIEW => 'vendor-views.product.view',
+        ROUTE => 'vendor.products.view'
     ];
 
     const SKU_COMBINATION = [
         URI => 'sku-combination',
+        VIEW => ''
+    ];
+
+    const DIGITAL_VARIATION_COMBINATION = [
+        URI => 'digital-variation-combination',
+        VIEW => 'vendor-views.product.partials._digital-variation-combination'
+    ];
+
+    const DIGITAL_VARIATION_FILE_DELETE = [
+        URI => 'digital-variation-file-delete',
         VIEW => ''
     ];
 
@@ -87,5 +98,19 @@ enum Product
         URI => 'search',
         VIEW => 'vendor-views.partials._search-product'
 
+    ];
+    const PRODUCT_GALLERY = [
+        URI => 'product-gallery',
+        VIEW => 'vendor-views.product.product-gallery'
+    ];
+
+    const STOCK_LIMIT_STATUS = [
+        URI => 'stock-limit-status',
+        VIEW => ''
+    ];
+
+    const DELETE_PREVIEW_FILE = [
+        URI => 'delete-preview-file',
+        VIEW => '',
     ];
 }

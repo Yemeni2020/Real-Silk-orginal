@@ -89,5 +89,6 @@ interface OrderRepositoryInterface extends RepositoryInterface
      * @return Collection|LengthAwarePaginator
      */
     public function getTopCustomerList(array $filters = [] , array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator;
+    public function getListWhereBetween(array $filters = [], string $selectColumn = null, string $whereBetween = null, array $whereBetweenFilters = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator;
 
 }

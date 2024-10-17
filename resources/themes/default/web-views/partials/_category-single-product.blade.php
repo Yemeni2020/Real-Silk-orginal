@@ -4,14 +4,14 @@
         <div class=" inline_product clickable d-flex justify-content-center">
             @if($product->discount > 0)
                 <div class="d-flex">
-                    <span class="for-discount-value p-1 pl-2 pr-2">
-                    @if ($product->discount_type == 'percent')
-                            {{round($product->discount,(!empty($decimal_point_settings) ? $decimal_point_settings: 0))}}
-                            %
-                        @elseif($product->discount_type =='flat')
-                            {{ webCurrencyConverter(amount: $product->discount) }}
-                        @endif
-                        {{translate('off')}}
+                    <span class="for-discount-value p-1 pl-2 pr-2 font-bold fs-13">
+                        <span class="direction-ltr d-block">
+                            @if ($product->discount_type == 'percent')
+                                -{{round($product->discount,(!empty($decimal_point_settings) ? $decimal_point_settings: 0))}}%
+                            @elseif($product->discount_type =='flat')
+                                -{{ webCurrencyConverter(amount: $product->discount) }}
+                            @endif
+                        </span>
                     </span>
                 </div>
             @else
@@ -22,7 +22,7 @@
             <div class="d-block pb-0">
                 <a href="{{route('product',$product->slug)}}" class="d-block">
                     <img alt=""
-                         src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$product['thumbnail'], type: 'product') }}">
+                         src="{{ getStorageImages(path: $product->thumbnail_full_url, type: 'product') }}">
                 </a>
             </div>
 
@@ -48,13 +48,13 @@
                             <i class="tio-star-outlined text-warning"></i>
                         @endif
                     @endfor
-                    <label class="badge-style">( {{$product->reviews_count}} )</label>
+                    <label class="badge-style">( {{ count($product->reviews) }} )</label>
                 </span>
                 </div>
             @endif
             <div class="">
                 <a href="{{route('product',$product->slug)}}" class="text-capitalize fw-semibold">
-                    {{ Str::limit($product['name'], 18) }}
+                    {{ $product['name'] }}
                 </a>
             </div>
             <div class="justify-content-between ">

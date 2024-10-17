@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin\Report;
 
 use App\Contracts\Repositories\BusinessSettingRepositoryInterface;
 use App\Contracts\Repositories\RefundTransactionRepositoryInterface;
+use App\Enums\ExportFileNames\Admin\Report;
 use App\Enums\ViewPaths\Admin\RefundTransaction;
 use App\Enums\WebConfigKey;
+use App\Exports\RefundTransactionReportExport;
 use App\Http\Controllers\BaseController;
 use App\Services\RefundTransactionService;
 use App\Traits\PdfGenerator;
@@ -15,6 +17,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\View as PdfView;
+use Maatwebsite\Excel\Facades\Excel;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -40,11 +43,15 @@ class RefundTransactionController extends BaseController
         $refundTransactions = $this->getRefundTransactionData($request);
         return view(RefundTransaction::INDEX[VIEW],compact('searchValue','paymentMethod','refundTransactions'));
     }
-    public function getRefundTransactionExport(Request $request)
+    public function exportRefundTransaction(Request $request):BinaryFileResponse
     {
-        $refundTransactions = $this->getRefundTransactionData($request);
-        $transactionData = $this->refundTransactionService->getRefundTransactionDataForExport(refundTransactions:$refundTransactions);
-        return (new FastExcel($transactionData))->download('Refund_Transaction_details.xlsx');
+        $transactions = $this->getRefundTransactionData($request);
+        $data = [
+            'searchValue' => $request['searchValue'],
+            'paymentMethod' => $request['payment_method'],
+            'transactions' => $transactions,
+        ];
+        return Excel::download(new RefundTransactionReportExport($data),Report::REFUND_TRANSACTION_REPORT_LIST);
     }
     public function getRefundTransactionPDF(Request $request):void
     {
@@ -62,7 +69,7 @@ class RefundTransactionController extends BaseController
         );
         $mpdfView = PdfView::make(RefundTransaction::GENERATE_PDF[VIEW],compact($PDFData)
         );
-        $this->generatePdf($mpdfView, 'refund_transaction_summary_report_', data('Y'));
+        $this->generatePdf(view: $mpdfView, filePrefix: 'refund_transaction_summary_report_', filePostfix: data('Y'));
     }
     protected function getRefundTransactionData($request):Collection|LengthAwarePaginator
     {

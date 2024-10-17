@@ -6,7 +6,8 @@ return [
     'url' => 'javascript:',
     'icon' => '<i class="fa-solid fa-screwdriver-wrench"></i>',
     'index' => 0,
-    'path'=> 'theme_route',
+    'path' => 'theme_route',
+    'comfortable_panel_version' => '14.8',
     'route_list' => [
         [
             'name' => 'Promotional_Banners',
@@ -14,7 +15,7 @@ return [
             'module_permission' => 'promotion_management',
             'url' => url('/') . '/admin/banner/list',
             'icon' => '<i class="tio-photo-square-outlined nav-icon"></i>',
-            'path'=>'admin/banner/list',
+            'path' => 'admin/banner/list',
             'route_list' => []
         ],
         [
@@ -23,7 +24,7 @@ return [
             'module_permission' => 'promotion_management',
             'url' => url('/') . '/admin/business-settings/all-pages-banner',
             'icon' => '<i class="tio-shop nav-icon"></i>',
-            'path'=>'admin/business-settings/all-pages-banner',
+            'path' => 'admin/business-settings/all-pages-banner',
             'route_list' => []
         ],
         [
@@ -32,7 +33,7 @@ return [
             'module_permission' => 'system_settings',
             'url' => url('/') . '/admin/product-settings/inhouse-shop',
             'icon' => '<i class="tio-shop nav-icon"></i>',
-            'path'=>'admin/product-settings/inhouse-shop',
+            'path' => 'admin/product-settings/inhouse-shop',
             'route_list' => []
         ],
     ]

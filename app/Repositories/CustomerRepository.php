@@ -27,6 +27,21 @@ class CustomerRepository implements CustomerRepositoryInterface
         return $this->user->with($relations)->where($params)->first();
     }
 
+    public function getByIdentity(array $filters = []): ?Model
+    {
+        return $this->user
+            ->when($filters['identity'], function ($query) use ($filters) {
+                return $query->orWhere(function ($query) use ($filters) {
+                    return $query->whereNotNull('email')->where(['email' => $filters['identity']]);
+                });
+            })
+            ->when($filters['identity'], function ($query) use ($filters) {
+                return $query->orWhere(function ($query) use ($filters) {
+                    return $query->whereNotNull('phone')->where(['phone' => $filters['identity']]);
+                });
+            })->first();
+    }
+
     public function getList(array $orderBy = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
     {
         $query = $this->user->with($relations)->when(!empty($orderBy), function ($query) use ($orderBy) {
@@ -62,10 +77,20 @@ class CustomerRepository implements CustomerRepositoryInterface
         return $this->user->whereNotIn('id', $ids)->get();
     }
 
-
     public function update(string $id, array $data): bool
     {
-        return $this->user->where('id', $id)->update($data);
+        return $this->user->find($id)->update($data);
+    }
+
+    public function updateWhere(array $params, array $data): bool
+    {
+        $this->user->where($params)->update($data);
+        return true;
+    }
+
+    public function updateOrCreate(array $params, array $data): mixed
+    {
+        return $this->user->updateOrCreate($params, $data);
     }
 
     public function delete(array $params): bool

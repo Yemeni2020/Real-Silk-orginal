@@ -56,14 +56,11 @@ trait CommonTrait
     public static function delivery_man_withdrawable_balance($delivery_man_id)
     {
         $wallet = DeliverymanWallet::where('delivery_man_id', $delivery_man_id)->first();
-
-        $withdrawable_balance = 0;
+        $withdrawalBalance = 0;
         if ($wallet) {
-            $withdrawable_balance = ($wallet->current_balance ?? 0) - (($wallet->cash_in_hand ?? 0) + ($wallet->pending_withdraw ?? 0));
+            $withdrawalBalance = ($wallet->current_balance ?? 0) - (($wallet->cash_in_hand ?? 0) + ($wallet->pending_withdraw ?? 0));
         }
-        $withdrawable_balance = $withdrawable_balance > 0 ? $withdrawable_balance : 0;
-
-        return $withdrawable_balance;
+        return $withdrawalBalance > 0 ? $withdrawalBalance : 0;
     }
 
     public static function delivery_man_total_earn($delivery_man_id)

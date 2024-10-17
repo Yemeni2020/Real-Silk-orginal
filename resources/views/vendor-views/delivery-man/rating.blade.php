@@ -7,7 +7,7 @@
         <div class="d-flex align-items-center justify-content-between flex-wrap gap-10 mb-3">
             <div class="">
                 <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                    <img src="{{asset('/public/assets/back-end/img/deliveryman.png')}}" width="20" alt="">
+                    <img src="{{dynamicAsset(path: 'public/assets/back-end/img/deliveryman.png')}}" width="20" alt="">
                     {{$deliveryMan['f_name']. ' '. $deliveryMan['l_name']}}
                 </h2>
             </div>
@@ -24,7 +24,7 @@
                     <div class="col-md-auto mb-3 mb-md-0">
                         <div class="d-flex align-items-center">
                             <img class="avatar avatar-xxl avatar-4by3 {{Session::get('direction') === "rtl" ? 'ml-4' : 'mr-4'}}"
-                                src="{{getValidImage(path:'storage/app/public/delivery-man/'.$deliveryMan['image'],type: 'backend-profile')}}"
+                                src="{{getStorageImages(path:$deliveryMan->image_full_url,type: 'backend-profile')}}"
                                 alt="Image Description">
                             <div class="d-block">
                                 <h4 class="display-2 text-dark mb-0">
@@ -172,7 +172,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @forelse($reviews as $key=>$review)
+                    @foreach($reviews as $key=>$review)
                         <tr>
                             <td>
                                 {{$reviews->firstItem()+$key}}
@@ -183,7 +183,7 @@
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="avatar avatar-circle">
-                                        <img class="avatar-img" src="{{getValidImage(path: 'storage/app/public/profile/'.$review->customer->image,type: 'backend-profile')}}"
+                                        <img class="avatar-img" src="{{getStorageImages(path: $review->customer->image_full_url,type: 'backend-profile')}}"
                                             alt="{{translate('image_description')}}">
                                     </div>
                                     <div class="{{Session::get('direction') === "rtl" ? 'mr-3' : 'ml-3'}}">
@@ -209,18 +209,7 @@
                                 {{date('d M Y H:i:s',strtotime($review['updated_at']))}}
                             </td>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="3">
-                                <div class="text-center p-4">
-                                    <img class="mb-3 w-160"
-                                         src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}"
-                                         alt="{{translate('image_description')}}">
-                                    <p class="mb-0">{{translate('no_data_to_show')}}</p>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforelse
+                    @endforeach
                     </tbody>
                 </table>
             </div>
@@ -230,6 +219,9 @@
                     {{ $reviews->links() }}
                 </div>
             </div>
+            @if(count($reviews)==0)
+                @include('layouts.back-end._empty-state',['text'=>'no_review_found'],['image'=>'default'])
+            @endif
         </div>
     </div>
 @endsection

@@ -12,6 +12,7 @@ use App\Repositories\VendorRepository;
 use App\Services\VendorService;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -68,27 +69,25 @@ class ProfileController extends BaseController
     /**
      * @param VendorRequest $request
      * @param string|int $id
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function update(VendorRequest $request, string|int $id):RedirectResponse
+    public function update(VendorRequest $request, string|int $id):JsonResponse
     {
 
         $vendor = $this->vendorRepo->getFirstWhere(['id'=>$id]);
         $this->vendorRepo->update(id:$id,data: $this->vendorService->getVendorDataForUpdate(request:$request,vendor:$vendor));
-        Toastr::success(translate('profile_updated_successfully'));
-        return redirect()->back();
+        return response()->json(['message'=>translate('profile_updated_successfully')]);
     }
 
     /**
      * @param VendorPasswordRequest $request
      * @param string|int $id
-     * @return RedirectResponse
+     * @return JsonResponse
      */
-    public function updatePassword(VendorPasswordRequest $request , string|int $id):RedirectResponse
+    public function updatePassword(VendorPasswordRequest $request , string|int $id):JsonResponse
     {
         $this->vendorRepo->update(id:$id,data:$this->vendorService->getVendorPasswordData(request:$request));
-        Toastr::success(translate('password_updated_successfully'));
-        return redirect()->back();
+        return response()->json(['message'=>translate('password_updated_successfully')]);
     }
 
     /**

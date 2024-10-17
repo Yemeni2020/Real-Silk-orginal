@@ -31,4 +31,13 @@ interface ChattingRepositoryInterface extends RepositoryInterface
      * @return bool
      */
     public function updateAllWhere(array $params, array $data) : bool;
+
+    /**
+     * @param string|null $searchValue
+     * @param array $filters
+     * @param array $whereNotNull
+     * @param array $data
+     * @return bool
+     */
+    public function updateListWhereNotNull(string $searchValue = null, array $filters = [], array $whereNotNull = [], array $data = []): bool;
 }

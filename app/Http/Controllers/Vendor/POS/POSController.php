@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Vendor\POS;
 use App\Contracts\Repositories\CategoryRepositoryInterface;
 use App\Contracts\Repositories\CouponRepositoryInterface;
 use App\Contracts\Repositories\CustomerRepositoryInterface;
+use App\Contracts\Repositories\DeliveryZipCodeRepositoryInterface;
 use App\Contracts\Repositories\OrderRepositoryInterface;
 use App\Contracts\Repositories\ProductRepositoryInterface;
 use App\Contracts\Repositories\ShopRepositoryInterface;
@@ -12,9 +13,11 @@ use App\Contracts\Repositories\VendorRepositoryInterface;
 use App\Enums\SessionKey;
 use App\Enums\ViewPaths\Vendor\POS;
 use App\Http\Controllers\BaseController;
+use App\Models\DeliveryCountryCode;
 use App\Services\CartService;
 use App\Services\POSService;
 use App\Traits\CalculatorTrait;
+use App\Traits\CommonTrait;
 use App\Traits\CustomerTrait;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Contracts\View\View;
@@ -27,9 +30,7 @@ use Illuminate\Support\Str;
 
 class POSController extends BaseController
 {
-    use CalculatorTrait;
-    use CustomerTrait;
-
+    use CalculatorTrait,CommonTrait,CustomerTrait;
 
     /**
      * @param VendorRepositoryInterface $vendorRepo
@@ -41,17 +42,19 @@ class POSController extends BaseController
      * @param OrderRepositoryInterface $orderRepo
      * @param CartService $cartService
      * @param POSService $POSService
+     * @param DeliveryZipCodeRepositoryInterface $deliveryZipCodeRepo
      */
     public function __construct(
-        private readonly VendorRepositoryInterface $vendorRepo,
-        private readonly CategoryRepositoryInterface $categoryRepo,
-        private readonly ProductRepositoryInterface $productRepo,
-        private readonly CustomerRepositoryInterface $customerRepo,
-        private readonly ShopRepositoryInterface $shopRepo,
-        private readonly CouponRepositoryInterface $couponRepo,
-        private readonly OrderRepositoryInterface $orderRepo,
-        private readonly CartService $cartService,
-        private readonly POSService $POSService,
+        private readonly VendorRepositoryInterface          $vendorRepo,
+        private readonly CategoryRepositoryInterface        $categoryRepo,
+        private readonly ProductRepositoryInterface         $productRepo,
+        private readonly CustomerRepositoryInterface        $customerRepo,
+        private readonly ShopRepositoryInterface            $shopRepo,
+        private readonly CouponRepositoryInterface          $couponRepo,
+        private readonly OrderRepositoryInterface           $orderRepo,
+        private readonly CartService                        $cartService,
+        private readonly POSService                         $POSService,
+        private readonly DeliveryZipCodeRepositoryInterface $deliveryZipCodeRepo,
     )
     {
     }
@@ -70,7 +73,7 @@ class POSController extends BaseController
      * @param object $request
      * @return View
      */
-    public function getPOSView(object $request):View
+    public function getPOSView(object $request): View
     {
         $vendorId = auth('seller')->id();
         $vendor = $this->vendorRepo->getFirstWhere(params: ['id' => $vendorId]);
@@ -81,11 +84,11 @@ class POSController extends BaseController
 
         $shop = $this->shopRepo->getFirstWhere(params: ['id' => $vendorId]);
         $categoryId = $request['category_id'];
-        $categories = $this->categoryRepo->getListWhere(orderBy: ['id'=>'desc'],filters: ['position'=>0]);
+        $categories = $this->categoryRepo->getListWhere(orderBy: ['id' => 'desc'], filters: ['position' => 0]);
         $searchValue = $request['searchValue'] ?? null;
         $products = $this->productRepo->getListWhere(
             orderBy: ['id' => 'desc'],
-            searchValue:$request['searchValue'],
+            searchValue: $request['searchValue'],
             filters: [
                 'added_by' => 'seller',
                 'seller_id' => $vendorId,
@@ -94,14 +97,17 @@ class POSController extends BaseController
             ],
             dataLimit: getWebConfig('pagination_limit'),
         );
-        $cartId = 'walking-customer-'.rand(10,1000);
-        $this->cartService->getNewCartSession(cartId:$cartId);
-        $customers = $this->customerRepo->getListWhereNotIn(ids:[0]);
+        $cartId = 'walking-customer-' . rand(10, 1000);
+        $this->cartService->getNewCartSession(cartId: $cartId);
+        $customers = $this->customerRepo->getListWhereNotIn(ids: [0]);
         $getCurrentCustomerData = $this->getCustomerDataFromSessionForPOS();
         $summaryData = array_merge($this->POSService->getSummaryData(), $getCurrentCustomerData);
         $cartItems = $this->getCartData(cartName: session(SessionKey::CURRENT_USER));
-        $order = $this->orderRepo->getFirstWhere(params: ['id'=>session(SessionKey::LAST_ORDER)]);
-        return view(POS::INDEX[VIEW],compact(
+        $order = $this->orderRepo->getFirstWhere(params: ['id' => session(SessionKey::LAST_ORDER)]);
+        $totalHoldOrder = $summaryData['totalHoldOrders'];
+        $countries = getWebConfig(name: 'delivery_country_restriction') ? $this->get_delivery_country_array() : COUNTRIES;
+        $zipCodes = getWebConfig(name: 'delivery_zip_code_area_restriction') ? $this->deliveryZipCodeRepo->getListWhere(dataLimit: 'all') : 0;
+        return view(POS::INDEX[VIEW], compact(
             'categories',
             'categoryId',
             'products',
@@ -111,7 +117,10 @@ class POSController extends BaseController
             'searchValue',
             'summaryData',
             'cartItems',
-            'order'
+            'order',
+            'totalHoldOrder',
+            'countries',
+            'zipCodes'
         ));
     }
 
@@ -299,12 +308,13 @@ class POSController extends BaseController
             'view' => view(POS::CART[VIEW], compact('cartId','cartItems'))->render()
         ]);
     }
-    public function getQuickView(Request $request):JsonResponse
+
+    public function getQuickView(Request $request): JsonResponse
     {
         $product = $this->productRepo->getFirstWhereWithCount(
-            params:['id'=> $request['product_id']],
+            params: ['id' => $request['product_id']],
             withCount: ['reviews'],
-            relations: ['brand','category','rating','tags'],
+            relations: ['brand', 'category', 'rating', 'tags', 'digitalVariation'],
         );
         return response()->json([
             'success' => 1,
@@ -315,22 +325,23 @@ class POSController extends BaseController
     /**
      * @return array
      */
-    protected function getCustomerDataFromSessionForPOS():array
+    protected function getCustomerDataFromSessionForPOS(): array
     {
-        if( Str::contains(session(SessionKey::CURRENT_USER), 'walking-customer'))
-        {
-            $currentCustomer = 'Walking Customer';
-            $currentCustomerData =$this->customerRepo->getFirstWhere(params:['id'=>'0']);
-        }else{
-            $userId = explode('-',session(SessionKey::CURRENT_USER))[2];
-            $currentCustomerData = $this->customerRepo->getFirstWhere(params:['id'=>$userId]);
-            $currentCustomer = $currentCustomerData['f_name'].' '.$currentCustomerData['l_name']. ' (' .$currentCustomerData['phone'].')';
+        if (Str::contains(session(SessionKey::CURRENT_USER), 'walking-customer')) {
+            $currentCustomerInfo =  ['customerName'=>'Walking Customer' ];
+            $currentCustomerData = $this->customerRepo->getFirstWhere(params: ['id' => '0']);
+        } else {
+            $userId = explode('-', session(SessionKey::CURRENT_USER))[2];
+            $currentCustomerData = $this->customerRepo->getFirstWhere(params: ['id' => $userId]);
+            $currentCustomerInfo = $this->cartService->getCustomerInfo(currentCustomerData:$currentCustomerData, customerId: $userId);
+
         }
         return [
-            'currentCustomer' => $currentCustomer,
+            'currentCustomer' => $currentCustomerInfo['customerName'],
             'currentCustomerData' => $currentCustomerData
         ];
     }
+
     /**
      * @param string $cartName
      * @return array
@@ -339,19 +350,21 @@ class POSController extends BaseController
     {
         $customerCartData = [];
         if (Str::contains($cartName, 'walking-customer')) {
-            $customerName = 'Walking Customer';
-            $customerPhone = "";
+            $currentCustomerInfo =  [
+                'customerName'=>'Walking Customer',
+                'customerPhone'=>"",
+            ];
             $customerId = 0 ;
         } else {
             $customerId = explode('-', $cartName)[2];
             $currentCustomerData = $this->customerRepo->getFirstWhere(params: ['id' => $customerId]);
-            $customerName = $currentCustomerData['f_name'] . ' ' . $currentCustomerData['l_name'];
-            $customerPhone = $currentCustomerData['phone'];
+            $currentCustomerInfo = $this->cartService->getCustomerInfo(currentCustomerData:$currentCustomerData, customerId: $customerId);
+
         }
         $customerCartData[$cartName] = [
-            'customerName' => $customerName,
-            'customerPhone' => $customerPhone,
-            'customerId'=>$customerId,
+            'customerName' => $currentCustomerInfo['customerName'],
+            'customerPhone' => $currentCustomerInfo['customerPhone'],
+            'customerId'=> $customerId,
         ];
         return $customerCartData;
     }
@@ -379,6 +392,7 @@ class POSController extends BaseController
                     );
                     if ($cartItem['customerId'] == $customerCartData[$cartName]['customerId']) {
                         $cartItem['productSubtotal'] = $subTotalCalculation['productSubtotal'];
+                        $subTotalCalculation['customerOnHold']=$cartItem['customerOnHold'];
                         $cartItemValue[] = $cartItem;
                     }
                 }
@@ -399,6 +413,7 @@ class POSController extends BaseController
             'cartItemValue' => $cartItemValue,
             'couponDiscount' => $totalCalculation['couponDiscount'],
             'extraDiscount' => $totalCalculation['extraDiscount'],
+            'customerOnHold' => $subTotalCalculation['customerOnHold']??false,
         ];
     }
     protected function getCartData(string $cartName):array

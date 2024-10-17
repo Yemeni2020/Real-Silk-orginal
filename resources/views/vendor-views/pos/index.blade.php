@@ -1,131 +1,123 @@
 @extends('layouts.back-end.app-seller')
 
 @section('title', translate('POS'))
-
+@push('css_or_js')
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+    <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/plugins/intl-tel-input/css/intlTelInput.css') }}">
+@endpush
 @section('content')
-    <section class="section-content pt-5">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-7 mb-4 mb-lg-0">
-                    <div class="card">
-                        <h5 class="p-3 m-0 bg-light">
-                            {{ translate('product_Section') }}
-                        </h5>
-                        <div class="px-3 py-4">
-                            <div class="row gy-1">
-                                <div class="col-sm-6">
-                                    <div class="input-group d-flex justify-content-end">
-                                        <select name="category" id="category"
-                                                class="form-control js-select2-custom w-100 action-category-filter"
-                                                title="select category">
-                                            <option value="">{{ translate('all_categories') }}</option>
-                                            @foreach ($categories as $item)
-                                                <option value="{{$item->id}}" {{$categoryId==$item->id?'selected':''}}>
-                                                    {{ $item->defaultName }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+    <div class="content container-fluid">
+        <div class="row">
+            <div class="col-lg-7 mb-4 mb-lg-0">
+                <div class="card">
+                    <h5 class="p-3 m-0 bg-light">
+                        {{ translate('product_Section') }}
+                    </h5>
+                    <div class="px-3 py-4">
+                        <div class="row gy-1">
+                            <div class="col-sm-6">
+                                <div class="input-group d-flex justify-content-end">
+                                    <select name="category" id="category"
+                                            class="form-control js-select2-custom w-100 action-category-filter"
+                                            title="select category">
+                                        <option value="">{{ translate('all_categories') }}</option>
+                                        @foreach ($categories as $item)
+                                            <option value="{{$item->id}}" {{$categoryId==$item->id?'selected':''}}>
+                                                {{ $item->defaultName }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                <div class="col-sm-6">
-                                    <form class="">
-                                        <div class="input-group-overlay input-group-merge input-group-custom">
-                                            <div class="input-group-prepend">
-                                                <div class="input-group-text">
-                                                    <i class="tio-search"></i>
-                                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <form class="">
+                                    <div class="input-group-overlay input-group-merge input-group-custom">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <i class="tio-search"></i>
                                             </div>
-                                            <input id="search" autocomplete="off" type="text"
-                                                   value="{{ $searchValue }}"
-                                                   name="searchValue" class="form-control search-bar-input"
-                                                   placeholder="{{ translate('search_by_name_or_sku') }}"
-                                                   aria-label="Search here">
-                                            <diV class="card pos-search-card w-4 position-absolute z-index-1 w-100">
-                                                <div id="pos-search-box" class="card-body search-result-box d--none">
-                                                </div>
-                                            </diV>
                                         </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card-body pt-2" id="items">
-                            <div class="pos-item-wrap">
-                                @foreach($products as $product)
-                                    @include('vendor-views.pos.partials._single-product', ['product'=>$product])
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <div class="table-responsive mt-4">
-                            <div class="px-4 d-flex justify-content-lg-end">
-                                {!!$products->withQueryString()->links()!!}
+                                        <input id="search" autocomplete="off" type="text"
+                                                value="{{ $searchValue }}"
+                                                name="searchValue" class="form-control search-bar-input"
+                                                placeholder="{{ translate('search_by_name_or_sku') }}"
+                                                aria-label="Search here">
+                                        <diV class="card pos-search-card w-4 position-absolute z-index-1 w-100">
+                                            <div id="pos-search-box" class="card-body search-result-box d--none">
+                                            </div>
+                                        </diV>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-lg-5 mb-5">
-                    <div class="card billing-section-wrap">
-                        <h5 class="p-3 m-0 bg-light">{{ translate('billing_Section') }}</h5>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-end mb-3">
-                                <button type="button"
-                                        class="btn btn-outline--primary d-flex align-items-center gap-2 action-view-all-hold-orders">
-                                    {{ translate('view_All_Hold_Orders') }}
-                                    <span class="badge badge-danger rounded-circle total_hold_orders">
-                                <?php
-                                $viewAllHoldOrders = 0;
-                                if (session()->has('cart_name')) {
-                                    foreach (session('cart_name') as $item) {
-                                        if (session()->has($item) && count(session($item)) > 1) {
-                                            $viewAllHoldOrders++;
-                                        }
-                                    }
-                                }
-                                ?>
-                                {{ $viewAllHoldOrders }}
-                            </span>
-                                </button>
-                            </div>
+                    <div class="card-body pt-2" id="items">
+                        <div class="pos-item-wrap">
+                            @foreach($products as $product)
+                                @include('vendor-views.pos.partials._single-product', ['product'=>$product])
+                            @endforeach
+                        </div>
+                    </div>
 
-                            <div class="form-group d-flex gap-2">
-
-                                <?php
-                                $userId = 0;
-                                if (Illuminate\Support\Str::contains(session('current_user'), 'saved-customer')) {
-                                    $userId = explode('-', session('current_user'))[2];
-                                }
-                                ?>
-                                <select id='customer' name="customer_id" data-placeholder="Walking Customer"
-                                        class="js-example-matcher form-control form-ellipsis action-customer-change">
-                                    <option
-                                        value="0" {{ $userId == 0 ? 'selected':''}}>{{ translate('walking_customer') }}</option>
-                                    @foreach ($customers as $customer)
-                                        <option
-                                            value="{{ $customer->id }}" {{ $userId == $customer->id ? 'selected':''}}>{{ $customer->f_name }} {{ $customer->l_name }}
-                                            ({{ $customer->phone }})
-                                        </option>
-                                    @endforeach
-                                </select>
-
-                                <button class="btn btn-success rounded text-nowrap" id="add_new_customer" type="button"
-                                        data-toggle="modal" data-target="#add-customer" title="Add New Customer">
-                                    {{ translate('add_New_Customer') }}
-                                </button>
-                            </div>
-
-                            <div id="cart-summary">
-                                @include('vendor-views.pos.partials._cart-summary')
-                            </div>
-
+                    <div class="table-responsive mt-4">
+                        <div class="px-4 d-flex justify-content-lg-end">
+                            {!!$products->withQueryString()->links()!!}
                         </div>
                     </div>
                 </div>
             </div>
+
+            <div class="col-lg-5 mb-5">
+                <div class="card billing-section-wrap">
+                    <h5 class="p-3 m-0 bg-light">{{ translate('billing_Section') }}</h5>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-end mb-3">
+                            <button type="button"
+                                    class="btn btn-outline--primary d-flex align-items-center gap-2 action-view-all-hold-orders">
+                                {{ translate('view_All_Hold_Orders') }}
+                                <span class="total_hold_orders">
+                                    {{$totalHoldOrder}}
+                                </span>
+                            </button>
+                        </div>
+
+                        <div class="form-group d-flex gap-2">
+
+                            <?php
+                            $userId = 0;
+                            if (Illuminate\Support\Str::contains(session('current_user'), 'saved-customer')) {
+                                $userId = explode('-', session('current_user'))[2];
+                            }
+                            ?>
+                            <select id='customer' name="customer_id" data-placeholder="Walking Customer"
+                                    class="js-example-matcher form-control form-ellipsis action-customer-change">
+                                <option
+                                    value="0" {{ $userId == 0 ? 'selected':''}}>{{ translate('walking_customer') }}</option>
+                                @foreach ($customers as $customer)
+                                    <option
+                                        value="{{ $customer->id }}" {{ $userId == $customer->id ? 'selected':''}}>{{ $customer->f_name }} {{ $customer->l_name }}
+                                        ({{ $customer->phone }})
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            <button class="btn btn-success rounded text-nowrap" id="add_new_customer" type="button"
+                                    data-toggle="modal" data-target="#add-customer" title="Add New Customer">
+                                {{ translate('add_New_Customer') }}
+                            </button>
+                        </div>
+
+                        <div id="cart-summary">
+                            @include('vendor-views.pos.partials._cart-summary')
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
-    </section>
+    </div>
+
     <div class="modal fade pt-5" id="quick-view" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content" id="quick-view-modal"></div>
@@ -134,6 +126,7 @@
     <button class="d-none" id="hold-orders-modal-btn" type="button" data-toggle="modal"
             data-target="#hold-orders-modal">
     </button>
+
     @if($order)
         @include('vendor-views.pos.partials.modals._print-invoice')
     @endif
@@ -186,7 +179,9 @@
 @endsection
 
 @push('script_2')
-    <script src="{{ asset('public/assets/back-end/js/vendor/pos-script.js') }}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/plugins/intl-tel-input/js/intlTelInput.js') }}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/country-picker-init.js') }}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/vendor/pos-script.js') }}"></script>
 
     <script>
         "use strict";

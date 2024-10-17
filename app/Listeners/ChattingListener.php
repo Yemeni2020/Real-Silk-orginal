@@ -10,6 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 class ChattingListener
 {
     use PushNotificationTrait;
+
     /**
      * Create the event listener.
      */
@@ -26,7 +27,8 @@ class ChattingListener
         $this->sendNotification($event);
     }
 
-    private function sendNotification(ChattingEvent $event):void{
+    private function sendNotification(ChattingEvent $event): void
+    {
         $key = $event->key;
         $type = $event->type;
         $userData = $event->userData;

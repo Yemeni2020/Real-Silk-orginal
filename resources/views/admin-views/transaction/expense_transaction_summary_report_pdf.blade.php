@@ -5,8 +5,8 @@
     <meta http-equiv="Content-Type" content="text/html;"/>
     <meta charset="UTF-8">
 
-    <link rel="stylesheet" href="{{asset('public/assets/back-end/css/google-fonts.css')}}">
-    <link rel="stylesheet" href="{{ asset('public/assets/back-end/css/admin/order-transaction.css') }}">
+    <link rel="stylesheet" href="{{dynamicAsset(path: 'public/assets/back-end/css/google-fonts.css')}}">
+    <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/css/admin/order-transaction.css') }}">
 </head>
 
 <body>
@@ -19,7 +19,7 @@
                         {{translate('expense_Transaction_Statement')}}
                     </th>
                     <th class="p-0 text-right">
-                        <img class="logo" src="{{getValidImage(path:'storage/app/public/company/'.$data['company_web_logo'],type: 'backend-logo')}}"
+                        <img class="logo" src="{{getStorageImages(path:getWebConfig('company_web_logo'),type: 'backend-logo')}}"
                              alt="">
                     </th>
                 </tr>

@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\FlashDealProduct;
+use App\Models\LoginSetup;
+use App\Traits\FileManagerTrait;
+use App\Traits\UpdateClass;
 use App\Utils\Helpers;
 use App\Enums\GlobalConstant;
 use App\Models\Banner;
@@ -16,32 +20,38 @@ use App\Models\FlashDeal;
 use App\Models\Product;
 use App\Traits\AddonHelper;
 use App\Traits\ThemeHelper;
+use App\Utils\ProductManager;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
-ini_set('memory_limit',-1);
-ini_set('upload_max_filesize','180M');
-ini_set('post_max_size','200M');
+ini_set('memory_limit', -1);
+ini_set('upload_max_filesize', '180M');
+ini_set('post_max_size', '200M');
 
 class AppServiceProvider extends ServiceProvider
 {
 
     use AddonHelper;
     use ThemeHelper;
+    use FileManagerTrait;
+    use UpdateClass;
 
     /**
      * Register any application services.
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         if ($this->app->isLocal()) {
             $this->app->register(\Amirami\Localizator\ServiceProvider::class);
@@ -54,176 +64,170 @@ class AppServiceProvider extends ServiceProvider
      * @return void
      */
 
-    public function boot()
+    public function boot(): void
     {
-        Paginator::useBootstrap();
+        if (!in_array(request()->ip(), ['127.0.0.1', '::1']) && env('FORCE_HTTPS')) {
+            \URL::forceScheme('https');
+        }
 
-        Config::set('addon_admin_routes',$this->get_addon_admin_routes());
-        Config::set('get_payment_publish_status',$this->get_payment_publish_status());
+        if (!App::runningInConsole()) {
+            Paginator::useBootstrap();
 
-        Config::set('get_theme_routes',$this->get_theme_routes());
+            Config::set('addon_admin_routes', $this->get_addon_admin_routes());
+            Config::set('get_payment_publish_status', $this->get_payment_publish_status());
 
-        try {
-            if (Schema::hasTable('business_settings')) {
+            Config::set('get_theme_routes', $this->get_theme_routes());
 
-            $web = BusinessSetting::all();
-            $settings = Helpers::get_settings($web, 'colors');
-            $data = json_decode($settings['value'], true);
+            try {
+                if (Schema::hasTable('business_settings')) {
 
-            $web_config = [
-                'primary_color' => $data['primary'],
-                'secondary_color' => $data['secondary'],
-                'primary_color_light' => isset($data['primary_light']) ? $data['primary_light'] : '',
-                'name' => Helpers::get_settings($web, 'company_name'),
-                'phone' => Helpers::get_settings($web, 'company_phone'),
-                'web_logo' => Helpers::get_settings($web, 'company_web_logo'),
-                'mob_logo' => Helpers::get_settings($web, 'company_mobile_logo'),
-                'fav_icon' => Helpers::get_settings($web, 'company_fav_icon'),
-                'email' => Helpers::get_settings($web, 'company_email'),
-                'about' => Helpers::get_settings($web, 'about_us'),
-                'footer_logo' => Helpers::get_settings($web, 'company_footer_logo'),
-                'copyright_text' => Helpers::get_settings($web, 'company_copyright_text'),
-                'decimal_point_settings' => !empty(\App\Utils\Helpers::get_business_settings('decimal_point_settings')) ? \App\Utils\Helpers::get_business_settings('decimal_point_settings') : 0,
-                'seller_registration' => BusinessSetting::where(['type'=>'seller_registration'])->first()->value,
-                'wallet_status' => Helpers::get_business_settings('wallet_status'),
-                'loyalty_point_status' => Helpers::get_business_settings('loyalty_point_status'),
-                'guest_checkout_status' => Helpers::get_business_settings('guest_checkout'),
-            ];
+                    $this->setStorageConnectionEnvironment();
+                    $web = BusinessSetting::all();
+                    $settings = Helpers::get_settings($web, 'colors');
+                    $data = json_decode($settings['value'], true);
 
-                if (!Request::is('admin') && !Request::is('admin/*') && !Request::is('seller/*') && !Request::is('vendor/*')) {
-                    $flash_deals = FlashDeal::with(['products.product.reviews', 'products.product' => function ($query) {
-                        $query->active()->with(['wishList'=>function($query){
-                            return $query->where('customer_id', Auth::guard('customer')->user() ? Auth::guard('customer')->user()->id : 0);
-                        }]);
-                    }])->where(['deal_type' => 'flash_deal', 'status' => 1])
-                        ->whereDate('start_date', '<=', date('Y-m-d'))
-                        ->whereDate('end_date', '>=', date('Y-m-d'))
-                        ->first();
-
-                    $featured_deals = Product::active()
-                        ->with([
-                            'seller.shop',
-                            'flashDealProducts.featureDeal',
-                            'flashDealProducts.featureDeal' => function ($query) {
-                                return $query->whereDate('start_date', '<=', date('Y-m-d'))
-                                    ->whereDate('end_date', '>=', date('Y-m-d'));
-                            }
-                        ])
-                        ->whereHas('flashDealProducts.featureDeal', function ($query) {
-                            $query->whereDate('start_date', '<=', date('Y-m-d'))
-                                ->whereDate('end_date', '>=', date('Y-m-d'));
-                        })
-                        ->get();
-
-                    if ($featured_deals) {
-                        foreach ($featured_deals as $product) {
-                            $flash_deal_status = 0;
-                            $flash_deal_end_date = 0;
-
-                            foreach ($product->flashDealProducts as $deal) {
-                                $flash_deal_status = $deal->flashDeal ? 1 : $flash_deal_status;
-                                $flash_deal_end_date = isset($deal->flashDeal->end_date) ? date('Y-m-d H:i:s', strtotime($deal->flashDeal->end_date)) : $flash_deal_end_date;
-                            }
-
-                            $product['flash_deal_status'] = $flash_deal_status;
-                            $product['flash_deal_end_date'] = $flash_deal_end_date;
-                        }
+                    Cache::forget('inhouseShopInTemporaryClose');
+                    $inhouseShopInTemporaryClose = Cache::get('inhouseShopInTemporaryClose');
+                    if ($inhouseShopInTemporaryClose === null) {
+                        $inhouseShopInTemporaryClose = Helpers::get_settings($web, 'temporary_close');
+                        $inhouseShopInTemporaryClose = $inhouseShopInTemporaryClose ? json_decode($inhouseShopInTemporaryClose->value, true)['status'] : 0;
+                        Cache::put('inhouseShopInTemporaryClose', $inhouseShopInTemporaryClose, (60 * 24));
                     }
+                    $firebaseOTPVerification = getWebConfig(name: 'firebase_otp_verification');
+                    $firebaseOTPVerificationStatus = (int)($firebaseOTPVerification && $firebaseOTPVerification['status'] && $firebaseOTPVerification['web_api_key']);
 
-                    $shops = Shop::whereHas('seller', function ($query) {
-                        return $query->approved();
-                    })->take(9)->get();
-
-                    $recaptcha = Helpers::get_business_settings('recaptcha');
-                    $socials_login = Helpers::get_business_settings('social_login');
-                    $social_login_text = false;
-                    foreach ($socials_login as $socialLoginService) {
-                        if (isset($socialLoginService) && $socialLoginService['status'] == true) {
-                            $social_login_text = true;
-                        }
-                    }
-
-                    $popup_banner = Banner::inRandomOrder()->where('theme', theme_root_path())->where(['published' => 1, 'banner_type' => 'Popup Banner'])->first();
-
-                    $header_banner = Banner::where('banner_type', 'Header Banner')->where('published', 1)->latest()->first();
-
-                    $paymentGatewayPublishedStatus = 0; // Set a default value
-
-                    $paymentPublishedStatus = config('get_payment_publish_status');
-                    if (isset($paymentPublishedStatus[0]['is_published'])) {
-                        $paymentGatewayPublishedStatus = $paymentPublishedStatus[0]['is_published'];
-                    }
-
-                    $paymentsGatewaysList = [];
-                    $paymentGatewaysQuery = Setting::whereIn('settings_type', ['payment_config'])->where('is_active', 1);
-                    if ($paymentGatewayPublishedStatus == 1) {
-                        $paymentsGatewaysList = $paymentGatewaysQuery->select('key_name', 'additional_data')->get();
-                    }else{
-                        $paymentsGatewaysList = $paymentGatewaysQuery->whereIn('key_name', GlobalConstant::DEFAULT_PAYMENT_GATEWAYS)->select('key_name', 'additional_data')->get();
-                    }
-
-                    $referralEarningStatus = BusinessSetting::where('type', 'ref_earning_status')->first()->value ?? 0;
-
-                    $web_config += [
-                        'cookie_setting' => Helpers::get_settings($web, 'cookie_setting'),
-                        'announcement' => Helpers::get_business_settings('announcement'),
-                        'currency_model' => Helpers::get_business_settings('currency_model'),
-                        'currencies' => Currency::where('status', 1)->get(),
-                        'main_categories' => Category::with(['childes.childes'])->where('position', 0)->priority()->get(),
-                        'business_mode' => Helpers::get_business_settings('business_mode'),
-                        'social_media' => SocialMedia::where('active_status', 1)->get(),
-                        'ios' => Helpers::get_business_settings('download_app_apple_stroe'),
-                        'android' => Helpers::get_business_settings('download_app_google_stroe'),
-                        'refund_policy' => Helpers::get_business_settings('refund-policy'),
-                        'return_policy' => Helpers::get_business_settings('return-policy'),
-                        'cancellation_policy' => Helpers::get_business_settings('cancellation-policy'),
-                        'flash_deals' => $flash_deals,
-                        'featured_deals' => $featured_deals,
-                        'shops' => $shops,
-                        'brand_setting' => Helpers::get_business_settings('product_brand'),
-                        'discount_product' => Product::with(['reviews'])->active()->where('discount', '!=', 0)->count(),
-                        'recaptcha' => $recaptcha,
-                        'socials_login' => $socials_login,
-                        'social_login_text' => $social_login_text,
-                        'popup_banner' => $popup_banner,
-                        'header_banner' => $header_banner,
-                        'payments_list' => $paymentsGatewaysList, // fashion_theme
-                        'ref_earning_status' => $referralEarningStatus,
+                    $web_config = [
+                        'primary_color' => $data['primary'],
+                        'secondary_color' => $data['secondary'],
+                        'primary_color_light' => isset($data['primary_light']) ? $data['primary_light'] : '',
+                        'name' => Helpers::get_settings($web, 'company_name'),
+                        'phone' => Helpers::get_settings($web, 'company_phone'),
+                        'web_logo' => getWebConfig('company_web_logo'),
+                        'mob_logo' => getWebConfig('company_mobile_logo'),
+                        'fav_icon' => getWebConfig(name: 'company_fav_icon'),
+                        'email' => Helpers::get_settings($web, 'company_email'),
+                        'about' => Helpers::get_settings($web, 'about_us'),
+                        'footer_logo' => getWebConfig('company_footer_logo'),
+                        'copyright_text' => Helpers::get_settings($web, 'company_copyright_text'),
+                        'decimal_point_settings' => !empty(getWebConfig(name: 'decimal_point_settings')) ? getWebConfig(name: 'decimal_point_settings') : 0,
+                        'seller_registration' => BusinessSetting::where(['type' => 'seller_registration'])->first()->value,
+                        'wallet_status' => getWebConfig(name: 'wallet_status'),
+                        'loyalty_point_status' => getWebConfig(name: 'loyalty_point_status'),
+                        'guest_checkout_status' => getWebConfig(name: 'guest_checkout'),
+                        'digital_product_setting' => getWebConfig('digital_product'),
+                        'publishing_houses' => Schema::hasTable('publishing_houses') ? ProductManager::getPublishingHouseList() : null,
+                        'digital_product_authors' => Schema::hasTable('authors') ? ProductManager::getProductAuthorList() : null,
+                        'firebase_otp_verification' => $firebaseOTPVerification,
+                        'firebase_otp_verification_status' => $firebaseOTPVerificationStatus,
                     ];
 
-                    if (theme_root_path() == "theme_fashion") {
+                    if ((!Request::is('admin') && !Request::is('admin/*') && !Request::is('seller/*') && !Request::is('vendor/*')) || Request::is('vendor/auth/registration/*')) {
+                        $userId = Auth::guard('customer')->user() ? Auth::guard('customer')->id() : 0;
+                        $flashDeal = ProductManager::getPriorityWiseFlashDealsProductsQuery(userId: $userId);
 
-                        $features_section = [
-                            'features_section_top' => BusinessSetting::where('type', 'features_section_top')->first() ? BusinessSetting::where('type', 'features_section_top')->first()->value : [],
-                            'features_section_middle' => BusinessSetting::where('type', 'features_section_middle')->first() ? BusinessSetting::where('type', 'features_section_middle')->first()->value : [],
-                            'features_section_bottom' => BusinessSetting::where('type', 'features_section_bottom')->first() ? BusinessSetting::where('type', 'features_section_bottom')->first()->value : [],
-                        ];
+                        $featuredDealID = FlashDeal::where(['deal_type' => 'feature_deal', 'status' => 1])->whereDate('start_date', '<=', date('Y-m-d'))
+                            ->whereDate('end_date', '>=', date('Y-m-d'))->pluck('id')->first();
+                        $featuredDealProductIDs = $featuredDealID ? FlashDealProduct::where('flash_deal_id', $featuredDealID)->pluck('product_id')->toArray() : [];
+                        $featuredDealList = ProductManager::getPriorityWiseFeatureDealQuery(Product::active()->whereIn('id', $featuredDealProductIDs), dataLimit: 'all');
 
-                        $tags = Tag::orderBy('visit_count', 'desc')->take(15)->get();
+                        $shops = Shop::whereHas('seller', function ($query) {
+                            return $query->approved();
+                        })->take(9)->get();
 
-                        $total_discount_products = Product::active()->where('discount', '!=', '0')->count();
+                        $recaptcha = getWebConfig(name: 'recaptcha');
+                        $popup_banner = Banner::inRandomOrder()->where('theme', theme_root_path())->where(['published' => 1, 'banner_type' => 'Popup Banner'])->first();
+                        $header_banner = Banner::where('banner_type', 'Header Banner')->where('published', 1)->latest()->first();
+
+                        $paymentGatewayPublishedStatus = 0; // Set a default value
+                        $paymentPublishedStatus = config('get_payment_publish_status');
+                        if (isset($paymentPublishedStatus[0]['is_published'])) {
+                            $paymentGatewayPublishedStatus = $paymentPublishedStatus[0]['is_published'];
+                        }
+
+                        $paymentsGatewaysList = [];
+                        $paymentGatewaysQuery = Setting::whereIn('settings_type', ['payment_config'])->where('is_active', 1);
+                        if ($paymentGatewayPublishedStatus == 1) {
+                            $paymentsGatewaysList = $paymentGatewaysQuery->select('key_name', 'additional_data')->get();
+                        } else {
+                            $paymentsGatewaysList = $paymentGatewaysQuery->whereIn('key_name', GlobalConstant::DEFAULT_PAYMENT_GATEWAYS)->select('key_name', 'additional_data')->get();
+                        }
+
+                        $customerLoginOptions = LoginSetup::where(['key' => 'login_options'])->first()?->value ?? '';
+                        $customerSocialLoginOptions = LoginSetup::where(['key' => 'social_media_for_login'])->first()?->value ?? '';
+                        $customerSocialLoginOptions = json_decode($customerSocialLoginOptions, true) ?? [];
+                        $socialLoginTextShowStatus = false;
+                        foreach ($customerSocialLoginOptions as $socialLoginService) {
+                            if ($socialLoginService == 1) {
+                                $socialLoginTextShowStatus = true;
+                            }
+                        }
 
                         $web_config += [
-                            'tags' => $tags,
-                            'features_section' => $features_section,
-                            'total_discount_products' => $total_discount_products,
-                            'products_stock_limit' => Helpers::get_settings($web, 'stock_limit')->value,
+                            'cookie_setting' => Helpers::get_settings($web, 'cookie_setting'),
+                            'announcement' => getWebConfig(name: 'announcement'),
+                            'currency_model' => getWebConfig(name: 'currency_model'),
+                            'currencies' => Currency::where(['status' => 1])->get(),
+                            'main_categories' => Category::with(['childes.childes'])->where('position', 0)->priority()->get(),
+                            'business_mode' => getWebConfig(name: 'business_mode'),
+                            'social_media' => SocialMedia::where('active_status', 1)->get(),
+                            'ios' => getWebConfig(name: 'download_app_apple_stroe'),
+                            'android' => getWebConfig(name: 'download_app_google_stroe'),
+                            'refund_policy' => getWebConfig(name: 'refund-policy'),
+                            'return_policy' => getWebConfig(name: 'return-policy'),
+                            'cancellation_policy' => getWebConfig(name: 'cancellation-policy'),
+                            'shipping_policy' => getWebConfig(name: 'shipping-policy'),
+                            'flash_deals' => $flashDeal['flashDeal'],
+                            'flash_deals_products' => $flashDeal['flashDealProducts'],
+                            'featured_deals' => $featuredDealList,
+                            'shops' => $shops,
+                            'brand_setting' => getWebConfig(name: 'product_brand'),
+                            'discount_product' => Product::with(['reviews'])->active()->withCount('reviews')->where('discount', '!=', 0)->count(),
+                            'recaptcha' => $recaptcha,
+                            'socials_login' => getWebConfig(name: 'social_login'),
+                            'social_login_text' => $socialLoginTextShowStatus,
+                            'popup_banner' => $popup_banner,
+                            'header_banner' => $header_banner,
+                            'payments_list' => $paymentsGatewaysList, // Fashion_theme
+                            'ref_earning_status' => BusinessSetting::where('type', 'ref_earning_status')->first()->value ?? 0,
+                            'customer_login_options' => json_decode($customerLoginOptions, true),
+                            'customer_social_login_options' => $customerSocialLoginOptions,
+                            'customer_phone_verification' => getLoginConfig(key: 'phone_verification'),
+                            'customer_email_verification' => getLoginConfig(key: 'email_verification'),
                         ];
+
+                        if (theme_root_path() == "theme_fashion") {
+                            $features_section = [
+                                'features_section_top' => BusinessSetting::where('type', 'features_section_top')->first() ? BusinessSetting::where('type', 'features_section_top')->first()->value : [],
+                                'features_section_middle' => BusinessSetting::where('type', 'features_section_middle')->first() ? BusinessSetting::where('type', 'features_section_middle')->first()->value : [],
+                                'features_section_bottom' => BusinessSetting::where('type', 'features_section_bottom')->first() ? BusinessSetting::where('type', 'features_section_bottom')->first()->value : [],
+                            ];
+
+                            $tags = Tag::orderBy('visit_count', 'desc')->take(15)->get();
+
+                            $total_discount_products = Product::active()->withCount('reviews')->where('discount', '!=', '0')->count();
+
+                            $web_config += [
+                                'tags' => $tags,
+                                'features_section' => $features_section,
+                                'total_discount_products' => $total_discount_products,
+                                'products_stock_limit' => Helpers::get_settings($web, 'stock_limit')->value,
+                            ];
+                        }
                     }
+
+                    // Language
+                    $language = BusinessSetting::where('type', 'language')->first();
+
+                    // Currency
+                    \App\Utils\Helpers::currency_load();
+
+                    View::share(['web_config' => $web_config, 'language' => $language]);
+
+                    Schema::defaultStringLength(191);
                 }
+            } catch (\Exception $exception) {
 
-                //language
-                $language = BusinessSetting::where('type', 'language')->first();
-
-                //currency
-                \App\Utils\Helpers::currency_load();
-
-                View::share(['web_config' => $web_config, 'language' => $language]);
-
-                Schema::defaultStringLength(191);
             }
-        }catch (\Exception $exception){
-
         }
 
         /**

@@ -6,12 +6,12 @@ enum WithdrawalMethod
 {
     const LIST = [
         URI => 'list',
-        VIEW => 'admin-views.seller.withdraw-methods-list',
+        VIEW => 'admin-views.vendor.withdraw-methods-list',
     ];
 
     const ADD = [
         URI => 'add',
-        VIEW => 'admin-views.seller.withdraw-methods-create',
+        VIEW => 'admin-views.vendor.withdraw-methods-create',
     ];
 
     const DELETE = [
@@ -31,6 +31,6 @@ enum WithdrawalMethod
 
     const UPDATE = [
         URI => 'update',
-        VIEW => 'admin-views.seller.withdraw-methods-edit'
+        VIEW => 'admin-views.vendor.withdraw-methods-edit'
     ];
 }

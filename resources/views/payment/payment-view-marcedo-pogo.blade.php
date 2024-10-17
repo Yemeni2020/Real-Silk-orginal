@@ -4,9 +4,9 @@
 <meta charset="utf-8">
     <title>@yield('title')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="{{ asset('public/assets/back-end/libs/bootstrap-5/bootstrap.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('public/assets/modules/payment/mercado_pogo/css/index.css') }}">
-    <script src="{{ asset('public/assets/back-end/js/jquery.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ dynamicAsset(path: 'public/assets/back-end/libs/bootstrap-5/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ dynamicAsset(path: 'public/assets/modules/payment/mercado_pogo/css/index.css') }}">
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/jquery.js') }}"></script>
     <script src="https://sdk.mercadopago.com/js/v2"></script>
 </head>
 <body>
@@ -16,25 +16,25 @@
     <section class="payment-form dark">
         <div class="container__payment">
             <div class="block-heading">
-                <h2>{{ "Card Payment" }}</h2>
+                <h2>{{ translate('Card Payment') }}</h2>
             </div>
             <div class="form-payment">
                 <div class="products">
                     <p class="alert alert-danger d-none" role="alert" id="error_alert"></p>
                     <div class="total">
-                        {{ "Amount to be paid" }} {{ $data->currency_code }}
-                        <span class="price">{{ $data->payment_amount }}</span>
+                        {{translate('Amount to be paid')}} {{$data->currency_code}}
+                        <span class="price">{{$data->payment_amount}}</span>
                     </div>
                 </div>
                 <div class="payment-details">
                     <form id="form-checkout">
-                        <h3 class="title">{{ "Buyer Details" }}</h3>
-                        <div class="row">
+                        <h3 class="title">{{translate('Buyer Details')}}</h3>
+                        <div class="row g-2">
                             <div class="form-group col">
                                 <input id="form-checkout__cardholderEmail" name="cardholderEmail" type="email" class="form-control"/>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row g-2 mt-0">
                             <div class="form-group col-sm-5">
                                 <select id="form-checkout__identificationType" name="identificationType" class="form-control"></select>
                             </div>
@@ -43,8 +43,8 @@
                             </div>
                         </div>
                         <br>
-                        <h3 class="title">{{ "Card Details" }}</h3>
-                        <div class="row">
+                        <h3 class="title">{{translate('Card Details')}}</h3>
+                        <div class="row g-2">
                             <div class="form-group col-sm-8">
                                 <input id="form-checkout__cardholderName" name="cardholderName" type="text" class="form-control"/>
                             </div>
@@ -69,11 +69,10 @@
                             </div>
                             <div class="form-group col-sm-12">
                                 <br>
-                                <button id="form-checkout__submit" type="submit" class="btn btn--primary btn-block">
-                                    {{ "Pay" }}
-                                </button>
+                                <button id="form-checkout__submit" type="submit"
+                                        class="btn btn--primary btn-block px-3">{{translate('Pay')}}</button>
                                 <br>
-                                <p id="loading-message">{{ "Loading, please wait..." }}</p>
+                                <p id="loading-message">{{translate('Loading, please wait')}}...</p>
                                 <br>
                             </div>
                         </div>
@@ -85,8 +84,7 @@
 </main>
 
 <script>
-    "use strict";
-
+    'use strict';
     const publicKey = document.getElementById("mercado-pago-public-key").value;
     const mercadopago = new MercadoPago(publicKey);
 
@@ -185,8 +183,7 @@
                             return response.json();
                         })
                         .then(result => {
-                            if(result.error)
-                            {
+                            if (result.error) {
                                 document.getElementById("loading-message").style.display = "none";
                                 document.getElementById("error_alert").innerText = result.error;
                                 document.getElementById("error_alert").style.display = "block";
@@ -212,6 +209,5 @@
         });
     }
 </script>
-
 </body>
 </html>

@@ -9,12 +9,12 @@
         <div class="page-header pb-0 border-0 mb-3">
             <div class="flex-between row align-items-center mx-1">
                 <div>
-                    <h1 class="page-header-title">{{translate('dashboard')}}</h1>
-                    <div>{{ translate('welcome_message')}}.</div>
+                    <h1 class="page-header-title text-capitalize">{{translate('welcome').' '.auth('seller')->user()->f_name.' '.auth('seller')->user()->l_name}}</h1>
+                    <p>{{ translate('monitor_your_business_analytics_and_statistics').'.'}}</p>
                 </div>
 
                 <div>
-                    <a class="btn btn--primary" href="{{route('vendor.products.list')}}">
+                    <a class="btn btn--primary" href="{{route('vendor.products.list',['type'=>'all'])}}">
                         <i class="tio-premium-outlined mr-1"></i> {{translate('products')}}
                     </a>
                 </div>
@@ -25,8 +25,8 @@
                 <div class="row justify-content-between align-items-center g-2 mb-3">
                     <div class="col-sm-6">
                         <h4 class="d-flex align-items-center text-capitalize gap-10 mb-0">
-                            <img src="{{asset('/public/assets/back-end/img/business_analytics.png')}}" alt="">
-                            {{translate('business_analytics')}}
+                            <img src="{{dynamicAsset(path: 'public/assets/back-end/img/business_analytics.png')}}" alt="">
+                            {{translate('order_analytics')}}
                         </h4>
                     </div>
                     <div class="col-sm-6 d-flex justify-content-sm-end">
@@ -53,7 +53,7 @@
                 <div class="row justify-content-between align-items-center g-2 mb-3">
                     <div class="col-sm-6">
                         <h4 class="d-flex align-items-center text-capitalize gap-10 mb-0">
-                            <img width="20" class="mb-1" src="{{asset('/public/assets/back-end/img/admin-wallet.png')}}" alt="">
+                            <img width="20" class="mb-1" src="{{dynamicAsset(path: 'public/assets/back-end/img/admin-wallet.png')}}" alt="">
                             {{translate('vendor_Wallet')}}
                         </h4>
                     </div>
@@ -107,154 +107,29 @@
             </div>
         </div>
         <div class="row g-2">
-            <div class="col-lg-12">
-                <div class="card h-100 remove-card-shadow">
-                    <div class="card-body">
-                        <div class="row g-2 align-items-center">
-                            <div class="col-md-6">
-                                <h4 class="d-flex align-items-center text-capitalize gap-10 mb-0">
-                                    <img src="{{asset('/public/assets/back-end/img/earning_statictics.png')}}" alt="">
-                                    {{translate('earning_statistics')}}
-                                </h4>
-                            </div>
-                            <div class="col-md-6 d-flex justify-content-md-end">
-                                <ul class="option-select-btn">
-                                    <li>
-                                        <label class="basic-box-shadow">
-                                            <input type="radio" name="statistics2" hidden="" checked="">
-                                            <span data-earn-type="yearEarn" class="earning-statistics">{{translate('this_Year')}}</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label class="basic-box-shadow">
-                                            <input type="radio" name="statistics2" hidden="">
-                                            <span data-earn-type="MonthEarn" class="earning-statistics">{{translate('this_Month')}}</span>
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <label class="basic-box-shadow">
-                                            <input type="radio" name="statistics2" hidden="">
-                                            <span data-earn-type="WeekEarn" class="earning-statistics">{{translate('this_Week')}}</span>
-                                        </label>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="chartjs-custom mt-2" id="set-new-graph">
-                            <canvas id="updatingData" class="earningShow"
-                                    data-hs-chartjs-options='{
-                            "type": "bar",
-                            "data": {
-                              "labels": ["Jan","Feb","Mar","April","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-                              "datasets": [{
-                                "label": "{{ translate('vendor')}}",
-                                "data": [
-                                            @php($index = 0)
-                                            @php($array_count = count($vendorEarningArray))
-                                            @foreach($vendorEarningArray as $value)
-                                                {{ $value }}{{ (++$index < $array_count) ? ',':'' }}
-                                            @endforeach
-                                        ],
-                                        "backgroundColor": "#0177CD",
-                                        "borderColor": "#0177CD"
-                                      },
-                                      {
-                                        "label": "{{ translate('commission')}}",
-                                        "data": [
-                                                @php($index = 0)
-                                                @php($array_count = count($commissionGivenToAdminArray))
-                                                @foreach($commissionGivenToAdminArray as $value)
-                                                    {{ $value }}{{ (++$index < $array_count) ? ',':'' }}
-                                                @endforeach
-                                        ],
-                                        "backgroundColor": "#FFB36D",
-                                        "borderColor": "#FFB36D"
-                                      }]
-                                    },
-                                    "options": {
-                                    "legend": {
-                                        "display": true,
-                                        "position": "top",
-                                        "align": "center",
-                                        "labels": {
-                                            "usePointStyle": true,
-                                            "boxWidth": 6,
-                                            "fontColor": "#758590",
-                                            "fontSize": 14
-                                        }
-                                    },
-                                      "scales": {
-                                        "yAxes": [{
-                                          "gridLines": {
-                                                "color": "rgba(180, 208, 224, 0.5)",
-                                                "borderDash": [8, 4],
-                                                "drawBorder": false,
-                                                "zeroLineColor": "rgba(180, 208, 224, 0.5)"
-                                          },
-                                          "ticks": {
-                                            "beginAtZero": true,
-                                            "fontSize": 12,
-                                            "fontColor": "#97a4af",
-                                            "fontFamily": "Open Sans, sans-serif",
-                                            "padding": 10,
-                                            "postfix": "{{ getCurrencySymbol(currencyCode: getCurrencyCode(type: 'default')) }}"
-                                  }
-                                }],
-                                "xAxes": [{
-                                  "gridLines": {
-                                        "color": "rgba(180, 208, 224, 0.5)",
-                                        "display": true,
-                                        "drawBorder": true,
-                                        "zeroLineColor": "rgba(180, 208, 224, 0.5)"
-                                  },
-                                  "ticks": {
-                                    "fontSize": 12,
-                                    "fontColor": "#97a4af",
-                                    "fontFamily": "Open Sans, sans-serif",
-                                    "padding": 5
-                                  },
-                                  "categoryPercentage": 0.5,
-                                  "maxBarThickness": "7"
-                                }]
-                              },
-                              "cornerRadius": 3,
-                              "tooltips": {
-                                "prefix": " ",
-                                "hasIndicator": true,
-                                "mode": "index",
-                                "intersect": false
-                              },
-                              "hover": {
-                                "mode": "nearest",
-                                "intersect": true
-                              }
-                            }
-                          }'></canvas>
-                        </div>
-                    </div>
-                </div>
+            @php( $shippingMethod = getWebConfig('shipping_method'))
+            <div class="col-12" id="earn-statistics-div">
+                @include('vendor-views.dashboard.partials.earning-statistics')
             </div>
-
-            <div class="col-lg-4">
-                <div class="card h-100 remove-card-shadow">
-                    @include('vendor-views.partials._top-selling-products',['topSell'=>$dashboardData['topSell']])
-                </div>
-            </div>
-
-            <div class="col-lg-4">
+            <div class="col-lg-{{ $shippingMethod != 'sellerwise_shipping' ? '6':'4' }}">
                 <div class="card h-100 remove-card-shadow">
                     @include('vendor-views.partials._top-rated-products',['topRatedProducts'=>$dashboardData['topRatedProducts']])
                 </div>
             </div>
-
-            <div class="col-lg-4">
+            <div class="col-lg-{{ $shippingMethod != 'sellerwise_shipping' ? '6':'4' }}">
                 <div class="card h-100 remove-card-shadow">
-                    @include('vendor-views.partials._top-rated-delivery-man',['topRatedDeliveryMan'=>$dashboardData['topRatedDeliveryMan']])
+                    @include('vendor-views.partials._top-selling-products',['topSell'=>$dashboardData['topSell']])
                 </div>
             </div>
+            @if($shippingMethod=='sellerwise_shipping')
+                <div class="col-lg-4">
+                    <div class="card h-100 remove-card-shadow">
+                        @include('vendor-views.partials._top-rated-delivery-man',['topRatedDeliveryMan'=>$dashboardData['topRatedDeliveryMan']])
+                    </div>
+                </div>
+           @endif
         </div>
     </div>
-    <span id="earning-statistics-url" data-url="{{ route('vendor.dashboard.earning-statistics') }}"></span>
     <span id="withdraw-method-url" data-url="{{ route('vendor.dashboard.method-list') }}"></span>
     <span id="order-status-url" data-url="{{ route('vendor.dashboard.order-status', ['type' => ':type']) }}"></span>
     <span id="seller-text" data-text="{{ translate('vendor')}}"></span>
@@ -271,12 +146,7 @@
     <span id="brands-text" data-text="{{ $dashboardData['brands'] }}"></span>
 @endsection
 
-@push('script')
-    <script src="{{asset('public/assets/back-end/vendor/chart.js/dist/Chart.min.js')}}"></script>
-    <script src="{{asset('public/assets/back-end/vendor/chart.js.extensions/chartjs-extensions.js')}}"></script>
-    <script src="{{asset('public/assets/back-end/vendor/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js')}}"></script>
-@endpush
-
 @push('script_2')
-    <script src="{{asset('public/assets/back-end/js/vendor/dashboard.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/apexcharts.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/vendor/dashboard.js')}}"></script>
 @endpush

@@ -4,7 +4,7 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img width="20" src="{{asset('/public/assets/back-end/img/deal_of_the_day.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/deal_of_the_day.png')}}" alt="">
                 {{translate('update_Deal_of_The_Day')}}
             </h2>
         </div>
@@ -61,7 +61,7 @@
                                                value="{{ $deal['product_id'] }}" hidden>
                                         <div class="dropdown select-product-search w-100">
                                             <button class="form-control text-start dropdown-toggle select-product-button"
-                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" type="button">
                                                 {{isset($deal->product) ? $deal->product->name : translate('product_not_found')}}
                                             </button>
                                             <div class="dropdown-menu w-100 px-2">
@@ -94,7 +94,7 @@
     </div>
 @endsection
 @push('script')
-    <script src="{{asset('public/assets/back-end/js/search-product.js')}}"></script>
-    <script src="{{asset('public/assets/back-end/js/admin/deal.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/search-product.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/admin/deal.js')}}"></script>
 @endpush
 

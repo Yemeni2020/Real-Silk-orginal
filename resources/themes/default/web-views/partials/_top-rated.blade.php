@@ -3,7 +3,7 @@
         <div class="card-body p-xl-35">
             <div class="row d-flex justify-content-between mx-1 mb-3">
                 <div>
-                    <img class="size-30" src="{{asset("public/assets/front-end/png/top-rated.png")}}"
+                    <img class="size-30" src="{{theme_asset(path: "public/assets/front-end/png/top-rated.png")}}"
                          alt="">
                     <span class="font-bold pl-1">{{ translate('top_rated')}}</span>
                 </div>
@@ -21,19 +21,21 @@
                             <a class="__best-selling" href="{{route('product',$top->product->slug)}}">
                                 @if($top->product->discount > 0)
                                     <div class="d-flex">
-                                    <span class="for-discount-value p-1 pl-2 pr-2">
-                                        @if ($top->product->discount_type == 'percent')
-                                            {{round($top->product->discount)}}%
-                                        @elseif($top->product->discount_type =='flat')
-                                            {{ webCurrencyConverter(amount: $top->product->discount) }}
-                                        @endif {{translate('off')}}
+                                    <span class="for-discount-value p-1 pl-2 pr-2 font-bold fs-13">
+                                        <span class="direction-ltr d-block">
+                                            @if ($top->product->discount_type == 'percent')
+                                                -{{ round($top->product->discount)}}%
+                                            @elseif($top->product->discount_type =='flat')
+                                                -{{ webCurrencyConverter(amount: $top->product->discount) }}
+                                            @endif
+                                        </span>
                                     </span>
                                     </div>
                                 @endif
                                 <div class="d-flex flex-wrap">
                                     <div class="top-rated-image">
                                         <img class="rounded"
-                                             src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$top->product['thumbnail'], type: 'product') }}"
+                                             src="{{ getStorageImages(path: $top->product->thumbnail_full_url, type: 'product') }}"
                                              alt="{{ translate('product') }}"/>
                                     </div>
                                     <div class="top-rated-details">
@@ -56,7 +58,7 @@
                                                         @endif
                                                     @endfor
                                                     <label class="badge-style">
-                                                        ( {{$top->product->reviews_count}} )
+                                                        ( {{ count($top->product['reviews']) }} )
                                                     </label>
                                                 </span>
                                             </div>

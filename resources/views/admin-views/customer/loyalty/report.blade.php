@@ -6,7 +6,7 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img width="20" src="{{asset('/public/assets/back-end/img/loyalty_point.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/loyalty_point.png')}}" alt="">
                 {{translate('customer_loyalty_point_report')}}
             </h2>
         </div>
@@ -82,7 +82,7 @@
                             <h6 class="order-stats__subtitle">{{translate('debit')}}</h6>
                         </div>
                         <span class="order-stats__title fz-14 text--primary">
-                            {{$debit}}
+                            {{(int)($debit)}}
                         </span>
                     </div>
                     <div class="order-stats flex-grow-1">
@@ -91,7 +91,7 @@
                             <h6 class="order-stats__subtitle">{{translate('credit')}}</h6>
                         </div>
                         <span class="order-stats__title fz-14 text-warning">
-                            {{$credit}}
+                            {{(int)$credit}}
                         </span>
                     </div>
                     <div class="order-stats flex-grow-1">
@@ -100,7 +100,7 @@
                             <h6 class="order-stats__subtitle">{{translate('balance')}}</h6>
                         </div>
                         <span class="order-stats__title fz-14 text-success">
-                            {{$balance}}
+                            {{(int)$balance}}
                         </span>
                     </div>
                 </div>
@@ -110,7 +110,7 @@
             <div class="card-header text-capitalize gap-2">
                 <h4 class="mb-0 text-nowrap ">
                     {{translate('transactions')}}
-                    <span class="badge badge-soft-dark radius-50 fz-12 ml-1">{{count($transactions)}}</span>
+                    <span class="badge badge-soft-dark radius-50 fz-12 ml-1">{{$transactions->total()}}</span>
                 </h4>
                 <div class="d-flex justify-content-end">
                     <div class="dropdown text-nowrap">
@@ -122,7 +122,7 @@
                         <ul class="dropdown-menu dropdown-menu-right">
                             <li>
                                 <a type="submit" class="dropdown-item d-flex align-items-center gap-2 " href="{{route('admin.customer.loyalty.export',['transaction_type'=>$transaction_status,'customer_id'=>request('customer_id'),'to'=>request('to'),'from'=>request('from')])}}">
-                                    <img width="14" src="{{asset('/public/assets/back-end/img/excel.png')}}" alt="">
+                                    <img width="14" src="{{dynamicAsset(path: 'public/assets/back-end/img/excel.png')}}" alt="">
                                     {{translate('excel')}}
                                 </a>
                             </li>
@@ -181,10 +181,7 @@
                 </div>
             </div>
             @if(count($transactions)==0)
-                <div class="text-center p-4">
-                    <img class="mb-3 w-160" src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}" alt="{{translate('image_description')}}">
-                    <p class="mb-0">{{ translate('no_data_to_show')}}</p>
-                </div>
+                @include('layouts.back-end._empty-state',['text'=>'no_data_found'],['image'=>'default'])
             @endif
         </div>
     </div>

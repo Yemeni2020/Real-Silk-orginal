@@ -10,7 +10,7 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img width="20" src="{{asset('/public/assets/back-end/img/push_notification.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/push_notification.png')}}" alt="">
                 {{translate('send_notification')}}
             </h2>
         </div>
@@ -33,14 +33,14 @@
                                     <div class="form-group">
                                         <label class="title-color text-capitalize"
                                                for="exampleFormControlInput1">{{translate('description')}} </label>
-                                        <textarea name="description" class="form-control" required></textarea>
+                                        <textarea name="description" class="form-control text-area-max-min" required></textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <div class="d-flex justify-content-center">
                                             <img class="upload-img-view mb-4" id="viewer"
-                                                 src="{{asset('public/assets/back-end/img/900x400/img1.jpg')}}"
+                                                 src="{{dynamicAsset(path: 'public/assets/back-end/img/900x400/img1.jpg')}}"
                                                  alt="{{translate('image')}}"/>
                                         </div>
                                         <label
@@ -124,7 +124,7 @@
                                     </td>
                                     <td>
                                         <img class="min-w-75" width="75" height="75"
-                                             src="{{ getValidImage(path: 'storage/app/public/notification/'.$notification['image']?? '', type: 'backend-basic') }}" alt="">
+                                             src="{{ getStorageImages(path: $notification->image_full_url, type: 'backend-basic') }}" alt="">
                                     </td>
                                     <td id="count-{{$notification->id}}">{{ $notification['notification_count'] }}</td>
                                     <td>
@@ -180,6 +180,9 @@
                             </tfoot>
                         </table>
                     </div>
+                    @if(count($notifications) <= 0)
+                        @include('layouts.back-end._empty-state',['text'=>'no_data_found'],['image'=>'default'])
+                    @endif
                 </div>
             </div>
         </div>
@@ -188,5 +191,5 @@
 @endsection
 
 @push('script')
-    <script src="{{asset('public/assets/back-end/js/admin/notification.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/admin/notification.js')}}"></script>
 @endpush

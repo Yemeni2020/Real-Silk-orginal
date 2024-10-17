@@ -4,10 +4,10 @@ namespace App\Services;
 
 class PasswordResetService
 {
-    public function getAddData(object $vendor, string $token,string $userType):array
+    public function getAddData(string|int $identity, string $token,string $userType):array
     {
         return [
-            'identity' => $vendor['email'],
+            'identity' => $identity,
             'token' => $token,
             'user_type'=>$userType,
             'created_at' => now(),

@@ -6,7 +6,7 @@
     <div class="content container-fluid">
         <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
             <h2 class="h1 mb-0">
-                <img src="{{ asset('public/assets/back-end/img/brand-setup.png') }}" class="mb-1 mr-1" alt="">
+                <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/brand-setup.png') }}" class="mb-1 mr-1" alt="">
                 @if($category['position'] == 1)
                     {{ translate('sub') }}
                 @elseif($category['position'] == 2)
@@ -25,7 +25,6 @@
                         <form action="{{ route('admin.category.update', [$category['id']]) }}" method="POST"
                               enctype="multipart/form-data">
                             @csrf
-
                             <ul class="nav nav-tabs w-fit-content mb-4">
                                 @foreach($languages as $lang)
                                     <li class="nav-item text-capitalize">
@@ -52,8 +51,7 @@
                                                     }
                                                 }
                                                 ?>
-                                            <div
-                                                class="form-group {{ $lang != $defaultLanguage ? 'd-none':''}} form-system-language-form"
+                                            <div class="form-group {{ $lang != $defaultLanguage ? 'd-none':''}} form-system-language-form"
                                                 id="{{ $lang}}-form">
                                                 <label class="title-color">
                                                     {{ translate('category_Name') }} ({{strtoupper($lang) }})
@@ -97,7 +95,7 @@
                                         <div class="text-center mx-auto">
                                             <img class="upload-img-view"
                                                  id="viewer"
-                                                 src="{{ getValidImage(path: 'storage/app/public/category/'. $category['icon'] , type: 'backend-basic') }}"
+                                                 src="{{ getStorageImages(path: $category->icon_full_url , type: 'backend-basic') }}"
                                                  alt=""/>
                                         </div>
                                     </div>
@@ -133,5 +131,5 @@
 @endsection
 
 @push('script')
-    <script src="{{ asset('public/assets/back-end/js/products-management.js') }}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/products-management.js') }}"></script>
 @endpush

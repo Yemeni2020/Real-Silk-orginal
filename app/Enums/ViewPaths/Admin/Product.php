@@ -16,17 +16,32 @@ enum Product
 
     const UPDATE = [
         URI => 'update',
-        VIEW => 'admin-views.product.edit'
+        VIEW => 'admin-views.product.edit',
     ];
 
     const VIEW = [
         URI => 'view',
-        VIEW => 'admin-views.product.view'
+        VIEW => 'admin-views.product.view',
+        ROUTE => 'admin.products.view'
     ];
-
     const SKU_COMBINATION = [
         URI => 'sku-combination',
         VIEW => 'admin-views.product.partials._sku_combinations'
+    ];
+
+    const SKU_EDIT_COMBINATION = [
+        URI => 'sku-combination',
+        VIEW => 'admin-views.product.partials._edit_sku_combinations'
+    ];
+
+    const DIGITAL_VARIATION_COMBINATION = [
+        URI => 'digital-variation-combination',
+        VIEW => 'admin-views.product.partials._digital-variation-combination'
+    ];
+
+    const DIGITAL_VARIATION_FILE_DELETE = [
+        URI => 'digital-variation-file-delete',
+        VIEW => ''
     ];
 
     const FEATURED_STATUS = [
@@ -62,6 +77,10 @@ enum Product
     const STOCK_LIMIT = [
         URI => 'stock-limit-list',
         VIEW => 'admin-views.product.stock-limit-list'
+    ];
+    const STOCK_LIMIT_STATUS = [
+        URI => 'stock-limit-status',
+        VIEW => ''
     ];
 
     const DELETE = [
@@ -112,5 +131,18 @@ enum Product
         URI => 'search',
         VIEW => 'admin-views.partials._search-product'
 
+    ];
+    const MULTIPLE_PRODUCT_DETAILS = [
+        URI => 'multiple-product-details',
+        VIEW => 'admin-views.partials._select-product'
+
+    ];
+    const PRODUCT_GALLERY = [
+        URI => 'product-gallery',
+        VIEW => 'admin-views.product.product-gallery'
+    ];
+    const DELETE_PREVIEW_FILE = [
+        URI => 'delete-preview-file',
+        VIEW => '',
     ];
 }

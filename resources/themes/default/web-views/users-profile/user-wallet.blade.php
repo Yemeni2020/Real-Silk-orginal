@@ -1,36 +1,31 @@
-@php
-use App\Models\TapPaymentSetting;
-use App\Models\Currency;
-$TapPayment = TapPaymentSetting::where("method",'TAP')->Where('Type',1)->get();
-$MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->get();
-@endphp
 @extends('layouts.front-end.app')
 
 @section('title', translate('my_Wallet'))
 
 @push('css_or_js')
-    <link rel="stylesheet" href="{{asset('public/assets/front-end/css/owl.carousel.min.css')}}">
-    <link rel="stylesheet" href="{{asset('public/assets/front-end/css/owl.theme.default.min.css')}}">
+    <link rel="stylesheet" href="{{theme_asset(path: 'public/assets/front-end/css/owl.carousel.min.css')}}">
+    <link rel="stylesheet" href="{{theme_asset(path: 'public/assets/front-end/css/owl.theme.default.min.css')}}">
 @endpush
 
 @section('content')
-    <div class="container pb-5 mb-2 mb-md-4 mt-3 rtl text-align-direction">
+    <div class="container py-2 py-md-4 p-0 p-md-2 user-profile-container px-5px">
         <div class="row">
             @include('web-views.partials._profile-aside')
 
-            <div class="col-lg-9">
-                <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
-                    <h5 class="mb-0">{{translate('wallet')}}</h5>
-
-                    <button class="profile-aside-btn btn btn--primary px-2 rounded px-2 py-1 d-lg-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M7 9.81219C7 9.41419 6.842 9.03269 6.5605 8.75169C6.2795 8.47019 5.898 8.31219 5.5 8.31219C4.507 8.31219 2.993 8.31219 2 8.31219C1.602 8.31219 1.2205 8.47019 0.939499 8.75169C0.657999 9.03269 0.5 9.41419 0.5 9.81219V13.3122C0.5 13.7102 0.657999 14.0917 0.939499 14.3727C1.2205 14.6542 1.602 14.8122 2 14.8122H5.5C5.898 14.8122 6.2795 14.6542 6.5605 14.3727C6.842 14.0917 7 13.7102 7 13.3122V9.81219ZM14.5 9.81219C14.5 9.41419 14.342 9.03269 14.0605 8.75169C13.7795 8.47019 13.398 8.31219 13 8.31219C12.007 8.31219 10.493 8.31219 9.5 8.31219C9.102 8.31219 8.7205 8.47019 8.4395 8.75169C8.158 9.03269 8 9.41419 8 9.81219V13.3122C8 13.7102 8.158 14.0917 8.4395 14.3727C8.7205 14.6542 9.102 14.8122 9.5 14.8122H13C13.398 14.8122 13.7795 14.6542 14.0605 14.3727C14.342 14.0917 14.5 13.7102 14.5 13.3122V9.81219ZM12.3105 7.20869L14.3965 5.12269C14.982 4.53719 14.982 3.58719 14.3965 3.00169L12.3105 0.915687C11.725 0.330188 10.775 0.330188 10.1895 0.915687L8.1035 3.00169C7.518 3.58719 7.518 4.53719 8.1035 5.12269L10.1895 7.20869C10.775 7.79419 11.725 7.79419 12.3105 7.20869ZM7 2.31219C7 1.91419 6.842 1.53269 6.5605 1.25169C6.2795 0.970186 5.898 0.812187 5.5 0.812187C4.507 0.812187 2.993 0.812187 2 0.812187C1.602 0.812187 1.2205 0.970186 0.939499 1.25169C0.657999 1.53269 0.5 1.91419 0.5 2.31219V5.81219C0.5 6.21019 0.657999 6.59169 0.939499 6.87269C1.2205 7.15419 1.602 7.31219 2 7.31219H5.5C5.898 7.31219 6.2795 7.15419 6.5605 6.87269C6.842 6.59169 7 6.21019 7 5.81219V2.31219Z" fill="white"/>
-                            </svg>
-                    </button>
-                </div>
-
+            <section class="col-lg-9 __customer-profile px-0">
                 <div class="card">
-                    <div class="card-body p-2">
+                    <div class="card-body">
+
+                        <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+                            <h5 class="font-bold m-0 fs-16">{{translate('wallet')}}</h5>
+
+                            <button class="profile-aside-btn btn btn--primary px-2 rounded px-2 py-1 d-lg-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7 9.81219C7 9.41419 6.842 9.03269 6.5605 8.75169C6.2795 8.47019 5.898 8.31219 5.5 8.31219C4.507 8.31219 2.993 8.31219 2 8.31219C1.602 8.31219 1.2205 8.47019 0.939499 8.75169C0.657999 9.03269 0.5 9.41419 0.5 9.81219V13.3122C0.5 13.7102 0.657999 14.0917 0.939499 14.3727C1.2205 14.6542 1.602 14.8122 2 14.8122H5.5C5.898 14.8122 6.2795 14.6542 6.5605 14.3727C6.842 14.0917 7 13.7102 7 13.3122V9.81219ZM14.5 9.81219C14.5 9.41419 14.342 9.03269 14.0605 8.75169C13.7795 8.47019 13.398 8.31219 13 8.31219C12.007 8.31219 10.493 8.31219 9.5 8.31219C9.102 8.31219 8.7205 8.47019 8.4395 8.75169C8.158 9.03269 8 9.41419 8 9.81219V13.3122C8 13.7102 8.158 14.0917 8.4395 14.3727C8.7205 14.6542 9.102 14.8122 9.5 14.8122H13C13.398 14.8122 13.7795 14.6542 14.0605 14.3727C14.342 14.0917 14.5 13.7102 14.5 13.3122V9.81219ZM12.3105 7.20869L14.3965 5.12269C14.982 4.53719 14.982 3.58719 14.3965 3.00169L12.3105 0.915687C11.725 0.330188 10.775 0.330188 10.1895 0.915687L8.1035 3.00169C7.518 3.58719 7.518 4.53719 8.1035 5.12269L10.1895 7.20869C10.775 7.79419 11.725 7.79419 12.3105 7.20869ZM7 2.31219C7 1.91419 6.842 1.53269 6.5605 1.25169C6.2795 0.970186 5.898 0.812187 5.5 0.812187C4.507 0.812187 2.993 0.812187 2 0.812187C1.602 0.812187 1.2205 0.970186 0.939499 1.25169C0.657999 1.53269 0.5 1.91419 0.5 2.31219V5.81219C0.5 6.21019 0.657999 6.59169 0.939499 6.87269C1.2205 7.15419 1.602 7.31219 2 7.31219H5.5C5.898 7.31219 6.2795 7.15419 6.5605 6.87269C6.842 6.59169 7 6.21019 7 5.81219V2.31219Z" fill="white"/>
+                                </svg>
+                            </button>
+                        </div>
+
                         <div class="row g-0 g-md-3 gap-3 h-100">
 
                             @php($addFundsToWallet = getWebConfig(name: 'add_funds_to_wallet'))
@@ -47,9 +42,9 @@ $MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->g
                                                     </div>
                                                     @if ($addFundsToWallet)
                                                     <div class="mx-3">
-                                                        <button class="btn btn-light align-items-center" data-toggle="modal" data-target="#addFundToWallet">
-                                                            <i class="tio-add-circle text-accent"></i>
-                                                            <strong class="text-accent">{{ translate('add_Fund') }}</strong>
+                                                        <button class="btn btn-light align-items-center fs-14 font-semi-bold py-2 px-4" data-toggle="modal" data-target="#addFundToWallet">
+                                                            <span><i class="tio-add-circle text-accent"></i></span>
+                                                            <span class="text-primary">{{ translate('add_Fund') }}</span>
                                                         </button>
                                                     </div>
                                                     @endif
@@ -66,7 +61,7 @@ $MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->g
                                                     </h2>
                                                 </div>
                                             </div>
-                                            <img class="wallet-card-bg z-1" src="{{ asset('public/assets/front-end/img/icons/wallet-card.png') }}" alt="">
+                                            <img class="wallet-card-bg z-1" src="{{ theme_asset(path: 'public/assets/front-end/img/icons/wallet-card.png') }}" alt="">
                                         </div>
                                     </div>
                                     <div class="col-md-7">
@@ -88,7 +83,7 @@ $MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->g
                                                             @endif
                                                             <p class="fw-bold text-accent mb-0">{{ $bonus->description ? Str::limit($bonus->description, 40):'' }}</p>
                                                         </div>
-                                                        <img class="slider-card-bg-img" width="50" src="{{ asset('public/assets/front-end/img/icons/add_fund_vector.png') }}" alt="">
+                                                        <img class="slider-card-bg-img" width="50" src="{{ theme_asset(path: 'public/assets/front-end/img/icons/add_fund_vector.png') }}" alt="">
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -102,6 +97,7 @@ $MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->g
                             <div class="modal fade" id="addFundToWallet" tabindex="-1" aria-labelledby="addFundToWalletModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered modal-md">
                                     <div class="modal-content">
+
                                         <div class="modal-header border-0">
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
@@ -114,62 +110,46 @@ $MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->g
                                                 <div class="pb-4">
                                                     <h4 class="text-center">{{ translate('add_Fund_to_Wallet') }}</h4>
                                                     <p class="text-center">{{ translate('add_fund_by_from_secured_digital_payment_gateways') }}</p>
-                                                    <input type="number" class="h-70 form-control text-center text-24 rounded-10" id="add-fund-amount-input" name="amount"
-                                                    required placeholder="{{ webCurrencyConverter(amount: 500) }}">
+                                                    <input type="number" class="h-70 form-control text-center text-24 rounded-10 fs-25-important light-placeholder" id="add-fund-amount-input" name="amount"
+                                                    required placeholder="{{ translate('ex') }}: {{ webCurrencyConverter(amount: 500) }}">
                                                     <input type="hidden" value="web" name="payment_platform" required>
                                                     <input type="hidden" value="{{ request()->url() }}" name="external_redirect_link" required>
                                                 </div>
 
-                                                <div id="add-fund-list-area" class="d--none">
-                                                    <h6 class="mb-2">{{ translate('payment_Methods') }} <small>({{ translate('faster_&_secure_way_to_pay_bill') }})</small></h6>
-                                                    <div class="gateways_list">
+                                                <div id="add-fund-list-area">
+                                                    @if(count($payment_gateways) > 0)
+                                                        <h6 class="mb-2">{{ translate('payment_Methods') }} <small>({{ translate('faster_&_secure_way_to_pay_bill') }})</small></h6>
+                                                        <div class="gateways_list">
 
-                                                        @forelse ($payment_gateways as $gateway)
-                                                            <label class="form-check form--check rounded">
-                                                                <input type="radio" class="form-check-input d-none" name="payment_method" value="{{ $gateway->key_name }}" required>
-                                                                <div class="check-icon">
-                                                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                    <circle cx="8" cy="8" r="8" fill="#1455AC"/>
-                                                                    <path d="M9.18475 6.49574C10.0715 5.45157 11.4612 4.98049 12.8001 5.27019L7.05943 11.1996L3.7334 7.91114C4.68634 7.27184 5.98266 7.59088 6.53004 8.59942L6.86856 9.22314L9.18475 6.49574Z" fill="white"/>
-                                                                    </svg>
-                                                                </div>
-                                                                @php( $payment_method_title = !empty($gateway->additional_data) ? (json_decode($gateway->additional_data)->gateway_title ?? ucwords(str_replace('_',' ', $gateway->key_name))) : ucwords(str_replace('_',' ', $gateway->key_name)) )
-                                                                @php( $payment_method_img = !empty($gateway->additional_data) ? json_decode($gateway->additional_data)->gateway_image : '' )
-                                                                <div class="form-check-label d-flex align-items-center">
-                                                                    <img width="60" alt="{{ translate('payment') }}"
-                                                                         src="{{ getValidImage(path: 'storage/app/public/payment_modules/gateway_image/'.$payment_method_img, type: 'banner') }}">
-                                                                    <span class="ml-3">{{ $payment_method_title }}</span>
-                                                                </div>
-                                                            </label>
-                                                        @empty
-
-                                                        @endforelse
-
-                                                        @if (count($MyFatorah)>0)
-                                                            @if(auth('customer')->check() )
+                                                            @forelse ($payment_gateways as $gateway)
                                                                 <label class="form-check form--check rounded">
-                                                                    <input type="radio" class="form-check-input d-none" name="payment_method" value="MyFatorah" required>
+                                                                    <input type="radio" class="form-check-input d-none" name="payment_method" value="{{ $gateway->key_name }}" required>
                                                                     <div class="check-icon">
                                                                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                        <circle cx="8" cy="8" r="8" fill="#1455AC"/>
-                                                                        <path d="M9.18475 6.49574C10.0715 5.45157 11.4612 4.98049 12.8001 5.27019L7.05943 11.1996L3.7334 7.91114C4.68634 7.27184 5.98266 7.59088 6.53004 8.59942L6.86856 9.22314L9.18475 6.49574Z" fill="white"/>
+                                                                            <circle cx="8" cy="8" r="8" fill="#1455AC"/>
+                                                                            <path d="M9.18475 6.49574C10.0715 5.45157 11.4612 4.98049 12.8001 5.27019L7.05943 11.1996L3.7334 7.91114C4.68634 7.27184 5.98266 7.59088 6.53004 8.59942L6.86856 9.22314L9.18475 6.49574Z" fill="white"/>
                                                                         </svg>
                                                                     </div>
-                                                                    
+                                                                    @php( $payment_method_title = !empty($gateway->additional_data) ? (json_decode($gateway->additional_data)->gateway_title ?? ucwords(str_replace('_',' ', $gateway->key_name))) : ucwords(str_replace('_',' ', $gateway->key_name)) )
+                                                                    @php( $payment_method_img = !empty($gateway->additional_data) ? json_decode($gateway->additional_data)->gateway_image : '' )
                                                                     <div class="form-check-label d-flex align-items-center">
-                                                                        
-                                                                        <span class="ml-3">{{ translate('MyFatorah') }}</span>
+                                                                        <img width="60" alt="{{ translate('payment') }}"
+                                                                             src="{{ getValidImage(path: 'storage/app/public/payment_modules/gateway_image/'.$payment_method_img, type:'banner') }}">
+                                                                        <span class="ml-3">{{ $payment_method_title }}</span>
                                                                     </div>
                                                                 </label>
+                                                            @empty
 
-                                                            @endif
+                                                            @endforelse
+                                                        </div>
+                                                        <div class="d-flex justify-content-center pt-2 pb-3">
+                                                            <button type="submit" class="btn btn--primary w-75 mx-3" id="add_fund_to_wallet_form_btn">{{ translate('add_Fund') }}</button>
+                                                        </div>
+                                                    @else
+                                                        <h6 class="small text-center">{{ translate('no_Payment_Methods_Gateway_found') }}</h6>
                                                     @endif
+                                                </div>
 
-                                                    </div>
-                                                </div>
-                                                <div class="d-flex justify-content-center pt-2 pb-3">
-                                                    <button type="submit" class="btn btn--primary w-75 mx-3" id="add_fund_to_wallet_form_btn">{{ translate('add_Fund') }}</button>
-                                                </div>
                                             </form>
 
                                         </div>
@@ -180,7 +160,7 @@ $MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->g
                             <div class="col-md-12">
                                 <div class="">
                                     <div class="align-items-start d-flex flex-column flex-md-row gap-8 justify-content-between p-2 align-items-center">
-                                        <h6 class="mb-0 fw-bold">{{ translate('Transaction_History') }}</h6>
+                                        <h6 class="mb-0 font-bold fs-16">{{ translate('Transaction_History') }}</h6>
 
                                         <div class="navbar-nav text-center pr-0">
                                             <div class="dropdown border pl-3">
@@ -226,15 +206,17 @@ $MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->g
                                                     <div class="bg-light my-1 p-3 p-sm-3 rounded d-flex justify-content-between g-2">
                                                         <div class="">
                                                             <h6 class="mb-2 d-flex align-items-center gap-8">
-                                                                <img src="{{ asset('public/assets/front-end/img/icons/coin-success.png') }}" width="25" alt="">
-                                                                <span>+ {{ webCurrencyConverter(amount: $item['admin_bonus']) }}</span>
+                                                                <img src="{{ theme_asset(path: 'public/assets/front-end/img/icons/coin-success.png') }}" width="25" alt="">
+                                                                <span class="absolute-ltr font-bold fs-18">+ {{ webCurrencyConverter(amount: $item['admin_bonus']) }}</span>
                                                             </h6>
-                                                            <h6 class="text-muted mb-0 small">
+                                                            <h6 class="text-muted mb-0 small text-capitalize fs-13 font-semibold">
                                                                 {{ucwords(str_replace('_', ' ', translate('admin_bonus')))}}
                                                             </h6>
                                                         </div>
                                                         <div class="text-end small">
-                                                            <div class="text-muted mb-1 text-nowrap">{{date('d M, Y H:i A',strtotime($item['created_at']))}}</div>
+                                                            <div class="text-muted mb-1 text-nowrap text-capitalize font-semibold">
+                                                                {{date('d M, Y H:i A',strtotime($item['created_at']))}}
+                                                            </div>
                                                             @if($item['debit'] != 0)
                                                                 <p class="text-danger fs-12">{{translate('debit')}}</p>
                                                             @else
@@ -247,15 +229,17 @@ $MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->g
                                                     <div class="w-100">
                                                         <h6 class="mb-2 d-flex align-items-center gap-8">
                                                             @if($item['debit'] != 0)
-                                                                <img src="{{ asset('public/assets/front-end/img/icons/coin-danger.png') }}" width="25" alt="">
+                                                                <img src="{{ theme_asset(path: 'public/assets/front-end/img/icons/coin-danger.png') }}" width="25" alt="">
                                                             @else
-                                                                <img src="{{ asset('public/assets/front-end/img/icons/coin-success.png') }}" width="25" alt="">
+                                                                <img src="{{ theme_asset(path: 'public/assets/front-end/img/icons/coin-success.png') }}" width="25" alt="">
                                                             @endif
 
-                                                            {{ $item['debit'] != 0 ? ' - '.webCurrencyConverter(amount: $item['debit']) : ' + '.webCurrencyConverter(amount: $item['credit']) }}
+                                                            <span class="absolute-ltr font-bold fs-18">
+                                                                {{ $item['debit'] != 0 ? ' - '.webCurrencyConverter(amount: $item['debit']): ' + '.webCurrencyConverter(amount: $item['credit']) }}
+                                                            </span>
 
                                                         </h6>
-                                                        <h6 class="text-muted mb-0 small">
+                                                        <h6 class="text-muted mb-0 small text-capitalize fs-13 font-semibold">
                                                             @if ($item['transaction_type'] == 'add_fund_by_admin')
                                                                 {{translate('add_fund_by_admin')}} {{ $item['reference'] =='earned_by_referral' ? '('.translate($item['reference']).')' : '' }}
                                                             @elseif($item['transaction_type'] == 'order_place')
@@ -270,7 +254,7 @@ $MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->g
                                                         </h6>
                                                     </div>
                                                     <div class="text-end small">
-                                                        <div class="text-muted mb-1 text-nowrap">{{date('d M, Y H:i A',strtotime($item['created_at']))}}</div>
+                                                        <div class="text-muted mb-1 text-nowrap text-capitalize font-semibold">{{date('d M, Y H:i A',strtotime($item['created_at']))}}</div>
                                                             @if($item['debit'] != 0)
                                                                 <p class="text-danger fs-12 m-0">{{translate('debit')}}</p>
                                                             @else
@@ -283,7 +267,7 @@ $MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->g
                                     </div>
                                     @if($wallet_transactio_list->count()==0)
                                     <div class="d-flex flex-column gap-3 align-items-center text-center my-5">
-                                        <img width="72" src="{{ asset('public/assets/front-end/img/icons/empty-transaction-history.png')}}" class="dark-support" alt="">
+                                        <img width="72" src="{{ theme_asset(path: 'public/assets/front-end/img/icons/empty-transaction-history.png')}}" class="dark-support" alt="">
                                         <h6 class="text-muted mt-3">{{translate('you_do_not_have_any')}}<br> {{ request('type') != 'all' ? ucwords(translate(request('type'))) : '' }} {{translate('transaction_yet')}}</h6>
                                     </div>
                                     @endif
@@ -311,7 +295,7 @@ $MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->g
 @endsection
 
 @push('script')
-<script src="{{ asset('public/assets/front-end/js/owl.carousel.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/js/owl.carousel.min.js') }}"></script>
 <script>
     "use strict";
 

@@ -1,7 +1,7 @@
 <div class="card-header">
     <h4 class="d-flex align-items-center text-capitalize gap-10 mb-0">
-        <img width="20" src="{{asset('public/assets/back-end/img/featured_deal.png')}}" alt="">
-        {{translate('most_Rated_Products')}}
+        <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/most-popular-product.png')}}" alt="">
+        {{translate('most_Popular_Products')}}
     </h4>
 </div>
 
@@ -13,13 +13,13 @@
                     @foreach($mostRatedProducts as $key => $product)
                         @if(isset($product['id']))
                             <div class="cursor-pointer grid-card basic-box-shadow get-view-by-onclick"
-                                 data-link="{{ route('admin.products.view',['id'=>$product['id']]) }}">
+                                 data-link="{{ route('admin.products.view',['addedBy'=>($product['added_by']=='seller'?'vendor' : 'in-house'),'id'=>$product['id']]) }}">
                                 <div>
                                     <img class="avatar avatar-bordered border-gold avatar-60 rounded"
-                                         src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$product['thumbnail'], type: 'backend-product') }}"
+                                         src="{{ getStorageImages(path: $product->thumbnail_full_url, type: 'backend-product') }}"
                                          alt="{{$product->name}}{{translate('image')}}">
                                 </div>
-                                <div class="fz-12 title-color text-center">
+                                <div class="fz-12 title-color text-center line--limit-1">
                                     {{isset($product['name']) ? substr($product->name, 0, 30) . (strlen($product->name)>20?'...':''):'not exists'}}
                                 </div>
                                 <div class="d-flex align-items-center gap-1 fz-10">
@@ -40,7 +40,7 @@
     @else
         <div class="text-center">
             <p class="text-muted">{{translate('no_Top_Selling_Products')}}</p>
-            <img class="w-75" src="{{asset('public/assets/back-end/img/no-data.png')}}" alt="">
+            <img class="w-75" src="{{dynamicAsset(path: 'public/assets/back-end/img/no-data.png')}}" alt="">
         </div>
     @endif
 </div>

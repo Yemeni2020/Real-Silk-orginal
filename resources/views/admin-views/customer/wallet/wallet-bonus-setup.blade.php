@@ -6,7 +6,7 @@
     <div class="content container-fluid">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 pb-2">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img width="20" src="{{asset('/public/assets/back-end/img/admin-wallet.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/admin-wallet.png')}}" alt="">
                 {{translate('wallet_bonus_setup')}}
             </h2>
             <div class="text-primary d-flex align-items-center gap-3 font-weight-bolder">
@@ -29,11 +29,11 @@
                         </div>
                         <div class="modal-body px-4 px-sm-5 pt-0 text-center">
                             <div class="d-flex flex-column align-items-center gap-2">
-                                <img width="80" class="mb-3" src="{{asset('/public/assets/back-end/img/para.png')}}"
+                                <img width="80" class="mb-3" src="{{dynamicAsset(path: 'public/assets/back-end/img/wallet-bonus.png')}}"
                                      loading="lazy" alt="">
-                                <h4 class="lh-md">{{ translate('wallet_bonus_is_only_applicable_when_a_customer_add_fund_to_wallet_via_outside_payment_gateway').'!' }}
+                                <h4 class="lh-md">{{ translate('wallet_bonus_is_only_applicable_when_a_customer_wants_to_add_fund_to_wallet_via_outside_payment_gateway').'!' }}
                                 </h4>
-                                <p>{{ translate('customer_will_get_extra_amount_to_his_or_her_wallet_additionally_with_the_amount_he_or_she_added_from_other_payment_gateways').'. '.translate('the_bonus_amount_will_be_deduct_from_admin_wallet_&_will_consider_as_admin_expense') }}</p>
+                                <p>{{ translate('the_bonus_amounts_are_added_to_the_customer’s_wallet_balance_with_the_amount_added_from_outside_payment_gateways,_when_admin_set_this_bonus_amount').'. '.translate('the_bonus_amount_will_be_deduct_from_admin_wallet_&_will_consider_as_admin_expense').'.' }}</p>
                             </div>
                         </div>
                     </div>
@@ -198,10 +198,10 @@
                                                data-toggle-id = "bonus-setup-{{$item->id}}"
                                                data-on-image = ""
                                                data-off-image = ""
-                                               data-on-title = "{{translate('want_to_Turn_ON_the_'.$item->title.'_option').'?'}}"
-                                               data-off-title = "{{translate('want_to_Turn_OFF_the_'.$item->title.'_option').'?'}}"
-                                               data-on-message = "<p>{{translate('if_enabled_customers_can_use_'.$item->title)}}</p>"
-                                               data-off-message = "<p>{{translate('if_disabled_the_'.$item->title.'_will_be_hidden_from_customer')}}</p>">
+                                               data-on-title = "{{translate('want_to_enable_this_bonus_status').'?'}}"
+                                               data-off-title = "{{translate('want_to_disable_this_bonus_status').'?'}}"
+                                               data-on-message = "<p>{{translate('if_enabled_customers_will_receive_&_enjoy_this_bonus_offer'.'.')}}</p>"
+                                               data-off-message = "<p>{{translate('if_disabled_the_this_bonus_offer_will_be_hidden_for_all_customer').'.'}}</p>">
                                         <span class="switcher_control"></span>
                                     </label>
                                 </form>
@@ -230,19 +230,15 @@
                 <div class="d-flex justify-content-end p-4">
                     {!! $data->links() !!}
                 </div>
-                @if(count($data) == 0)
-                    <div class="text-center p-4">
-                        <img class="mb-3 w-160" src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}"
-                             alt="Image Description">
-                        <p class="mb-5">{{translate('no_data_to_show')}}</p>
-                    </div>
-                @endif
             </div>
+            @if(count($data) == 0)
+                @include('layouts.back-end._empty-state',['text'=>'no_data_found'],['image'=>'default'])
+            @endif
         </div>
     </div>
 @endsection
 
 @push('script')
-    <script src="{{asset('public/assets/back-end/js/admin/customer/wallet.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/admin/customer/wallet.js')}}"></script>
 @endpush
 

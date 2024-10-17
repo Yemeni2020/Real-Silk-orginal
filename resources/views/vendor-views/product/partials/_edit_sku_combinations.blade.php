@@ -49,7 +49,7 @@
                 </td>
                 <td>
                     <input type="text" name="sku_{{ $combination['type'] }}" value="{{ $combination['sku'] }}"
-                           class="form-control" placeholder="{{ translate('ex') }}: {{ translate('MCU47V593M') }}">
+                           class="form-control store-keeping-unit">
                 </td>
                 <td>
                     <input type="number" name="qty_{{ $combination['type'] }}"

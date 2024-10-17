@@ -1,24 +1,36 @@
+<?php
+    $isOrderOnlyDigital = true;
+    if($order->details) {
+        foreach ($order->details as $detail) {
+            $product = json_decode($detail->product_details);
+            if (isset($product->product_type) && $product->product_type == 'physical') {
+                $isOrderOnlyDigital = false;
+            }
+        }
+    }
+?>
+
 <div class="d-flex align-items-start justify-content-between gap-2">
     <div>
         <div class="d-flex align-items-center gap-2 text-capitalize">
-            <h4 class="text-capitalize mb-0 mobile-fs-14">{{translate('order')}} #{{$order->id}} </h4>
+            <h4 class="text-capitalize mb-0 mobile-fs-14 fs-18 font-bold">{{translate('order')}} #{{$order->id}} </h4>
             @if($order['order_status'] == 'confirmed' || $order['order_status'] == 'delivered' || $order['order_status'] == 'processing' ? 'badge-soft-success':'')
                 <span
-                    class="rounded badge __badge {{$order['order_status'] == 'confirmed' || $order['order_status'] == 'delivered' || $order['order_status'] == 'processing' ? 'badge-soft-success':''}}">
+                    class="fs-12 font-semibold rounded badge __badge {{$order['order_status'] == 'confirmed' || $order['order_status'] == 'delivered' || $order['order_status'] == 'processing' ? 'badge-soft-success border-soft-success':''}}">
                     {{ $order['order_status'] == 'processing' ? translate('packaging') : $order['order_status'] }}
                 </span>
             @elseif($order['order_status'] == 'failed' || $order['order_status'] == 'canceled' || $order['order_status'] == 'returned' ? 'badge-soft-danger':'')
                 <span
-                    class="rounded badge __badge {{$order['order_status'] == 'failed' || $order['order_status'] == 'canceled' || $order['order_status'] == 'returned' ? 'badge-soft-danger':''}}">
+                    class="fs-12 font-semibold rounded badge __badge {{$order['order_status'] == 'failed' || $order['order_status'] == 'canceled' || $order['order_status'] == 'returned' ? 'badge-soft-danger':''}}">
                     {{ $order['order_status'] == 'failed' ? translate('Failed_To_Delivery') : $order['order_status'] }}
                 </span>
             @elseif($order['order_status'] == 'pending' || $order['order_status'] == 'out_for_delivery' ? 'badge-soft-primary':'')
                 <span
-                    class="rounded badge __badge {{$order['order_status'] == 'pending' || $order['order_status'] == 'out_for_delivery' ? 'badge-soft-primary':''}}">
+                    class="fs-12 font-semibold rounded badge __badge {{$order['order_status'] == 'pending' || $order['order_status'] == 'out_for_delivery' ? 'badge-soft-primary border-soft-primary':''}}">
                     {{ $order['order_status'] == 'out_for_delivery' ? translate('Out_For_Delivery') : $order['order_status'] }}
                 </span>
             @else
-                <span class="badge __badge-soft-primary rounded">
+                <span class="fs-12 font-semibold badge __badge-soft-primary rounded">
                     {{ $order['order_status']}}
                 </span>
             @endif
@@ -26,7 +38,9 @@
         @if(isset($order['seller_id']) != 0)
             @php($shopName=\App\Models\Shop::where('seller_id', $order['seller_id'])->first())
         @endif
-        <div class="date fs-14 text-body mb-3 mt-2">{{date('d M, Y h:i A',strtotime($order['created_at']))}}</div>
+        <div class="date fs-12 font-semibold text-secondary-50 text-body mb-3 mt-2">
+            {{ date('d M, Y h:i A', strtotime($order['created_at'])) }}
+        </div>
     </div>
 
     <button class="profile-aside-btn btn btn--primary px-2 rounded px-2 py-1 d-lg-none">
@@ -43,12 +57,16 @@
             class="get-view-by-onclick {{Request::is('account-order-details')  ? 'active' :''}}">{{translate('order_summary')}}</button>
     <button data-link="{{ route('account-order-details-vendor-info', ['id'=>$order->id]) }}"
             class="get-view-by-onclick {{Request::is('account-order-details-vendor-info')  ? 'active' :''}}">{{translate('vendor_info')}}</button>
-    <button data-link="{{ route('account-order-details-delivery-man-info', ['id'=>$order->id]) }}"
-            class="get-view-by-onclick {{Request::is('account-order-details-delivery-man-info')  ? 'active' :''}}">{{translate('delivery_man_info')}}</button>
     @if($order->order_type != 'POS')
+        @if(!$isOrderOnlyDigital)
+            <button data-link="{{ route('account-order-details-delivery-man-info', ['id'=>$order->id]) }}"
+                    class="get-view-by-onclick {{Request::is('account-order-details-delivery-man-info') ? 'active':''}}">
+                {{ translate('delivery_man_info') }}
+            </button>
+        @endif
         <button data-link="{{ route('account-order-details-reviews', ['id'=>$order->id]) }}"
                 class="get-view-by-onclick {{Request::is('account-order-details-reviews')  ? 'active' :''}}">{{translate('reviews')}}</button>
-    @endif
     <button data-link="{{ route('track-order.order-wise-result-view',['order_id'=>$order['id']])}}"
             class="get-view-by-onclick {{Request::is('track-order/order-wise-result-view*')  ? 'active' :''}}">{{translate('track_order')}}</button>
+    @endif
 </div>

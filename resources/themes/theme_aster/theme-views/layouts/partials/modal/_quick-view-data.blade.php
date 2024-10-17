@@ -51,56 +51,56 @@
                                     </ul>
                                 </div>
                             </div>
-                            @if($product->images!=null && json_decode($product->images)>0)
+                            @if($product->images!=null && count($product->images_full_url)>0)
                                 <div class="swiper-wrapper">
-                                    @if(json_decode($product->colors) && $product->color_image)
-                                        @foreach (json_decode($product->color_image) as $key => $photo)
-                                            @if($photo->color != null)
+                                    @if(json_decode($product->colors) && $product->color_images_full_url)
+                                        @foreach ($product->color_images_full_url as $key => $photo)
+                                            @if($photo['color'] != null)
                                                 <div class="swiper-slide position-relative"
-                                                     id="preview-box-{{ $photo->color }}">
+                                                     id="preview-box-{{ $photo['color'] }}">
                                                     <div class="easyzoom easyzoom--overlay">
                                                         @if ($product->discount > 0 && $product->discount_type === "percent")
                                                             <span class="product__discount-badge">{{'-'.$product->discount}}%</span>
                                                         @elseif($product->discount > 0)
                                                             <span
-                                                                class="product__discount-badge">{{'-'.Helpers::currency_converter($product->discount)}}</span>
+                                                                class="product__discount-badge">{{'-'.webCurrencyConverter($product->discount)}}</span>
                                                         @endif
-                                                        <a href="{{asset("storage/app/public/product/".$photo->image_name)}}">
+                                                        <a href="{{$photo['image_name']['path']}}">
                                                             <img class="dark-support rounded" alt=""
-                                                                src="{{ getValidImage(path: 'storage/app/public/product/'.$photo->image_name, type:'product') }}">
+                                                                src="{{ getStorageImages(path: $photo['image_name'], type:'product') }}">
                                                         </a>
                                                     </div>
                                                 </div>
                                             @else
                                                 <div class="swiper-slide position-relative thumb_{{$key}}"
-                                                     id="preview-box-{{ $photo->color }}">
+                                                     id="preview-box-{{ $photo['color'] }}">
                                                     <div class="easyzoom easyzoom--overlay">
                                                         @if ($product->discount > 0 && $product->discount_type === "percent")
                                                             <span class="product__discount-badge">{{'-'.$product->discount.'%'}}</span>
                                                         @elseif($product->discount > 0)
                                                             <span
-                                                                class="product__discount-badge">{{'-'.Helpers::currency_converter($product->discount)}}</span>
+                                                                class="product__discount-badge">{{'-'.webCurrencyConverter($product->discount)}}</span>
                                                         @endif
-                                                        <a href="{{ getValidImage(path: 'storage/app/public/product/'.$photo->image_name, type:'product') }}">
+                                                        <a href="{{ getStorageImages(path:$photo['image_name'], type:'product') }}">
                                                             <img class="dark-support rounded" alt=""
-                                                                src="{{ getValidImage(path: 'storage/app/public/product/'.$photo->image_name, type:'product') }}">
+                                                                src="{{ getStorageImages(path:$photo['image_name'], type:'product') }}">
                                                         </a>
                                                     </div>
                                                 </div>
                                             @endif
                                         @endforeach
                                     @else
-                                        @foreach (json_decode($product->images) as $key => $photo)
+                                        @foreach ($product->images_full_url as $key => $photo)
                                             <div class="swiper-slide position-relative">
                                                 <div class="easyzoom easyzoom--overlay">
                                                     @if ($product->discount > 0 && $product->discount_type === "percent")
                                                         <span class="product__discount-badge">{{'-'.$product->discount.'%'}}</span>
                                                     @elseif($product->discount > 0)
-                                                        <span class="product__discount-badge">-{{Helpers::currency_converter($product->discount)}}</span>
+                                                        <span class="product__discount-badge">-{{webCurrencyConverter($product->discount)}}</span>
                                                     @endif
-                                                    <a href="{{ getValidImage(path: 'storage/app/public/product/'.$photo, type: 'product') }}">
+                                                    <a href="{{ getStorageImages(path: $photo, type: 'product') }}">
                                                         <img class="dark-support rounded" alt=""
-                                                            src="{{ getValidImage(path: 'storage/app/public/product/'.$photo, type: 'product') }}">
+                                                            src="{{ getStorageImages(path: $photo, type: 'product') }}">
                                                     </a>
                                                 </div>
                                             </div>
@@ -111,33 +111,33 @@
                         </div>
                         <div class="mt-2">
                             <div class="quickviewSliderThumb2 swiper-container position-relative">
-                                @if($product->images!=null && json_decode($product->images)>0)
+                                @if($product->images!=null && count($product->images_full_url)>0)
                                     <div class="swiper-wrapper auto-item-width justify-content-center width--4rem border--gray">
-                                        @if(json_decode($product->colors) && $product->color_image)
-                                            @foreach (json_decode($product->color_image) as $key => $photo)
-                                                @if($photo->color != null)
+                                        @if(json_decode($product->colors) && $product->color_images_full_url)
+                                            @foreach ($product->color_images_full_url as $key => $photo)
+                                                @if($photo['color'] != null)
                                                     <div class="swiper-slide position-relative aspect-1 focus-preview-image-by-color"
-                                                         data-slide-id="preview-box-{{ str_replace('#','',$photo->color) }}">
+                                                         data-slide-id="preview-box-{{ str_replace('#','',$photo['color']) }}">
                                                         <img class="dark-support rounded" alt=""
-                                                            src="{{asset("storage/app/public/product/$photo->image_name")}}">
+                                                            src="{{getStorageImages(path: $photo['image_name'],type:'product')}}">
                                                     </div>
                                                 @endif
                                             @endforeach
 
-                                            @foreach (json_decode($product->color_image) as $key => $photo)
-                                                @if($photo->color == null)
+                                            @foreach ($product->color_images_full_url as $key => $photo)
+                                                @if($photo['color'] == null)
                                                     <div class="swiper-slide position-relative aspect-1 slider-thumb-img-preview"
                                                          data-thumb-key="thumb_{{$key}}">
                                                         <img class="dark-support rounded" alt=""
-                                                            src="{{ getValidImage(path: 'storage/app/public/product/'.$photo->image_name, type: 'product') }}">
+                                                            src="{{ getStorageImages(path:$photo['image_name'], type: 'product') }}">
                                                     </div>
                                                 @endif
                                             @endforeach
                                         @else
-                                            @foreach (json_decode($product->images) as $key => $photo)
+                                            @foreach ($product->images_full_url as $key => $photo)
                                                 <div class="swiper-slide position-relative aspect-1 slider-thumb-img-preview"
                                                      data-thumb-key="thumb_{{$key}}">
-                                                    <img src="{{ getValidImage(path: 'storage/app/public/product/'.$photo, type:'product') }}"
+                                                    <img src="{{ getStorageImages(path: $photo, type:'product') }}"
                                                          class="dark-support rounded" alt="">
                                                 </div>
                                             @endforeach
@@ -159,7 +159,7 @@
                                 <span class="product__save-amount">{{translate('save')}} {{$product->discount}}%</span>
                             @elseif($product->discount > 0)
                                 <span
-                                    class="product__save-amount">{{translate('save')}} {{Helpers::currency_converter($product->discount)}}</span>
+                                    class="product__save-amount">{{translate('save')}} {{webCurrencyConverter($product->discount)}}</span>
                             @endif
                         </div>
 
@@ -175,7 +175,7 @@
                                     @endif
                                 @endfor
                             </div>
-                            <span>({{$product->reviews_count}})</span>
+                            <span>({{ count($product->reviews) }})</span>
                         </div>
                         @if(($product['product_type'] == 'physical') && ($product['current_stock']<=0))
                             <p class="fw-semibold text-muted">{{translate('out_of_stock')}}</p>
@@ -187,8 +187,42 @@
                             @endif
                         @endif
 
+                        @if($product['product_type'] == 'digital')
+                            <div class="digital-product-authors mb-2">
+                                @if(count($productPublishingHouseInfo['data']) > 0)
+                                    <div class="d-flex align-items-center g-2 me-2">
+                                        <span class="text-capitalize digital-product-author-title">{{ translate('Publishing_House') }} :</span>
+                                        <div class="item-list">
+                                            @foreach($productPublishingHouseInfo['data'] as $publishingHouseName)
+                                                <a href="{{ route('products', ['publishing_house_id' => $publishingHouseName['id'], 'product_type' => 'digital', 'page'=>1]) }}"
+                                                   class="text-base">
+                                                    {{ $publishingHouseName['name'] }}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
+
+                                @if(count($productAuthorsInfo['data']) > 0)
+                                    <div class="d-flex align-items-center g-2 me-2">
+                                        <span class="text-capitalize digital-product-author-title">{{ translate('Author') }} :</span>
+                                        <div class="item-list">
+                                            @foreach($productAuthorsInfo['data'] as $productAuthor)
+                                                <a href="{{ route('products',['author_id' => $productAuthor['id'], 'product_type' => 'digital', 'page' => 1]) }}"
+                                                   class="text-base">
+                                                    {{ $productAuthor['name'] }}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
+
                         <div class="product__price d-flex flex-wrap align-items-end gap-2 mb-4 ">
-                            <div class="text-primary fs-1-5rem">{!! Helpers::get_price_range_with_discount($product) !!}</div>
+                            <div class="text-primary fs-1-5rem d-flex align-items-end gap-2">
+                                {!! getPriceRangeWithDiscount(product: $product) !!}
+                            </div>
                         </div>
                         <form class="cart add-to-cart-form" id="add-to-cart-form" action="{{ route('cart.add') }}"
                               data-redirecturl="{{route('checkout-details')}}"
@@ -241,14 +275,44 @@
                                     </div>
                                 @endforeach
 
+                                @php($extensionIndex=0)
+                                @if($product['product_type'] == 'digital' && $product['digital_product_file_types'] && count($product['digital_product_file_types']) > 0 && $product['digital_product_extensions'])
+                                    @foreach($product['digital_product_extensions'] as $extensionKey => $extensionGroup)
+                                        <div class="d-flex gap-4 flex-wrap align-items-center mb-4">
+                                            <h6 class="fw-semibold">
+                                                {{ translate($extensionKey) }}
+                                            </h6>
+
+                                            @if(count($extensionGroup) > 0)
+                                                <ul class="option-select-btn custom_01_option flex-wrap weight-style--two gap-2">
+                                                    @foreach($extensionGroup as $index => $extension)
+                                                        <li>
+                                                            <label>
+                                                                <input type="radio" hidden
+                                                                       name="variant_key"
+                                                                       value="{{ $extensionKey.'-'.preg_replace('/\s+/', '-', $extension) }}"
+                                                                    {{ $extensionIndex == 0 ? 'checked' : ''}}>
+                                                                <span class="text-transform-none">{{ $extension }}</span>
+                                                            </label>
+                                                        </li>
+                                                        @php($extensionIndex++)
+                                                    @endforeach
+                                                </ul>
+                                            @endif
+
+                                        </div>
+                                    @endforeach
+                                @endif
+
                                 <div class="d-flex gap-4 flex-wrap align-items-center mb-4">
                                     <h6 class="fw-semibold">{{translate('quantity')}}</h6>
 
                                     <div class="quantity quantity--style-two">
                                         <span class="quantity__minus single-quantity-minus">
-                                            <i class="bi bi-trash3-fill text-danger fs-10"></i>
+                                            <i class="bi bi-dash"></i>
                                         </span>
                                         <input type="text" class="quantity__qty product_quantity__qty" name="quantity"
+                                               data-details-page="1"
                                                value="{{ $product->minimum_order_qty ?? 1 }}"
                                                min="{{ $product->minimum_order_qty ?? 1 }}"
                                                max="{{$product['product_type'] == 'physical' ? $product->current_stock : 100}}">
@@ -257,6 +321,8 @@
                                         </span>
                                     </div>
                                 </div>
+                                <input type="hidden" class="product-generated-variation-code" name="product_variation_code" data-product-id="{{ $product['id'] }}">
+                                <input type="hidden" value="" class="in_cart_key form-control w-50" name="key">
 
                                 <div class="bg-light mx-w rounded p-4">
                                     <div class="flex-between-gap-3">
@@ -264,12 +330,12 @@
                                             <h6 class="flex-middle-gap-2 mb-2">
                                                 <span class="text-muted">{{translate('total_price').':'}}</span>
                                                 <span
-                                                    class="total_price">{{Helpers::currency_converter($product->unit_price)}}</span>
+                                                    class="total_price">{{webCurrencyConverter($product->unit_price)}}</span>
                                             </h6>
                                             <h6 class="flex-middle-gap-2">
                                                 <span class="text-muted">{{translate('tax').':'}}</span>
                                                 <span
-                                                    class="product_vat">{{Helpers::currency_converter($product->tax)}}</span>
+                                                    class="product_vat">{{webCurrencyConverter($product->tax)}}</span>
                                             </h6>
                                         </div>
                                     </div>
@@ -277,21 +343,26 @@
                                 <div class="d-flex gap-2 mt-4">
                                     @if(($product->added_by == 'seller' && ($seller_temporary_close || (isset($product->seller->shop) && $product->seller->shop->vacation_status && $currentDate >= $seller_vacation_start_date && $currentDate <= $seller_vacation_end_date))) ||
                                     ($product->added_by == 'admin' && ($inhouse_temporary_close || ($inHouseVacationStatus && $currentDate >= $inhouse_vacation_start_date && $currentDate <= $inhouse_vacation_end_date))))
-                                        <button type="button" class=" btn btn-secondary fs-16"
-                                                disabled>{{translate('buy_now')}}</span></button>
-                                        <button type="button" class=" btn btn-primary fs-16"
-                                                disabled>{{translate('add_to_Cart')}}</button>
+                                        <button type="button" class=" btn btn-secondary fs-16" data-bs-toggle="modal" data-bs-target="#buyNowModal" data-bs-dismiss="#quickViewModal"
+                                                disabled>{{translate('buy_now')}}
+                                        </button>
+                                        <button type="button" class=" btn btn-primary fs-16" disabled>
+                                            {{translate('add_to_Cart')}}
+                                        </button>
                                     @else
                                         @php($guest_checkout=getWebConfig(name: 'guest_checkout'))
                                         <button type="button"
                                                 class="btn btn-secondary fs-16 buy-now"
                                                 data-form-id="add-to-cart-form"
                                                 data-redirect-status="{{($guest_checkout==1 || Auth::guard('customer')->check()?'true':'false')}}"
-                                                data-action="{{route('shop-cart')}}">{{translate('buy_now')}}</span>
+                                                data-action="{{ route('shop-cart') }}"
+                                                >
+                                            {{translate('buy_now')}}
                                         </button>
                                         <button type="button"
                                                 class="btn btn-primary fs-16 text-capitalize add-to-cart"
-                                                data-form-id="add-to-cart-form">{{translate('add_to_cart')}}</button>
+                                                data-form-id="add-to-cart-form" data-update-text="{{ translate('update_cart') }}"
+                                                data-add-text="{{ translate('add_to_cart') }}">{{translate('add_to_cart')}}</button>
                                     @endif
                                 </div>
                                 @if(($product->added_by == 'seller' && ($seller_temporary_close || (isset($product->seller->shop) && $product->seller->shop->vacation_status && $currentDate >= $seller_vacation_start_date && $currentDate <= $seller_vacation_end_date))) ||
@@ -309,12 +380,49 @@
         </div>
     </div>
 </div>
+
 <script src="{{ theme_asset('assets/js/quick-view.js') }}"></script>
 <script>
     'use strict';
-    buyNow();
-    addToWishlist();
-    addToCompare();
-    focusPreviewImageByColor();
-    shareOnSocialMedia();
+
+    $('.modal').on('hidden.bs.modal', function () {
+        if($(".modal:visible").length > 0) {
+            setTimeout(function() {
+                $('body').addClass('modal-open');
+            },200)
+        }
+    });
+    var quickviewSliderThumb2 = new Swiper(".quickviewSliderThumb2", {
+        spaceBetween: 10,
+        slidesPerView: "auto",
+        freeMode: true,
+        watchSlidesVisibility: true,
+        watchSlidesProgress: true,
+        // centeredSlides: true,
+
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+        },
+        navigation: {
+            nextEl: ".swiper-quickview-button-next",
+            prevEl: ".swiper-quickview-button-prev",
+        },
+    });
+    var quickviewSlider2 = new Swiper(".quickviewSlider2", {
+        // spaceBetween: 10,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+        },
+        thumbs: {
+            swiper: quickviewSliderThumb2,
+        },
+    });
+
+        buyNow();
+        addToWishlist();
+        addToCompare();
+        focusPreviewImageByColor();
+        shareOnSocialMedia();
 </script>

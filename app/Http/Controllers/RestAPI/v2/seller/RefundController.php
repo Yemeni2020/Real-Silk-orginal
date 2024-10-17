@@ -9,7 +9,7 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\RefundRequest;
 use App\Models\RefundStatus;
-use App\User;
+use App\Models\User;
 use App\Utils\CustomerManager;
 use App\Utils\Helpers;
 use Illuminate\Http\Request;
@@ -119,7 +119,7 @@ class RefundController extends Controller
         ]);
 
         if ($validator->errors()->count() > 0) {
-            return response()->json(['errors' => Helpers::error_processor($validator)]);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)]);
         }
 
         $refund = RefundRequest::whereHas('order', function ($query) use($data) {
@@ -128,7 +128,7 @@ class RefundController extends Controller
 
         $user = User::find($refund->customer_id);
 
-        $loyalty_point_status = Helpers::get_business_settings('loyalty_point_status');
+        $loyalty_point_status = getWebConfig(name: 'loyalty_point_status');
 
         if($loyalty_point_status == 1)
         {

@@ -17,7 +17,7 @@ class RefundEvent
     /**
      * Create a new event instance.
      */
-    public function __construct(public string $status, public object|array $order)
+    public function __construct(public string  $status, public object|array $order, public object|array $refund, public object|array|null $orderDetails)
     {
         //
     }

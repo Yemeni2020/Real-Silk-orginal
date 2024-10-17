@@ -100,7 +100,7 @@ $('#from_date,#to_date').change(function () {
 })
 
 $("[class^=show-more-content]").hide();
-$('.toggle_btn').on('click',function (){
+$('.toggle-btn').on('click',function (){
     let show_more = "#show-more-" + $(this).attr('data-id')
     let show_less = "#show-less-" + $(this).attr('data-id')
     let show_more_content = "#show-more-content-" + $(this).attr('data-id')
@@ -129,7 +129,49 @@ $('.order-status-history').on('click', function (){
     });
 });
 
-$('#delivery_withdraw_status_filter').on('change', function() {
-    let url = $(this).data('url');
-    location.href=url+'?approved='+$(this).val();
+$('.earning-order-history input[type=checkbox]').on('change',function (){
+    let checkedStatusValuesArray = [];
+    let checkedPaymentValuesArray = [];
+    $('#status input[type=checkbox]:checked').map(function() {
+        checkedStatusValuesArray.push($(this).val());
+    }).get();
+    $('#payment input[type=checkbox]:checked').map(function() {
+        checkedPaymentValuesArray.push($(this).val());
+    }).get();
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.post({
+        url: $('#get-filter-route').data('action'),
+        data: {
+            order_status: checkedStatusValuesArray,
+            payment_status: checkedPaymentValuesArray
+        },
+        beforeSend: function () {
+            $('#loading').fadeIn();
+        },
+        success: function (data) {
+            $('#status-wise-view').html(data.view)
+            $('#row-count').empty().html(data.count)
+        },
+        complete: function () {
+            $('#loading').fadeOut();
+        }
+    });
+})
+
+$('.earning-file-export').on('click',function (){
+    let checkedStatusValuesArray = [];
+    let checkedPaymentValuesArray = [];
+    $('#status input[type=checkbox]:checked').map(function() {
+        checkedStatusValuesArray.push($(this).val());
+    }).get();
+    $('#payment input[type=checkbox]:checked').map(function() {
+        checkedPaymentValuesArray.push($(this).val());
+    }).get();
+    let queryParams = '&order_status=' + checkedStatusValuesArray.join(',') +
+        '&payment_status=' + checkedPaymentValuesArray.join(',');
+    window.location.href = $(this).data('action')+queryParams;
 });

@@ -41,6 +41,10 @@
                                    autocomplete="off">
                             <input class="otp-field" type="text" name="opt-field[]" maxlength="1"
                                    autocomplete="off">
+                            <input class="otp-field" type="text" name="opt-field[]" maxlength="1"
+                                   autocomplete="off">
+                            <input class="otp-field" type="text" name="opt-field[]" maxlength="1"
+                                   autocomplete="off">
                         </div>
                         <input class="otp-value" type="hidden" name="otp">
                         <input class="identity" type="hidden" name="identity" value="{{ request('identity') }}">

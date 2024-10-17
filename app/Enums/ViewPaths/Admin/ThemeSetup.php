@@ -29,8 +29,8 @@ enum ThemeSetup
         VIEW => ''
     ];
 
-    const NOTIFY_SELLER = [
-        URI => 'notify-all-the-sellers',
+    const NOTIFY_VENDOR = [
+        URI => 'notify-all-the-vendors',
         VIEW => ''
     ];
 

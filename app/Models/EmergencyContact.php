@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id Primary
  * @property int $user_id
  * @property string $name
+ * @property string $country_code
  * @property string $phone
  * @property bool $status
  * @property Carbon $created_at
@@ -27,6 +28,7 @@ class EmergencyContact extends Model
         'id' => 'integer',
         'user_id' => 'integer',
         'status' => 'boolean',
+        'country_code' => 'string',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -34,6 +36,7 @@ class EmergencyContact extends Model
     protected $fillable = [
         'user_id',
         'name',
+        'country_code',
         'phone',
         'status',
         'created_at',

@@ -5,7 +5,7 @@
     <div class="content container-fluid ">
         <div class="mb-4">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img width="20" src="{{asset('/public/assets/back-end/img/order_report.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/order_report.png')}}" alt="">
                 {{translate('transaction_report')}}
             </h2>
         </div>
@@ -20,6 +20,7 @@
                                 <option value="this_year" {{ $date_type == 'this_year'? 'selected' : '' }}>{{translate('this_year')}}</option>
                                 <option value="this_month" {{ $date_type == 'this_month'? 'selected' : '' }}>{{translate('this_month')}}</option>
                                 <option value="this_week" {{ $date_type == 'this_week'? 'selected' : '' }}>{{translate('this_week')}}</option>
+                                <option value="today" {{ $date_type == 'today'? 'selected' : '' }}>{{translate('today')}}</option>
                                 <option value="custom_date" {{ $date_type == 'custom_date'? 'selected' : '' }}>{{translate('custom_date')}}</option>
                             </select>
                         </div>
@@ -51,104 +52,46 @@
         <div class="store-report-content mb-2">
             <div class="left-content expense--content">
                 <div class="left-content-card">
-                    <img src="{{asset('/public/assets/back-end/img/expense.svg')}}" alt="">
+                    <img src="{{dynamicAsset(path: 'public/assets/back-end/img/expense.svg')}}" alt="">
                     <div class="info">
                         <h4 class="subtitle">{{ setCurrencySymbol(amount: usdToDefaultCurrency(amount: $total_expense), currencyCode: getCurrencyCode()) }}</h4>
                         <h6 class="subtext">
                             <span>{{translate('total_Expense')}}</span>
                             <span class="ml-2" data-toggle="tooltip" data-placement="top"
                                   title="{{translate('free_delivery')}}, {{translate('coupon_discount_will_be_shown_here')}}">
-                                <img class="info-img" src="{{asset('/public/assets/back-end/img/info-circle.svg')}}"
+                                <img class="info-img" src="{{dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg')}}"
                                      alt="img">
                             </span>
                         </h6>
                     </div>
                 </div>
                 <div class="left-content-card">
-                    <img src="{{asset('/public/assets/back-end/img/free-delivery.svg')}}" alt="">
+                    <img src="{{dynamicAsset(path: 'public/assets/back-end/img/free-delivery.svg')}}" alt="">
                     <div class="info">
                         <h4 class="subtitle">{{ setCurrencySymbol(amount: usdToDefaultCurrency(amount: $free_delivery), currencyCode: getCurrencyCode()) }}</h4>
                         <h6 class="subtext">{{translate('free_Delivery')}}</h6>
                     </div>
                 </div>
                 <div class="left-content-card">
-                    <img src="{{asset('/public/assets/back-end/img/coupon-discount.svg')}}" alt="">
+                    <img src="{{dynamicAsset(path: 'public/assets/back-end/img/coupon-discount.svg')}}" alt="">
                     <div class="info">
                         <h4 class="subtitle">{{ setCurrencySymbol(amount: usdToDefaultCurrency(amount: $coupon_discount), currencyCode: getCurrencyCode()) }}</h4>
                         <h6 class="subtext">
                             <span>{{translate('coupon_Discount')}}</span>
                             <span class="ml-2" data-toggle="tooltip" data-placement="top"
                                   title="{{translate('discount_on_purchase_and_first_delivery_coupon_amount_will_be_shown_here')}}">
-                                <img class="info-img" src="{{asset('/public/assets/back-end/img/info-circle.svg')}}"
+                                <img class="info-img" src="{{dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg')}}"
                                      alt="img">
                             </span>
                         </h6>
                     </div>
                 </div>
             </div>
+            @foreach($expense_transaction_chart['discount_amount'] as $amount)
+                @php($amountArray[] = usdToDefaultCurrency(amount: $amount))
+            @endforeach
             <div class="center-chart-area">
-                <div class="center-chart-header">
-                    <h3 class="title">{{translate('expense_Statistics')}}</h3>
-                </div>
-                <canvas id="updatingData" class="store-center-chart"
-                        data-hs-chartjs-options='{
-                "type": "bar",
-                "data": {
-                  "labels": [{{ '"'.implode('","', array_keys($expense_transaction_chart['discount_amount'])).'"' }}],
-                  "datasets": [{
-                    "label": "{{translate('total_expense_amount')}}",
-                    "data": [ {{ '"'.implode('","', array_values($expense_transaction_chart['discount_amount'])).'"' }}],
-                    "backgroundColor": "#a2ceee",
-                    "hoverBackgroundColor": "#0177cd",
-                    "borderColor": "#a2ceee"
-                  }]
-                },
-                "options": {
-                  "scales": {
-                    "yAxes": [{
-                      "gridLines": {
-                        "color": "#e7eaf3",
-                        "drawBorder": false,
-                        "zeroLineColor": "#e7eaf3"
-                      },
-                      "ticks": {
-                        "beginAtZero": true,
-                        "fontSize": 12,
-                        "fontColor": "#97a4af",
-                        "fontFamily": "Open Sans, sans-serif",
-                        "padding": 5,
-                        "postfix": " {{ getCurrencySymbol(currencyCode: getCurrencyCode()) }}"
-                      }
-                    }],
-                    "xAxes": [{
-                      "gridLines": {
-                        "display": false,
-                        "drawBorder": false
-                      },
-                      "ticks": {
-                        "fontSize": 12,
-                        "fontColor": "#97a4af",
-                        "fontFamily": "Open Sans, sans-serif",
-                        "padding": 5
-                      },
-                      "categoryPercentage": 0.3,
-                      "maxBarThickness": "10"
-                    }]
-                  },
-                  "cornerRadius": 5,
-                  "tooltips": {
-                    "prefix": " ",
-                    "hasIndicator": true,
-                    "mode": "index",
-                    "intersect": false
-                  },
-                  "hover": {
-                    "mode": "nearest",
-                    "intersect": true
-                  }
-                }
-              }'>
-                </canvas>
+                @include('layouts.back-end._apexcharts',['title'=>'expense_Statistics','statisticsValue'=>$amountArray,'label'=>array_keys($expense_transaction_chart['discount_amount']),'statisticsTitle'=>'total_expense_amount'])
             </div>
         </div>
 
@@ -177,16 +120,15 @@
                             <button type="submit"
                                     class="btn btn--primary">{{ translate('search')}}</button>
                         </div>
-                        <!-- End Search -->
                     </form>
                     <div>
-                        <a href="{{ route('admin.transaction.expense-transaction-summary-pdf', ['date_type'=>request('date_type'), 'from'=>request('from'), 'to'=>request('to')]) }}"
+                        <a href="{{ route('admin.transaction.expense-transaction-summary-pdf', ['search'=>request('search'),'date_type'=>request('date_type'), 'from'=>request('from'), 'to'=>request('to')]) }}"
                            class="btn btn-outline--primary text-nowrap btn-block">
                             <i class="tio-file-text"></i>
                             {{translate('download_PDF')}}
                         </a>
                     </div>
-                    <div>
+                    <div class="dropdown">
                         <button type="button" class="btn btn-outline--primary text-nowrap btn-block"
                                 data-toggle="dropdown">
                             <i class="tio-download-to"></i>
@@ -197,7 +139,7 @@
                             <li>
                                 <a class="dropdown-item"
                                    href="{{ route('admin.transaction.expense-transaction-export-excel', ['search'=>request('search'), 'date_type'=>request('date_type'), 'from'=>request('from'), 'to'=>request('to')]) }}">
-                                    <img width="14" src="{{asset('/public/assets/back-end/img/excel.png')}}" alt="">
+                                    <img width="14" src="{{dynamicAsset(path: 'public/assets/back-end/img/excel.png')}}" alt="">
                                     {{translate('excel')}}
                                 </a>
                             </li>
@@ -224,7 +166,7 @@
                         <tr>
                             <td>{{ $expense_transactions_table->firstItem()+$key }}</td>
                             <td>{{ $transaction->orderTransaction->transaction_id }}</td>
-                            <td>{{ date_format($transaction->orderTransaction->updated_at, 'd F Y h:i:s a') }}</td>
+                            <td>{{ date_format($transaction->updated_at, 'd F Y h:i:s a') }}</td>
                             <td>
                                 <a class="title-color" href="{{route('admin.orders.details',['id'=>$transaction->id])}}">
                                     {{$transaction->id}}
@@ -246,18 +188,6 @@
                             </td>
                         </tr>
                     @endforeach
-                    @if(count($expense_transactions_table)==0)
-                        <tr>
-                            <td colspan="7">
-                                <div class="text-center p-4">
-                                    <img class="mb-3 w-160"
-                                         src="{{asset('public/assets/back-end/svg/illustrations/sorry.svg')}}"
-                                         alt="Image Description">
-                                    <p class="mb-0">{{ translate('no_data_to_show')}}</p>
-                                </div>
-                            </td>
-                        </tr>
-                    @endif
                     </tbody>
                 </table>
             </div>
@@ -267,13 +197,15 @@
                     {{$expense_transactions_table->links()}}
                 </div>
             </div>
+            @if(count($expense_transactions_table)==0)
+                @include('layouts.back-end._empty-state',['text'=>'no_data_found'],['image'=>'default'])
+            @endif
         </div>
     </div>
 @endsection
 
 @push('script')
-    <script src="{{ asset('public/assets/back-end/js/chart.js/dist/Chart.min.js') }}"></script>
-    <script src="{{ asset('public/assets/back-end/js/chart.js.extensions/chartjs-extensions.js') }}"></script>
-    <script src="{{ asset('public/assets/back-end/js/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js') }}"></script>
-    <script src="{{ asset('public/assets/back-end/js/admin/expense-report.js') }}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/apexcharts.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/apexcharts-data-show.js')}}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/admin/expense-report.js') }}"></script>
 @endpush

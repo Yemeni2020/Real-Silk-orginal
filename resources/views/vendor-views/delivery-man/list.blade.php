@@ -8,15 +8,15 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img width="20" src="{{asset('/public/assets/back-end/img/deliveryman.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/deliveryman.png')}}" alt="">
                 {{translate('deliveryman_List')}}
                 <span class="badge badge-soft-dark radius-50 fz-14">{{ $deliveryMen->total() }}</span>
             </h2>
         </div>
         <div class="card">
-            <div class="card-header flex-wrap gap-2">
-                <div class="flex-start">
-                    <div>
+            <div class="px-3 py-4">
+                <div class="d-flex justify-content-between gap-10 flex-wrap align-items-center">
+                    <div class="">
                         <form action="{{url()->current()}}" method="GET">
                             <div class="input-group input-group-merge input-group-custom">
                                 <div class="input-group-prepend">
@@ -25,16 +25,35 @@
                                     </div>
                                 </div>
                                 <input id="datatableSearch_" type="search" name="search" class="form-control"
-                                        placeholder="{{ translate('search') }}" aria-label="Search" value="{{$searchValue}}" required>
+                                       placeholder="{{translate('search_by_name').','.translate('_contact_info')}}" aria-label="Search" value="{{ request('search') }}" required>
                                 <button type="submit" class="btn btn--primary">{{translate('search')}}</button>
-
                             </div>
                         </form>
                     </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <div class="dropdown text-nowrap">
+                            <button type="button" class="btn btn-outline--primary" data-toggle="dropdown">
+                                <i class="tio-download-to"></i>
+                                {{translate('export')}}
+                                <i class="tio-chevron-down"></i>
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <li>
+                                    <a type="submit" class="dropdown-item d-flex align-items-center gap-2 " href="{{route('vendor.delivery-man.export',['search' => request('search')])}}">
+                                        <img width="14" src="{{dynamicAsset(path: 'public/assets/back-end/img/excel.png')}}" alt="">
+                                        {{translate('excel')}}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <a href="{{route('vendor.delivery-man.index')}}" class="btn btn--primary text-nowrap">
+                            <i class="tio-add"></i>
+                            {{translate('add_Delivery_Man')}}
+                        </a>
+                    </div>
                 </div>
-                <a href="{{route('vendor.delivery-man.index')}}" class="btn btn--primary">
-                    <i class="tio-add-circle"></i> {{translate('add_deliveryman')}}
-                </a>
             </div>
             <div class="table-responsive datatable-custom">
                 <table class="table table-hover table-borderless table-thead-bordered table-align-middle card-table">
@@ -50,13 +69,13 @@
                     </tr>
                     </thead>
                     <tbody id="set-rows">
-                    @forelse($deliveryMen as $key=>$deliveryMan)
+                    @foreach($deliveryMen as $key=>$deliveryMan)
                         <tr>
                             <td>{{$deliveryMen->firstitem()+$key}}</td>
                             <td>
                                 <div class="media align-items-center gap-10">
                                     <img class="avatar avatar-lg rounded-circle" alt=""
-                                            src="{{getValidImage('storage/app/public/delivery-man/'.$deliveryMan['image'],type:'backend-profile')}}">
+                                            src="{{getStorageImages($deliveryMan->image_full_url,type:'backend-profile')}}">
                                     <div class="media-body">
                                         <a title="Earning Statement"
                                            class="title-color hover-c1"
@@ -69,7 +88,7 @@
                             <td>
                                 <div class="d-flex flex-column gap-1">
                                     <div><a class="title-color hover-c1" href="mailto:{{$deliveryMan['email']}}"><strong>{{$deliveryMan['email']}}</strong></a></div>
-                                    <a class="title-color hover-c1" href="tel:+{{$deliveryMan['country_code']}}{{$deliveryMan['phone']}}">+{{$deliveryMan['country_code']. ' ' .$deliveryMan['phone']}}</a>
+                                    <a class="title-color hover-c1" href="tel:{{$deliveryMan['country_code']}}{{$deliveryMan['phone']}}">{{$deliveryMan['country_code']. ' ' .$deliveryMan['phone']}}</a>
                                 </div>
                             </td>
                             <td>
@@ -104,9 +123,8 @@
                             </td>
                             <td>
                                 <div class="d-flex justify-content-center gap-2">
-                                    <a  class="btn btn-outline--primary btn-sm square-btn"
-                                        title="{{translate('edit')}}"
-                                        href="{{route('vendor.delivery-man.update',[$deliveryMan['id']])}}">
+                                    <a  class="btn btn-outline--primary btn-sm square-btn" href="{{route('vendor.delivery-man.update',[$deliveryMan['id']])}}"
+                                        title="{{translate('edit')}}">
                                         <i class="tio-edit"></i>
                                     </a>
                                     <a title="Earning Statement"
@@ -128,19 +146,13 @@
                                 </div>
                             </td>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7">
-                                <div class="text-center p-4">
-                                    <img class="mb-3 w-160" src="{{ asset('public/assets/back-end/svg/illustrations/sorry.svg') }}" alt="{{translate('image_description')}}">
-                                    <p class="mb-0">{{translate('no_delivery_man_found')}}</p>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforelse
+                    @endforeach
                     </tbody>
                 </table>
             </div>
+            @if(count($deliveryMen)==0)
+                @include('layouts.back-end._empty-state',['text'=>'no_delivery_man_found'],['image'=>'default'])
+            @endif
             <div class="table-responsive mt-4">
                 <div class="px-4 d-flex justify-content-lg-end">
                     {!! $deliveryMen->links() !!}
@@ -152,5 +164,5 @@
 @endsection
 
 @push('script_2')
-    <script src="{{asset('public/assets/back-end/js/vendor/deliveryman.js')}}"></script>
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/vendor/deliveryman.js')}}"></script>
 @endpush

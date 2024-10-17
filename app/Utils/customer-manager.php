@@ -6,10 +6,12 @@ use App\Models\BusinessSetting;
 use App\Models\CustomerWalletHistory;
 use App\Models\LoyaltyPointTransaction;
 use App\Models\OrderDetail;
+use App\Models\ProductCompare;
 use App\Models\SupportTicket;
 use App\Models\Transaction;
 use App\Models\WalletTransaction;
-use App\User;
+use App\Models\User;
+use App\Models\Wishlist;
 use Illuminate\Support\Facades\DB;
 
 class CustomerManager
@@ -155,18 +157,27 @@ class CustomerManager
 
     public static function count_loyalty_point_for_amount($id)
     {
-        $order_details = OrderDetail::find($id);
-        $loyalty_point_status = Helpers::get_business_settings('loyalty_point_status');
-        $loyalty_point = 0;
-        if($loyalty_point_status == 1)
-        {
-            $loyalty_point_item_purchase_point = Helpers::get_business_settings('loyalty_point_item_purchase_point');
-            $subtotal = ($order_details->price * $order_details->qty) - $order_details->discount + $order_details->tax;
-
-            $loyalty_point = (int)(Convert::default($subtotal) * $loyalty_point_item_purchase_point /100);
-
-            return $loyalty_point;
+        $orderDetails = OrderDetail::find($id);
+        $loyaltyPointStatus = getWebConfig(name: 'loyalty_point_status');
+        $loyaltyPoint = 0;
+        if ($loyaltyPointStatus == 1) {
+            $loyaltyPointItemPurchasePoint = getWebConfig(name: 'loyalty_point_item_purchase_point');
+            $subtotal = ($orderDetails->price * $orderDetails->qty) - $orderDetails->discount + $orderDetails->tax;
+            return (int)(Convert::default($subtotal) * $loyaltyPointItemPurchasePoint / 100);
         }
-        return $loyalty_point;
+        return $loyaltyPoint;
+    }
+
+    public static function updateCustomerSessionData($userId): void
+    {
+        $compareListArray = ProductCompare::whereHas('product')->where('user_id', $userId)->pluck('product_id')->toArray();
+        $wishList = Wishlist::whereHas('wishlistProduct', function ($query) {
+            return $query->active();
+        })->where('customer_id', $userId)->pluck('product_id')->toArray();
+
+        session()->forget('wish_list');
+        session()->forget('compare_list');
+        session()->put('wish_list', $wishList);
+        session()->put('compare_list', $compareListArray);
     }
 }

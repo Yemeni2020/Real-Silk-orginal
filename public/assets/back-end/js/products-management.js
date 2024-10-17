@@ -37,7 +37,7 @@ $('.attribute-delete-button').on('click', function () {
     })
 })
 
-$('.brand-delete-button').on('click', function () {
+$('.delete-brand').on('click', function () {
     let brandId = $(this).attr("id");
     Swal.fire({
         title: messageAreYouSureDeleteThis,
@@ -51,20 +51,54 @@ $('.brand-delete-button').on('click', function () {
         reverseButtons: true
     }).then((result) => {
         if (result.value) {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-                }
+            let brands =$('#get-brands').data('brands').data
+            brands = brands.filter(brands =>brands.id !== parseInt(brandId));
+            let selectDropdown = $('.brand-option').empty();
+            brands.forEach(brand => {
+                let option = $('<option></option>').attr('value', brand.id).text(brand.name);
+                selectDropdown.append(option);
             });
-            $.ajax({
-                url: $('#route-admin-brand-delete').data('url'),
-                method: 'POST',
-                data: {id: brandId},
-                success: function (response) {
-                    toastr.success(response.message);
-                    location.reload();
-                }
+            $('input[name=id]').val(brandId)
+            $('.brand-title-message').html($(this).data('text'))
+            if($(this).data('product-count') > 0){
+                $('#select-brand-modal').modal('show');
+            }else{
+                $('.product-brand-update-form-submit').submit();
+            }
+        }
+    })
+});
+
+$('.delete-category').on('click', function () {
+    let categoryId = $(this).attr("id");
+    Swal.fire({
+        title: messageAreYouSureDeleteThis,
+        text: messageYouWillNotAbleRevertThis,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: getYesWord,
+        cancelButtonText: getCancelWord,
+        reverseButtons: true
+    }).then((result) => {
+        if (result.value) {
+            let categories =$('#get-categories').data('categories').data
+            categories = categories.filter(category =>category.id !== parseInt(categoryId));
+            let selectDropdown = $('.category-option').empty();
+            categories.forEach(category => {
+                let option = $('<option></option>').attr('value', category.id).text(category.name);
+                selectDropdown.append(option);
             });
+            $('input[name=id]').val(categoryId)
+
+            $('.category-title-message').html($(this).data('text'))
+            if($(this).data('product-count') > 0){
+                $('#select-category-modal').modal('show');
+            }else{
+                $('.product-category-update-form-submit').submit();
+            }
+
         }
     })
 });

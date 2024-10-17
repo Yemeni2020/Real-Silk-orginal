@@ -51,36 +51,27 @@ function updateCartQuantityListMobile(minimum_order_qty, key, incr, e) {
 }
 function updateCartCommon(minimum_order_qty, key, e, quantity, ex_quantity) {
 
+    console.log(minimum_order_qty)
+    console.log(key)
+    console.log(e)
+    console.log(quantity)
+    console.log(ex_quantity)
+    console.log(ex_quantity.data('min'))
+    console.log(ex_quantity.html())
+
+    if (ex_quantity.val() > ex_quantity.data('current-stock') && e == 'minus') {
+        removeProductFromCartList(key)
+        return false;
+    }
+
     if(minimum_order_qty > quantity && e !== 'delete' ) {
         toastr.error($('.minimum_order_quantity_msg').data('text')+' '+ minimum_order_qty);
         $(".cartQuantity" + key).val(minimum_order_qty);
+        location.reload();
         return false;
     }
     if (parseInt(ex_quantity.val()) === parseInt(ex_quantity.data('min')) && e === 'delete') {
-        let remove_from_cart_url = $('#remove_from_cart_url').data('url');
-        $.post(remove_from_cart_url, {
-                _token: $('meta[name="_token"]').attr('content'),
-                key: key
-            },
-            function (response) {
-                updateNavCart();
-                toastr.info(response.message, {
-                    CloseButton: true,
-                    ProgressBar: true
-                });
-                let segment_array = window.location.pathname.split('/');
-                let segment = segment_array[segment_array.length - 1];
-                if (segment === 'checkout-payment' || segment === 'checkout-details') {
-                    location.reload();
-                }
-                $('#cart-summary').empty().html(response.data);
-                initTooltip();
-                proceedToNextAction();
-                updateCartQuantityListCartData();
-                setShippingIdFunction();
-                updateCartQuantityListMobileCartData();
-                renderCouponCodeApply()
-            });
+        removeProductFromCartList(key)
     }else{
         let updateQuantityBasicUrl = $('#update-quantity-basic-url').data('url');
         $.post(updateQuantityBasicUrl, {
@@ -109,9 +100,40 @@ function updateCartCommon(minimum_order_qty, key, e, quantity, ex_quantity) {
             updateCartQuantityListCartData();
             updateCartQuantityListMobileCartData();
             renderCouponCodeApply()
+            multipleCheckBoxFunctionsInit()
         });
     }
 }
+
+function removeProductFromCartList(key) {
+    let remove_from_cart_url = $('#remove_from_cart_url').data('url');
+    $.post(remove_from_cart_url, {
+            _token: $('meta[name="_token"]').attr('content'),
+            key: key
+        },
+        function (response) {
+            updateNavCart();
+            toastr.info(response.message, {
+                CloseButton: true,
+                ProgressBar: true
+            });
+            let segment_array = window.location.pathname.split('/');
+            let segment = segment_array[segment_array.length - 1];
+            if (segment === 'checkout-payment' || segment === 'checkout-details') {
+                location.reload();
+            }
+            $('#cart-summary').empty().html(response.data);
+            initTooltip();
+            proceedToNextAction();
+            updateCartQuantityListCartData();
+            setShippingIdFunction();
+            updateCartQuantityListMobileCartData();
+            renderCouponCodeApply()
+            multipleCheckBoxFunctionsInit()
+        }
+    );
+}
+
 function setShippingIdFunction(){
 
     $('.set-shipping-onchange').on('change', function(){
@@ -144,3 +166,5 @@ function setShippingIdFunction(){
     }
 }
 setShippingIdFunction();
+
+

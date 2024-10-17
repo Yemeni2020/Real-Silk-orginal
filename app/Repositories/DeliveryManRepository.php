@@ -36,10 +36,14 @@ class DeliveryManRepository implements DeliveryManRepositoryInterface
         $query = $this->deliveryMan->with($relations)
             ->withCount('orders')
             ->when($searchValue, function ($query) use ($searchValue) {
-                $query->where(function ($query) use ($searchValue){
-                    return $query->where('f_name', 'like', "%$searchValue%")
-                        ->orWhere('l_name', 'like', "%$searchValue%")
-                        ->orWhere('phone', 'like', "%$searchValue%");
+                $searchTerms = explode(' ', $searchValue);
+                $query->where(function ($query) use ($searchTerms) {
+                    foreach ($searchTerms as $term) {
+                        $query->orWhere('f_name', 'like', "%$term%")
+                            ->orWhere('l_name', 'like', "%$term%")
+                            ->orWhere('phone', 'like', "%$term%")
+                            ->orWhere('email', 'like', "%$term%");
+                    }
                 });
             })
             ->when(isset($filters['seller_id']), function ($query) use ($filters) {
@@ -53,19 +57,29 @@ class DeliveryManRepository implements DeliveryManRepositoryInterface
 
     }
 
-    public function getTopRatedList(array $filters = [], array $whereHasFilters = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
+    public function getTopRatedList(array $orderBy = [], array $filters = [], array $whereHasFilters = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
     {
-        return $this->deliveryMan->with($relations)->where($filters)
-            ->whereHas('orders', function ($query) use ($whereHasFilters) {
-                $query->where($whereHasFilters)->where(['order_status' => 'delivered'])->whereNotNull('delivery_man_id');
+        return $this->deliveryMan->with($relations)
+            ->when(isset($filters['seller_id']), function ($query) use ($filters) {
+                $query->where('seller_id', $filters['seller_id']);
             })
-            ->withCount('orders')->get()
-            ->sortByDesc('orders_count');
+            ->when(current($relations) == 'deliveredOrders', function ($query) use ($whereHasFilters) {
+                $query->whereHas('deliveredOrders', function ($query) use ($whereHasFilters) {
+                    $query->when($whereHasFilters, function ($query) use ($whereHasFilters) {
+                        return $query->where($whereHasFilters)->whereNotNull('delivery_man_id');
+                    });
+                });
+            })
+            ->withCount(current($relations))
+            ->when(!empty($orderBy), function ($query) use ($orderBy) {
+                $query->orderBy(key($orderBy), current($orderBy));
+            })
+            ->get();
     }
 
     public function update(string $id, array $data): bool
     {
-        return $this->deliveryMan->where('id', $id)->update($data);
+        return $this->deliveryMan->find($id)->update($data);
     }
 
     public function delete(array $params): bool

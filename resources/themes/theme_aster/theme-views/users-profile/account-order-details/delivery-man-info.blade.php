@@ -16,8 +16,8 @@
                                     <div class="d-flex justify-content-between align-items-center gap-4 flex-wrap">
                                         @if($order->delivery_type == 'self_delivery' && isset($order->deliveryMan))
                                             <div class="media gap-2 gap-sm-3">
-                                                <div class="avatar overflow-hidden rounded store-avatar2">
-                                                         <img src="{{ getValidImage(path: 'storage/app/public/delivery-man/'.($order?->deliveryMan->image), type:'avatar') }}"
+                                                <div class="avatar overflow-hidden rounded store-avatar2 d-flex align-items-center">
+                                                         <img src="{{ getStorageImages(path: $order?->deliveryMan->image_full_url, type:'avatar') }}"
                                                          class="dark-support rounded img-fit" alt="">
                                                 </div>
                                                 <div class="media-body d-flex flex-column gap-2">
@@ -48,7 +48,7 @@
                                                     <i class="bi bi-chat-square-fill"></i>
                                                     {{translate('chat_with_delivery')}}
                                                 </button>
-                                                @if($order->order_type == 'default_type' && $order->order_status=='delivered' && $order->delivery_man_id)
+                                                @if($order->payment_status == 'paid' && $order->order_type == 'default_type' && $order->order_status=='delivered' && $order->delivery_man_id)
                                                 <button  class="btn btn-primary flex-grow-1"
                                                             data-bs-toggle="modal" data-bs-target="#reviewModal">
                                                     <i class="bi bi-chat-square-fill"></i>
@@ -63,12 +63,12 @@
                                                             <h1 class="modal-title fs-5">{{translate('Write_something')}}</h1>
                                                         </div>
                                                         <div class="modal-body px-sm-5">
-                                                            <form action="{{route('messages_store')}}" method="post" id="chat-form">
+                                                            <form action="{{route('messages')}}" method="post" id="chat-form">
                                                                 @csrf
                                                                 @if($order->deliveryMan->id != 0)
                                                                     <input value="{{$order->deliveryMan->id}}" name="delivery_man_id" hidden>
                                                                 @endif
-                                                                <textarea name="message" class="form-control" required></textarea>
+                                                                <textarea name="message" class="form-control min-height-100px max-height-200px" required></textarea>
                                                                 <br>
                                                                 @if($order->deliveryMan->id != 0)
                                                                     <button class="btn btn-secondary m-0 ">{{translate('send')}}</button>
@@ -169,11 +169,11 @@
                                                     {{ translate('picture_Upload_by') }} {{$order->deliveryMan->f_name}}&nbsp{{$order->deliveryMan->l_name}}
                                                 </h5>
 
-                                                <div class="d-flex flex-wrap gap-3">
+                                                <div class="d-flex flex-wrap gap-3 custom-image-popup-init">
                                                     @foreach ($order->verificationImages as $image)
-                                                        <a href="{{ getValidImage(path: 'storage/app/public/delivery-man/verification-image/'.($image->image), type:'product') }}" class="custom-image-popup">
+                                                        <a href="{{ getStorageImages(path: $image->image_full_url, type:'product') }}" class="custom-image-popup">
                                                                 <img class="height-100 rounded remove-mask-img" alt=""
-                                                                src="{{ getValidImage(path: 'storage/app/public/delivery-man/verification-image/'.($image->image), type:'product') }}">
+                                                                src="{{ getStorageImages(path: $image->image_full_url, type:'product') }}">
                                                         </a>
                                                     @endforeach
                                                 </div>

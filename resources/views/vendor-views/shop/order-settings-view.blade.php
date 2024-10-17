@@ -6,7 +6,7 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img width="20" src="{{asset('/public/assets/back-end/img/shop-info.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/shop-info.png')}}" alt="">
                 {{translate('shop_info')}}
             </h2>
         </div>
@@ -32,7 +32,7 @@
                                         <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
                                               data-placement="top"
                                               title="{{translate('set_the_minimum_order_amount_a_customer_must_order_from_this_vendor_shop')}}">
-                                            <img width="16" src="{{asset('/public/assets/back-end/img/info-circle.svg')}}"
+                                            <img width="16" src="{{dynamicAsset(path: '/public/assets/back-end/img/info-circle.svg')}}"
                                                  alt="">
                                         </span>
                                     <input type="number" step="0.01" class="form-control w-100"
@@ -75,7 +75,7 @@
                                               data-placement="top"
                                               title="{{translate('if_enabled_free_delivery_will_be_available_when_customers_order_over_a_certain_amount')}}">
                                             <img width="16"
-                                                 src="{{asset('/public/assets/back-end/img/info-circle.svg')}}" alt="">
+                                                 src="{{dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg')}}" alt="">
                                         </span>
                                     </span>
 
@@ -107,7 +107,7 @@
                                                       data-placement="top"
                                                       title="{{ translate('customers_will_get_free_delivery_if_the_order_amount_exceeds_the_given_amount_and_the_given_amount_will_be_added_as_vendor_expenses')}}">
                                             <img width="16"
-                                                 src="{{asset('/public/assets/back-end/img/info-circle.svg')}}" alt="">
+                                                 src="{{dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg')}}" alt="">
                                         </span>
                                             </label>
                                             <input type="number" class="form-control" name="free_delivery_over_amount" id="free-delivery-over-amount" min="0"

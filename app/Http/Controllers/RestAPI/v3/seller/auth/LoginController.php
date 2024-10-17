@@ -21,7 +21,7 @@ class LoginController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => Helpers::error_processor($validator)], 403);
+            return response()->json(['errors' => Helpers::validationErrorProcessor($validator)], 403);
         }
 
         $data = [
@@ -47,11 +47,19 @@ class LoginController extends Controller
                 ]);
             }
             return response()->json(['token' => $token], 200);
+        }elseif(isset($seller) && $seller['status'] == 'pending'){
+            $errors = [];
+            $errors[] = ['code' => 'auth-001', 'message' => translate('your_account_is_in_review_process').'. '.translate('please_wait_for_admin_approval')];
+            return response()->json([
+                'errors' => $errors,
+                'loginStatus' => 'pending'
+            ], 401);
         } else {
             $errors = [];
-            array_push($errors, ['code' => 'auth-001', 'message' => translate('Invalid credential or account no verified yet')]);
+            $errors[] = ['code' => 'auth-001', 'message' => translate('invalid_credential')];
             return response()->json([
-                'errors' => $errors
+                'errors' => $errors,
+                'loginStatus' => 'unauthorized'
             ], 401);
         }
     }

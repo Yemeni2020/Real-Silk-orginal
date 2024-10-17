@@ -12,52 +12,13 @@
         body {
             font-family: 'Helvetica', sans-serif;
             font-style: normal;
-        }
-
-        body,
-        table,
-        td,
-        a {
+            background-color: #ececec;
             -ms-text-size-adjust: 100%;
-            -webkit-text-size-adjust: 100%; /* 2 */
+            -webkit-text-size-adjust: 100%;
         }
 
-        table,
-        td {
-            mso-table-rspace: 0;
-            mso-table-lspace: 0;
-
-        }
-
-        img {
-            -ms-interpolation-mode: bicubic;
-        }
-
-        a[x-apple-data-detectors] {
-            font-family: inherit !important;
-            font-size: inherit !important;
-            font-weight: inherit !important;
-            line-height: inherit !important;
-            color: inherit !important;
-            text-decoration: none !important;
-        }
-
-        table {
-            border-collapse: collapse !important;
-        }
-
-        .congrats-box {
-            margin-top: 10px;
-            margin-bottom: 38px;
-        }
-
-        .col {
-            padding: 11px 0 11px 0;
-        }
-    </style>
-
-    <style>
-        body {background-color: #ececec}
+        .congrats-box { margin-top: 10px; margin-bottom: 38px; }
+        .col { padding: 11px 0 11px 0; }
         .d-flex { display: flex}
         .d-block { display: block}
         .align-items-center { align-items: center}
@@ -88,18 +49,14 @@
 <div style="height: 100px;background-color: #ececec; width:100%"></div>
 <div class="m-auto bg-white pt-40px pb-40px text-center" style="width:595px;border-radius: 3px;">
     <div class="d-block">
-        @if(is_file('storage/app/public/company/'.$companyLogo))
-            <div class="d-flex justify-content-center align-items-center gap-1">
-                <img src="{{ asset('storage/app/public/company/'.$companyLogo) }}" alt="{{ $companyName }}"
-                     style="height: 50px;" class="width-auto">
-                {{ $companyName }}
-            </div>
-        @else
+        <div class="d-flex justify-content-center align-items-center gap-1">
+            <img src="{{ getStorageImages(path: $companyLogo, type: 'backend-logo') }}" alt="{{ $companyName }}"
+                 style="height: 50px;" class="width-auto">
             {{ $companyName }}
-        @endif
+        </div>
     </div>
 
-    <img src="{{ asset('public/assets/front-end/img/icons/add_fund_vector.png') }}" alt="" style="height: 50px; width:50px; margin-top:40px;">
+    <img src="{{ dynamicAsset(path: 'public/assets/front-end/img/icons/add_fund_vector.png') }}" alt="" style="height: 50px; width:50px; margin-top:40px;">
 
     <div class="congrats-box">
         <span class="d-block" style="font-weight: 700;font-size: 22px;line-height: 135.5%;margin-bottom:10px;">
@@ -141,9 +98,9 @@
                 <td class="col">1</td>
                 <td class="col">{{$data->transaction_id}}</td>
                 <td class="col">{{$data->created_at}}</td>
-                <td class="col">{{\App\Utils\Helpers::currency_converter($data->credit) }}</td>
-                <td class="col">{{\App\Utils\Helpers::currency_converter($data->debit) }}</td>
-                <td class="col">{{\App\Utils\Helpers::currency_converter($data->balance) }}</td>
+                <td class="col">{{webCurrencyConverter($data->credit) }}</td>
+                <td class="col">{{webCurrencyConverter($data->debit) }}</td>
+                <td class="col">{{webCurrencyConverter($data->balance) }}</td>
             </tr>
             </tbody>
         </table>
@@ -167,7 +124,7 @@
                     @foreach ($social_media as $item)
                         <div style="display: inline-block;">
                             <a href="{{$item->link}}" target=”_blank”>
-                                <img src="{{asset('public/assets/admin/img/'.$item->name.'.png') }}" alt=""
+                                <img src="{{dynamicAsset(path: 'public/assets/admin/img/'.$item->name.'.png') }}" alt=""
                                      style="height: 14px; width:14px; padding: 0 3px 0 5px;">
                             </a>
                         </div>

@@ -6,7 +6,7 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img src="{{asset('/public/assets/back-end/img/employee.png')}}" width="20" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/employee.png')}}" width="20" alt="">
                 {{translate('employee_details')}}
             </h2>
         </div>
@@ -17,7 +17,7 @@
                     <div class="col-lg-7 col-xl-8">
                         <div class="media align-items-center flex-wrap flex-sm-nowrap gap-3">
                             <img width="250" class="rounded"
-                            src="{{getValidImage(path: 'storage/app/public/admin/'.$employee['image'],type:'backend-profile')}}" alt="{{translate('image_Description')}}">
+                            src="{{getStorageImages(path: $employee->image_full_url,type:'backend-profile')}}" alt="{{translate('image_Description')}}">
                             <div class="media-body">
                                 <div class="text-capitalize mb-4">
                                     <h4 class="mb-2">{{$employee->name}}</h4>

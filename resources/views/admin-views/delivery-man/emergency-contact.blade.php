@@ -6,7 +6,7 @@
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2 text-capitalize">
-                <img src="{{asset('/public/assets/back-end/img/add-new-delivery-man.png')}}" alt="">
+                <img src="{{dynamicAsset(path: 'public/assets/back-end/img/add-new-delivery-man.png')}}" alt="">
                 {{translate('emergency_contact')}}
             </h2>
         </div>
@@ -32,11 +32,17 @@
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label class="title-color d-flex"
-                                               for="exampleFormControlInput1">{{translate('phone')}}</label>
-                                        <input type="number" name="phone" class="form-control"
-                                               placeholder="{{translate('ex').':'.'017***********'}}"
-                                               required>
+                                        <label class="title-color d-flex" for="exampleFormControlInput1">{{translate('phone')}}</label>
+                                        <div class="input-group mb-3">
+                                            <div>
+                                                <select class="js-example-basic-multiple js-states js-example-responsive form-control" name="country_code" required>
+                                                    @foreach (TELEPHONE_CODES as $code)
+                                                        <option value="{{ $code['code'] }}" {{old($code['code']) == $code['code']? 'selected' : ''}}>{{ $code['name'] }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <input value="{{old('phone')}}" type="text" name="phone" class="form-control" placeholder="{{translate('ex').':'.'017********'}}" required>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -73,11 +79,11 @@
                             </thead>
 
                             <tbody>
-                            @forelse($contacts as $contact)
+                            @foreach($contacts as $contact)
                             <tr>
                                 <th scope="row">{{ $loop->iteration }}</th>
-                                <td class="text-center text-capitalize">{{ $contact->name }}</td>
-                                <td class="text-center"><a class="title-color hover-c1" href="tel:{{$contact->phone}}">{{$contact->phone}}</a></td>
+                                <td class="text-center text-capitalize">{{ $contact['name'] }}</td>
+                                <td class="text-center"><a class="title-color hover-c1" href="tel:{{$contact['country_code'].$contact['phone']}}">{{$contact['country_code'].$contact['phone']}}</a></td>
                                 <td>
                                     <div class="d-flex justify-content-center">
                                         <form action="{{route('admin.delivery-man.emergency-contact.ajax-status-change')}}" method="post" id="emergency-contact-status{{$contact->id}}-form">
@@ -98,14 +104,20 @@
                                             </label>
                                         </form>
                                     </div>
-
                                 </td>
                                 <td>
-                                    <a class="btn btn-outline-danger btn-sm delete mx-auto delete-data" href="javascript:"
-                                       data-id="delete-contact-{{$contact->id}}"
-                                       title="{{ translate('delete')}}">
-                                        <i class="tio-delete"></i>
-                                    </a>
+                                    <div class="d-flex justify-content-center align-items-center gap-2">
+                                        <button  class="btn btn-outline--primary btn-sm emergency-contact-update-view"
+                                            title="{{translate('edit')}}"
+                                            data-action="{{route('admin.delivery-man.emergency-contact.update',['id'=>$contact->id])}}">
+                                            <i class="tio-edit"></i>
+                                        </button>
+                                        <a class="btn btn-outline-danger btn-sm delete delete-data" href="javascript:"
+                                           data-id="delete-contact-{{$contact->id}}"
+                                           title="{{ translate('delete')}}">
+                                            <i class="tio-delete"></i>
+                                        </a>
+                                    </div>
                                     <form action="{{route('admin.delivery-man.emergency-contact.destroy')}}"
                                           method="post" id="delete-contact-{{$contact->id}}">
                                         @csrf @method('delete')
@@ -113,17 +125,7 @@
                                     </form>
                                 </td>
                             </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5">
-                                        <div class="text-center p-4">
-                                            <img class="mb-3 w-160" src="{{ asset('public/assets/back-end/svg/illustrations/sorry.svg') }}"
-                                                 alt="{{translate('image_description')}}">
-                                            <p class="mb-0">{{ translate('no_data_to_show')}}</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforelse
+                            @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -132,8 +134,16 @@
                             {{ $contacts->links() }}
                         </div>
                     </div>
+                    @if(count($contacts)==0)
+                        @include('layouts.back-end._empty-state',['text'=>'no_contact_found'],['image'=>'default'])
+                    @endif
                 </div>
             </div>
         </div>
     </div>
+    <div class="modal fade emergency-contact-update-modal" tabindex="-1" aria-labelledby="toggle-modal" aria-hidden="true">
+    </div>
 @endsection
+@push('script_2')
+    <script src="{{dynamicAsset(path: 'public/assets/back-end/js/admin/emergency-contact.js')}}"></script>
+@endpush

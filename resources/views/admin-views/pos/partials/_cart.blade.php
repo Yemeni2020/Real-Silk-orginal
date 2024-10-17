@@ -1,4 +1,4 @@
-<form action="{{route('admin.pos.place-order') }}" id='order_place' method="post" >
+<form action="{{route('admin.pos.place-order') }}" method="post" id='order-place'>
     @csrf
 <div id="cart">
     <div class="table-responsive pos-cart-table border">
@@ -18,14 +18,14 @@
                         <td>
                             <div class="media align-items-center gap-10">
                                 <img class="avatar avatar-sm"
-                                     src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$item['image'], type: 'backend-product') }}"
+                                     src="{{ getStorageImages(path:$item['image'], type: 'backend-product') }}"
                                      alt="{{$item['name'].translate('image')}} ">
                                 <div class="media-body">
                                     <h5 class="text-hover-primary mb-0">
                                         {{Str::limit($item['name'], 12)}}
                                         @if($item['tax_model'] == 'include')
                                             <span class="ml-2" data-toggle="tooltip" data-placement="top" title="{{ translate('tax_included') }}">
-                                                <img class="info-img" src="{{asset('public/assets/back-end/img/info-circle.svg') }}" alt="img">
+                                                <img class="info-img" src="{{dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="img">
                                             </span>
                                         @endif
                                     </h5>
@@ -45,8 +45,8 @@
                         </td>
                         <td>
                             <div class="d-flex justify-content-center">
-                                <a href="javascript:" data-id="{{$item['id']}}" class="btn btn-sm rounded-circle remove-from-cart">
-                                    <img src="{{ asset('public/assets/back-end/img/icons/pos-delete-icon.svg') }}" alt="">
+                                <a href="javascript:" data-id="{{$item['id']}}" data-variant ="{{$item['variant']}}" class="btn btn-sm rounded-circle remove-from-cart">
+                                    <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/icons/pos-delete-icon.svg') }}" alt="">
                                 </a>
                             </div>
                         </td>
@@ -60,7 +60,7 @@
         <dl>
             <div class="d-flex gap-2 justify-content-between">
                 <dt class="title-color text-capitalize font-weight-normal">{{ translate('sub_total') }} : </dt>
-                <dd>{{setCurrencySymbol(amount: usdToDefaultCurrency(amount:$cartItems['subtotal']+$cartItems['discountOnProduct']), currencyCode: getCurrencyCode())}}</dd>
+                <dd>{{setCurrencySymbol(amount: usdToDefaultCurrency(amount: $cartItems['subtotal'] + $cartItems['discountOnProduct']), currencyCode: getCurrencyCode())}}</dd>
             </div>
 
             <div class="d-flex gap-2 justify-content-between">
@@ -90,12 +90,12 @@
 
             <div class="d-flex gap-2 justify-content-between">
                 <dt class="title-color text-capitalize font-weight-normal">{{ translate('tax') }} : </dt>
-                <dd>{{setCurrencySymbol(amount: usdToDefaultCurrency(amount:round($cartItems['totalTax'],2)), currencyCode: getCurrencyCode())}}</dd>
+                <dd>{{setCurrencySymbol(amount: usdToDefaultCurrency(amount: round($cartItems['totalTax'],2) ), currencyCode: getCurrencyCode())}}</dd>
             </div>
 
             <div class="d-flex gap-2 border-top justify-content-between pt-2">
                 <dt class="title-color text-capitalize font-weight-bold title-color">{{ translate('total') }} : </dt>
-                <dd class="font-weight-bold title-color">{{setCurrencySymbol(amount: usdToDefaultCurrency(amount:round($cartItems['total']+$cartItems['totalTax']-$cartItems['couponDiscount'], 2)), currencyCode: getCurrencyCode())}}</dd>
+                <dd class="font-weight-bold title-color">{{setCurrencySymbol(amount: usdToDefaultCurrency(amount: ($cartItems['total'] + $cartItems['totalTax'] - $cartItems['couponDiscount'])), currencyCode: getCurrencyCode())}}</dd>
             </div>
         </dl>
 
@@ -126,7 +126,7 @@
         </div>
     </div>
 
-    <div class="d-flex gap-2 justify-content-between align-items-center pt-3 bottom-sticky-buttons">
+    <div class="d-flex gap-2 justify-content-between align-items-center pt-3 bottom-sticky-buttons z-index-1">
 
         @if($cartItems['countItem'])
             <span class="btn btn-danger btn-block action-empty-cart">
@@ -134,7 +134,7 @@
                 {{ translate('cancel_Order') }}
             </span>
 
-            <button id="submit_order" type="button" class="btn btn--primary btn-block m-0 action-form-submit" data-toggle="modal" data-target="#paymentModal">
+            <button id="submit_order" type="button" class="btn btn--primary btn-block m-0 action-form-submit" data-message="{{translate('want_to_place_this_order').'?'}}" data-toggle="modal" data-target="#paymentModal">
                 <i class="fa fa-shopping-bag"></i>
                 {{ translate('place_Order') }}
             </button>
@@ -156,6 +156,7 @@
 
 @push('script_2')
 <script>
+    'use strict';
     $('#type_ext_dis').on('change', function (){
         let type = $('#type_ext_dis').val();
         if(type === 'amount'){

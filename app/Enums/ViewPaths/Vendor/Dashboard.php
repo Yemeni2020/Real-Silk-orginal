@@ -16,7 +16,7 @@ enum Dashboard
     ];
     const EARNING_STATISTICS = [
         URI => 'earning-statistics',
-        VIEW => ''
+        VIEW => 'vendor-views.dashboard.partials.earning-statistics'
     ];
     const WITHDRAW_REQUEST = [
             URI => 'withdraw-request',

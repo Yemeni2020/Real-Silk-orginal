@@ -29,22 +29,30 @@ class RefundListener
     private function sendNotification(RefundEvent $event):void{
         $status = $event->status;
         $order = $event->order;
+        $orderDetails = $event?->orderDetails;
+
+        $data = [
+            'refund' => $event->refund,
+            'order_details_id' => $orderDetails?->id,
+        ];
 
         if ($order['seller_is'] == 'seller') {
             if ($status != 'rejected' && $status != 'refunded') {
                 $key = 'refund_request_status_changed_by_admin';
             } elseif ($status == 'rejected') {
                 $key = 'refund_request_canceled_message';
+            }elseif ($status == 'refund_request') {
+                $key = 'refund_request_message';
             } else {
                 $key = 'order_refunded_message';
             }
-            $this->sendOrderNotification(key: $key, type: 'seller', order: $order);
+            $this->sendOrderNotification(key: $key, type: 'seller', order: $order, data: $data);
         }
 
         if ($status == 'refunded') {
-            $this->sendOrderNotification(key: 'order_refunded_message', type: 'customer', order: $order);
+            $this->sendOrderNotification(key: 'order_refunded_message', type: 'customer', order: $order, data: $data);
         } elseif ($status == 'rejected') {
-            $this->sendOrderNotification(key: 'refund_request_canceled_message', type: 'customer', order: $order);
+            $this->sendOrderNotification(key: 'refund_request_canceled_message', type: 'customer', order: $order, data: $data);
         }
     }
 }

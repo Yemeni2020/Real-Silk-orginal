@@ -14,8 +14,10 @@
                     <div class="card-body">
                         @if($order->seller_is =='seller')
                             <div class="media flex-wrap gap-2 gap-sm-3 border rounded p-3">
-                                <img class="rounded border seller-info-img" alt=""
-                                     src="{{ getValidImage(path: 'storage/app/public/shop/'.$order->seller->shop->image, type: 'shop') }}">
+                                <div class="aspect-1 d-flex justify-content-center align-items-center overflow-hidden rounded border">
+                                    <img width="77"  alt=""
+                                         src="{{ getStorageImages(path: $order?->seller?->shop->image_full_url, type: 'shop') }}">
+                                </div>
                                 <div class="media-body">
                                     <div class="d-flex gap-2 gap-sm-3 align-items-sm-center justify-content-between">
                                         <div class="">
@@ -45,7 +47,7 @@
                                             <button type="button" class="btn btn-soft-info text-capitalize px-2 px-sm-4"
                                                     data-toggle="modal"
                                                     data-target="#chatting_modal" {{ ($order->seller->shop->temporary_close || ($order->seller->shop->vacation_status && date('Y-m-d') >= date('Y-m-d', strtotime($order->seller->shop->vacation_start_date)) && date('Y-m-d') <= date('Y-m-d', strtotime($order->seller->shop->vacation_end_date)))) ? 'disabled' : '' }}>
-                                                <img alt="" src="{{asset('/public/assets/front-end/img/seller-info-chat.png')}}">
+                                                <img alt="" src="{{theme_asset(path: 'public/assets/front-end/img/seller-info-chat.png')}}">
                                                 <span class="d-none d-sm-inline-block">
                                                     {{translate('chat_with_vendor')}}
                                                 </span>
@@ -56,8 +58,10 @@
                             </div>
                         @else
                             <div class="media flex-wrap gap-3 border rounded p-3">
-                                <img class="rounded border" width="77" alt=""
-                                     src="{{ getValidImage(path: 'storage/app/public/company/'.$web_config['fav_icon']->value, type: 'logo') }}">
+                                <div class="aspect-1 d-flex justify-content-center align-items-center overflow-hidden rounded border">
+                                    <img width="77"  alt=""
+                                         src="{{ getStorageImages(path: $web_config['fav_icon'], type: 'shop') }}">
+                                </div>
                                 <div class="media-body">
                                     <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between">
                                         <div>
@@ -82,6 +86,18 @@
                                                 <li class="mb-0">{{$rating_count}} {{('reviews')}} </li>
                                             </ul>
                                         </div>
+
+                                        <div>
+                                            <button type="button" class="btn btn-soft-info text-capitalize px-2 px-sm-4"
+                                                    data-toggle="modal"
+                                                    data-target="#chatting_modal">
+                                                <img alt="" src="{{theme_asset(path: 'public/assets/front-end/img/seller-info-chat.png')}}">
+                                                <span class="d-none d-sm-inline-block">
+                                                    {{translate('chat_with_vendor')}}
+                                                </span>
+                                            </button>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -92,5 +108,5 @@
         </div>
     </div>
 
-    @include('layouts.front-end.partials.modal._chatting',['seller'=>$order->seller])
+    @include('layouts.front-end.partials.modal._chatting',['seller'=>$order->seller, 'user_type'=>$order->seller_is])
 @endsection

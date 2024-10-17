@@ -24,7 +24,7 @@ class DeliverymanWithdrawController extends Controller
             $status = '0';
         }
 
-        $withdraws = WithdrawRequest::with(['delivery_men'])
+        $withdraws = WithdrawRequest::with(['deliveryMan'])
             ->where('seller_id', $seller->id)
             ->whereNotNull('delivery_man_id')
             ->when($request->status == 'all', function ($query) {
@@ -85,15 +85,15 @@ class DeliverymanWithdrawController extends Controller
 
         $wallet = DeliverymanWallet::where('delivery_man_id', $withdraw->delivery_man_id)->first();
         if ($request->approved == 1) {
-            $wallet->total_withdraw   += Convert::usd($withdraw['amount']);
-            $wallet->pending_withdraw -= Convert::usd($withdraw['amount']);
-            $wallet->current_balance  -= Convert::usd($withdraw['amount']);
+            $wallet->total_withdraw   += $withdraw['amount'];
+            $wallet->pending_withdraw -= $withdraw['amount'];
+            $wallet->current_balance  -= $withdraw['amount'];
             $wallet->save();
             $withdraw->save();
 
             return response()->json(['message' => translate('Delivery_man_payment_has_been_approved_successfully!')], 200);
         }else{
-            $wallet->pending_withdraw -= Convert::usd($withdraw['amount']);
+            $wallet->pending_withdraw -= $withdraw['amount'];
             $wallet->save();
             $withdraw->save();
 

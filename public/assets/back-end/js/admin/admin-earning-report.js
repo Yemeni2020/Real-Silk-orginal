@@ -51,10 +51,10 @@ var options = {
                 type: 'donut',
         },
         labels: [
-            "'"+$('#cash_payment_text').data('text')+"'"+$('#currency_symbol').data('text')+" "+$('#cash_payment_format').data('text')+"'",
-            "'"+$('#digital_payments_text').data('text')+"'"+$('#currency_symbol').data('text')+" "+$('#digital_payments_format').data('text')+"'",
-            "'"+$('#wallet_payments_text').data('text')+"'"+$('#currency_symbol').data('text')+" "+$('#wallet_payments_format').data('text')+"'",
-            "'"+$('#offline_payments_text').data('text')+"'"+$('#currency_symbol').data('text')+" "+$('#offline_payments_format').data('text')+"'",
+            $('#cash_payment_text').data('text') + " " + $('#currency_symbol').data('text') + " " + $('#cash_payment_format').data('text') + " ",
+            $('#digital_payment_text').data('text') + " " + $('#currency_symbol').data('text') + " " + $('#digital_payment_format').data('text') + " ",
+            $('#wallet_payment_text').data('text') + " " + $('#currency_symbol').data('text') + " " + $('#wallet_payment_format').data('text') + " ",
+            $('#offline_payment_text').data('text') + " " + $('#currency_symbol').data('text') + " " + $('#offline_payment_format').data('text') + " ",
         ],
             dataLabels: {
             enabled: false,
@@ -81,13 +81,3 @@ var options = {
 
 var chart = new ApexCharts(document.querySelector("#dognut-pie"), options);
 chart.render();
-
-// Bar Charts
-Chart.plugins.unregister(ChartDataLabels);
-
-$('.js-chart').each(function () {
-    $.HSCore.components.HSChartJS.init($(this));
-});
-
-var updatingChart = $.HSCore.components.HSChartJS.init($('#updatingData'));
-

@@ -2,16 +2,20 @@
 
 @section('title', translate(str_replace('-',' ',$page)))
 
+@push('css_or_js')
+    <link href="{{ dynamicAsset(path: 'public/assets/back-end/plugins/summernote/summernote.min.css') }}" rel="stylesheet">
+@endpush
+
 @section('content')
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
-                <img width="20" src="{{asset('/public/assets/back-end/img/Pages.png')}}" alt="">
+                <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/Pages.png')}}" alt="">
                 {{translate('pages')}}
             </h2>
         </div>
         @include('admin-views.business-settings.pages-inline-menu')
-        @php( $page_data= json_decode($data->value, true))
+        @php($page_data= json_decode($data->value, true))
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
@@ -19,11 +23,13 @@
                         @csrf
 
                         <div class="card-header">
-                            <h5 class="mb-0">{{translate(str_replace('-',' ',$page))}}</h5>
+                            <h5 class="mb-0 text-capitalize">
+                                {{ translate(str_replace('-',' ',$page)) }}
+                            </h5>
 
                             <label class="switcher show-status-text justify-content-end" for="page-status">
                                 <input type="checkbox" class="switcher_input toggle-switch-message" value="1" name="status"
-                                   id="page-status"  {{ $page_data['status'] == 1 ? 'checked':'' }}
+                                   id="page-status" {{ $page_data['status'] == 1 ? 'checked':'' }}
                                    data-modal-id = "toggle-modal"
                                    data-toggle-id = "page-status"
                                    data-on-image = ""
@@ -37,7 +43,7 @@
                         </div>
                         <div class="card-body">
                             <div class="form-group">
-                                <textarea class="form-control" id="editor"
+                                <textarea class="form-control summernote" id="editor"
                                     name="value">{{ $page_data['content'] }}</textarea>
                             </div>
                             <div class="form-group">
@@ -52,12 +58,21 @@
 @endsection
 
 @push('script')
-    <script src="{{asset('/vendor/ckeditor/ckeditor/ckeditor.js')}}"></script>
-    <script src="{{asset('/vendor/ckeditor/ckeditor/adapters/jquery.js')}}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/plugins/summernote/summernote.min.js') }}"></script>
     <script>
         'use strict';
-        $('#editor').ckeditor({
-            contentsLangDirection : '{{Session::get('direction')}}',
+        $(document).on('ready', function () {
+            $('.summernote').summernote({
+                'height': 150,
+                toolbar: [
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough', 'superscript', 'subscript']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                ]
+            });
         });
     </script>
 @endpush
