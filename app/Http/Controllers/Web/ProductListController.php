@@ -179,8 +179,157 @@ class ProductListController extends Controller
         $paginate_count = ceil(($products->total() / 25));
         $getProductIds = $products->pluck('id')->toArray();
 
-        if ($request['ratings'] != null) {
-            $products = $products->map(function ($product) use ($request) {
+        if ($request['data_from'] == 'top-rated') {
+            $reviews = Review::select('product_id', DB::raw('AVG(rating) as count'))
+                ->groupBy('product_id')
+                ->orderBy("count", 'desc')->get();
+            $product_ids = [];
+            foreach ($reviews as $review) {
+                array_push($product_ids, $review['product_id']);
+            }
+            $query = $porduct_data->whereIn('id', $product_ids);
+        }
+
+        if ($request['data_from'] == 'best-selling') {
+            $details = OrderDetail::with('product')
+                ->select('product_id', DB::raw('COUNT(product_id) as count'))
+                ->groupBy('product_id')
+                ->orderBy("count", 'desc')
+                ->get();
+            $product_ids = [];
+            foreach ($details as $detail) {
+                array_push($product_ids, $detail['product_id']);
+            }
+            $query = $porduct_data->whereIn('id', $product_ids);
+        }
+
+        if ($request['data_from'] == 'most-favorite') {
+            $details = Wishlist::with('product')
+                ->select('product_id', DB::raw('COUNT(product_id) as count'))
+                ->groupBy('product_id')
+                ->orderBy("count", 'desc')
+                ->get();
+            $product_ids = [];
+            foreach ($details as $detail) {
+                array_push($product_ids, $detail['product_id']);
+            }
+            $query = $porduct_data->whereIn('id', $product_ids);
+        }
+
+        if ($request['data_from'] == 'featured') {
+            $query = Product::with(['reviews'])->active()->where('added_by', '!=', 'factories')->where('featured', 1);
+        }
+
+        if ($request->has('shop_id') && $request['shop_id'] == 0) {
+            $query = Product::active()
+                    ->with(['reviews'])
+                    ->where(['added_by'=>'admin','featured'=>1])->where('added_by', '!=', 'factories');
+        }elseif($request->has('shop_id') && $request['shop_id'] != 0){
+            $query = Product::active()->where('added_by', '!=', 'factories');
+             //       ->where(['added_by'=>'admin','featured'=>1]);
+        }elseif($request->has('shop_id') && $request['shop_id'] != 0){
+            $query = Product::active()
+                        ->where(['added_by' => 'seller', 'featured' => 1])
+                        ->with(['reviews', 'seller.shop' => function($query) use ($request) {
+                            $query->where('id', $request->shop_id);
+                        }])
+                        ->whereHas('seller.shop', function($query) use ($request) {
+                            $query->where('id', $request->shop_id)->whereNotNull('id');
+                        });
+        }
+
+        if ($request['data_from'] == 'featured_deal') {
+            $featured_deal_id = FlashDeal::where(['status'=>1])->where(['deal_type'=>'feature_deal'])->pluck('id')->first();
+            $featured_deal_product_ids = FlashDealProduct::where('flash_deal_id',$featured_deal_id)->where('added_by', '!=', 'factories')->pluck('product_id')->toArray();
+            $query = Product::with(['reviews'])->active()->where('added_by', '!=', 'factories')->whereIn('id', $featured_deal_product_ids);
+            //$featured_deal_product_ids = FlashDealProduct::where('flash_deal_id',$featured_deal_id)->pluck('product_id')->toArray();
+           // $query = Product::with(['reviews'])->active()->whereIn('id', $featured_deal_product_ids);
+        }
+
+        if ($request['data_from'] == 'search') {
+            $key = explode(' ', $request['name']);
+            $product_ids = Product::where(function ($q) use ($key) {
+                foreach ($key as $value) {
+                    $q->orWhere('name', 'like', "%{$value}%")
+                        ->orWhereHas('tags',function($query)use($value){
+                            $query->where('tag', 'like', "%{$value}%");
+                        });
+                }
+            })->where('added_by', '!=', 'factories')->pluck('id');
+            //})->pluck('id');
+
+            $sellers = Shop::where(function ($q) use ($request) {
+                $q->orWhere('name', 'like', "%{$request['name']}%");
+            })->whereHas('seller', function ($query) {
+                return $query->where(['status' => 'approved']);
+            })->with('products', function($query){
+                return $query->active()->where('added_by', 'seller');
+            })->get();
+
+            $seller_products = [];
+            foreach($sellers as $seller){
+                if(isset($seller->product) && $seller->product->count() > 0)
+                {
+                    $ids = $seller->product->pluck('id');
+                    array_push($seller_products, ...$ids);
+                }
+            }
+
+            $inhouse_product = [];
+            $company_name = Helpers::get_business_settings('company_name');
+
+            if (strpos($request['name'], $company_name) !== false) {
+                $inhouse_product = Product::active()->Where('added_by', 'admin')->where('added_by', '!=', 'factories')->pluck('id');
+                //$inhouse_product = Product::active()->Where('added_by', 'admin')->pluck('id');
+            }
+
+            $product_ids = $product_ids->merge($seller_products)->merge($inhouse_product);
+
+
+            if($product_ids->count()==0)
+            {
+                $product_ids = Translation::where('translationable_type', 'App\Models\Product')
+                    ->where('key', 'name')
+                    ->where(function ($q) use ($key) {
+                        foreach ($key as $value) {
+                            $q->orWhere('value', 'like', "%{$value}%");
+                        }
+                    })
+                    ->pluck('translationable_id');
+            }
+
+            $query = $porduct_data->WhereIn('id', $product_ids);
+
+        }
+
+        if ($request['data_from'] == 'discounted') {
+            $query = Product::with(['reviews'])->active()->where('added_by', '!=', 'factories')->where('discount', '!=', 0);
+        }
+
+        if ($request['sort_by'] == 'latest') {
+            $fetched = $query->latest();
+        } elseif ($request['sort_by'] == 'low-high') {
+            $fetched = $query->orderBy('unit_price', 'ASC');
+        } elseif ($request['sort_by'] == 'high-low') {
+            $fetched = $query->orderBy('unit_price', 'DESC');
+        } elseif ($request['sort_by'] == 'a-z') {
+            $fetched = $query->orderBy('name', 'ASC');
+        } elseif ($request['sort_by'] == 'z-a') {
+            $fetched = $query->orderBy('name', 'DESC');
+        } else {
+            $fetched = $query->latest();
+        }
+
+        if ($request['min_price'] != null || $request['max_price'] != null) {
+            $fetched = $fetched->whereBetween('unit_price', [Helpers::convert_currency_to_usd($request['min_price']), Helpers::convert_currency_to_usd($request['max_price'])]);
+        }
+        $common_query = $fetched;
+
+        $products = $common_query->paginate(20);
+
+        if ($request['ratings'] != null)
+        {
+            $products = $products->map(function($product) use($request){
                 $product->rating = $product->rating->pluck('average')[0];
                 return $product;
             });
