@@ -27,11 +27,25 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Payment_Methods\MyFatorahSettingsController;
 
 class PaymentController extends Controller
 {
     use Payment;
+    public function Card(Request $request){
+        // استقبال البيانات من الطلب
+            // تحقق من أن جميع الخصائص المستخدمة مهيأة
+    $first_name = $request->first_name ?? 'Guest';
+    $last_name = $request->last_name ?? 'User';
+    $email  = $request->email ?? 'no-reply@example.com';
+    $amount = $request->amount;
+    $phone  = $request->phone;
+    $country_code  = $request->country_code;
 
+    // يمكنك تمرير هذه البيانات إلى العرض إذا كنت بحاجة إلى عرضها
+    return view('card', compact('first_name', 'last_name', 'email', 'amount', 'phone', 'country_code'));
+    // return view("card");
+}
     public function payment(Request $request): JsonResponse|Redirector|RedirectResponse
     {
         $user = Helpers::getCustomerInformation($request);
@@ -441,13 +455,26 @@ class PaymentController extends Controller
         );
 
         $receiver_info = new Receiver('receiver_name', 'example.png');
-
-        $redirect_link = Payment::generate_link($payer, $payment_info, $receiver_info);
-
-        if (in_array($request['payment_request_from'], ['app'])) {
-            return response()->json(['redirect_link' => $redirect_link], 200);
-        } else {
-            return redirect($redirect_link);
+        if($request->payment_method!="MyFatorah"){
+            $redirect_link = Payment::generate_link($payer, $payment_info, $receiver_info);
+    
+            if (in_array($request['payment_request_from'], ['app'])) {
+                return response()->json(['redirect_link' => $redirect_link], 200);
+            } else {
+                return redirect($redirect_link);
+            }
         }
+        else{
+            $cls=new MyFatorahSettingsController();
+            return $cls->createPaymentWaleet($request->amount,$customer);
+            $redirect_link = Payment::generate_link($payer, $payment_info, $receiver_info);
+
+            if(in_array($request->payment_request_from, ['app', 'react'])) {
+                return response()->json(['redirect_link'=>$redirect_link], 200);
+            }else{
+                return redirect($redirect_link);
+            }
+        }
+
     }
 }

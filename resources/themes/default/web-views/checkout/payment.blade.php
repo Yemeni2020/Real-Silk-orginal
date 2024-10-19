@@ -1,3 +1,15 @@
+@php
+use App\Models\TapPaymentSetting;
+use App\Models\Currency;
+
+$TapPayment = TapPaymentSetting::where("method",'TAP')->Where('Type',1)->get();
+$MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->get();
+//print_r($TapPayment);
+$currencyModel = getWebConfig('currency_model');
+
+
+@endphp
+
 @extends('layouts.front-end.app')
 
 @section('title', translate('choose_Payment_Method'))
@@ -63,6 +75,34 @@
                                                 </button>
                                             </div>
                                         </div>
+                                    @endif
+
+                                    
+                                    @if (count($TapPayment)>0)
+                                        @if(auth('customer')->check() )
+                                            <div>
+                                                <div class="card cursor-pointer">
+                                                    <butoon class="btn btn-block click-if-alone d-flex gap-2 align-items-center"type="submit"
+                                                        data-toggle="modal" data-target="#TapPayment_submit_button">
+                                                        <img width="40" src="{{ asset('public/assets/front-end/TapPayment.png') }}" alt=""/>
+                                                        <span class="fs-12">{{ translate('TapPayment') }}</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endif
+                                    @if (count($MyFatorah)>0)
+                                        @if(auth('customer')->check() )
+                                            <div>
+                                                <div class="card cursor-pointer">
+                                                    <butoon class="btn btn-block click-if-alone d-flex gap-2 align-items-center"type="submit"
+                                                        data-toggle="modal" data-target="#MyFatorah_submit_button">
+                                                        <img width="40" src="{{ asset('public/assets/back-end/myfatorah.png') }}" alt=""/>
+                                                        <span class="fs-12">{{ translate('MyFatorah') }}</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        @endif
                                     @endif
                                 </div>
                             @endif
@@ -226,6 +266,139 @@
       </div>
     @endif
 
+
+    @if(auth('customer')->check() && count($TapPayment)>0)
+    <div class="modal fade" id="TapPayment_submit_button" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">{{ translate('Tap_payment')}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          @php($customer_balance = auth('customer')->user()->wallet_balance)
+          @php($remain_balance = $customer_balance - $amount)
+          <form action="{{route('payment-Card')}}" method="post" class="needs-validation">
+
+
+              @csrf
+              <div class="modal-body">
+
+
+                  <div class="form-row">
+                      <div class="form-group col-12">
+                          <label for="">{{ translate('order_amount')}}</label>
+                          <input type="hidden" name="amount" value="{{$amount}}">
+                          <input class="form-control" type="text" value="{{ webCurrencyConverter(amount: $amount ?? 0) }}" readonly>
+                      </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-12">
+                        <label for="">{{ translate('first_name')}}</label>
+                        <input class="form-control" name="first_name" value="{{auth('customer')->user()->f_name}}" type="text">
+                        </div>
+                  </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-12">
+                            <label for="">{{ translate('last_name')}}</label>
+                            <input class="form-control" name="last_name" value="{{auth('customer')->user()->l_name}}" type="text">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-12">
+                            <label for="">{{ translate('email')}}</label>
+                            <input class="form-control" name="email" type="email">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-4">
+                            <label for="">{{ translate('country_code')}}</label>
+                            <input class="form-control" name="country_code" type="country_code">
+                        </div>
+                        <div class="form-group col-8">
+                            <label for="">{{ translate('number')}}</label>
+                            <input class="form-control" value="{{auth('customer')->user()->phone}}" name="phone" type="number">
+                        </div>
+                    </div>
+
+              </div>
+              <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ translate('close')}}</button>
+              <button type="submit" class="btn btn--primary" >{{ translate('submit')}}</button>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    @endif
+    @if(auth('customer')->check() && count($MyFatorah)>0)
+    <div class="modal fade" id="MyFatorah_submit_button" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">{{ translate('Tap_payment')}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          @php($customer_balance = auth('customer')->user()->wallet_balance)
+          @php($remain_balance = $customer_balance - $amount)
+          <form action="{{route('GoMyFatoorahPayment')}}" method="post" class="needs-validation">
+
+
+              @csrf
+              <div class="modal-body">
+
+
+                  <div class="form-row">
+                      <div class="form-group col-12">
+                          <label for="">{{ translate('order_amount')}}</label>
+                          <input type="hidden" name="amount" value="{{$amount}}">
+                          <input class="form-control" type="text" value="{{ webCurrencyConverter(amount: $amount ?? 0) }}" readonly>
+                      </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-12">
+                        <label for="">{{ translate('first_name')}}</label>
+                        <input class="form-control" name="first_name" value="{{auth('customer')->user()->f_name}}" type="text">
+                        </div>
+                  </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-12">
+                            <label for="">{{ translate('last_name')}}</label>
+                            <input class="form-control" name="last_name" value="{{auth('customer')->user()->l_name}}" type="text">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-12">
+                            <label for="">{{ translate('email')}}</label>
+                            <input class="form-control" name="email" type="email">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-4">
+                            <label for="">{{ translate('country_code')}}</label>
+                            <input class="form-control" name="country_code" type="country_code">
+                        </div>
+                        <div class="form-group col-8">
+                            <label for="">{{ translate('number')}}</label>
+                            <input class="form-control" value="{{auth('customer')->user()->phone}}" name="phone" type="number">
+                        </div>
+                    </div>
+
+              </div>
+              <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ translate('close')}}</button>
+              <button type="submit" class="btn btn--primary" >{{ translate('submit')}}</button>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    @endif
     <span id="route-action-checkout-function" data-route="checkout-payment"></span>
 @endsection
 

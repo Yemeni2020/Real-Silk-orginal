@@ -1,3 +1,9 @@
+@php
+use App\Models\TapPaymentSetting;
+use App\Models\Currency;
+$TapPayment = TapPaymentSetting::where("method",'TAP')->Where('Type',1)->get();
+$MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->get();
+@endphp
 @extends('layouts.front-end.app')
 
 @section('title', translate('my_Wallet'))
@@ -141,6 +147,27 @@
                                                             @empty
 
                                                             @endforelse
+
+                                                            
+                                                            @if (count($MyFatorah)>0)
+                                                            @if(auth('customer')->check() )
+                                                                <label class="form-check form--check rounded">
+                                                                    <input type="radio" class="form-check-input d-none" name="payment_method" value="MyFatorah" required>
+                                                                    <div class="check-icon">
+                                                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <circle cx="8" cy="8" r="8" fill="#1455AC"/>
+                                                                        <path d="M9.18475 6.49574C10.0715 5.45157 11.4612 4.98049 12.8001 5.27019L7.05943 11.1996L3.7334 7.91114C4.68634 7.27184 5.98266 7.59088 6.53004 8.59942L6.86856 9.22314L9.18475 6.49574Z" fill="white"/>
+                                                                        </svg>
+                                                                    </div>
+                                                                    
+                                                                    <div class="form-check-label d-flex align-items-center">
+                                                                        
+                                                                        <span class="ml-3">{{ translate('MyFatorah') }}</span>
+                                                                    </div>
+                                                                </label>
+
+                                                            @endif
+                                                        @endif
                                                         </div>
                                                         <div class="d-flex justify-content-center pt-2 pb-3">
                                                             <button type="submit" class="btn btn--primary w-75 mx-3" id="add_fund_to_wallet_form_btn">{{ translate('add_Fund') }}</button>

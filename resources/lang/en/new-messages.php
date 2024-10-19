@@ -8659,4 +8659,10 @@ return [
 	"no_category_found" => "No category found",
 	"no_sub_category_found" => "No sub category found",
 	"no_sub_sub_category_found" => "No sub sub category found",
+	"search_by_brand_name" => "Search by brand name",
+	"no_attribute_found" => "No attribute found",
+	"callback_url" => "Callback url",
+	"TapPayment" => "TapPayment",
+	"Tap_payment" => "Tap payment",
+	"MyFatorah" => "MyFatorah",
 ];

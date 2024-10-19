@@ -1,4 +1,8 @@
-@php use Illuminate\Support\Facades\Session; @endphp
+@php use Illuminate\Support\Facades\Session;
+use App\Models\TapPaymentSetting;
+$TapPaymentSetting = TapPaymentSetting::where('method', 'TAP')->get();
+$MYFATPaymentSetting = TapPaymentSetting::where('method', 'MYFATOORAH')->get();
+@endphp
 @extends('layouts.back-end.app')
 @section('title', translate('payment_Method'))
 @section('content')
@@ -176,6 +180,183 @@
                 @endif
             @endforeach
 
+
+            @if(isset($TapPaymentSetting) )
+                <div class="col-md-6">
+                    <div class="card">
+                        <?php $gateway->key_name="Tap Payment";
+                            // echo $TapPaymentSetting->first()->url_back??'';
+                        ?>
+                        <form action="/admin/business-settings/payment-method/tapPayment-settings" method="POST"
+                            id="{{$gateway->key_name}}-form" enctype="multipart/form-data">
+                            @csrf
+                            {{-- @csrf @method('PUT') --}}
+                            <div class="card-header d-flex flex-wrap align-content-around">
+                                <h5>
+                                    <span class="text-uppercase">{{str_replace('_',' ',"Tap Payment Method")}}</span>
+                                </h5>
+                                @php($additional_data = $gateway['additional_data'] != null ? json_decode($gateway['additional_data']) : [])
+                                <?php
+                                    if ($additional_data != null){
+                                        $img_path = $additional_data->gateway_image ? asset('storage/app/myfatorah.png') : '';
+                                    }else{
+                                        $img_path = asset('storage/app/myfatorah.png');
+                                    }
+                                ?>
+                                <label class="switcher show-status-text">
+                                    <input class="switcher_input toggle-switch-dynamic-image" type="checkbox" name="status" value="1"
+                                        id="TapPayment" {{$TapPaymentSetting->first()->Type??'' == 1?'checked':''}}
+                                        data-modal-id = "toggle-modal"
+                                        data-toggle-id = "TapPayment"
+                                        data-on-image = "{{ $img_path }}"
+                                        data-off-image = "{{ $img_path }}"
+                                        data-on-title = "{{translate('want_to_Turn_ON_')}}{{str_replace('_',' ',strtoupper($gateway->key_name))}}{{translate('_as_the_Digital_Payment_method').'?'}}"
+                                        data-off-title = "{{translate('want_to_Turn_OFF_')}}{{str_replace('_',' ',strtoupper($gateway->key_name))}}{{translate('_as_the_Digital_Payment_method').'?'}}"
+                                        data-on-message = "<p>{{translate('if_enabled_customers_can_use_this_payment_method')}}</p>"
+                                        data-off-message = "<p>{{translate('if_disabled_this_payment_method_will_be_hidden_from_the_checkout_page')}}</p>">
+                                    <span class="switcher_control" data-ontitle="{{ translate('on') }}" data-offtitle="{{ translate('off') }}"></span>
+                                </label>
+                            </div>
+                            <div class="card-body">
+                                <div class="payment--gateway-img">
+                                    <img class="height-80px" id="gateway-image-TapPayment"
+                                        src="{{asset('public/assets/back-end/img/tap-payments-logo.png')}}"
+                                        alt="{{translate('public')}}">
+                                </div>
+                                <input name="gateway" value="TapPayment" class="d-none">
+                                @php($mode = str_replace("_socket", "", $TapPaymentSetting->first()->key??'') )
+                                <div class="form-group mb-10px" >
+                                    <select class="js-example-responsive form-control" name="key">
+                                        <option value="live" {{$mode=='live'?'selected':''}}>{{translate('live')}}</option>
+                                        <option value="test" {{$mode=='test'?'selected':''}}>{{translate('test')}}</option>
+                                    </select>
+                                </div>
+                                @if($gateway->key_name === 'paystack')
+                                    @php($skip=['gateway','mode','status','callback_url'])
+                                @else
+                                    @php($skip=['gateway','mode','status'])
+                                @endif
+
+                                <div class="form-group mb-10px" >
+                                    <label for="URLBACK"
+                                        class="form-label">{{translate('callback_url')}} <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control"
+                                        name="url_back"
+                                        placeholder="{{translate('callback_url')}}"
+                                        value="<?php echo $TapPaymentSetting->first()->url_back??'' ?>" required>
+                                </div>
+
+                                <div class="form-group mb-10px" >
+                                    <label for="exampleFormControlInput1"
+                                        class="form-label">{{translate('Key')}} <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control"
+                                        name="value"
+                                        placeholder="{{translate('Key')}}"
+                                        value="<?php echo $TapPaymentSetting->first()->value??'' ?>" required>
+                                </div>
+
+                                <div class="form-group mb-10px" >
+                                    <label for="exampleFormControlInput1"
+                                        class="form-label text-capitalize">{{translate('choose_logo')}} </label>
+                                    <input type="file" class="form-control image-input" name="gateway_image" accept=".jpg, .png, .jpeg|image/*" data-image-id="gateway-image-TapPayment" >
+                                </div>
+
+                                <div class="text-right mb-20px">
+                                    <button type="submit" class="btn btn-primary px-5">{{translate('save')}}</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            @endif;
+            @if(isset($MYFATPaymentSetting) )
+                <div class="col-md-6">
+                    <div class="card">
+                        <?php $gateway->key_name="MyFatoorah";
+                            // echo $MYFATPaymentSetting->first()->url_back??'';
+                        ?>
+                        <form action="/admin/business-settings/payment-method/MyFatorahPayment-settings" method="POST"
+                            id="{{$gateway->key_name}}-form" enctype="multipart/form-data">
+                            @csrf
+                            {{-- @csrf @method('PUT') --}}
+                            <div class="card-header d-flex flex-wrap align-content-around">
+                                <h5>
+                                    <span class="text-uppercase">{{str_replace('_',' ',"MyFatoorah Payment Method")}}</span>
+                                </h5>
+                                @php($additional_data = $gateway['additional_data'] != null ? json_decode($gateway['additional_data']) : [])
+                                <?php
+                                    if ($additional_data != null){
+                                        $img_path = $additional_data->gateway_image ? asset('storage/app/myfatorah.png') : '';
+                                    }else{
+                                        $img_path = asset('storage/app/myfatorah.png');
+                                    }
+                                ?>
+                                <label class="switcher show-status-text">
+                                    <input class="switcher_input toggle-switch-dynamic-image" type="checkbox" name="status" value="1"
+                                        id="MyFatoorah" {{$MYFATPaymentSetting->first()->Type??'' == 1?'checked':''}}
+                                        data-modal-id = "toggle-modal"
+                                        data-toggle-id = "MyFatoorah"
+                                        data-on-image = "{{ $img_path }}"
+                                        data-off-image = "{{ $img_path }}"
+                                        data-on-title = "{{translate('want_to_Turn_ON_')}}{{str_replace('_',' ',strtoupper($gateway->key_name))}}{{translate('_as_the_Digital_Payment_method').'?'}}"
+                                        data-off-title = "{{translate('want_to_Turn_OFF_')}}{{str_replace('_',' ',strtoupper($gateway->key_name))}}{{translate('_as_the_Digital_Payment_method').'?'}}"
+                                        data-on-message = "<p>{{translate('if_enabled_customers_can_use_this_payment_method')}}</p>"
+                                        data-off-message = "<p>{{translate('if_disabled_this_payment_method_will_be_hidden_from_the_checkout_page')}}</p>">
+                                    <span class="switcher_control" data-ontitle="{{ translate('on') }}" data-offtitle="{{ translate('off') }}"></span>
+                                </label>
+                            </div>
+                            <div class="card-body">
+                                <div class="payment--gateway-img">
+                                    <img class="height-80px" id="gateway-image-MyFatoorah"
+                                        src="{{asset('public/assets/back-end/img/myfatorah.png')}}"
+                                        alt="{{translate('public')}}">
+                                </div>
+                                <input name="gateway" value="MyFatoorah" class="d-none">
+                                @php($mode = str_replace("_socket", "", $MYFATPaymentSetting->first()->key??'') )
+                                <div class="form-group mb-10px" >
+                                    <select class="js-example-responsive form-control" name="key">
+                                        <option value="live" {{$mode=='live'?'selected':''}}>{{translate('live')}}</option>
+                                        <option value="test" {{$mode=='test'?'selected':''}}>{{translate('test')}}</option>
+                                    </select>
+                                </div>
+                                @if($gateway->key_name === 'paystack')
+                                    @php($skip=['gateway','mode','status','callback_url'])
+                                @else
+                                    @php($skip=['gateway','mode','status'])
+                                @endif
+
+                                <div class="form-group mb-10px" >
+                                    <label for="URLBACK"
+                                        class="form-label">{{translate('callback_url')}} <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control"
+                                        name="url_back"
+                                        placeholder="{{translate('callback_url')}}"
+                                        value="<?php echo $MYFATPaymentSetting->first()->url_back??'' ?>" required>
+                                </div>
+
+                                <div class="form-group mb-10px" >
+                                    <label for="exampleFormControlInput1"
+                                        class="form-label">{{translate('Key')}} <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control"
+                                        name="value"
+                                        placeholder="{{translate('Key')}}"
+                                        value="<?php echo $MYFATPaymentSetting->first()->value??'' ?>" required>
+                                </div>
+
+                                <div class="form-group mb-10px" >
+                                    <label for="exampleFormControlInput1"
+                                        class="form-label text-capitalize">{{translate('choose_logo')}} </label>
+                                    <input type="file" class="form-control image-input" name="gateway_image" accept=".jpg, .png, .jpeg|image/*" data-image-id="gateway-image-MyFatoorah" >
+                                </div>
+
+                                <div class="text-right mb-20px">
+                                    <button type="submit" class="btn btn-primary px-5">{{translate('save')}}</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            @endif;
         </div>
     </div>
 @endsection

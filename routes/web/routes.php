@@ -109,6 +109,11 @@ Route::group(['namespace' => 'Web', 'middleware' => ['maintenance_mode', 'guestC
         //wallet payment
         Route::get('checkout-complete-wallet', 'checkout_complete_wallet')->name('checkout-complete-wallet');
 
+        //My Code
+        Route::post('GoTapPayment', [App\Http\Controllers\Payment_Methods\TapPaymentSettingsController::class, 'createPayment'])->name('GoTapPayment');
+        Route::post('GoMyFatoorahPayment', [App\Http\Controllers\Payment_Methods\MyFatorahSettingsController::class, 'createPayment'])->name('GoMyFatoorahPayment');
+        //End MyCode
+        
         Route::post('subscription', 'subscription')->name('subscription');
         Route::get('search-shop', 'search_shop')->name('search-shop');
 
@@ -377,6 +382,8 @@ Route::controller(PaymentController::class)->group(function () {
     Route::get('web-payment', 'web_payment_success')->name('web-payment-success');
     Route::get('payment-success', 'success')->name('payment-success');
     Route::get('payment-fail', 'fail')->name('payment-fail');
+    Route::post('payment-Card', 'Customer\PaymentController@Card')->name('payment-Card');
+
 });
 
 $isGatewayPublished = 0;

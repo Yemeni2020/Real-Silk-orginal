@@ -16,3 +16,7 @@ npm-debug.log
 yarn-error.log
 composer-setup.php
 .DS_Store
+/storage_
+/storage - Copy
+/RS
+*.zip

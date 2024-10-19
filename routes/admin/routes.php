@@ -167,7 +167,8 @@ use App\Http\Controllers\Admin\Deliveryman\DeliveryManCashCollectController;
 use App\Http\Controllers\Admin\Settings\StorageConnectionSettingsController;
 use App\Http\Controllers\Admin\Settings\VendorRegistrationSettingController;
 use App\Http\Controllers\Admin\Notification\PushNotificationSettingsController;
-
+use App\Http\Controllers\Payment_Methods\TapPaymentSettingsController;
+use App\Http\Controllers\Payment_Methods\MyFatorahSettingsController;
 
 Route::controller(SharedController::class)->group(function () {
     Route::post('change-language', 'changeLanguage')->name('change-language');
@@ -951,6 +952,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
         });
 
         Route::group(['prefix' => 'payment-method', 'as' => 'payment-method.', 'middleware' => ['module:system_settings']], function () {
+            // My Code Tap Payment
+            Route::post('/tapPayment-settings', [TapPaymentSettingsController::class, 'update'])->name('admin.tapPayment.update');
+            Route::post('/MyFatorahPayment-settings', [MyFatorahSettingsController::class, 'update'])->name('admin.MyFatorah.update');
+            //End MyCode
             Route::controller(PaymentMethodController::class)->group(function () {
                 Route::get(PaymentMethod::LIST[URI], 'index')->name('index')->middleware('actch');
                 Route::get(PaymentMethod::PAYMENT_OPTION[URI], 'getPaymentOptionView')->name('payment-option');
