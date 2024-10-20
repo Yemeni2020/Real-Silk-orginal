@@ -8665,4 +8665,13 @@ return [
 	"TapPayment" => "TapPayment",
 	"Tap_payment" => "Tap payment",
 	"MyFatorah" => "MyFatorah",
+	"The email field is required" => "The email field is required",
+	"Find_your_favourite_categories_and_products" => "Find your favourite categories and products",
+	"The shop address field is required" => "The shop address field is required",
+	"Vendor_Registration_Approved" => "Vendor Registration Approved",
+	"no_withdraw_request_found" => "No withdraw request found",
+	"it_will_be_used_for_your_withdraw_request_transactions by admin" => "It will be used for your withdraw request transactions by admin",
+	"update_your_bank_details_with_correct_information" => "Update your bank details with correct information",
+	"you_can_only_deliver_orders_to_the_selected_countries_which_admin_selected" => "You can only deliver orders to the selected countries which admin selected",
+	"There_is_no_brands" => "There is no brands",
 ];

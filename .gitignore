@@ -20,3 +20,7 @@ composer-setup.php
 /storage - Copy
 /RS
 *.zip
+/storage/framework/
+/old_version
+/C:\\xampp\\htdocs\\storage\\debugbar/
+/C:\\xampp\\htdocs\\storage\\logs/

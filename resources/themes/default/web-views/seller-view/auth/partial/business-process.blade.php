@@ -2,7 +2,7 @@
     <div class="container">
         <div class="d-flex flex-column gap-2 align-items-center text-center mb-5">
             <h2 class="text-absolute-white section-title-style-2 text-capitalize">{{$businessProcess?->title??translate('3_easy_steps_to_start_sell')}}</h2>
-            <p class="max-w-500 text-absolute-white">{{$businessProcess?->sub_title}}</p>
+            <p class="max-w-500 text-absolute-white">{{$businessProcess?->sub_title??""}}</p>
         </div>
 
         <div class="horizontal-scroll d-flex justify-content-between gap-3 gap-lg-4">
