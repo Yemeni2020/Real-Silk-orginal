@@ -84,10 +84,15 @@ class SellerController extends Controller
         $productsList = $products->total() > 0 ? Helpers::product_data_formatting($products->items(), true) : [];
         return response()->json([
             'total_size' => $products->total(),
-            'limit' => (int)$request['limit'],
-            'offset' => (int)$request['offset'],
+            'limit' => (int)$request['limit']??0,
+            'offset' => (int)$request['offset']??10,
             'products' => $productsList
         ]);
+    }
+    public function get_all_sellers()
+    {
+        $top_sellers = Shop::whereHas('seller',function ($query){return $query->approved();})->get();
+        return response()->json($top_sellers, 200);
     }
 
     public function getSellerList(Request $request, $type)

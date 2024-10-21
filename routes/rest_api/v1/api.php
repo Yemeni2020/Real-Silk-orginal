@@ -153,7 +153,14 @@ Route::group(['namespace' => 'RestAPI\v1', 'prefix' => 'v1', 'middleware' => ['a
             Route::delete('review/delete-image', 'deleteReviewImage')->middleware('auth:api');
         });
     });
-
+    Route::group(['prefix' => 'seller'], function () {
+        Route::controller(SellerController::class)->group(function () {
+            Route::get('{seller_id}/products', 'get_seller_products');
+            Route::get('{seller_id}/seller-best-selling-products', 'get_seller_best_selling_products');
+            Route::get('{seller_id}/seller-featured-product', 'get_sellers_featured_product');
+            Route::get('{seller_id}/seller-recommended-products', 'get_sellers_recommended_products');
+        });
+    });
     Route::group(['middleware' => 'apiGuestCheck'], function () {
         Route::group(['prefix' => 'products'], function () {
             Route::controller(ProductController::class)->group(function () {
@@ -178,14 +185,7 @@ Route::group(['namespace' => 'RestAPI\v1', 'prefix' => 'v1', 'middleware' => ['a
             });
         });
 
-        Route::group(['prefix' => 'seller'], function () {
-            Route::controller(SellerController::class)->group(function () {
-                Route::get('{seller_id}/products', 'get_seller_products');
-                Route::get('{seller_id}/seller-best-selling-products', 'get_seller_best_selling_products');
-                Route::get('{seller_id}/seller-featured-product', 'get_sellers_featured_product');
-                Route::get('{seller_id}/seller-recommended-products', 'get_sellers_recommended_products');
-            });
-        });
+     
 
         Route::group(['prefix' => 'categories'], function () {
             Route::controller(CategoryController::class)->group(function () {
@@ -345,6 +345,7 @@ Route::group(['namespace' => 'RestAPI\v1', 'prefix' => 'v1', 'middleware' => ['a
         Route::controller(SellerController::class)->group(function () {
             Route::get('/', 'get_seller_info');
             Route::get('list/{type}', 'getSellerList');
+            Route::get('all', 'SellerController@get_all_sellers');
             Route::get('more', 'more_sellers');
         });
     });

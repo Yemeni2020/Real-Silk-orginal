@@ -30,6 +30,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Modules\Gateways\Traits\SmsGateway;
+use Illuminate\Support\Facades\Session;
 
 class RegisterController extends Controller
 {
@@ -46,7 +47,6 @@ class RegisterController extends Controller
     {
         $this->middleware('guest:customer', ['except' => ['logout']]);
     }
-
     public function getRegisterView(): View
     {
         session()->put('keep_return_url', url()->previous());
@@ -98,6 +98,7 @@ class RegisterController extends Controller
 
     public function getCustomerVerificationCheck($user, $type, $config = []): array|RedirectResponse|string|null
     {
+        // return [];
         $token = $this->customerAuthService->getCustomerVerificationToken();
         $phoneVerification = getLoginConfig(key: 'phone_verification');
         $emailVerification = getLoginConfig(key: 'email_verification');
@@ -118,9 +119,11 @@ class RegisterController extends Controller
             $token = $response['sessionInfo'];
         } else if ($phoneVerification && !$user['is_phone_verified']) {
             $response = $this->customerAuthService->sendCustomerPhoneVerificationToken($user['phone'], $token);
+            
             Toastr::success($response['message']);
         } else if ($emailVerification && !$user['is_email_verified']) {
             $response = $this->customerAuthService->sendCustomerEmailVerificationToken($user, $token);
+            // return $response;
             if ($response['status'] == 'error') {
                 Toastr::error($response['message']);
                 return back();
@@ -132,6 +135,12 @@ class RegisterController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        // RegisterController::$token=$token;
+        // return response()->json([
+        //     'aa' => $this->phoneOrEmailVerificationRepo,
+        //     'message2' => "sa"
+        // ]);
 
         return $response ?? [];
     }
@@ -152,7 +161,6 @@ class RegisterController extends Controller
             $userVerify = 0;
             $verifyType = 'email';
         }
-
         $OTPIdentity = $request['type'] && base64_decode($request['type']) == 'phone_verification' ? $user['phone'] : $user['email'];
         $token = $this->phoneOrEmailVerificationRepo->getFirstWhere(params: ['phone_or_email' => $OTPIdentity]);
         if ($token) {
@@ -171,7 +179,7 @@ class RegisterController extends Controller
     }
 
     // Customer Default Verify
-    public function verifyRegistration(Request $request): RedirectResponse|JsonResponse
+    public function verifyRegistration(Request $request): RedirectResponse|JsonResponse|string
     {
         Validator::make($request->all(), [
             'token' => 'required',
@@ -199,14 +207,17 @@ class RegisterController extends Controller
         $identity = $verificationType == 'email_verification' ? $customer['email'] : $customer['phone'];
         $identityType = $verificationType == 'email_verification' ? 'email' : 'phone';
         $getToken = $this->phoneOrEmailVerificationRepo->getFirstWhere(params: ['phone_or_email' => $identity]);
-
+        
+        // $getToken=Session::get('token22');
+       
         if ($getToken) {
+            
             if (isset($getToken->temp_block_time) && Carbon::parse($getToken->temp_block_time)->diffInSeconds() <= $tempBlockTime) {
                 $time = $tempBlockTime - Carbon::parse($getToken->temp_block_time)->diffInSeconds();
                 Toastr::error(translate('please_try_again_after_') . CarbonInterval::seconds($time)->cascade()->forHumans());
                 return redirect()->back();
             }
-
+            
             if ($getToken['is_temp_blocked'] == 1 && Carbon::parse($getToken['updated_at'])->DiffInSeconds() >= $tempBlockTime) {
                 $this->phoneOrEmailVerificationRepo->updateOrCreate(params: ['phone_or_email' => $identity], value: [
                     'otp_hit_count' => 0,
@@ -246,7 +257,9 @@ class RegisterController extends Controller
                     return back();
                 }
             } else {
+                
                 $tokenVerify = $this->phoneOrEmailVerificationRepo->getFirstWhere(params: ['phone_or_email' => $identity, 'token' => $request['token']]);
+                
                 $tokenVerifyStatus = (boolean)$tokenVerify;
             }
 
@@ -287,6 +300,10 @@ class RegisterController extends Controller
             }
         } else {
             $verificationData = $this->phoneOrEmailVerificationRepo->getFirstWhere(params: ['phone_or_email' => $identity]);
+            // return response()->json([
+            //     'aa' => $identity,
+            //     'message2' => "sa"
+            // ]);
 
             if ($verificationData) {
                 if (isset($verificationData->temp_block_time) && Carbon::parse($verificationData->temp_block_time)->DiffInSeconds() <= $tempBlockTime) {

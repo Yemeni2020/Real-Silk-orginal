@@ -9,6 +9,7 @@ use App\Repositories\EmailTemplatesRepository;
 use App\Services\EmailTemplateService;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use App\Mail\TestEmailSender;
 
 trait EmailTemplateTrait
 {
@@ -31,9 +32,12 @@ trait EmailTemplateTrait
         return $data;
     }
 
-    protected function sendingMail($sendMailTo, $userType, $templateName, $data = null,): void
+    protected function sendingMail($sendMailTo, $userType, $templateName, $data = null,)
     {
+        // echo "dsds";
+        // return $sendMailTo;
         $template = EmailTemplate::with('translationCurrentLanguage')->where(['user_type' => $userType, 'template_name' => $templateName])->first();
+
         if ($template) {
             if (count($template['translationCurrentLanguage'])) {
                 foreach ($template?->translationCurrentLanguage ?? [] as $translate) {
@@ -44,6 +48,8 @@ trait EmailTemplateTrait
                     $template['button_name'] = $translate->key == 'button_name' ? $translate->value : $template['button_name'];
                 }
             }
+            // Mail::to("cainalkhater@gmail.com")->send(new TestEmailSender());
+
             $socialMedia = SocialMedia::where(['status' => 1])->get();
             $template['body'] = $this->textVariableFormat(
                 value: $template['body'],
@@ -68,6 +74,7 @@ trait EmailTemplateTrait
             $data['send-mail'] = true;
             if ($template['status'] == 1) {
                 try {
+                    // dump($data);
                     Mail::to($sendMailTo)->send(new SendMail($data, $template, $socialMedia));
                 } catch (\Exception $exception) {
                     info($exception);

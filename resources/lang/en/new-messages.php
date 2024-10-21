@@ -8674,4 +8674,6 @@ return [
 	"update_your_bank_details_with_correct_information" => "Update your bank details with correct information",
 	"you_can_only_deliver_orders_to_the_selected_countries_which_admin_selected" => "You can only deliver orders to the selected countries which admin selected",
 	"There_is_no_brands" => "There is no brands",
+	"without_a_proper_payment_info,you_cannot_change_the_Refund_Status" => "Without a proper payment info you cannot change the Refund Status",
+	"_products_under_this_brand" => " products under this brand",
 ];

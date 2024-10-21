@@ -9,6 +9,10 @@ use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
+use App\Services\MailService;
+use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TestEmailSender;
 
 class CustomerAuthService
 {
@@ -101,7 +105,7 @@ class CustomerAuthService
         }
         if ($emailServicesSmtp['status'] == 1 && $user['email']) {
             try {
-                $token = $this->getCustomerVerificationToken();
+                //$token = $this->getCustomerVerificationToken();
                 $data = [
                     'userName' => $user['f_name'],
                     'subject' => translate('registration_Verification_Code'),
@@ -110,8 +114,34 @@ class CustomerAuthService
                     'userType' => 'customer',
                     'templateName' => 'registration-verification',
                 ];
+                // $to = "cainalkhater@gmail.com";
+                // $subject = "My subject";
+                // $txt = "Hello world!";
+                // $headers = "From: info@rsbaba.com";
+                
+                // mail($to,$subject,$txt,$headers);
 
-                event(new EmailVerificationEvent(email: $user['email'], data: $data));
+                // $mailable = new Mailable();
+
+                //     $mailable
+                //         ->from('working123www@gmail.com')
+                //         ->to('cainalkhater@gmail.com')
+                //         ->subject('test subject')
+                //         ->html('my first message');
+        
+                //     $result = Mail::send($mailable);
+                // return $user['email'];
+                
+                // return [
+                //     'status' => "error",
+                //     'message' =>$user['email'],
+                // ];
+                // Mail::to("cainalkhater@gmail.com")->send(new TestEmailSender());
+                Mail::raw("Your verification code is: $token", function ($message)  use ($user){
+                    $message->to($user['email'])
+                            ->subject("Verification Code: ");
+                });
+                // event(new EmailVerificationEvent(email: $user['email'], data: $data));
                 return [
                     'status' => 'success',
                     'message' => translate('check_your_email'),
