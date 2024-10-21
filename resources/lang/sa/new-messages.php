@@ -8176,5 +8176,4 @@ return [
 	"street_1,_street_2,_street_3,_street_4" => "Street 1  street 2  street 3  street 4",
 	"location_on_Map" => "Location on Map",
 	"_once_you_change_the_status_to_paid" => " once you change the status to paid",
-	"without_a_proper_payment_info,you_cannot_change_the_Refund_Status" => "Without a proper payment info you cannot change the Refund Status",
 ];

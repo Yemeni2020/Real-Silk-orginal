@@ -8676,4 +8676,5 @@ return [
 	"There_is_no_brands" => "There is no brands",
 	"without_a_proper_payment_info,you_cannot_change_the_Refund_Status" => "Without a proper payment info you cannot change the Refund Status",
 	"_products_under_this_brand" => " products under this brand",
+	"set_the_value_in_percentage_for_the_default_commission_that_will_be_received_from_vendors_on_each_order" => "Set the value in percentage for the default commission that will be received from vendors on each order",
 ];
