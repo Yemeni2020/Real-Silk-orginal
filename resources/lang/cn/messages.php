@@ -8793,7 +8793,7 @@
 'TapPayment' => 'Tap支付',
 'Tap_payment' => 'Tap支付',
 'MyFatorah' => 'MyFatorah',
-
+"terms_and_Condition" => "条款和条件"
   
 );
 ?>
