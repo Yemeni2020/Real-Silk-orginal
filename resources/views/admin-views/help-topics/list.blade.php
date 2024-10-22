@@ -1,5 +1,6 @@
 @php
     use Illuminate\Support\Facades\Session;
+    //dump(session()->all());
 @endphp
 @extends('layouts.back-end.app')
 
@@ -10,6 +11,10 @@
 @endpush
 
 @section('content')
+<?php
+// dump($language);
+// print_r($helps);
+?>
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
@@ -40,6 +45,7 @@
                                     <th>{{translate('question')}}</th>
                                     <th class="min-w-200">{{translate('answer')}}</th>
                                     <th class="text-center">{{translate('ranking')}}</th>
+                                    <th class="text-center">{{translate('Language')}} </th>
                                     <th class="text-center">{{translate('status')}} </th>
                                     <th class="text-center">{{translate('action')}}</th>
                                 </tr>
@@ -51,6 +57,7 @@
                                         <td>{{ $help['question'] }}</td>
                                         <td>{{ $help['answer'] }}</td>
                                         <td class="text-center">{{ $help['ranking'] }}</td>
+                                        <td class="text-center">{{ $help['lang'] }}</td>
 
                                         <td>
                                             <form action="{{ route('admin.helpTopic.status', ['id'=>$help['id']])}}"
@@ -139,6 +146,16 @@
                                     <label for="ranking">{{translate('ranking')}}</label>
                                     <input type="number" name="ranking" class="form-control">
                                 </div>
+                                <div class="col-md-6">
+                                    <label for="ranking">{{translate('Language')}}</label>
+                                    <select name="lang"  id="lang" class="custom-select custom-select-sm form-control form-control-sm">
+                                    @foreach(json_decode($language['value'],true) as $data)
+                                        <option  value="{{$data['code']}}">{{$data['name']}}</option>
+
+                                    @endforeach
+                                    </select>
+                                    
+                                </div>
                             </div>
 
                         </div>
@@ -184,6 +201,16 @@
                             <div class="col-md-4">
                                 <label for="ranking">{{translate('ranking')}}</label>
                                 <input type="number" name="ranking" class="form-control" id="ranking-field" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="ranking">{{translate('Language')}}</label>
+                                <select name="lang"  id="lang" class="custom-select custom-select-sm form-control form-control-sm">
+                                @foreach(json_decode($language['value'],true) as $data)
+                                    <option id="lang{{$data['code']}}" value="{{$data['code']}}">{{$data['name']}}</option>
+
+                                @endforeach
+                                </select>
+                                
                             </div>
                         </div>
 

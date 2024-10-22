@@ -82,9 +82,14 @@ $(document).on('click', '.edit', function () {
         data: {"_token": "{{ csrf_token() }}"},
         dataType: "json",
         success: function (data) {
+            // alert(data.lang);
+            var langid = "#lang" + data.lang;
+
+
             $("#question-filed").val(data.question);
             $("#answer-field").val(data.answer);
             $("#ranking-field").val(data.ranking);
+            $(langid).attr("selected",true);
             $("#update-form-submit").attr("action", route);
         }
     });

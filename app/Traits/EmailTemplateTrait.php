@@ -37,8 +37,9 @@ trait EmailTemplateTrait
         // echo "dsds";
         // return $sendMailTo;
         $template = EmailTemplate::with('translationCurrentLanguage')->where(['user_type' => $userType, 'template_name' => $templateName])->first();
-
+        
         if ($template) {
+            
             if (count($template['translationCurrentLanguage'])) {
                 foreach ($template?->translationCurrentLanguage ?? [] as $translate) {
                     $template['title'] = $translate->key == 'title' ? $translate->value : $template['title'];
@@ -48,9 +49,11 @@ trait EmailTemplateTrait
                     $template['button_name'] = $translate->key == 'button_name' ? $translate->value : $template['button_name'];
                 }
             }
+            
             // Mail::to("cainalkhater@gmail.com")->send(new TestEmailSender());
 
             $socialMedia = SocialMedia::where(['status' => 1])->get();
+            
             $template['body'] = $this->textVariableFormat(
                 value: $template['body'],
                 userName: $data['userName'] ?? null,
@@ -62,6 +65,7 @@ trait EmailTemplateTrait
                 orderId: $data['orderId'] ?? null,
                 emailId: $data['emailId'] ?? null
             );
+            
             $template['title'] = $this->textVariableFormat(
                 value: $template['title'],
                 userName: $data['userName'] ?? null,
@@ -71,11 +75,14 @@ trait EmailTemplateTrait
                 deliveryManName: $data['deliveryManName'] ?? null,
                 orderId: $data['orderId'] ?? null
             );
+            
             $data['send-mail'] = true;
             if ($template['status'] == 1) {
+                
                 try {
                     // dump($data);
-                    Mail::to($sendMailTo)->send(new SendMail($data, $template, $socialMedia));
+                    // dump($sendMailTo  );
+                    Mail::to($sendMailTo)->send(new SendMail($data,$template, $socialMedia));
                 } catch (\Exception $exception) {
                     info($exception);
                 }

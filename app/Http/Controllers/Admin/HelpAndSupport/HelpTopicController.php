@@ -40,6 +40,7 @@ class HelpTopicController extends BaseController
             'answer' => $request['answer'],
             'status' => $request->get('status', 0),
             'ranking' => $request['ranking'],
+            'lang' => $request['lang'],
         ]);
         Toastr::success(translate('FAQ_added_successfully'));
         return back();
@@ -67,6 +68,7 @@ class HelpTopicController extends BaseController
             'answer' => $request['answer'],
             'ranking' => $request['ranking'],
             'status' => $request->get('status', 0),
+            'lang' => $request['lang'],
         ]);
         Toastr::success(translate('FAQ_Update_successfully'));
         return back();

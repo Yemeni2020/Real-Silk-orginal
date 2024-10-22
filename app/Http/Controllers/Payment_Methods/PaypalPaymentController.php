@@ -9,6 +9,14 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Brian2694\Toastr\Facades\Toastr;
+
+use PayPal\Auth\OAuthTokenCredential;
+use PayPal\Rest\ApiContext;
+use PayPal\Api\Invoice;
+use PayPal\Api\InvoiceItem;
+use PayPal\Api\BillingInfo;
+use PayPal\Api\Amount;
 
 class PaypalPaymentController extends Controller
 {
@@ -16,6 +24,7 @@ class PaypalPaymentController extends Controller
 
     private $config_values;
     private $base_url;
+    private $apiContext;
 
     private PaymentRequest $payment;
 
@@ -32,7 +41,52 @@ class PaypalPaymentController extends Controller
             $this->base_url = ($config->mode == 'test') ? 'https://api-m.sandbox.paypal.com' : 'https://api-m.paypal.com';
         }
         $this->payment = $payment;
+
+        $this->apiContext = new ApiContext(
+            new OAuthTokenCredential(
+                config('ARIdut7MnX3WrG8BOFcqmIK-5as93UTICro6VZa8tfeUXygr4JWYYEzmvxf0mnrNTEkp0yOarKSnpR9Z'),
+                config('EGaNDgIvIKNyJa9bUt5UETsLqJJ-hYS73qYAMuO7H9f9r_EikRROmmHPb-hEoSdJG7ERZlkO9OWQBC-V')
+            )
+        );
+
+        $this->apiContext->setConfig([
+            'mode' => config('sandbox')
+        ]);
     }
+
+    public function createInvoice($amount, $customerEmail)
+    {
+        // إعداد الفاتورة
+        $invoice = new Invoice();
+
+        // إعداد بند الفاتورة
+        $item = new InvoiceItem();
+        $item->setName('Service Charge')
+            ->setQuantity(1)
+            ->setUnitPrice(new \PayPal\Api\Currency([
+                'value' => $amount,
+                'currency' => 'USD'
+            ]));
+
+        // إضافة بند الفاتورة إلى الفاتورة
+        $invoice->setItems([$item]);
+
+        // إعداد معلومات العميل
+        $billing = new BillingInfo();
+        $billing->setEmail($customerEmail);
+
+        $invoice->setBillingInfo([$billing]);
+
+        // إرسال الفاتورة إلى PayPal
+        try {
+            $invoice->create($this->apiContext);
+            return $invoice;
+        } catch (\Exception $ex) {
+            return $ex->getMessage() . ' - Trace: ' . $ex->getTraceAsString();
+        }
+        
+    }
+    
 
     public function token(){
         $ch = curl_init();
@@ -61,6 +115,9 @@ class PaypalPaymentController extends Controller
      */
     public function payment(Request $request)
     {
+
+        // return null;
+        // return $this->createInvoice(50,"working123www@gmail.com");
         $validator = Validator::make($request->all(), [
             'payment_id' => 'required|uuid'
         ]);
@@ -131,7 +188,16 @@ class PaypalPaymentController extends Controller
         $response = json_decode($response);
 
         $links = $response->links;
-        return Redirect::away($links[1]->href);
+        // return $response->links;
+        if (isset($links[1]) && isset($links[1]->href)) {
+            return Redirect::away($links[1]->href);
+        } else {
+            // عرض رسالة خطأ أو إرجاع استجابة توضح عدم وجود الروابط المتوقعة
+            Toastr::error('Account paypal not realy');
+            return back();
+
+        }
+        // return Redirect::away($links[1]->href);
 
         return 0;
 

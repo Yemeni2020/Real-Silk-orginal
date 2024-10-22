@@ -358,7 +358,10 @@ Route::group(['namespace' => 'RestAPI\v1', 'prefix' => 'v1', 'middleware' => ['a
     Route::get('coupons/{seller_id}/seller-wise-coupons', 'CouponController@get_seller_wise_coupon');
 
     Route::get('get-guest-id', 'GeneralController@get_guest_id');
-
+    //MyCode
+    Route::get('MethodPayment', 'MethodPaymentController@GetMethod');
+    Route::post('TapPayment', 'TapPaymentSettingsController@createPaymentAPI');
+    //End MyCode
     //map api
     Route::group(['prefix' => 'mapapi'], function () {
         Route::get('place-api-autocomplete', 'MapApiController@place_api_autocomplete');

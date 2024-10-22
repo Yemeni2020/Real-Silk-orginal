@@ -45,7 +45,7 @@ class ForgotPasswordController extends Controller
         return view(VIEW_FILE_NAMES['recover_password'], compact('verification_by'));
     }
 
-    public function resetPasswordRequest(Request $request): RedirectResponse|JsonResponse
+    public function resetPasswordRequest(Request $request): RedirectResponse|JsonResponse|null
     {
         $request->validate([
             'identity' => 'required',
@@ -118,6 +118,7 @@ class ForgotPasswordController extends Controller
                         'token' => $token,
                     ]);
                     event(new PasswordResetEvent(email: $customer['email'], data: $data));
+                    // return null;
                     Toastr::success(translate('Check_your_email') . ' ' . translate('Password_reset_url_sent'));
                 } catch (\Exception $exception) {
                     Toastr::error(translate('email_is_not_configured') . '. ' . translate('contact_with_the_administrator'));

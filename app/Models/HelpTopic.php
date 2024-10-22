@@ -20,6 +20,7 @@ class HelpTopic extends Model
         'answer',
         'status',
         'ranking',
+        'lang',
     ];
 
     public function scopeStatus($query)

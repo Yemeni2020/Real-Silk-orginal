@@ -47,7 +47,82 @@ class OrderController extends Controller
 
         return response()->json(OrderManager::track_order($request['order_id']), 200);
     }
+    
+    public function place_order_MyFatorah(Request $request)
+    {
+        $user = Helpers::get_customer($request);
 
+        $cart_group_ids = CartManager::get_cart_group_ids($request);
+        $carts = Cart::whereIn('cart_group_id', $cart_group_ids)->get();
+
+        $product_stock = CartManager::product_stock_check($carts);
+        if(!$product_stock){
+            return response()->json(['message' => 'The following items in your cart are currently out of stock'], 403);
+        }
+
+        $verifyStatus = OrderManager::minimum_order_amount_verify($request);
+        if($verifyStatus['status'] == 0){
+            return response()->json(['message' => 'Check minimum order amount requirement'], 403);
+        }
+
+        $physical_product = false;
+        foreach($carts as $cart){
+            if($cart->product_type == 'physical'){
+                $physical_product = true;
+            }
+        }
+
+        if($physical_product) {
+            $zip_restrict_status = Helpers::get_business_settings('delivery_zip_code_area_restriction');
+            $country_restrict_status = Helpers::get_business_settings('delivery_country_restriction');
+
+            if ($request->has('billing_address_id') && $request->billing_address_id) {
+                if ($user == 'offline') {
+                    $shipping_address = ShippingAddress::where(['customer_id' => $request->guest_id,'is_guest'=>1, 'id' => $request->input('billing_address_id')])->first();
+                }else{
+                    $shipping_address = ShippingAddress::where(['customer_id' => $user->id,'is_guest'=>'0', 'id' => $request->input('billing_address_id')])->first();
+                }
+
+                if (!$shipping_address) {
+                    return response()->json(['message' => translate('address_not_found')], 403);
+                }
+                elseif ($country_restrict_status && !self::delivery_country_exist_check($shipping_address->country)) {
+                    return response()->json(['message' => translate('Delivery_unavailable_for_this_country')], 403);
+
+                } elseif ($zip_restrict_status && !self::delivery_zipcode_exist_check($shipping_address->zip)) {
+                    return response()->json(['message' => translate('Delivery_unavailable_for_this_zip_code_area')], 403);
+                }
+            }
+        }
+
+        $unique_id = OrderManager::gen_unique_id();
+
+        $order_ids = [];
+        foreach ($cart_group_ids as $group_id) {
+            $data = [
+                'payment_method' => 'cash_on_delivery',
+                'order_status' => 'pending',
+                'payment_status' => 'unpaid',
+                'transaction_ref' => '',
+                'order_group_id' => $unique_id,
+                'cart_group_id' => $group_id,
+                'request' => $request,
+            ];
+            $order_id = OrderManager::generate_order($data);
+
+            $order = Order::find($order_id);
+            $order->billing_address = ($request['billing_address_id'] != null) ? $request['billing_address_id'] : $order['billing_address'];
+            $order->billing_address_data = ($request['billing_address_id'] != null) ?  ShippingAddress::find($request['billing_address_id']) : $order['billing_address_data'];
+            $order->order_note = ($request['order_note'] != null) ? $request['order_note'] : $order['order_note'];
+            $order->save();
+
+            array_push($order_ids, $order_id);
+        }
+
+        CartManager::cart_clean($request);
+
+        return response()->json(['order_ids'=>$order_ids], 200);
+    }
     public function order_cancel(Request $request)
     {
         $validator = Validator::make($request->all(), [

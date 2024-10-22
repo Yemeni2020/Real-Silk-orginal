@@ -53,6 +53,9 @@ class HelpTopicRepository implements HelpTopicRepositoryInterface
             ->when(isset($filters['status']), function ($query) use ($filters) {
                 return $query->where(['status' => $filters['status']]);
             })
+            ->when(isset($filters['lang']), function ($query) use ($filters) {
+                return $query->where(['lang' => $filters['lang']]);
+            })
             ->when(!empty($orderBy), function ($query) use ($orderBy) {
                 $query->orderBy(key($orderBy), current($orderBy));
             });
