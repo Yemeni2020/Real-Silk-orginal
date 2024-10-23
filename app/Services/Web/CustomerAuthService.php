@@ -13,6 +13,7 @@ use App\Services\MailService;
 use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TestEmailSender;
+use Illuminate\Support\Facades\Http;
 
 class CustomerAuthService
 {
@@ -191,4 +192,21 @@ class CustomerAuthService
             'referred_by' => $referUser ? $referUser['id'] : null,
         ];
     }
+
+    // My Code 
+    // public function sendOtp($number, $message)
+    // {
+    //     $response = Http::post($this->baseUrl, [
+    //         'userName' => $this->username,
+    //         'apiKey' => $this->apiKey,
+    //         'numbers' => $number,
+    //         'userSender' => $this->userSender,
+    //         'msg' => $message,
+    //         'msgEncoding' => 'UTF8'
+    //     ]);
+
+    //     return $response->json();
+    // }
+
+
 }

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Nexmo\Laravel\Facade\Nexmo;
 use Twilio\Rest\Client;
 use Modules\Gateways\Traits\SmsGateway;
+use Illuminate\Support\Facades\Http;
 
 class SMSModule
 {
@@ -25,6 +26,10 @@ class SMSModule
         $config = self::get_settings('twilio');
         if (isset($config) && $config['status'] == 1) {
             return self::twilio($receiver, $otp);
+        }
+        $config = self::get_settings('mseget');
+        if (isset($config) && $config['status'] == 1) {
+            return self::mseget($receiver, $otp);
         }
 
         $config = self::get_settings('nexmo');
@@ -51,6 +56,7 @@ class SMSModule
         if (isset($config) && $config['status'] == 1) {
             return self::alphanet_sms($receiver, $otp);
         }
+        
 
         return 'not_found';
     }
@@ -80,6 +86,26 @@ class SMSModule
         return $response;
     }
 
+    public static function mseget($number, $message)
+    {
+        $config = self::get_settings('mseget');
+        $baseUrl = $config['baseUrl'];
+        $username = $config['MSEGAT_USERNAME'];
+        $apiKey = $config['MSEGAT_API_KEY'];
+        $userSender = $config['MSEGAT_USER_SENDER'];
+        // echo  $number."<br>";
+
+        $response = Http::post($baseUrl, [
+            'userName' => $username,
+            'apiKey' => $apiKey,
+            'numbers' => $number,
+            'userSender' => $userSender,
+            'msg' => $message,
+            'msgEncoding' => 'UTF8'
+        ]);
+
+        return $response->json();
+    }
     public static function nexmo($receiver, $otp): string
     {
         $config = self::get_settings('nexmo');

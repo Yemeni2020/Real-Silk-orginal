@@ -38,7 +38,7 @@ class SMSModuleUpdateRequest extends FormRequest
                 collect(['status'])->each(fn($item, $key) => $this[$item] = $this->has($item) ? (int)$this[$item] : 0);
 
                 $validation = [
-                    'gateway' => 'required|in:releans,twilio,nexmo,2factor,msg91,hubtel,paradox,signal_wire,019_sms,viatech,global_sms,akandit_sms,sms_to,alphanet_sms',
+                    'gateway' => 'required|in:releans,twilio,mseget,nexmo,2factor,msg91,hubtel,paradox,signal_wire,019_sms,viatech,global_sms,akandit_sms,sms_to,alphanet_sms',
                     'mode' => 'required|in:live,test'
                 ];
                 $additionalData = [];
@@ -57,6 +57,14 @@ class SMSModuleUpdateRequest extends FormRequest
                         'token' => 'required',
                         'from' => 'required',
                         'otp_template' => 'required'
+                    ];
+                }elseif ($this['gateway'] == 'mseget') {
+                    $additionalData = [
+                        'status' => 'required|in:1,0',
+                        'baseUrl' => 'required',
+                        'MSEGAT_USERNAME' => 'required',
+                        'MSEGAT_API_KEY' => 'required',
+                        'MSEGAT_USER_SENDER' => 'required',
                     ];
                 } elseif ($this['gateway'] == 'nexmo') {
                     $additionalData = [

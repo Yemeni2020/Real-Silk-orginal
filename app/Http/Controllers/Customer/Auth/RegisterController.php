@@ -457,8 +457,9 @@ class RegisterController extends Controller
         return translate('credentials_are_not_matched_or_your_account_is_not_active');
     }
 
-    public function resendOTPToCustomer(Request $request): JsonResponse|RedirectResponse
+    public function resendOTPToCustomer(Request $request): JsonResponse|RedirectResponse|null
     {
+        
         $firebaseOTPVerification = getWebConfig(name: 'firebase_otp_verification') ?? [];
         if ($firebaseOTPVerification && $firebaseOTPVerification['status'] && empty($request['g-recaptcha-response'])) {
             if (request()->ajax()) {
@@ -511,6 +512,7 @@ class RegisterController extends Controller
             $this->phoneOrEmailVerificationRepo->delete(params: ['phone_or_email' => $identity]);
             if ($identityType == 'phone') {
                 $this->getCustomerVerificationCheck($customer, 'phone', ['phone_verification' => $phoneVerification]);
+                
                 return redirect()->back();
             } else if ($identityType == 'email') {
                 $this->getCustomerVerificationCheck($customer, 'email');

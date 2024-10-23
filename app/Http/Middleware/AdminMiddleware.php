@@ -17,6 +17,7 @@ class AdminMiddleware
      */
     public function handle($request, Closure $next)
     {
+        // dump(["sdds"]);
         if (Auth::guard('admin')->check()) {
             return $next($request);
         }else{

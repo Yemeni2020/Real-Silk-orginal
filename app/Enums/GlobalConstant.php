@@ -1188,6 +1188,7 @@ enum GlobalConstant{
         'msg91',
         'releans',
         'alphanet_sms',
+        'mseget',
     ];
 
 

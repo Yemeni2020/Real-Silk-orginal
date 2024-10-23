@@ -46,9 +46,11 @@ class SMSModuleController extends BaseController
         return view(SMSModule::VIEW[VIEW], compact('smsGateways', 'paymentGatewayPublishedStatus', 'paymentUrl'));
     }
 
-    public function update(SMSModuleUpdateRequest $request, SettingService $settingService): RedirectResponse
+    public function update(SMSModuleUpdateRequest $request, SettingService $settingService): RedirectResponse|null
     {
         $service = $settingService->getSMSModuleValidationData(request: $request);
+        // return null;
+        // dump($service);
         $this->settingRepo->updateOrInsert(params: ['key_name' => $request['gateway'], 'settings_type' => 'sms_config'], data: [
             'key_name' => $request['gateway'],
             'live_values' => $service,
@@ -59,7 +61,7 @@ class SMSModuleController extends BaseController
         ]);
 
         if ($request['status'] == 1) {
-            foreach (['releans', 'twilio', 'nexmo', '2factor', 'msg91', 'hubtel', 'paradox', 'signal_wire', '019_sms', 'viatech', 'global_sms', 'akandit_sms', 'sms_to', 'alphanet_sms'] as $gateway) {
+            foreach (['releans', 'twilio','mseget', 'nexmo', '2factor', 'msg91', 'hubtel', 'paradox', 'signal_wire', '019_sms', 'viatech', 'global_sms', 'akandit_sms', 'sms_to', 'alphanet_sms'] as $gateway) {
                 $keep = $this->settingRepo->getFirstWhere(params: ['key_name' => $gateway, 'settings_type' => 'sms_config']);
                 if (isset($keep)) {
                     $hold = $keep['live_values'];

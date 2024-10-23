@@ -47,6 +47,7 @@ class ForgotPasswordController extends Controller
 
     public function resetPasswordRequest(Request $request): RedirectResponse|JsonResponse|null
     {
+        
         $request->validate([
             'identity' => 'required',
         ]);
@@ -71,6 +72,7 @@ class ForgotPasswordController extends Controller
 
         session()->put('forgot_password_identity', $request['identity']);
         $verificationBy = $customer['is_phone_verified'] ? 'phone' : 'email';
+
         if (!$customer['email']) {
             $verificationBy = 'phone';
         }
@@ -142,7 +144,7 @@ class ForgotPasswordController extends Controller
         }
     }
 
-    public function resendPhoneOTPRequest(Request $request): JsonResponse|RedirectResponse
+    public function resendPhoneOTPRequest(Request $request): JsonResponse|RedirectResponse|null
     {
         $firebaseOTPVerification = getWebConfig(name: 'firebase_otp_verification') ?? [];
         if ($firebaseOTPVerification && $firebaseOTPVerification['status'] && empty($request['g-recaptcha-response'])) {
@@ -177,6 +179,8 @@ class ForgotPasswordController extends Controller
                     }
                 } else {
                     $response = $this->customerAuthService->sendCustomerPhoneVerificationToken($customer['phone'], $token);
+                    // dump($response);
+                    // return null;
                 }
 
                 $this->phoneOrEmailVerificationRepo->updateOrCreate(params: ['phone_or_email' => $customer['phone']], value: [

@@ -20,9 +20,11 @@ class SettingService
 
     public function getSMSModuleValidationData(object $request): array
     {
+        // echo $request['gateway'];
+        // return [];
         collect(['status'])->each(fn($item, $key) => $request[$item] = $request->has($item) ? (int)$request[$item] : 0);
         $validation = [
-            'gateway' => 'required|in:releans,twilio,nexmo,2factor,msg91,hubtel,paradox,signal_wire,019_sms,viatech,global_sms,akandit_sms,sms_to,alphanet_sms',
+            'gateway' => 'required|in:releans,twilio,mseget,nexmo,2factor,msg91,hubtel,paradox,signal_wire,019_sms,viatech,global_sms,akandit_sms,sms_to,alphanet_sms',
             'mode' => 'required|in:live,test'
         ];
         $additional_data = [];
@@ -41,6 +43,14 @@ class SettingService
                 'token' => 'required',
                 'from' => 'required',
                 'otp_template' => 'required'
+            ];
+        }elseif ($request['gateway'] == 'mseget') {
+            $additional_data = [
+                'status' => 'required|in:1,0',
+                'baseUrl' => 'required',
+                'MSEGAT_USERNAME' => 'required',
+                'MSEGAT_API_KEY' => 'required',
+                'MSEGAT_USER_SENDER' => 'required',
             ];
         } elseif ($request['gateway'] == 'nexmo') {
             $additional_data = [

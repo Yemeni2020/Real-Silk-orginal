@@ -31,7 +31,7 @@ class SMSModuleController extends Controller
         $paymentGatewayPublishedStatus = isset($payment_published_status[0]['is_published']) ? $payment_published_status[0]['is_published'] : 0;
 
         $sms_gateways = Setting::whereIn('settings_type', ['sms_config'])->whereIn('key_name', Helpers::getDefaultSMSGateways())->get();
-
+        dump($sms_gateways);
         $sms_gateways = $sms_gateways->sortBy(function ($item) {
             return count($item['live_values']);
         })->values()->all();
@@ -315,7 +315,7 @@ class SMSModuleController extends Controller
         ]);
 
         if ($request['status'] == 1) {
-            foreach (['releans','twilio','nexmo','2factor','msg91','hubtel','paradox','signal_wire','019_sms','viatech','global_sms','akandit_sms','sms_to','alphanet_sms'] as $gateway) {
+            foreach (['releans','twilio','mseget','nexmo','2factor','msg91','hubtel','paradox','signal_wire','019_sms','viatech','global_sms','akandit_sms','sms_to','alphanet_sms'] as $gateway) {
                 if ($request['gateway'] != $gateway) {
                     $keep = $this->setting->where(['key_name' => $gateway, 'settings_type' => 'sms_config'])->first();
                     if (isset($keep)) {
