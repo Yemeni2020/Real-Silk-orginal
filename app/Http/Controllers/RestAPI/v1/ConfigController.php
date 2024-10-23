@@ -17,6 +17,7 @@ use App\Utils\ProductManager;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use function App\Utils\payment_gateways;
+use Illuminate\Http\Request;
 
 class ConfigController extends Controller
 {
@@ -31,8 +32,10 @@ class ConfigController extends Controller
     {
     }
 
-    public function configuration(): JsonResponse
+    public function configuration(Request $request): JsonResponse
     {
+        $lang=isset($request->lang)?$request->lang:"en";
+        
         $currency = $this->currencyRepo->getListWhere(dataLimit: 'all');
         $socialLoginConfig = [];
         foreach (getWebConfig(name: 'social_login') as $social) {
@@ -172,7 +175,7 @@ class ConfigController extends Controller
             ],
             'about_us' => getWebConfig(name: 'about_us'),
             'privacy_policy' => getWebConfig(name: 'privacy_policy'),
-            'faq' => HelpTopic::where(['type' => 'default', 'status' => 1])->get(),
+            'faq' => HelpTopic::where(['type' => 'default', 'status' => 1,"lang"=>$lang])->get(),
             'terms_&_conditions' => getWebConfig(name: 'terms_condition'),
             'refund_policy' => getWebConfig(name: 'refund-policy'),
             'return_policy' => getWebConfig(name: 'return-policy'),

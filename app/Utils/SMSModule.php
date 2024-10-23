@@ -103,7 +103,7 @@ class SMSModule
             'msg' => $message,
             'msgEncoding' => 'UTF8'
         ]);
-
+        
         return $response->json();
     }
     public static function nexmo($receiver, $otp): string

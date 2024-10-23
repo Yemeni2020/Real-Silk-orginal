@@ -8146,7 +8146,7 @@
 "removed_from_wishlist" => "تمت الإزالة من قائمة الرغبات",
 "Customer_Login_Settings" => "إعدادات تسجيل دخول العملاء",
 "Customer_Login" => "تسجيل دخول العميل",
-"Publication_House" => "دار النشر",
+"Publication_House" => "منتجات رقمية",
 "determine_the_maximum_size_or_dimensions_of_an_image_preview_that_search_engines_will_display." => "حدد الحد الأقصى لحجم أو أبعاد معاينة الصورة التي ستعرضها محركات البحث.",
 "Find_your_favourite_categories_and_products" => "ابحث عن فئاتك ومنتجاتك المفضلة",
 "Artist" => "فنان",

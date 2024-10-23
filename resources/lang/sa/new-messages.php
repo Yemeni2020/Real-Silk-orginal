@@ -8149,7 +8149,7 @@ return [
 	"removed_from_wishlist" => "Removed from wishlist",
 	"Customer_Login_Settings" => "Customer Login Settings",
 	"Customer_Login" => "Customer Login",
-	"Publication_House" => "Publication House",
+	"Publication_House" => "Digital Products",
 	"determine_the_maximum_size_or_dimensions_of_an_image_preview_that_search_engines_will_display." => "Determine the maximum size or dimensions of an image preview that search engines will display.",
 	"Find_your_favourite_categories_and_products" => "Find your favourite categories and products",
 	"Artist" => "Artist",

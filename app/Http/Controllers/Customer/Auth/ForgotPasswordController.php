@@ -47,6 +47,7 @@ class ForgotPasswordController extends Controller
 
     public function resetPasswordRequest(Request $request): RedirectResponse|JsonResponse|null
     {
+        // return null;
         
         $request->validate([
             'identity' => 'required',
@@ -100,6 +101,12 @@ class ForgotPasswordController extends Controller
                 }
             } else if ($verificationBy == 'phone') {
                 $response = $this->customerAuthService->sendCustomerPhoneVerificationToken($customer['phone'], $token);
+                // dump($response);
+                // return null;
+                // if ($response->code == "1046") {
+                //     Toastr::error(translate('something_went_wrong.').' '.translate('The_Service_Not_Active'));
+                //     return redirect()->back();
+                // }
                 if (env('APP_MODE') == 'dev') {
                     $response = 'success';
                 }
@@ -127,7 +134,7 @@ class ForgotPasswordController extends Controller
                 }
                 return back();
             }
-
+            
             if (isset($response) && $response == 'success') {
                 $identity = $verificationBy == 'phone' ? $customer['phone'] : $customer['email'];
                 $type = $verificationBy == 'phone' ? 'phone_verification' : 'email_verification';
@@ -146,6 +153,7 @@ class ForgotPasswordController extends Controller
 
     public function resendPhoneOTPRequest(Request $request): JsonResponse|RedirectResponse|null
     {
+
         $firebaseOTPVerification = getWebConfig(name: 'firebase_otp_verification') ?? [];
         if ($firebaseOTPVerification && $firebaseOTPVerification['status'] && empty($request['g-recaptcha-response'])) {
             if (request()->ajax()) {
@@ -191,9 +199,12 @@ class ForgotPasswordController extends Controller
                     'temp_block_time' => 0,
                     'created_at' => now(),
                 ]);
-
                 if ($response == "not_found") {
                     Toastr::error(translate('something_went_wrong.').' '.translate('please_try_again_after_sometime'));
+                    return redirect()->back();
+                }
+                if ($response->code == "1046") {
+                    Toastr::error(translate('something_went_wrong.').' '.translate('The_Service_Not_Active'));
                     return redirect()->back();
                 }
                 Toastr::success(translate('OTP_sent_successfully'));

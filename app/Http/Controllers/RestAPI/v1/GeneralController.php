@@ -13,9 +13,11 @@ use Illuminate\Support\Facades\Validator;
 
 class GeneralController extends Controller
 {
-    public function faq(): JsonResponse
+    public function faq(Request $request): JsonResponse
     {
-        return response()->json(HelpTopic::orderBy('ranking')->get(), 200);
+        // dump($request->lang);
+        $lang=isset($request->lang)?$request->lang:"en";
+        return response()->json(HelpTopic::orderBy('ranking')->where('lang',$lang)->get(), 200);
     }
 
     public function get_guest_id(Request $request): JsonResponse
