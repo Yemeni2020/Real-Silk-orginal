@@ -8797,4 +8797,5 @@ return [
 	"Tap_payment" => "Tap payment",
 	"MyFatorah" => "MyFatorah",
 	"terms_and_Condition" => "Terms and Condition",
+	"1000" => "1000",
 ];
