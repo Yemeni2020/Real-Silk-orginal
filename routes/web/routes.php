@@ -59,7 +59,9 @@ use App\Http\Controllers\Payment_Methods\PaystackController;
 Route::controller(WebController::class)->group(function () {
     Route::get('maintenance-mode', 'maintenance_mode')->name('maintenance-mode');
 });
-
+// Route::get('/tt', function () {
+//     return view('admin-views.business-settings.email-template.customer-mail-template.forgot-password');
+// });
 Route::group(['namespace' => 'Web', 'middleware' => ['maintenance_mode', 'guestCheck']], function () {
     Route::group(['prefix' => 'product-compare', 'as' => 'product-compare.'], function () {
         Route::controller(ProductCompareController::class)->group(function () {

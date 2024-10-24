@@ -140,12 +140,12 @@ class CustomerAuthService
                 // Mail::to("cainalkhater@gmail.com")->send(new TestEmailSender());
 
 
-                // Mail::raw("Your verification code is: $token", function ($message)  use ($user){
-                //     $message->to($user['email'])
-                //             ->subject("Verification Code: ");
-                // });
+                Mail::raw("Your verification code is: $token", function ($message)  use ($user){
+                    $message->to($user['email'])
+                            ->subject("Verification Code: ");
+                });
                 
-                event(new EmailVerificationEvent(email: $user['email'], data: $data));
+                // event(new EmailVerificationEvent(email: $user['email'], data: $data));
                 return [
                     'status' => 'success',
                     'message' => translate('check_your_email'),

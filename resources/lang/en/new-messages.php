@@ -8707,4 +8707,6 @@ return [
 	"reset_Password" => "Reset Password",
 	"meanwhile_click_here_to_visit_" => "Meanwhile click here to visit ",
 	"_website" => " website",
+	"if_you don’t_want_to
+            see_the_information_in_the_mail" => "If you don’t want to see the information in the mail",
 ];

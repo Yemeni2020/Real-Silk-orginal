@@ -31,17 +31,16 @@ trait EmailTemplateTrait
         }
         return $data;
     }
-
-    protected function sendingMail($sendMailTo, $userType, $templateName, $data = null,)
+    protected function sendingMail($sendMailTo, $userType, $templateName, $data = null)
     {
-        // echo "dsds";
-        // return $sendMailTo;
-        $template = EmailTemplate::with('translationCurrentLanguage')->where(['user_type' => $userType, 'template_name' => $templateName])->first();
+        $template = EmailTemplate::with('translationCurrentLanguage')
+            ->where(['user_type' => $userType, 'template_name' => $templateName])
+            ->first();
         
         if ($template) {
             
-            if (count($template['translationCurrentLanguage'])) {
-                foreach ($template?->translationCurrentLanguage ?? [] as $translate) {
+            if ($template['translationCurrentLanguage']->isNotEmpty()) {
+                foreach ($template->translationCurrentLanguage as $translate) {
                     $template['title'] = $translate->key == 'title' ? $translate->value : $template['title'];
                     $template['body'] = $translate->key == 'body' ? $translate->value : $template['body'];
                     $template['footer_text'] = $translate->key == 'copyright_text' ? $translate->value : $template['footer_text'];
@@ -50,8 +49,6 @@ trait EmailTemplateTrait
                 }
             }
             
-            // Mail::to("cainalkhater@gmail.com")->send(new TestEmailSender());
-
             $socialMedia = SocialMedia::where(['status' => 1])->get();
             
             $template['body'] = $this->textVariableFormat(
@@ -78,20 +75,19 @@ trait EmailTemplateTrait
             
             $data['send-mail'] = true;
             if ($template['status'] == 1) {
-                
                 try {
-                    // dump($data);
-                    // dump($sendMailTo  );
-                    Mail::to($sendMailTo)->send(new SendMail($data,$template, $socialMedia));
+                    Mail::to($sendMailTo)->send(new SendMail($data, $template, $socialMedia));
                 } catch (\Exception $exception) {
-                    info($exception);
+                    info('Error sending email: ' . $exception->getMessage());
                 }
             }
-            if (isset($data['attachmentPath'])) {
+            if (isset($data['attachmentPath']) && file_exists($data['attachmentPath'])) {
                 unlink($data['attachmentPath']);
             }
         }
     }
+
+    
 
     public function getEmailTemplateDataForUpdate($userType): void
     {

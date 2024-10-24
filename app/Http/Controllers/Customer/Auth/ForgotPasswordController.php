@@ -25,6 +25,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Modules\Gateways\Traits\SmsGateway;
+use Illuminate\Support\Facades\Mail;
+
 use function Laravel\Prompts\password;
 
 class ForgotPasswordController extends Controller
@@ -126,7 +128,20 @@ class ForgotPasswordController extends Controller
                         'phone_or_email' => $customer['email'],
                         'token' => $token,
                     ]);
-                    event(new PasswordResetEvent(email: $customer['email'], data: $data));
+                    // event(new PasswordResetEvent(email: $customer['email'], data: $data));
+                    // $cls=new EmailTemplateTrait(); 
+                    // $cls->sendingMail2( $customer['email'],$data['userType'],$data['templateName'],$data);
+                    
+
+                    
+                    // Mail::to("cainalkhater@gmail.com")->send(new TestEmailSender());
+
+
+                    Mail::raw("this url for reast your password: $resetUrl", function ($message)  use ($customer){
+                        $message->to($customer['email'])
+                                ->subject("Password reset: ");
+                    });
+                    // dump($data);
                     // return null;
                     Toastr::success(translate('Check_your_email') . ' ' . translate('Password_reset_url_sent'));
                 } catch (\Exception $exception) {
