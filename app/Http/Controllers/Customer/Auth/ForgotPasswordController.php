@@ -135,20 +135,22 @@ class ForgotPasswordController extends Controller
 
                     
                     // Mail::to("cainalkhater@gmail.com")->send(new TestEmailSender());
-                    $send=new EmailNewTemp();
-                    $send->sendingMail($customer['email'],$data["userType"],$data["templateName"],$data);
+                    // $send=new EmailNewTemp();
+                    // $send->sendingMail($customer['email'],$data["userType"],$data["templateName"],$data);
+
+
                     // Mail::send('admin-views.business-settings.email-template.customer-mail-template.forgot-password', ['token' => $token, 'title' => $data["title"]], function ($message) use ($customer) {
                     //     $message->to($customer['email'])
                     //             ->subject("Password reset");
                     // });
 
-                    // Mail::raw("this url for reast your password: $resetUrl", function ($message)  use ($customer){
-                    //     $message->to($customer['email'])
-                    //             ->subject("Password reset: ");
-                    // });
+                    Mail::raw("This url for reast your password: $resetUrl", function ($message)  use ($customer){
+                        $message->to($customer['email'])
+                                ->subject("Password Reset: ");
+                    });
                     
                     // dump($data);
-                    return null;
+                    // return null;
                     Toastr::success(translate('Check_your_email') . ' ' . translate('Password_reset_url_sent'));
                 } catch (\Exception $exception) {
                     Toastr::error(translate('email_is_not_configured') . '. ' . translate('contact_with_the_administrator'));
