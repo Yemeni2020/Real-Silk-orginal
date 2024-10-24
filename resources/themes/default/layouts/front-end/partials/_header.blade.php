@@ -361,7 +361,7 @@
                         <li class="nav-item dropdown {{request()->is('/')?'active':''}}">
                                 <a class="nav-link text-capitalize"
                                    href="{{ route('products') }}">
-                                    {{ translate('Products')}}
+                                    {{ translate('All_Products')}}
                                 </a>
                         </li>
                         @if ($web_config['digital_product_setting'] && count($web_config['publishing_houses']) == 1)
