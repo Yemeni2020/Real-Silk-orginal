@@ -135,8 +135,8 @@ class ForgotPasswordController extends Controller
 
                     
                     // Mail::to("cainalkhater@gmail.com")->send(new TestEmailSender());
-                    $a=new EmailNewTemp();
-                    $a->sendingMail($customer['email'],$data["userType"],$data["templateName"],$data);
+                    $send=new EmailNewTemp();
+                    $send->sendingMail($customer['email'],$data["userType"],$data["templateName"],$data);
                     // Mail::send('admin-views.business-settings.email-template.customer-mail-template.forgot-password', ['token' => $token, 'title' => $data["title"]], function ($message) use ($customer) {
                     //     $message->to($customer['email'])
                     //             ->subject("Password reset");

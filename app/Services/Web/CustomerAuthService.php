@@ -14,6 +14,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TestEmailSender;
 use Illuminate\Support\Facades\Http;
+use App\Traits\EmailNewTemp;
 
 class CustomerAuthService
 {
@@ -139,11 +140,13 @@ class CustomerAuthService
                 // ];
                 // Mail::to("cainalkhater@gmail.com")->send(new TestEmailSender());
 
+                $send=new EmailNewTemp();
+                $send->sendingMail($user['email'],$data["userType"],$data["templateName"],$data);
 
-                Mail::raw("Your verification code is: $token", function ($message)  use ($user){
-                    $message->to($user['email'])
-                            ->subject("Verification Code: ");
-                });
+                // Mail::raw("Your verification code is: $token", function ($message)  use ($user){
+                //     $message->to($user['email'])
+                //             ->subject("Verification Code: ");
+                // });
                 
                 // event(new EmailVerificationEvent(email: $user['email'], data: $data));
                 return [
