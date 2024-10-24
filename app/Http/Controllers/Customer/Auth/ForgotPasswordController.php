@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Modules\Gateways\Traits\SmsGateway;
 use Illuminate\Support\Facades\Mail;
-
+use App\Traits\EmailNewTemp;
 use function Laravel\Prompts\password;
 
 class ForgotPasswordController extends Controller
@@ -135,14 +135,20 @@ class ForgotPasswordController extends Controller
 
                     
                     // Mail::to("cainalkhater@gmail.com")->send(new TestEmailSender());
+                    $a=new EmailNewTemp();
+                    $a->sendingMail($customer['email'],$data["userType"],$data["templateName"],$data);
+                    // Mail::send('admin-views.business-settings.email-template.customer-mail-template.forgot-password', ['token' => $token, 'title' => $data["title"]], function ($message) use ($customer) {
+                    //     $message->to($customer['email'])
+                    //             ->subject("Password reset");
+                    // });
 
-
-                    Mail::raw("this url for reast your password: $resetUrl", function ($message)  use ($customer){
-                        $message->to($customer['email'])
-                                ->subject("Password reset: ");
-                    });
+                    // Mail::raw("this url for reast your password: $resetUrl", function ($message)  use ($customer){
+                    //     $message->to($customer['email'])
+                    //             ->subject("Password reset: ");
+                    // });
+                    
                     // dump($data);
-                    // return null;
+                    return null;
                     Toastr::success(translate('Check_your_email') . ' ' . translate('Password_reset_url_sent'));
                 } catch (\Exception $exception) {
                     Toastr::error(translate('email_is_not_configured') . '. ' . translate('contact_with_the_administrator'));
