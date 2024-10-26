@@ -83,13 +83,7 @@
                             </ul>
                         </div>
                     </li>
-                    @if($web_config['business_mode'] == 'multi' && $web_config['seller_registration'])
-                        <li class="d-none d-xl-block">
-                            <a href="{{route('vendor.auth.registration.index')}}" class="d-flex">
-                                <div class="fz-16 text-capitalize">{{ translate('become_a_vendor')}}</div>
-                            </a>
-                        </li>
-                    @endif
+                    
                 </ul>
             </div>
         </div>
@@ -353,6 +347,7 @@
                         </a>
                     </div>
                 @endif
+                
             </aside>
             <div class="aside-overlay"></div>
 
@@ -626,6 +621,13 @@
                             <div class="menu-btn d-xl-none">
                                 <i class="bi bi-list fs-30"></i>
                             </div>
+                        </li>
+                    @endif
+                    @if($web_config['business_mode'] == 'multi' && $web_config['seller_registration'])
+                        <li class="d-none d-xl-block">
+                            <a href="{{route('vendor.auth.registration.index')}}" class="d-flex">
+                                <div class="fz-16 text-capitalize">{{ translate('become_a_vendor')}}</div>
+                            </a>
                         </li>
                     @endif
                     <li class="d-none d-xl-block">

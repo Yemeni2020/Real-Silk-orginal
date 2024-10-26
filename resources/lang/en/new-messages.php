@@ -6949,7 +6949,7 @@ return [
 	"already_have_store " => "Already have store ",
 	"all_vendors" => "All fictories",
 	"vendor_zone" => "fictory zone",
-	"become_a_vendor" => "register",
+	"become_a_vendor" => "become vendor",
 	"vendor_login" => "fictory login",
 	"vendor_Apply" => "fictory Apply",
 	"vendor_Info" => "fictory Info",
@@ -8709,4 +8709,12 @@ return [
 	"_website" => " website",
 	"if_you don’t_want_to
             see_the_information_in_the_mail" => "If you don’t want to see the information in the mail",
+	"Email_sent_successfully." => "Email sent successfully.",
+	"Email configuration issue." => "Email configuration issue.",
+	"if_enabled,_you_can_choose_one_or_multiple_countries_for_product_delivery" => "If enabled  you can choose one or multiple countries for product delivery",
+	"if_enabled,_the_zip_code_areas_will_be_available_for_delivery" => "If enabled  the zip code areas will be available for delivery",
+	"If_you_don’t_enter_a_specific_zip_code_from_a_country,_that_area_won’t_be_available_for_delivery" => "If you don’t enter a specific zip code from a country  that area won’t be available for delivery",
+	"if_both_features_are_disabled,_then_all_places_will_be_available_as_delivery_area" => "If both features are disabled  then all places will be available as delivery area",
+	"If_only_the ‘Delivery_Available_Country’ feature_is_enabled,_and_you_add_your_preferred_country,_then_you’ll_be_able_to_deliver_all_over_the_country" => "If only the ‘Delivery Available Country’ feature is enabled  and you add your preferred country  then you’ll be able to deliver all over the country",
+	"If_only_the ‘Delivery_Available_Zip_Code_Area’ feature_is_enabled,_then_you’ll_be_able_to_deliver_on_all_the_zip_code_areas" => "If only the ‘Delivery Available Zip Code Area’ feature is enabled  then you’ll be able to deliver on all the zip code areas",
 ];

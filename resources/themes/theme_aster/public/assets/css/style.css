@@ -3534,9 +3534,9 @@ input[type="checkbox"]:checked::after {
 }
 
 [dir="rtl"] .flipX-in-rtl {
-    -webkit-transform: scaleX(-1);
+    /* -webkit-transform: scaleX(-1);
     -ms-transform: scaleX(-1);
-    transform: scaleX(-1);
+    transform: scaleX(-1); */
 }
 
 [dir="rtl"] .nav {

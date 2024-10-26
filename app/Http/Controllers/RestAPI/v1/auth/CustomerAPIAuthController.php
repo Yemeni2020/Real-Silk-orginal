@@ -860,24 +860,47 @@ class CustomerAPIAuthController extends Controller
             }
 
             if ($request['type'] == 'email') {
+                
                 try {
                     $emailServices = getWebConfig(name: 'mail_config');
                     $mailStatus = getWebConfig(name: 'forget_password_mail_status_user');
-
+                    $mailStatus=1;
+                    // echo $mailStatus;
                     if (isset($emailServices['status']) && $emailServices['status'] == 1 && $mailStatus == 1) {
-                        Mail::to($customer['email'])->send(new PasswordResetMail($token, $customer['f_name'] . ' ' . $customer['l_name'], $customer?->language_code));
+                        
+                        Mail::raw("Your Reast Password code is: $token", function ($message)  use ($customer){
+                            $message->to($customer['email'])
+                                    ->subject("Reast Password Code: ");
+                        });
+                        // $data = [
+                        //     'subject' => 'إعادة تعيين كلمة المرور',
+                        //     'token' => $token,
+                        //     'username' => $customer['f_name'] . ' ' . $customer['l_name'],
+                        // ];
+                        // $template = 'forgot-password';
+                        // $socialMedia = [
+                        //     'language_code' => $customer['language_code'],
+                        // ];
+                        //Mail::to($customer['email'])->send(new PasswordResetMail($data, $template, $socialMedia));
+
+                        //Mail::to($customer['email'])->send(new PasswordResetMail($token, $customer['f_name'] . ' ' . $customer['l_name'], $customer?->language_code));
                     }
 
                 } catch (\Exception $exception) {
+                    dump($exception);
                     return response()->json(['errors' => [
-                        ['code' => 'config-missing', 'message' => translate('Email configuration issue.')]
+                        ['code' => 'config-missing', 'message' => translate('Email configuration issue.'),
+                        ]
                     ]], 400);
                 }
             }
 
             return response()->json([
                 'message' => translate('Email_sent_successfully.'),
-                'type' => 'sent_to_mail'
+                'type' => 'sent_to_mail',
+                'data'=>$customer['f_name'] . ' ' . $customer['l_name'],
+                'token'=>$token,
+                'lang'=>$customer?->language_code,
             ], 200);
         }
 

@@ -45,9 +45,13 @@
                         @endif
                     </p>
                 </div>
-
-                <div class="{{ $multiColumn ? 'row align-items-center or-sign-in-with-row' : ''}}">
-                    <div class="{{ $multiColumn ? 'col-md-6' : ''}}">
+                <?php
+                    // dump($multiColumn );
+                ?>
+                <div class="{{'row align-items-center or-sign-in-with-row'}}">
+                    <!-- <div class="{{'col-md-6' }}"> -->
+                <!-- <div class="{{ $multiColumn ? 'row align-items-center or-sign-in-with-row' : ''}}">
+                    <div class="{{ $multiColumn ? 'col-md-6' : ''}}"> -->
                         @if($customerOTPLogin && !$customerManualLogin && !$customerSocialLogin)
                             <form action="{{route('customer.auth.login')}}" method="post"
                                   class="customer-centralize-login-form"
