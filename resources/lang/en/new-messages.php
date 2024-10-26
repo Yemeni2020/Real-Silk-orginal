@@ -8717,4 +8717,5 @@ return [
 	"if_both_features_are_disabled,_then_all_places_will_be_available_as_delivery_area" => "If both features are disabled  then all places will be available as delivery area",
 	"If_only_the ‘Delivery_Available_Country’ feature_is_enabled,_and_you_add_your_preferred_country,_then_you’ll_be_able_to_deliver_all_over_the_country" => "If only the ‘Delivery Available Country’ feature is enabled  and you add your preferred country  then you’ll be able to deliver all over the country",
 	"If_only_the ‘Delivery_Available_Zip_Code_Area’ feature_is_enabled,_then_you’ll_be_able_to_deliver_on_all_the_zip_code_areas" => "If only the ‘Delivery Available Zip Code Area’ feature is enabled  then you’ll be able to deliver on all the zip code areas",
+	"Customer_not_found!" => "Customer not found!",
 ];

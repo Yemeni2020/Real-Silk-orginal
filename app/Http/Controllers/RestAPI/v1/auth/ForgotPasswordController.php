@@ -160,7 +160,7 @@ class ForgotPasswordController extends Controller
 
         $verify = $this->passwordResetRepo->getFirstWhere(params: ['identity' => $request['email_or_phone'], 'token' => $request['reset_token']]);
         if ($verify) {
-            $this->passwordResetRepo->delete(params: ['identity' => $request['email_or_phone']]);
+            // $this->passwordResetRepo->delete(params: ['identity' => $request['email_or_phone']]);
             return response()->json(['message' => translate('otp_verified')], 200);
         }
 

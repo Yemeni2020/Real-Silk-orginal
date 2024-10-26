@@ -12,6 +12,7 @@ use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
 
 class EmailVerificationController extends Controller
 {
@@ -56,8 +57,11 @@ class EmailVerificationController extends Controller
                     'userType'=>'customer' ,
                     'templateName'=> 'registration-verification',
                 ];
-
-                event(new EmailVerificationEvent(email: $user['email'],data: $data));
+                Mail::raw("Your verification code is: $token", function ($message)  use ($user){
+                    $message->to($user['email'])
+                            ->subject("Verification Code: ");
+                });
+                //event(new EmailVerificationEvent(email: $user['email'],data: $data));
                 $response = translate('check_your_email');
                 $otp_resend_time = getWebConfig(name: 'otp_resend_time') > 0 ? getWebConfig(name: 'otp_resend_time') : 0;
             } catch (\Exception $exception) {
@@ -131,8 +135,11 @@ class EmailVerificationController extends Controller
                         'userType'=>'customer' ,
                         'templateName'=> 'registration-verification',
                     ];
-
-                    event(new EmailVerificationEvent(email: $user['email'],data: $data));
+                    Mail::raw("Your verification code is: $token", function ($message)  use ($user){
+                        $message->to($user['email'])
+                                ->subject("Verification Code: ");
+                    });
+                    // event(new EmailVerificationEvent(email: $user['email'],data: $data));
                     $response = translate('check_your_email');
                     $otp_resend_time = getWebConfig(name: 'otp_resend_time') > 0 ? getWebConfig(name: 'otp_resend_time') : 0;
                 } catch (\Exception $exception) {

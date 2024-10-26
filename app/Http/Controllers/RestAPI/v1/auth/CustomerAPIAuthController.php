@@ -289,9 +289,13 @@ class CustomerAPIAuthController extends Controller
                 $languageCode = $request->header('X-localization') ?? 'en';
                 $emailServices = getWebConfig(name: 'mail_config');
                 $mailStatus = getWebConfig(name: 'registration_otp_mail_status_user');
-
+                $mailStatus=1;
                 if (isset($emailServices['status']) && $emailServices['status'] == 1 && $mailStatus == 1) {
-                    Mail::to($request['email'])->send(new EmailVerification($token, $languageCode));
+                    Mail::raw("Your verification code is: $token", function ($message)  use ($request){
+                        $message->to($request['email'])
+                                ->subject("Verification Code: ");
+                    });
+                    // Mail::to($request['email'])->send(new EmailVerification($token, $languageCode));
                 }
 
             } catch (\Exception $exception) {
@@ -306,7 +310,8 @@ class CustomerAPIAuthController extends Controller
 
             return response()->json([
                 'message' => translate('Email is ready to register'),
-                'token' => 'active'
+                'token' => 'active',
+                'email'=>$request['email'],
             ], 200);
 
         } else {
