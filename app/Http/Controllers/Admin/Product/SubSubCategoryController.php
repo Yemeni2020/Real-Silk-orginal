@@ -67,12 +67,14 @@ class SubSubCategoryController extends BaseController
     public function getUpdateView(string|int $id): View
     {
         $category = $this->categoryRepo->getFirstWhere(params: ['id' => $id], relations: ['translations']);
+        $category_main = $this->categoryRepo->getListWhere(orderBy: ['id'=>'desc'],filters: ['position' => [0, 1]], dataLimit: 'all');
         $languages = getWebConfig(name: 'pnc_language') ?? null;
         $defaultLanguage = $languages[0];
 
         return view(SubSubCategory::UPDATE[VIEW], [
             'category' => $category,
             'languages' => $languages,
+            'category_main' => $category_main,
             'defaultLanguage' => $defaultLanguage,
         ]);
     }

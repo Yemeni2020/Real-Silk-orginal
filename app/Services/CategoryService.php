@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Traits\FileManagerTrait;
 use Illuminate\Support\Str;
-
+use App\Models\Category;
 class CategoryService
 {
     use FileManagerTrait;
@@ -28,12 +28,16 @@ class CategoryService
     {
         $storage = config('filesystems.disks.default') ?? 'public';
         $image = $request->file('image') ? $this->update('category/', $data['image'], 'webp', $request->file('image')) : $data['icon'];
+        $cat = Category::where('id', $request['parent'])->first();
+
         return [
             'name' => $request['name'][array_search('en', $request['lang'])],
             'slug' => Str::slug($request['name'][array_search('en', $request['lang'])]),
             'icon' => $image,
             'icon_storage_type' => $request->has('image') ? $storage : $data['icon_storage_type'],
             'priority' => $request['priority'],
+            'parent_id' => $request['parent']??0,
+            'position' =>  $request['parent']>0 && isset($cat)? $cat['position']+1:0,
         ];
     }
 

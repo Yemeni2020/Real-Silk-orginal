@@ -51,6 +51,7 @@
                                                     }
                                                 }
                                                 ?>
+                                                
                                             <div class="form-group {{ $lang != $defaultLanguage ? 'd-none':''}} form-system-language-form"
                                                 id="{{ $lang}}-form">
                                                 <label class="title-color">
@@ -65,7 +66,7 @@
                                             <input type="hidden" name="id" value="{{ $category['id']}}">
                                         </div>
                                     @endforeach
-
+                                                
                                     <div class="form-group">
                                         <label class="title-color" for="priority">{{ translate('priority') }}</label>
                                         <select class="form-control" name="priority" id="" required>
@@ -75,7 +76,19 @@
                                             @endfor
                                         </select>
                                     </div>
-
+                                    <div class="from_part_2">
+                                                    <label class="title-color">
+                                                        {{ translate('Parent_Category')  }}
+                                                    </label>
+                                                    <select class="form-control" name="parent" id="a">
+                                                        <option value="0"></option>
+                                                        @foreach($category_main as $cat)
+                                                            @if($category['id']!=$cat['id'])
+                                                            <option <?php if ($category['parent_id']==$cat['id'] ) echo "selected"; ?> value="{{$cat['id']}}">{{$cat['name']}}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
+                                                </div>
                                     @if($category['parent_id']==0 || ($category['position'] == 1 && theme_root_path() == 'theme_aster'))
                                         <div class="from_part_2">
                                             <label class="title-color">{{ translate('category_Logo') }}</label>

@@ -62,11 +62,14 @@ class CategoryController extends BaseController
     public function getUpdateView(string|int $id): View|RedirectResponse
     {
         $category = $this->categoryRepo->getFirstWhere(params:['id'=>$id], relations: ['translations']);
+        $category_main = $this->categoryRepo->getListWhere(orderBy: ['id'=>'desc'],filters: ['position' => [0, 1]], dataLimit: 'all');
         $languages = getWebConfig(name: 'pnc_language') ?? null;
+
         $defaultLanguage = $languages[0];
         return view(Category::UPDATE[VIEW], [
             'category' => $category,
             'languages' => $languages,
+            'category_main' => $category_main,
             'defaultLanguage' => $defaultLanguage,
         ]);
     }
@@ -80,10 +83,12 @@ class CategoryController extends BaseController
         return back();
     }
 
-    public function update(CategoryUpdateRequest $request, CategoryService $categoryService): RedirectResponse
+    public function update(CategoryUpdateRequest $request, CategoryService $categoryService): RedirectResponse|null
     {
         $category = $this->categoryRepo->getFirstWhere(params:['id'=>$request['id']]);
         $dataArray = $categoryService->getUpdateData(request:$request, data: $category);
+        // dump($dataArray);
+        // return null;
         $this->categoryRepo->update(id:$request['id'], data:$dataArray);
         $this->translationRepo->update(request:$request, model:'App\Models\Category', id:$request['id']);
 
