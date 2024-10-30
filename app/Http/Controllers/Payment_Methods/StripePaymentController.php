@@ -32,7 +32,7 @@ class StripePaymentController extends Controller
         $this->payment = $payment;
     }
 
-    public function index(Request $request): View|Factory|JsonResponse|Application
+    public function index(Request $request): View|Factory|JsonResponse|Application|null
     {
         $validator = Validator::make($request->all(), [
             'payment_id' => 'required|uuid'
@@ -47,7 +47,8 @@ class StripePaymentController extends Controller
             return response()->json($this->response_formatter(GATEWAYS_DEFAULT_204), 200);
         }
         $config = $this->config_values;
-
+        // dump($data);
+        // return null;
         return view('payment.stripe', compact('data', 'config'));
     }
 

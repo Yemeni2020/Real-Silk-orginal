@@ -529,6 +529,7 @@ const GATEWAYS_PAYMENT_METHODS = [
     ['key' => 'ssl_commerz', 'value' => 'SSLCOMMERZ'],
     ['key' => 'stripe', 'value' => 'Stripe'],
     ['key' => 'paypal', 'value' => 'PayPal'],
+    ['key' => 'my_fatorah', 'value' => 'my_fatorah'],
     ['key' => 'razor_pay', 'value' => 'Razor Pay'],
     ['key' => 'paystack', 'value' => 'Paystack'],
     ['key' => 'senang_pay', 'value' => 'Senang Pay'],

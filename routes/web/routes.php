@@ -432,6 +432,17 @@ if (!$isGatewayPublished) {
                 ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
         });
 
+
+        //myfatorah
+        Route::group(['prefix' => 'my_fatorah', 'as' => 'my_fatorah.'], function () {
+            Route::get('pay', [App\Http\Controllers\Payment_Methods\MyFatorahSettingsController::class, 'createPayment'])->name('GoTapPayment');
+            // Route::get('pay', [PaypalPaymentController::class, 'payment']);
+            Route::any('success', [App\Http\Controllers\Payment_Methods\MyFatorahSettingsController::class, 'success'])->name('success')
+                ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+            Route::any('error', [App\Http\Controllers\Payment_Methods\MyFatorahSettingsController::class, 'error'])->name('error')
+                ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+        });
+
         //SENANG-PAY
         Route::group(['prefix' => 'senang-pay', 'as' => 'senang-pay.'], function () {
             Route::get('pay', [SenangPayController::class, 'index']);

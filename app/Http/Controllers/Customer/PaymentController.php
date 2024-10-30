@@ -46,15 +46,16 @@ class PaymentController extends Controller
     return view('card', compact('first_name', 'last_name', 'email', 'amount', 'phone', 'country_code'));
     // return view("card");
 }
-    public function payment(Request $request): JsonResponse|Redirector|RedirectResponse
+    public function payment(Request $request): JsonResponse|Redirector|RedirectResponse|null
     {
+        
         $user = Helpers::getCustomerInformation($request);
         $orderAdditionalData = [];
         $validator = Validator::make($request->all(), [
             'payment_method' => 'required',
             'payment_platform' => 'required',
         ]);
-
+        
         $validator->sometimes('customer_id', 'required', function ($input) {
             return in_array($input->payment_request_from, ['app']);
         });
@@ -85,7 +86,7 @@ class PaymentController extends Controller
             Toastr::error(translate('the_following_items_in_your_cart_are_currently_out_of_stock'));
             return redirect()->route('shop-cart');
         }
-
+        
         $verifyStatus = OrderManager::verifyCartListMinimumOrderAmount($request);
         if ($verifyStatus['status'] == 0 && in_array($request['payment_request_from'], ['app'])) {
             return response()->json(['errors' => ['code' => 'Check the minimum order amount requirement']], 403);

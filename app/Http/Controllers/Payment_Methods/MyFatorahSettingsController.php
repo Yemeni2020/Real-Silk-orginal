@@ -2,18 +2,82 @@
 
 namespace App\Http\Controllers\Payment_Methods;
 
+use App\Contracts\Repositories\CustomerRepositoryInterface;
+use App\Models\PaymentRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TapPaymentSetting;
+use App\Traits\Processor;
 use GuzzleHttp\Client;
 use App\Http\Controllers\Payment_Methods\MyFatoorah\API\Payment\MyFatoorahPayment;
+use App\Http\Controllers\Payment_Methods\MyFatoorah\API\Payment\MyFatoorahPaymentStatus;
 use DateTime;
 use Brian2694\Toastr\Facades\Toastr;
+use App\Models\Cart;
+use Illuminate\Support\Facades\Http;
 
 
 class MyFatorahSettingsController extends Controller
 {
+    use Processor;
+    private $config_values;
+    private $base_url;
+    
+    private PaymentRequest $payment;
+    public function __construct(private readonly CustomerRepositoryInterface                $customerRepo,PaymentRequest $payment)
+    {
+        $config = $this->payment_config('my_fatorah', 'payment_config');
+        if (!is_null($config) && $config->mode == 'live') {
+            $this->config_values = json_decode($config->live_values);
+        } elseif (!is_null($config) && $config->mode == 'test') {
+            $this->config_values = json_decode($config->test_values);
+        }
 
+        if($config){
+            $this->base_url = ($config->mode == 'test') ? 'https://api-m.sandbox.paypal.com' : 'https://api-m.paypal.com';
+        }
+        $this->payment = $payment;
+
+        // $this->apiContext = new ApiContext(
+        //     new OAuthTokenCredential(
+        //         config('ARIdut7MnX3WrG8BOFcqmIK-5as93UTICro6VZa8tfeUXygr4JWYYEzmvxf0mnrNTEkp0yOarKSnpR9Z'),
+        //         config('EGaNDgIvIKNyJa9bUt5UETsLqJJ-hYS73qYAMuO7H9f9r_EikRROmmHPb-hEoSdJG7ERZlkO9OWQBC-V')
+        //     )
+        // );
+
+        // $this->apiContext->setConfig([
+        //     'mode' => config('sandbox')
+        // ]);
+    }
+    private function format_curncy($currency){
+        switch ($currency) {
+            case 'KWD':
+                $currency="KWT";
+                break;
+            case 'SAR':
+                $currency="SAU";
+                break;
+            case 'BHD':
+                $currency="BHR";
+                break;
+            case 'AED':
+                $currency="ARE";
+                break;
+            case 'QAR':
+                $currency="QAT";
+                break;
+            case 'OMN':
+                $currency="OMR";
+                break;
+            case 'JOD':
+                $currency="JOR";
+                break;
+            case 'EGP':
+                $currency="EGY";
+                break;
+        }
+        return $currency;
+    }
 
     public function update(Request $request)
     {
@@ -125,7 +189,7 @@ class MyFatorahSettingsController extends Controller
             'InvoiceValue' => $amount,
             'CustomerName' => $customer->f_name . ' ' . $customer->l_name,
             'DisplayCurrencyIso' => session('currency_code'),
-            'MobileCountryCode'  => $currency,
+            'MobileCountryCode'  => "+966",
             'CustomerMobile'     => $customer->phone,
             'CustomerEmail'      => $customer['email'],
             'CallBackUrl'        =>  "http://127.0.0.1:8080/wallet",
@@ -155,41 +219,26 @@ class MyFatorahSettingsController extends Controller
 
     public function createPayment(Request $request)
     {
-        $currency=session('currency_code');
-        switch (session('currency_code')) {
-            case 'KWD':
-                $currency="KWT";
-                break;
-            case 'SAR':
-                $currency="SAU";
-                break;
-            case 'BHD':
-                $currency="BHR";
-                break;
-            case 'AED':
-                $currency="ARE";
-                break;
-            case 'QAR':
-                $currency="QAT";
-                break;
-            case 'OMN':
-                $currency="OMR";
-                break;
-            case 'JOD':
-                $currency="JOR";
-                break;
-            case 'EGP':
-                $currency="EGY";
-                break;
-        }
+        
+        $data = $this->payment::where(['id' => $request['payment_id']])->where(['is_paid' => 0])->first();
+        $customer = $this->customerRepo->getFirstWhere(params: ['id' => $data->payer_id]) ?? 0;
+        // dump($customer );
+        // $data=Cart::where(['id' => $request['payment_id']])->where(['is_paid' => 0])->first();
+        // echo substr($customer->phone, 0,strlen($customer->phone) - 9);
+
+        // return null;
+        
+        $currency=$data["currency_code"];
+        $currency=$this->format_curncy(session('currency_code'));
         // return 0;
+        
 
         if($currency != "KWT" && $currency != "SAU" && $currency != "BHR" && $currency != "ARE" && $currency != "QAT" && $currency != "OMN" && $currency != "JOR" && $currency != "EGY"){
             return redirect()->route('checkout-payment')->with('error', "طريقة الدفع هذه لاتدعم هذه العملة ".session('currency_code'));
         }
-        $tapSettings = TapPaymentSetting::Where('method',"MYFATOORAH")->get()->first();
+        // $tapSettings = TapPaymentSetting::Where('method',"MYFATOORAH")->get()->first();
         // إعدادات MyFatoorah
-        $IsTest = $tapSettings["key"]=="test_socket"?true:false;
+        $IsTest = $this->config_values->mode=="test"?true:false;//$tapSettings["key"]=="test_socket"?true:false;
         
         // $config = [
         //     "apiKey" => $tapSettings["value"], // يُفضّل وضع مفتاح الـ API في ملف .env
@@ -199,25 +248,27 @@ class MyFatorahSettingsController extends Controller
     
         // تهيئة MyFatoorah
         // $MyFatoorahPayment = new MyFatoorahPayment();
-        echo session('currency_code');
+        // echo session('currency_code');
+        // $data = $this->payment::where(['id' => $request['payment_id']])->where(['is_paid' => 0])->first();
+
         // return 0;
         $config = [
-            'apiKey' => $tapSettings["value"],
-            'vcCode' => str_replace("SAR","SAU",session('currency_code')),
+            'apiKey' => $this->config_values->api_kay,//$tapSettings["value"],
+            'vcCode' => $currency,
             'isTest' => $IsTest,
         ];
         
         $paymentMethodId = 0; //to be redirect to MyFatoorah invoice page
         //$paymentMethodId = 1; //to be redirect to Knet payment page if you are using test API token key
         $postFields      = [
-            'InvoiceValue' => $request->amount,
-            'CustomerName' => $request->first_name." ".$request->last_name,
+            'InvoiceValue' => $data->payment_amount,
+            'CustomerName' => $customer->f_name." ".$customer->l_name,
             'DisplayCurrencyIso' => session('currency_code'),
-            'MobileCountryCode'  => $request->country_code,
-            'CustomerMobile'     => $request->phone,
-            'CustomerEmail'      => $request->email,
-            'CallBackUrl'        =>  "https://rsbaba.com",
-            'ErrorUrl'           =>  "https://rsbaba.com",//'http://localhost:8080/Error', //or 'https://example.com/error.php'
+            'MobileCountryCode'  => strlen($customer->phone)>9?substr($customer->phone, 0,strlen($customer->phone) - 9):"+966",
+            'CustomerMobile'     => strlen($customer->phone)>9?substr($customer->phone, (strlen($customer->phone)-9)):$customer->phone,
+            'CustomerEmail'      => $customer->email,
+            'CallBackUrl'        =>  route('my_fatorah.success',['payment_id' => $request->payment_id,'currency'=>$currency]),
+            'ErrorUrl'           =>  route('my_fatorah.error',['payment_id' => $request->payment_id]),//'http://localhost:8080/Error', //or 'https://example.com/error.php'
             'Language'           => 'ar', //or 'ar'
         ];
         
@@ -228,7 +279,10 @@ class MyFatorahSettingsController extends Controller
             // dump($data);
             $invoiceId   = $data["invoiceId"];
             $paymentLink = $data["invoiceURL"];
-        
+            // echo $paymentLink;
+            // $statusLink = MyFatoorahPayment::getPaymentStatusLink($paymentLink, $invoiceId);
+            // dump($postFields);
+            // return null;
 
             echo "Click on <a href='$paymentLink' target='_blank'>$paymentLink</a> to pay with invoiceID $invoiceId.";
             return redirect($data["invoiceURL"]);
@@ -239,8 +293,125 @@ class MyFatorahSettingsController extends Controller
         
     }
 
+    public function success(Request $request)
+    {
+        
+        $IsTest = $this->config_values->mode=="test"?true:false;//$tapSettings["key"]=="test_socket"?true:false;
 
+        $config = [
+            'apiKey' => $this->config_values->api_kay,//$tapSettings["value"],
+            'vcCode' => $request->currency,
+            'isTest' => $IsTest,
+        ];
+        $KeyType = 'PaymentId';
+        $mfObj = new MyFatoorahPaymentStatus($config);
+        $Transaction  = $mfObj->getPaymentStatus($request->paymentId,$KeyType);
+        // $data = $this->payment::where(['id' => $request['payment_id']])->first();
+        // dump($this->getTransactionId($request->id));
+        // return $request;
+        if(isset($Transaction)||$Transaction->InvoiceStatus=="Paid"){
+            $TransactionId=$Transaction->focusTransaction->TransactionId;
+            $this->payment::where(['id' => $request['payment_id']])->update([
+                'payment_method' => 'my_fatorah',
+                'is_paid' => 1,
+                'transaction_id' => $TransactionId,
 
+            ]);
+            $data = $this->payment::where(['id' => $request->payment_id])->first();
+            if (isset($data) && function_exists($data->success_hook)) {
+                call_user_func($data->success_hook, $data);
+            }
+            // dump($data);
+            
+            // return null;
+
+            return $this->payment_response($data,'success');
+            
+            
+
+        }else{
+            $payment_data = $this->payment::where(['id' => $request['payment_id']])->first();
+            if (isset($payment_data) && function_exists($payment_data->failure_hook)) {
+                call_user_func($payment_data->failure_hook, $payment_data);
+            }
+            return $this->payment_response($payment_data,'fail');
+            // redirect(route('my_fatorah.error',['payment_id' => $request->payment_id]));
+        }
+        
+    }
+    
+    public function getTransactionId($paymentId)
+    {
+        
+        // إعدادات MyFatoorah
+        $apiKey = $this->config_values->api_kay;
+        $isTest = $this->config_values->mode=="test"?true:false;
+        
+        // URL للتحقق من حالة الدفع
+        $url = $isTest 
+            ? "https://apitest.myfatoorah.com/v2/GetPaymentStatus" 
+            : "https://api.myfatoorah.com/v2/GetPaymentStatus";
+    
+        // إعداد بيانات الطلب
+        $headers = [
+            'Authorization' => 'Bearer ' . $apiKey,
+            'Content-Type' => 'application/json',
+        ];
+        $postFields = [
+            'KeyType' => 'InvoiceId',  // نوع المفتاح هو InvoiceId
+            'Key' => $paymentId,       // معرف الدفع
+        ];
+    
+        // إرسال الطلب للتحقق من حالة الدفع
+        $response = Http::withHeaders($headers)->post($url, $postFields);
+    
+        // التحقق من حالة الاستجابة
+        if ($response->successful()) {
+            $data = $response->json();
+            return null;
+            if (isset($data['Data']['InvoiceStatus']) && $data['Data']['InvoiceStatus'] === 'Paid') {
+                $transactionId = $data['Data']['TransactionId'];
+                return response()->json(['success' => true, 'transaction_id' => $transactionId, 'message' => 'تمت عملية الدفع بنجاح']);
+            } else {
+                return response()->json(['success' => false, 'message' => 'فشلت عملية الدفع أو لا تزال قيد الانتظار']);
+            }
+        } else {
+            dump($response);
+            return null;
+            // في حالة وجود خطأ في الاستجابة
+            return response()->json(['success' => false, 'message' => 'حدث خطأ أثناء التحقق من حالة الدفع']);
+        }
+    }
+
+    // public function success(Request $request)
+    // {
+    //     // Stripe::setApiKey($this->config_values->api_key);
+    //     // $session = Session::retrieve($request->get('session_id'));
+
+    //     // if ($session->payment_status == 'paid' && $session->status == 'complete') {
+
+    //     //     $this->payment::where(['id' => $request['payment_id']])->update([
+    //     //         'payment_method' => 'stripe',
+    //     //         'is_paid' => 1,
+    //     //         'transaction_id' => $session->payment_intent,
+    //     //     ]);
+
+    //     //     $data = $this->payment::where(['id' => $request['payment_id']])->first();
+
+    //     //     if (isset($data) && function_exists($data->success_hook)) {
+    //     //         call_user_func($data->success_hook, $data);
+    //     //     }
+
+    //     //     return $this->payment_response($data,'success');
+    //     // }
+    //     // $payment_data = $this->payment::where(['id' => $request['payment_id']])->first();
+    //     // if (isset($payment_data) && function_exists($payment_data->failure_hook)) {
+    //     //     call_user_func($payment_data->failure_hook, $payment_data);
+    //     // }
+    //     return $this->payment_response($payment_data,'fail');
+    // }
+
+    
     public function callback(Request $request)
     {
         // معالجة الدفع بعد العودة من Tap Payment
@@ -248,9 +419,12 @@ class MyFatorahSettingsController extends Controller
         return view('payment.success'); // عرض رسالة نجاح
     }
 
-    public function redirect(Request $request)
+    public function error(Request $request)
     {
+        Toastr::error('Payment failed');
+        return redirect(route('checkout-details'));
+        // return "Faild Pay";
         // معالجة الإعادة إلى الموقع بعد الدفع
-        return view('payment.redirect'); // عرض صفحة إعادة التوجيه
+        // return view('payment.redirect'); // عرض صفحة إعادة التوجيه
     }
 }

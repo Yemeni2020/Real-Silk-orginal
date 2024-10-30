@@ -143,10 +143,22 @@ class CustomerAuthService
                 // $send=new EmailNewTemp();
                 // $send->sendingMail($user['email'],$data["userType"],$data["templateName"],$data);
 
-                Mail::raw("Your verification code is: $token", function ($message)  use ($user){
-                    $message->to($user['email'])
-                            ->subject("Verification Code: ");
-                });
+                // Mail::raw("Your verification code is: $token", function ($message)  use ($user){
+                //     $message->to($user['email'])
+                //             ->subject("Verification Code: ");
+                // });
+
+                try {
+                    Mail::raw("Your verification code is: $token", function ($message) use ($user) {
+                        $message->to($user['email'])
+                                ->subject("Verification Code: ");
+                    });
+                    echo $user['email'];
+                } catch (\Exception $e) {
+
+                    // Return a response to indicate failure
+                    return ['error' => 'Failed to send email.', 'details' => $e->getMessage()];
+                }
                 
                 // event(new EmailVerificationEvent(email: $user['email'], data: $data));
                 return [

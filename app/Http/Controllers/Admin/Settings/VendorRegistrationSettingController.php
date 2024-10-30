@@ -83,12 +83,17 @@ class VendorRegistrationSettingController extends BaseController
         Toastr::success(translate('updated_successfully'));
         return redirect()->back();
     }
-    public function updateDownloadAppSection(Request $request): RedirectResponse
+    public function updateDownloadAppSection(Request $request): RedirectResponse|null
     {
+        // dump($request->all());
+        // $request->validate([
+        //     'image' => 'required|image|mimes:jpg,png,jpeg,webp|max:2048',
+        // ]);
+        // return null;
 
         $downloadVendorApp= json_decode($this->businessSettingRepo->getFirstWhere(params: ['type' => 'download_vendor_app'])['value']);
         $this->businessSettingRepo->updateOrInsert(type: 'download_vendor_app',
-            value:$this->vendorRegistrationSettingService->getDownloadVendorAppUpdateData(request: $request,image:$downloadVendorApp?->image) );
+            value:$this->vendorRegistrationSettingService->getDownloadVendorAppUpdateData(request: $request,image:$downloadVendorApp?->image??'') );
         Toastr::success(translate('updated_successfully'));
         return redirect()->back();
     }

@@ -18,13 +18,13 @@
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label class="title-color">{{translate('title')}}</label>
-                                        <input type="text" name="title" class="form-control" value="{{$businessProcess?->title}}"  placeholder="{{translate('enter_title')}}">
+                                        <input type="text" name="title" class="form-control" value="{{$businessProcess?->title??''}}"  placeholder="{{translate('enter_title')}}">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label class="title-color">{{translate('sub_title')}}</label>
-                                        <input type="text" name="sub_title" class="form-control" value="{{$businessProcess?->sub_title}}" placeholder="{{translate('enter_sub_title')}}">
+                                        <input type="text" name="sub_title" class="form-control" value="{{$businessProcess?->sub_title??''}}" placeholder="{{translate('enter_sub_title')}}">
                                     </div>
                                 </div>
                             </div>

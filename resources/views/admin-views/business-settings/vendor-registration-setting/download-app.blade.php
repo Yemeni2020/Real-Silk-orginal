@@ -18,12 +18,12 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="title-color">{{translate('title')}}</label>
-                                        <input type="text" name="title" class="form-control" value="{{$downloadVendorApp?->title}}" placeholder="{{translate('enter_title')}}">
+                                        <input type="text" name="title" class="form-control" value="{{$downloadVendorApp?->title??''}}" placeholder="{{translate('enter_title')}}">
                                     </div>
 
                                     <div class="form-group">
                                         <label class="title-color text-capitalize">{{translate('sub_title')}}</label>
-                                        <input type="text" name="sub_title" class="form-control" value="{{$downloadVendorApp?->sub_title}}" placeholder="{{translate('enter_title')}}">
+                                        <input type="text" name="sub_title" class="form-control" value="{{$downloadVendorApp?->sub_title??''}}" placeholder="{{translate('enter_title')}}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -43,7 +43,7 @@
                                             </span>
                                             <div class="img_area_with_preview position-absolute z-index-2">
                                                 <img id="view-bp-logo"
-                                                     src="{{getStorageImages(path:imagePathProcessing(imageData: $downloadVendorApp?->image, path: 'vendor-registration-setting'),type: 'backend-banner')}}" class="bg-white" alt="">
+                                                     src="{{getStorageImages(path:imagePathProcessing(imageData: $downloadVendorApp?->image??'', path: 'vendor-registration-setting'),type: 'backend-banner')}}" class="bg-white" alt="">
                                             </div>
                                             <div
                                                 class="position-absolute h-100 top-0 w-100 d-flex align-content-center justify-content-center">
@@ -87,13 +87,13 @@
                                             </span>
 
                                             <label class="switcher">
-                                                <input type="checkbox" name="download_google_app_status" value="1"  class="switcher_input" {{isset($downloadVendorApp?->download_google_app_status) && $downloadVendorApp?->download_google_app_status == 1  ? 'checked' : ''}}>
+                                                <input type="checkbox" name="download_google_app_status" value="1"  class="switcher_input" {{isset($downloadVendorApp?->download_google_app_status) && ($downloadVendorApp?->download_google_app_status??0) == 1  ? 'checked' : ''}}>
                                                 <span class="switcher_control"></span>
                                             </label>
                                         </div>
 
                                         <input type="url" name="download_google_app" class="form-control"
-                                               value="{{ $downloadVendorApp?->download_google_app}}"
+                                               value="{{ $downloadVendorApp?->download_google_app ?? ''}}"
                                                placeholder="{{translate('Ex: https://play.google.com/store/apps')}}">
                                     </div>
                                 </div>
@@ -121,7 +121,7 @@
                                             </label>
                                         </div>
                                         <input type="url" name="download_apple_app" class="form-control"
-                                               value="{{ $downloadVendorApp?->download_apple_app }}"
+                                               value="{{ $downloadVendorApp?->download_apple_app??'' }}"
                                                placeholder="{{translate('ex').':'.'https://www.apple.com/app-store/'}}">
                                     </div>
                                 </div>

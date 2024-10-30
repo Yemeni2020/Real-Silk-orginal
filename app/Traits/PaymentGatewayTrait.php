@@ -226,6 +226,16 @@ trait PaymentGatewayTrait
                 "MYR" => "Malaysian Ringgit",
                 "SGD" => "Singapore Dollar"
             ],
+            "my_fatorah" => [
+                "KWT" => "KWT",
+                "SAU" => "SAU",
+                "BHR" => "BHR",
+                "ARE" => "ARE",
+                "QAT" => "QAT",
+                "OMR" => "OMR",
+                "JOR" => "JOR",
+                "EGY" => "EGY"
+            ],
         ];
 
         if ($key) {

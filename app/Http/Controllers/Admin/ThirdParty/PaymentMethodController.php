@@ -44,15 +44,17 @@ class PaymentMethodController extends BaseController
         return $this->getListView();
     }
 
-    public function getListView(): View
+    public function getListView(): View|null
     {
         $paymentPublishedStatus = config('get_payment_publish_status') ?? 0;
+        
         $paymentGatewayPublishedStatus = isset($paymentPublishedStatus[0]['is_published']) ? $paymentPublishedStatus[0]['is_published'] : 0;
         $paymentGatewaysList = $this->settingRepo->getListWhereIn(
             whereInFilters: ['settings_type' => ['payment_config'], 'key_name' => GlobalConstant::DEFAULT_PAYMENT_GATEWAYS],
             dataLimit: 'all',
         );
-
+        // dump($paymentGatewaysList);
+        // return null;
         $currencies = $this->currencyRepo->getListWhere(
             dataLimit: 'all',
         );
@@ -124,18 +126,22 @@ class PaymentMethodController extends BaseController
         return back();
     }
 
-    public function UpdatePaymentConfig(PaymentMethodUpdateRequest $request): RedirectResponse
+    public function UpdatePaymentConfig(PaymentMethodUpdateRequest $request): RedirectResponse|null
     {
+        
         collect(['status'])->each(fn($item, $key) => $request[$item] = $request->has($item) ? (int)$request[$item] : 0);
         $settings = $this->settingRepo->getFirstWhere(params: ['key_name'=>$request['gateway'], 'settings_type'=>'payment_config']);
         $additionalDataImage = $settings['additional_data'] != null ? json_decode($settings['additional_data']) : null;
+        // dump($settings);
+        
         if ($request->has('gateway_image')) {
             $gatewayImage = $this->file_uploader('payment_modules/gateway_image/', 'png', $request['gateway_image'], $additionalDataImage != null ? $additionalDataImage->gateway_image : '');
         } else {
             $gatewayImage = $additionalDataImage != null ? $additionalDataImage->gateway_image : '';
         }
         $request->validate(['gateway_title' => 'required']);
-
+        
+        
         $status = $request['status'] ?? 0;
         if ($request['status'] == 1) {
             $gateway = $this->settingRepo->getFirstWhere(params: ['key_name' => $request['gateway'], 'settings_type' => 'payment_config']);
@@ -159,6 +165,9 @@ class PaymentMethodController extends BaseController
             }
         }
 
+
+        // dump($request->validated());
+        // return null;
         $this->settingRepo->updateOrInsert(params: ['key_name' => $request['gateway'], 'settings_type' => 'payment_config'], data: [
             'key_name' => $request['gateway'],
             'live_values' => $request->validated(),

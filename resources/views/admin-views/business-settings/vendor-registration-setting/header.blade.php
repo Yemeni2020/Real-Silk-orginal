@@ -17,13 +17,13 @@
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label class="title-color">{{translate('title')}}</label>
-                                        <input type="text" name="title" class="form-control" value="{{$vendorRegistrationHeader?->title}}" placeholder="{{translate('enter_title')}}">
+                                        <input type="text" name="title" class="form-control" value="{{$vendorRegistrationHeader?->title??''}}" placeholder="{{translate('enter_title')}}">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label class="title-color text-capitalize">{{translate('sub_title')}}</label>
-                                        <input type="text" name="sub_title" class="form-control" value="{{$vendorRegistrationHeader?->sub_title}}" placeholder="{{translate('enter_sub_title')}}">
+                                        <input type="text" name="sub_title" class="form-control" value="{{$vendorRegistrationHeader?->sub_title??''}}" placeholder="{{translate('enter_sub_title')}}">
                                     </div>
                                 </div>
                             </div>
@@ -45,7 +45,7 @@
                                         <i class="tio-delete"></i>
                                     </span>
                                     <div class="img_area_with_preview position-absolute z-index-2">
-                                        @php($imagePath = imagePathProcessing(imageData:$vendorRegistrationHeader?->image, path: 'vendor-registration-setting'))
+                                        @php($imagePath = imagePathProcessing(imageData:$vendorRegistrationHeader?->image??"", path: 'vendor-registration-setting'))
                                         <img id="view-header-logo" src="{{ getStorageImages(path:$imagePath,type: 'backend-banner') }}" class="bg-white" alt="">
                                     </div>
                                     <div
