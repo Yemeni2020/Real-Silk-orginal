@@ -132,7 +132,7 @@ class HomeController extends Controller
         $latest_products = $this->product->with(['reviews'])->active()->orderBy('id', 'desc')->take(8)->get();
         $newArrivalProducts = ProductManager::getPriorityWiseNewArrivalProductsQuery(query: $this->product->active(), dataLimit: 8);
 
-        $brands = Brand::active()->take(15)->get();
+        $brands = Brand::active()->take(50)->get();
 
         $bestSellProduct = $this->order_details->with('product.reviews')
             ->whereHas('product', function ($query) {
