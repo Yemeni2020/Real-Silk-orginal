@@ -15,6 +15,7 @@ use DateTime;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\Cart;
 use Illuminate\Support\Facades\Http;
+use App\Models\Currency;
 
 
 class MyFatorahSettingsController extends Controller
@@ -24,7 +25,7 @@ class MyFatorahSettingsController extends Controller
     private $base_url;
     
     private PaymentRequest $payment;
-    public function __construct(private readonly CustomerRepositoryInterface                $customerRepo,PaymentRequest $payment)
+    public function __construct(private readonly CustomerRepositoryInterface $customerRepo,PaymentRequest $payment)
     {
         $config = $this->payment_config('my_fatorah', 'payment_config');
         if (!is_null($config) && $config->mode == 'live') {
@@ -222,6 +223,9 @@ class MyFatorahSettingsController extends Controller
         
         $data = $this->payment::where(['id' => $request['payment_id']])->where(['is_paid' => 0])->first();
         $customer = $this->customerRepo->getFirstWhere(params: ['id' => $data->payer_id]) ?? 0;
+
+
+        
         // dump($customer );
         // $data=Cart::where(['id' => $request['payment_id']])->where(['is_paid' => 0])->first();
         // echo substr($customer->phone, 0,strlen($customer->phone) - 9);
@@ -232,26 +236,23 @@ class MyFatorahSettingsController extends Controller
         $currency=$this->format_curncy(session('currency_code'));
         // return 0;
         
+        // echo $currency;
+        $rate = Currency::where(['code' => $data["currency_code"]])->first()->exchange_rate ;
+        $main_amount=($data->payment_amount + 0.006)/$rate;
+        $rate2 = Currency::where(['code' => session('currency_code')])->first()->exchange_rate;
 
+        // dump($data);
+        $local_amount=$main_amount*$rate2;
+        // echo $local_amount;
+        // return null;
         if($currency != "KWT" && $currency != "SAU" && $currency != "BHR" && $currency != "ARE" && $currency != "QAT" && $currency != "OMN" && $currency != "JOR" && $currency != "EGY"){
-            return redirect()->route('checkout-payment')->with('error', "طريقة الدفع هذه لاتدعم هذه العملة ".session('currency_code'));
+            Toastr::error(translate("this method payment don't support this currency (".session('currency_code').")"));
+            return back();
         }
-        // $tapSettings = TapPaymentSetting::Where('method',"MYFATOORAH")->get()->first();
-        // إعدادات MyFatoorah
+
         $IsTest = $this->config_values->mode=="test"?true:false;//$tapSettings["key"]=="test_socket"?true:false;
         
-        // $config = [
-        //     "apiKey" => $tapSettings["value"], // يُفضّل وضع مفتاح الـ API في ملف .env
-        //     "isTest" => $IsTest,  // يمكنك تغيير هذا إلى false في حالة الإنتاج
-        //     "vcCode" => 'SAU',  // رمز الدولة
-        // ];
-    
-        // تهيئة MyFatoorah
-        // $MyFatoorahPayment = new MyFatoorahPayment();
-        // echo session('currency_code');
-        // $data = $this->payment::where(['id' => $request['payment_id']])->where(['is_paid' => 0])->first();
 
-        // return 0;
         $config = [
             'apiKey' => $this->config_values->api_kay,//$tapSettings["value"],
             'vcCode' => $currency,
@@ -259,9 +260,8 @@ class MyFatorahSettingsController extends Controller
         ];
         
         $paymentMethodId = 0; //to be redirect to MyFatoorah invoice page
-        //$paymentMethodId = 1; //to be redirect to Knet payment page if you are using test API token key
         $postFields      = [
-            'InvoiceValue' => $data->payment_amount,
+            'InvoiceValue' => $local_amount,
             'CustomerName' => $customer->f_name." ".$customer->l_name,
             'DisplayCurrencyIso' => session('currency_code'),
             'MobileCountryCode'  => strlen($customer->phone)>9?substr($customer->phone, 0,strlen($customer->phone) - 9):"+966",

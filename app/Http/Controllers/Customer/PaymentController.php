@@ -136,7 +136,7 @@ class PaymentController extends Controller
         }
 
         $redirectLink = $this->getCustomerPaymentRequest($request, $orderAdditionalData);
-
+        // return null;
         if (in_array($request['payment_request_from'], ['app'])) {
             return response()->json([
                 'redirect_link' => $redirectLink,
@@ -364,8 +364,9 @@ class PaymentController extends Controller
         return $this->generate_link($payer, $paymentInfo, $receiverInfo);
     }
 
-    public function customer_add_to_fund_request(Request $request): JsonResponse|Redirector|RedirectResponse
+    public function customer_add_to_fund_request(Request $request): JsonResponse|Redirector|RedirectResponse|null
     {
+
         if (getWebConfig(name: 'add_funds_to_wallet') != 1) {
             if (in_array($request['payment_request_from'], ['app'])) {
                 return response()->json(['message' => 'Add funds to wallet is deactivated'], 403);
@@ -456,26 +457,27 @@ class PaymentController extends Controller
         );
 
         $receiver_info = new Receiver('receiver_name', 'example.png');
-        if($request->payment_method!="MyFatorah"){
+        // if($request->payment_method!="MyFatorah"){
             $redirect_link = Payment::generate_link($payer, $payment_info, $receiver_info);
-    
+            // dump($redirect_link);
+            // return null;
             if (in_array($request['payment_request_from'], ['app'])) {
                 return response()->json(['redirect_link' => $redirect_link], 200);
             } else {
                 return redirect($redirect_link);
             }
-        }
-        else{
-            $cls=new MyFatorahSettingsController();
-            return $cls->createPaymentWaleet($request->amount,$customer);
-            $redirect_link = Payment::generate_link($payer, $payment_info, $receiver_info);
+        // }
+        // else{
+        //     $cls=new MyFatorahSettingsController();
+        //     return $cls->createPaymentWaleet($request->amount,$customer);
+        //     $redirect_link = Payment::generate_link($payer, $payment_info, $receiver_info);
 
-            if(in_array($request->payment_request_from, ['app', 'react'])) {
-                return response()->json(['redirect_link'=>$redirect_link], 200);
-            }else{
-                return redirect($redirect_link);
-            }
-        }
+        //     if(in_array($request->payment_request_from, ['app', 'react'])) {
+        //         return response()->json(['redirect_link'=>$redirect_link], 200);
+        //     }else{
+        //         return redirect($redirect_link);
+        //     }
+        // }
 
     }
 }
