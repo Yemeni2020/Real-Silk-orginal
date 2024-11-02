@@ -8188,5 +8188,5 @@
 "Share_this_link_via" => "شارك هذا الرابط عبر",
 "Or_copy_link" => "أو نسخ الرابط",
 "copy" => "نسخ",
-
+"this_method_payment_don't_support_this_currency"=>"طريقة الدفع هذه لاتدعم هذه العملة"
 );

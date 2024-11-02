@@ -246,7 +246,7 @@ class MyFatorahSettingsController extends Controller
         // echo $local_amount;
         // return null;
         if($currency != "KWT" && $currency != "SAU" && $currency != "BHR" && $currency != "ARE" && $currency != "QAT" && $currency != "OMN" && $currency != "JOR" && $currency != "EGY"){
-            Toastr::error(translate("this method payment don't support this currency (".session('currency_code').")"));
+            Toastr::error(translate("this_method_payment_don't_support_this_currency (".session('currency_code').")"));
             return back();
         }
 

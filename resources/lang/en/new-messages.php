@@ -8761,4 +8761,5 @@ return [
 	"this method payment don't support this currencyJPY" => "This method payment don t support this currencyJPY",
 	"this method payment don't support this currency (JPY)" => "This method payment don t support this currency (JPY)",
 	"this method payment don't support this currency (USD)" => "This method payment don t support this currency (USD)",
+	"this_method_payment_don't_support_this_currency (USD)" => "This method payment don t support this currency (USD)",
 ];
