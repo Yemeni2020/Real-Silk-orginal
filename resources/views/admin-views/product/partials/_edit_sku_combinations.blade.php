@@ -47,9 +47,13 @@
                 </td>
                 <td>
                     <input type="number" name="price_{{ $combination['type'] }}"
-                           value="{{ usdToDefaultCurrency(amount: $combination['price']) }}" min="0"
+                           value="{{ $combination['price'] }}" min="0"
                            step="0.01"
                            class="form-control" required placeholder="{{ translate('ex').': 100'}}">
+                    <!-- <input type="number" name="price_{{ $combination['type'] }}"
+                           value="{{ usdToDefaultCurrency(amount: $combination['price']) }}" min="0"
+                           step="0.01"
+                           class="form-control" required placeholder="{{ translate('ex').': 100'}}"> -->
                 </td>
                 <td>
                     <input type="text" name="sku_{{ $combination['type'] }}" value="{{ $combination['sku'] }}"
