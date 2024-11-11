@@ -8707,8 +8707,6 @@ return [
 	"reset_Password" => "Reset Password",
 	"meanwhile_click_here_to_visit_" => "Meanwhile click here to visit ",
 	"_website" => " website",
-	"if_you don’t_want_to
-            see_the_information_in_the_mail" => "If you don’t want to see the information in the mail",
 	"Email_sent_successfully." => "Email sent successfully.",
 	"Email configuration issue." => "Email configuration issue.",
 	"if_enabled,_you_can_choose_one_or_multiple_countries_for_product_delivery" => "If enabled  you can choose one or multiple countries for product delivery",
@@ -8725,8 +8723,6 @@ return [
 	"download_app_section" => "Download app section",
 	"play_store_button" => "Play store button",
 	"app_store_button" => "App store button",
-	"offline_Payment_allows_customers_to_use_external_payment_methods._They_must_share_payment_details_with_the_vendor_afterward._Admin_can_set_whether_customers_can_make_offline_payments_by_enabling/disabling_this_button.
-                                            " => "Offline Payment allows customers to use external payment methods. They must share payment details with the vendor afterward. Admin can set whether customers can make offline payments by enabling/disabling this button. ",
 	"invoice_Settings" => "Invoice Settings",
 	"invoice_settings" => "Invoice settings",
 	"Terms_&_Condition" => "Terms & Condition",
@@ -8750,8 +8746,6 @@ return [
 	"if_you_enable_it_customers_will_see_Cookie_Settings_in_frontend" => "If you enable it customers will see Cookie Settings in frontend",
 	"choose_your_preferred_payment_method_such_as_bank,_mobile_wallet,_digital_cards,_etc" => "Choose your preferred payment method such as bank  mobile wallet  digital cards  etc",
 	"you_can_add_multiple_input_fields_&_place_holders_and_define_them_as_‘Is_Required’,_so_customers_cannot_complete_offline_payment_without_adding_that_information" => "You can add multiple input fields & place holders and define them as ‘Is Required’  so customers cannot complete offline payment without adding that information",
-	"For configuring OTP in the Firebase, you must create a Firebase project first.
-                        If you haven’t created any project for your application yet, please create a project first." => "For configuring OTP in the Firebase  you must create a Firebase project first. If you haven’t created any project for your application yet  please create a project first.",
 	"factories" => "Factories",
 	"factory wallets" => "Factory wallets",
 	"factory wallet histo..." => "Factory wallet histo...",
@@ -8762,4 +8756,5 @@ return [
 	"this method payment don't support this currency (JPY)" => "This method payment don t support this currency (JPY)",
 	"this method payment don't support this currency (USD)" => "This method payment don t support this currency (USD)",
 	"this_method_payment_don't_support_this_currency (USD)" => "This method payment don t support this currency (USD)",
+	"The_phone_number_must_be_at_least_4_characters" => "The phone number must be at least 4 characters",
 ];

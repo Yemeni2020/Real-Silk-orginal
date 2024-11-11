@@ -226,7 +226,7 @@ class ForgotPasswordController extends Controller
                     Toastr::error(translate('something_went_wrong.').' '.translate('please_try_again_after_sometime'));
                     return redirect()->back();
                 }
-                if ($response->code == "1046") {
+                if (isset($response->code) && $response->code == "1046") {
                     Toastr::error(translate('something_went_wrong.').' '.translate('The_Service_Not_Active'));
                     return redirect()->back();
                 }
