@@ -158,7 +158,7 @@ class ForgotPasswordController extends Controller
                 return back();
             }
             
-            if (isset($response) && $response == 'success') {
+            if (isset($response) && $response["response"] == 'success') {
                 $identity = $verificationBy == 'phone' ? $customer['phone'] : $customer['email'];
                 $type = $verificationBy == 'phone' ? 'phone_verification' : 'email_verification';
                 $this->phoneOrEmailVerificationRepo->updateOrCreate(params: ['phone_or_email' => $identity], value: [

@@ -94,7 +94,7 @@ class SMSModule
         $apiKey = $config['MSEGAT_API_KEY'];
         $userSender = $config['MSEGAT_USER_SENDER'];
         // echo  $number."<br>";
-
+        try {
         $response = Http::post($baseUrl, [
             'userName' => $username,
             'apiKey' => $apiKey,
@@ -103,8 +103,14 @@ class SMSModule
             'msg' => $message,
             'msgEncoding' => 'UTF8'
         ]);
-        
-        return $response->json();
+            if($response["code"]=="1")
+                $response = 'success';
+            else
+                $response = 'error';
+        } catch (\Exception $exception) {
+            $response = 'error';
+        }
+        return $response;
     }
     public static function nexmo($receiver, $otp): string
     {
