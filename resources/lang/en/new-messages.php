@@ -8802,4 +8802,6 @@ return [
 	"qty_from" => "Qty from",
 	"qty_to" => "Qty to",
 	"Price_Unit" => "Price Unit",
+	"Notification_Sent_to_All_Vendors_Fail" => "Notification Sent to All Vendors Fail",
+	"Notification_Sent_to_All_Vendors" => "Notification Sent to All Vendors",
 ];

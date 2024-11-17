@@ -375,17 +375,49 @@
                                                             <input type="text"
                                                                    data-details-page="1"
                                                                    class="quantity__qty product_quantity__qty"
+                                                                   id="qquantity"
                                                                    name="quantity"
                                                                    value="{{ $product?->minimum_order_qty ?? 1 }}"
                                                                    min="{{ $product?->minimum_order_qty ?? 1 }}"
                                                                    max="{{$product['product_type'] == 'physical' ? $product->current_stock : 100}}">
-                                                            <span class="quantity__plus single-quantity-plus" {{($product->current_stock == 1?'disabled':'')}}>
+                                                            <span id="Q_plus" class="quantity__plus single-quantity-plus" {{($product->current_stock == 1?'disabled':'')}}>
                                                                 <i class="bi bi-plus"></i>
                                                             </span>
                                                         </div>
                                                     </div>
                                                     <input type="hidden" class="product-generated-variation-code" name="product_variation_code" data-product-id="{{ $product['id'] }}">
                                                     <input type="hidden" value="" class="in_cart_key form-control w-50" name="key">
+
+                                                    @if(count($product->offers)>0)
+
+                                                        <h4>{{translate('offers')}}</h4>
+                                                        <div class="row" id="offers" >
+                                                            @foreach ($product->offers as $offer)
+                                                                <div class="col-lg-5 card mb-2 ms-1 me-2" onclick="window.qquantity.value='{{$offer->q_from -1}}';window.Q_plus.click();" style="cursor:pointer;box-shadow:2px 2px 5px 2px;background:linear-gradient(to right, var(--light), var(--light));font-size:14px;">
+                                                                    <div class="card-body" style="padding:5%;padding-inline-start: 15%;">
+                                                                            <div class="row" style="padding: 0 ;">
+                                                                                <div class="col-5" style="padding: 0 ;text-align:start;">
+                                                                                    {{translate('Quantity')}}
+                                                                                </div>
+                                                                                <div class="col-7" style="padding: 0 ;text-align:start;">
+                                                                                    {{$offer->q_from}} - {{$offer->q_to>-1?$offer->q_to:'Up'}}
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row" style="padding: 0 ;">
+                                                                                <hr>
+                                                                                <div class="col-5" style="padding: 0 ;text-align:start;">
+                                                                                    {{translate('Price_Unit')}}
+                                                                                </div>
+                                                                                <div class="col-7" style="padding: 0 ;text-align:start;">
+                                                                                    <strong  class="text-base">{!!webCurrencyConverter( $offer->price_unit)!!}</strong> 
+                                                                                </div>
+                                                                            </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    @endif
                                                     <div class="mx-w width--24rem">
                                                         <div class="bg-light w-100 rounded p-4">
                                                             <div class="flex-between-gap-3">
