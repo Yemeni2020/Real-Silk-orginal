@@ -339,7 +339,7 @@
                                                 <div class="row" id="offers" >
                                                     @foreach ($product->offers as $offer)
                                                         <div class="col-lg-5 card mb-2 ms-1 me-2" onclick="window.qquantity.value='{{$offer->q_from -1}}';window.Q_plus.click();" style="cursor:pointer;box-shadow:2px 2px 5px 2px;background:linear-gradient(to right, var(--light), var(--light));font-size:14px;">
-                                                            <div class="card-body">
+                                                            <div class="card-body" style="padding:5%;">
                                                                 <div class="row" style="padding: 0 ;">
                                                                     <div class="col-5" style="padding: 0 ;">
                                                                         {{translate('Quantity')}}
