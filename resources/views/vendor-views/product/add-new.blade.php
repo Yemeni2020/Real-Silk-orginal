@@ -455,8 +455,7 @@
                             <div class="mb-3 d-flex align-items-center gap-2">
                                 <label for="colors" class="title-color mb-0">
                                     {{ translate('Add_Offers') }} :
-                                </label>
-                                
+                                </label>                                
                             </div>
                             
                             <button type="button" class="btn btn--primary px-5 " from="{{ translate('qty_from') }}" to="{{ translate('qty_to') }}" price="{{ translate('price') }}" id="add_Offers">+</button>

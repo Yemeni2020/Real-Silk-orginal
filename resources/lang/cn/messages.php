@@ -8793,7 +8793,11 @@
 'TapPayment' => 'Tap支付',
 'Tap_payment' => 'Tap支付',
 'MyFatorah' => 'MyFatorah',
-"terms_and_Condition" => "条款和条件"
-  
+"terms_and_Condition" => "条款和条件",
+"Add_Offers" => "添加优惠",
+"qty_from" => "起始数量",
+"qty_to" => "结束数量",
+"Price_Unit" => "单价",
+
 );
 ?>
