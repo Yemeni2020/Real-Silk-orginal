@@ -390,9 +390,10 @@ class CartManager
                 }
             }
         } else {
-            
+
             //MyCode
             if(count($product->offers)>0){
+                $price = $product->unit_price;
                 $requestQuantity=$request['quantity'];
                 foreach($product->offers as $offer){
                     if(($requestQuantity>=$offer->q_from && $requestQuantity<=$offer->q_to)|| $requestQuantity>=$offer->q_from && $offer->q_to == -1){
@@ -555,7 +556,9 @@ class CartManager
 
         //MyCode
         if(count($product->offers)>0){
+            $price = $product->unit_price;
             $requestQuantity=$request['quantity'];
+
             foreach($product->offers as $offer){
                 if(($requestQuantity>=$offer->q_from && $requestQuantity<=$offer->q_to)|| $requestQuantity>=$offer->q_from && $offer->q_to == -1){
                     $price = $offer->price_unit;

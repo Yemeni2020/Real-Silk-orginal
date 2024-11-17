@@ -344,7 +344,7 @@
                                                                     {{translate('Quantity')}}
                                                                 </div>
                                                                 <div class="col-8">
-                                                                    {{$offer->q_from}}
+                                                                    {{$offer->q_from}} - {{$offer->q_to>-1?$offer->q_to:'Up'}}
                                                                 </div>
                                                             </div>
                                                             <div class="row">

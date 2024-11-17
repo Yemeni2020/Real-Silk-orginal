@@ -92,6 +92,7 @@ class CartController extends Controller
         } else {
             
             if(count($product->offers)>0){
+                $unit_price = $product->unit_price;
                 foreach($product->offers as $offer){
                     if(($requestQuantity>=$offer->q_from && $requestQuantity<=$offer->q_to)|| $requestQuantity>=$offer->q_from && $offer->q_to == -1){
                         $unit_price = $offer->price_unit;

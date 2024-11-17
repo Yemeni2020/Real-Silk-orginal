@@ -36,7 +36,7 @@ $index=1 ;
                 </div>
 
                 <div class="form-group col-md-3">
-                    <label class="title-color">{{translate('price')}}</label>
+                    <label class="title-color">{{translate('Price_Unit')}}</label>
                     <div class="">
                         <input type="number" value="{{ usdToDefaultCurrency($offer['price_unit']) }}" class="form-control" name="offers_price[]"
                         placeholder=" 

@@ -458,7 +458,7 @@
                                 </label>                                
                             </div>
                             
-                            <button type="button" class="btn btn--primary px-5 " from="{{ translate('qty_from') }}" to="{{ translate('qty_to') }}" price="{{ translate('price') }}" id="add_Offers">+</button>
+                            <button type="button" class="btn btn--primary px-5 " from="{{ translate('qty_from') }}" to="{{ translate('qty_to') }}" price="{{ translate('Price_Unit') }}" id="add_Offers">+</button>
 
                             <!-- <select
                                 class="js-example-basic-multiple js-states js-example-responsive form-control color-var-select"
