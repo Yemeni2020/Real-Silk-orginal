@@ -338,22 +338,22 @@
                                                 <h4>{{translate('offers')}}</h4>
                                                 <div class="row" id="offers" >
                                                     @foreach ($product->offers as $offer)
-                                                        <div class="col-lg-5 card mb-4 ms-1 me-2" onclick="window.qquantity.value='{{$offer->q_from -1}}';window.Q_plus.click();" style="cursor:pointer;box-shadow:2px 2px 5px 2px;background:linear-gradient(to right, var(--light), var(--light));font-size:14px;">
+                                                        <div class="col-lg-5 card mb-2 ms-1 me-2" onclick="window.qquantity.value='{{$offer->q_from -1}}';window.Q_plus.click();" style="cursor:pointer;box-shadow:2px 2px 5px 2px;background:linear-gradient(to right, var(--light), var(--light));font-size:14px;">
                                                             <div class="card-body">
                                                                 <div class="row" style="padding: 0 ;">
-                                                                    <div class="col-5">
+                                                                    <div class="col-5" style="padding: 0 ;">
                                                                         {{translate('Quantity')}}
                                                                     </div>
-                                                                    <div class="col-7">
+                                                                    <div class="col-7" style="padding: 0 ;">
                                                                         {{$offer->q_from}} - {{$offer->q_to>-1?$offer->q_to:'Up'}}
                                                                     </div>
                                                                 </div>
                                                                 <div class="row" style="padding: 0 ;">
                                                                     <hr>
-                                                                    <div class="col-5" >
+                                                                    <div class="col-5" style="padding: 0 ;">
                                                                         {{translate('Price_Unit')}}
                                                                     </div>
-                                                                    <div class="col-7">
+                                                                    <div class="col-7" style="padding: 0 ;">
                                                                         <strong  class="text-base">{!!webCurrencyConverter( $offer->price_unit)!!}</strong> 
                                                                     </div>
                                                                 </div>
