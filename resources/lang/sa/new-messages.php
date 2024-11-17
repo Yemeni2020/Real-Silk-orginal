@@ -8192,4 +8192,5 @@ return [
 	"Or_copy_link" => "Or copy link",
 	"copy" => "Copy",
 	"1000" => "1000",
+	"Price_Unit" => "Price Unit",
 ];

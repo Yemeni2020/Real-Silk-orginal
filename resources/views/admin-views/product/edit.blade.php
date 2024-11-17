@@ -479,7 +479,44 @@
                     </div>
                 </div>
             </div>
+            <div class="card mt-3 rest-part physical_product_show">
+                <div class="card-header">
+                    <div class="d-flex gap-2">
+                        <i class="tio-user-big"></i>
+                        <h4 class="mb-0">{{ translate('Add_Offers') }}</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-end">
+                        <div class="col-md-6">
+                            <div class="mb-3 d-flex align-items-center gap-2">
+                                <label for="colors" class="title-color mb-0">
+                                    {{ translate('Add_Offers') }} :
+                                </label>
+                                
+                            </div>
+                            
+                            <button type="button" class="btn btn--primary px-5 " from="{{ translate('qty_from') }}" to="{{ translate('qty_to') }}" price="{{ translate('price') }}" id="add_Offers">+</button>
 
+                            <!-- <select
+                                class="js-example-basic-multiple js-states js-example-responsive form-control color-var-select"
+                                name="colors[]" multiple="multiple" id="colors-selector" disabled>
+                                @foreach ($colors as $key => $color)
+                                    <option value="{{ $color->code }}">
+                                        {{ $color['name'] }}
+                                    </option>
+                                @endforeach
+                            </select> -->
+                        </div>
+
+                        <div class="col-md-12 mt-2 mb-2">
+                            <div class="row customer_choice_options mt-2" id="offers_options">
+                            @include('admin-views.product.partials.offers_options', ['offers'=>json_decode($product->offers,true)])
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="card mt-3 rest-part digitalProductVariationSetupSection">
                 <div class="card-header">
                     <div class="d-flex gap-2">

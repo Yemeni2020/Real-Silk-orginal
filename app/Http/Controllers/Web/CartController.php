@@ -90,12 +90,25 @@ class CartController extends Controller
                 }
             }
         } else {
+            
+            if(count($product->offers)>0){
+                foreach($product->offers as $offer){
+                    if(($requestQuantity>=$offer->q_from && $requestQuantity<=$offer->q_to)|| $requestQuantity>=$offer->q_from && $offer->q_to == -1){
+                        $unit_price = $offer->price_unit;
+                        break;
+                    }
+                }
+            }
+            else{
+                $unit_price = $product->unit_price;
+            }
             $tax = $product->tax_model == 'exclude' ? Helpers::tax_calculation(product: $product, price: $product->unit_price, tax: $product['tax'], tax_type: $product['tax_type']) : 0;
             $update_tax = $tax * $requestQuantity;
             $discount = Helpers::getProductDiscount($product, $product->unit_price);
-            $price = $product->unit_price - $discount + $tax;
+            $price = $unit_price - $discount + $tax;
+            // $price = $product->unit_price - $discount + $tax;
             $discountedUnitPrice = $product->unit_price - $discount;
-            $unit_price = $product->unit_price;
+            // $unit_price = $product->unit_price;
             $quantity = $product->current_stock;
         }
 

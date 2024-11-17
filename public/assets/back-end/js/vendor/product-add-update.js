@@ -192,6 +192,19 @@ $("#choice_attributes").on("change", function () {
     getUpdateSKUFunctionality();
 });
 
+$("#add_Offers").on("click", function () {
+
+    
+    // $("#offers_options").empty().html("");
+    // $.each($("#choice_attributes option:selected"), function () {
+    let count=$(".offers_form").length;
+    let to=Number($("#offer_to"+count).val());
+    // alert(to +" - "+"#offer_to"+count);
+    if(to>-1 || count==0)
+        addMoreOffers();
+    // });
+    // getUpdateSKUFunctionality();
+});
 $("#colors-selector").on("change", function () {
     getUpdateSKUFunctionality();
     if (elementProductColorSwitcherByID.prop("checked")) {
@@ -383,6 +396,124 @@ function addMoreCustomerChoiceOption(index, name) {
         "input[data-role=tagsinput], select[multiple][data-role=tagsinput]"
     ).tagsinput();
 }
+
+function change_min_from(index){
+    if(index>1){
+        let oldindex=index-1;
+        let from=Number($("#offer_from"+index).val())??0;
+        // let to=Number($("#offer_to"+index).val())??0;
+        let oldto=Number($("#offer_to"+oldindex).val())??0;
+        if(from!=(oldto+1))
+            Number($("#offer_from"+index).val(oldto+1))
+    }
+    
+    // alert($("#offer_from"+index).val());
+
+}
+function change_min_to(index){
+    let from=Number($("#offer_from"+index).val())??0;
+    let to=Number($("#offer_to"+index).val())??0;
+    // alert(" " +to +" < "+from );
+
+    if(to<from){
+        $("#offer_to"+index).val(from);
+    }
+    let len=$(".offers_form").length+1;
+
+    if(index<len){
+        let after_index=index+1;
+        change_min_from(after_index);
+        change_min_to(after_index);
+    }
+    // alert($("#offer_from"+index).val());
+
+}
+function unlimitOffer(index){
+    let count=$(".offers_form").length;
+    let to=Number($("#offer_to"+count).val())??0;
+
+    if(to>-1){
+        
+        let count=$(".offers_form").length+1;
+        
+        if(index<count){
+            for (let i = (index+1); i < count; i++) {
+                $("#offer"+i).remove();
+            }
+        }
+        $("#offer_to"+index).val(-1);
+        $("#offer_to"+index).hide();
+    }
+    else{
+        let from = $("#offer_from"+index).val()
+        $("#offer_to"+index).show();
+        $("#offer_to"+index).val(from);
+
+    }
+}
+function addMoreOffers() {
+    let index=$(".offers_form").length+1;
+    var namefrom = $("#add_Offers").attr("from");
+    var nameto = $("#add_Offers").attr("to");
+    var nameprice = $("#add_Offers").attr("price");
+
+    // alert(index);
+    let name="";
+    let nameSplit = name.split(" ").join("");
+    let genHtml =
+        `<div class="col-md-12" id="offer`+index+`">
+            <div class="row offers_form" >
+                <div class="form-group col-md-3">
+                    <label class="title-color">`+namefrom+`</label>
+                    <div class="">
+                        <input  type="number" id="offer_from`+index+`" class="form-control" name="offers_from[]"
+                        placeholder="` +
+                        namefrom +
+        `"  onchange="change_min_from(`+index+`)">
+                    </div>
+                </div>
+                
+                <div class="form-group col-md-3">
+                    <label class="title-color">`+nameto+`</label>
+                    <div class="row">
+                        <div class="col-10">
+                            <input type="number" onchange="change_min_to(`+index+`)" id="offer_to`+index+`" class="form-control" name="offers_to[]"
+                            placeholder="` +
+                            nameto +
+            `"  onchange="getUpdateSKUFunctionality()">
+                        </div>
+                        <div class="col-2">
+                            <h2 class="btn btn-info" onclick="unlimitOffer(`+index+`);"><strong>∞</strong></h2>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label class="title-color">`+nameprice+`</label>
+                    <div class="">
+                        <input type="number" class="form-control" name="offers_price[]"
+                        placeholder="` +
+                        nameprice +
+        `"  onchange="getUpdateSKUFunctionality()">
+                    </div>
+                </div>
+                
+                <div class="form-group col-md-3">
+                    <label class="title-color"></label>
+                    <div class="">
+                        <button type="button" onclick="$('#offer` + index+`').remove()" class="btn btn-danger del-row" rownum='`+index+`'>X</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>`;
+    $("#offers_options").append(genHtml);
+    $(
+        "input[data-role=tagsinput], select[multiple][data-role=tagsinput]"
+    ).tagsinput();
+}
+
 
 $(".delete_file_input").on("click", function () {
     let $parentDiv = $(this).parent().parent();

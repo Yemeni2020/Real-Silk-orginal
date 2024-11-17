@@ -197,6 +197,7 @@
                                 <div class="mb-3">
                                     <span class="font-weight-normal text-accent d-flex align-items-end gap-2">
                                         {!! getPriceRangeWithDiscount(product: $product) !!}
+                                        
                                     </span>
                                 </div>
 
@@ -314,7 +315,7 @@
                                                             -
                                                         </button>
                                                     </span>
-                                                    <input type="text" name="quantity"
+                                                    <input type="text" id="qquantity" name="quantity"
                                                            class="form-control input-number text-center cart-qty-field __inline-29 border-0 "
                                                            placeholder="{{ translate('1') }}"
                                                            value="{{ $product->minimum_order_qty ?? 1 }}"
@@ -322,7 +323,7 @@
                                                            min="{{ $product->minimum_order_qty ?? 1 }}"
                                                            max="{{$product['product_type'] == 'physical' ? $product->current_stock : 100}}">
                                                     <span class="input-group-btn">
-                                                        <button class="btn btn-number __p-10 web-text-primary" type="button"
+                                                        <button id="Q_plus" class="btn btn-number __p-10 web-text-primary" type="button"
                                                                 data-producttype="{{ $product->product_type }}"
                                                                 data-type="plus" data-field="quantity">
                                                                 +
@@ -331,6 +332,30 @@
                                                 </div>
                                                 <input type="hidden" class="product-generated-variation-code" name="product_variation_code" data-product-id="{{ $product['id'] }}">
                                                 <input type="hidden" value="" class="in_cart_key form-control w-50" name="key">
+                                            </div>
+                                            <h4>{{translate('offers')}}</h4>
+                                            <div class="row" id="offers" >
+                                                @foreach ($product->offers as $offer)
+                                                    <div class="col-lg-6 card" onclick="window.qquantity.value='{{$offer->q_from -1}}';window.Q_plus.click();" style="cursor:pointer;">
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                {{translate('Quantity')}}
+                                                            </div>
+                                                            <div class="col-8">
+                                                                {{$offer->q_from}}
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <hr>
+                                                            <div class="col-4">
+                                                                {{translate('Price_Unit')}}
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <strong class="text-base">{!!webCurrencyConverter( $offer->price_unit)!!}</strong> 
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
                                             </div>
                                             <div id="chosen_price_div">
                                                 <div

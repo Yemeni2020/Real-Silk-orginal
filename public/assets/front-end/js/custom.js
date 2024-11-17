@@ -1164,6 +1164,8 @@ function commonFunctionalityForProductView() {
     $(".action-buy-now-this-product").on("click", function () {
         let redirectStatus = $(this).data("auth-status").toString();
         let url = $(this).data("route");
+        
+
         addToCart("add-to-cart-form", redirectStatus, url);
         if (redirectStatus === "false") {
             setTimeout(function () {
@@ -1510,11 +1512,13 @@ function cartQuantityInitialize() {
     });
 
     $(".input-number").change(function () {
+        
         let productType = $(this).data("producttype");
         let minValue = parseInt($(this).attr("min"));
         let maxValue = parseInt($(this).attr("max"));
         let valueCurrent = parseInt($(this).val());
         let name = $(this).attr("name");
+
         if (valueCurrent >= minValue) {
             $(
                 ".btn-number[data-type='minus'][data-field='" + name + "']"

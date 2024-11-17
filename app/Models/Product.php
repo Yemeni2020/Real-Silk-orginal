@@ -174,7 +174,10 @@ class Product extends Model
     {
         return $this->morphMany('App\Models\Translation', 'translationable');
     }
-
+    public function offers()
+    {
+        return $this->hasMany(ProductOffer::class);
+    }
     public function scopeActive($query)
     {
         $brandSetting = getWebConfig(name: 'product_brand');

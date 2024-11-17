@@ -390,7 +390,23 @@ class CartManager
                 }
             }
         } else {
-            $price = $product->unit_price;
+            
+            //MyCode
+            if(count($product->offers)>0){
+                $requestQuantity=$request['quantity'];
+                foreach($product->offers as $offer){
+                    if(($requestQuantity>=$offer->q_from && $requestQuantity<=$offer->q_to)|| $requestQuantity>=$offer->q_from && $offer->q_to == -1){
+                        $price = $offer->price_unit;
+                        break;
+                    }
+                }
+            }
+            else{
+                $price = $product->unit_price;
+            }
+            //EndMyCode
+
+            // $price = $product->unit_price;
         }
 
         $tax = Helpers::tax_calculation(product: $product, price: $price, tax: $product['tax'], tax_type: 'percent');
@@ -536,6 +552,22 @@ class CartManager
         if ($request['variant_key'] && $digitalVariation) {
             $price = $digitalVariation['price'];
         }
+
+        //MyCode
+        if(count($product->offers)>0){
+            $requestQuantity=$request['quantity'];
+            foreach($product->offers as $offer){
+                if(($requestQuantity>=$offer->q_from && $requestQuantity<=$offer->q_to)|| $requestQuantity>=$offer->q_from && $offer->q_to == -1){
+                    $price = $offer->price_unit;
+                    break;
+                }
+            }
+        }
+        else{
+            $price = $product->unit_price;
+        }
+        //EndMyCode
+        
         $user = Helpers::getCustomerInformation($request);
         $guestId = session('guest_id') ?? ($request->guest_id ?? 0);
 
@@ -642,7 +674,7 @@ class CartManager
                 $sellerShippingList = ShippingMethod::where(['status' => 1])->where(['creator_id' => $product->user_id, 'creator_type' => 'seller'])->get();
             }
         }
-
+        
         if ($product['product_type'] == 'digital') {
             return self::addToCartDigitalProduct($request, $product, $shippingType, $sellerShippingList);
         } else {

@@ -69,6 +69,8 @@ class ProductDetailsController extends Controller
             params: ['slug' => $slug, 'customer_id' => Auth::guard('customer')->user()->id ?? 0],
             relations: ['seoInfo', 'digitalVariation', 'reviews', 'seller.shop', 'digitalProductAuthors.author', 'digitalProductPublishingHouse.publishingHouse']
         );
+        // dump($product->offers);
+        
         if ($product) {
             $productAuthorsInfo = $this->productService->getProductAuthorsInfo(product: $product);
             $productPublishingHouseInfo = $this->productService->getProductPublishingHouseInfo(product: $product);

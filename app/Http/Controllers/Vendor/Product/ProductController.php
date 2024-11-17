@@ -40,6 +40,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Models\ProductOffer;
 
 class ProductController extends BaseController
 {
@@ -131,14 +132,39 @@ class ProductController extends BaseController
         return view(Product::ADD[VIEW], compact('languages', 'categories', 'brands', 'brandSetting', 'digitalProductSetting', 'colors', 'attributes', 'languages', 'defaultLanguage', 'digitalProductFileTypes', 'digitalProductAuthors', 'publishingHouseList'));
     }
 
-    public function add(ProductAddRequest $request, ProductService $service): JsonResponse|RedirectResponse
+    public function add(ProductAddRequest $request, ProductService $service): JsonResponse|RedirectResponse|null
     {
+        // echo count($request->offers_price);
+        
+
         if ($request->ajax()) {
             return response()->json([], 200);
         }
 
         $dataArray = $service->getAddProductData(request: $request, addedBy: 'seller');
+
+        // dump(currencyConverter(amount: $request->offers_price[0]));
+        // return null;
+
         $savedProduct = $this->productRepo->add(data: $dataArray);
+
+        $len=count($request->offers_price);
+        for ($i=0; $i < $len; $i++) { 
+            $productOffer = new ProductOffer();
+            $productOffer->product_id = $savedProduct['id'];
+            $productOffer->q_from = $request->offers_from[$i];
+            $productOffer->q_to = $request->offers_to[$i];
+            $productOffer->price_unit = currencyConverter($request->offers_price[$i]);
+            $productOffer->save();
+        }
+        
+
+        // حفظ العرض في قاعدة البيانات
+        
+        // dump($request['price_unit']);
+        
+        // return null;
+
         $this->productRepo->addRelatedTags(request: $request, product: $savedProduct);
         $this->translationRepo->add(request: $request, model: 'App\Models\Product', id: $savedProduct->id);
         $this->updateProductAuthorAndPublishingHouse(request: $request, product: $savedProduct);
@@ -181,8 +207,44 @@ class ProductController extends BaseController
         return view(Product::UPDATE[VIEW], compact('product', 'categories', 'brands', 'brandSetting', 'digitalProductSetting', 'colors', 'attributes', 'languages', 'defaultLanguage', 'digitalProductFileTypes', 'digitalProductAuthors', 'publishingHouseList', 'productAuthorIds', 'productPublishingHouseIds'));
     }
 
-    public function update(ProductUpdateRequest $request, ProductService $service, string|int $id): JsonResponse|RedirectResponse
+    protected function update_offers(ProductUpdateRequest $request):void{
+        $offers = ProductOffer::where('product_id', $request->product_id)->get()->toArray();
+
+        for ($i=0; $i < count($request->offers_from); $i++) { 
+            # code...
+            if($i<count($offers)){
+                $id=$offers[$i]["id"];
+                // dump( $id);
+                    // البحث عن العرض باستخدام الـ ID
+                $offer = ProductOffer::findOrFail($id);
+
+                // تحديث الحقل بالقيمة الجديدة
+                $offer->update([
+                    "q_from" => $request->offers_from[$i],
+                    "q_to" => $request->offers_to[$i],
+                    "price_unit" => currencyConverter($request->offers_price[$i])
+                ]);
+            }else{
+                $productOffer = new ProductOffer();
+                $productOffer->product_id = $request->product_id;
+                $productOffer->q_from = $request->offers_from[$i];
+                $productOffer->q_to = $request->offers_to[$i];
+                $productOffer->price_unit = currencyConverter($request->offers_price[$i]);
+                $productOffer->save();
+            }
+            // echo count($offers);
+        }
+        //Delete Other حذف الزائد
+        if($i<count($offers)){
+            for ($i=0; $i < count($offers); $i++) { 
+                $offer = ProductOffer::findOrFail($id);
+                $offer->delete();
+            }
+        }
+    }
+    public function update(ProductUpdateRequest $request, ProductService $service, string|int $id): JsonResponse|RedirectResponse|null
     {
+
         if ($request->ajax()) {
             return response()->json([], 200);
         }
@@ -201,6 +263,8 @@ class ProductController extends BaseController
             params: ['product_id' => $product['id']],
             data: $service->getProductSEOData(request: $request, product: $product, action: 'update')
         );
+
+        $this->update_offers($request);
 
         Toastr::success(translate('product_updated_successfully'));
         return redirect()->route(Product::VIEW[ROUTE], ['id' => $product['id']]);
