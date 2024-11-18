@@ -110,14 +110,17 @@ class ProductController extends BaseController
         $savedProduct = $this->productRepo->add(data: $dataArray);
 
         //MyCode
+        if(isset($request->offers_price)){
+
         $len=count($request->offers_price);
-        for ($i=0; $i < $len; $i++) { 
-            $productOffer = new ProductOffer();
-            $productOffer->product_id = $savedProduct['id'];
-            $productOffer->q_from = $request->offers_from[$i];
-            $productOffer->q_to = $request->offers_to[$i];
-            $productOffer->price_unit = currencyConverter($request->offers_price[$i]);
-            $productOffer->save();
+            for ($i=0; $i < $len; $i++) { 
+                $productOffer = new ProductOffer();
+                $productOffer->product_id = $savedProduct['id'];
+                $productOffer->q_from = $request->offers_from[$i];
+                $productOffer->q_to = $request->offers_to[$i];
+                $productOffer->price_unit = currencyConverter($request->offers_price[$i]);
+                $productOffer->save();
+            }
         }
         //EndMyCode
 

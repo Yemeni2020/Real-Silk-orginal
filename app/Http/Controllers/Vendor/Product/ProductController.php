@@ -148,16 +148,18 @@ class ProductController extends BaseController
 
         $savedProduct = $this->productRepo->add(data: $dataArray);
 
-        $len=count($request->offers_price);
-        for ($i=0; $i < $len; $i++) { 
-            $productOffer = new ProductOffer();
-            $productOffer->product_id = $savedProduct['id'];
-            $productOffer->q_from = $request->offers_from[$i];
-            $productOffer->q_to = $request->offers_to[$i];
-            $productOffer->price_unit = currencyConverter($request->offers_price[$i]);
-            $productOffer->save();
+        if(isset($request->offers_price)){
+
+            $len=count($request->offers_price);
+            for ($i=0; $i < $len; $i++) { 
+                $productOffer = new ProductOffer();
+                $productOffer->product_id = $savedProduct['id'];
+                $productOffer->q_from = $request->offers_from[$i];
+                $productOffer->q_to = $request->offers_to[$i];
+                $productOffer->price_unit = currencyConverter($request->offers_price[$i]);
+                $productOffer->save();
+            }
         }
-        
 
         // حفظ العرض في قاعدة البيانات
         
@@ -263,8 +265,9 @@ class ProductController extends BaseController
             params: ['product_id' => $product['id']],
             data: $service->getProductSEOData(request: $request, product: $product, action: 'update')
         );
-
-        $this->update_offers($request);
+        if(isset($request->offers_price)){
+            $this->update_offers($request);
+        }
 
         Toastr::success(translate('product_updated_successfully'));
         return redirect()->route(Product::VIEW[ROUTE], ['id' => $product['id']]);
