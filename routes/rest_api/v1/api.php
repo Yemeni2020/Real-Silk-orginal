@@ -146,6 +146,7 @@ Route::group(['namespace' => 'RestAPI\v1', 'prefix' => 'v1', 'middleware' => ['a
             Route::get('rating/{product_id}', 'get_product_rating');
             Route::get('counter/{product_id}', 'counter');
             Route::get('shipping-methods', 'get_shipping_methods');
+            Route::get('offers/{product_id}', 'offers');
             Route::get('social-share-link/{product_id}', 'social_share_link');
             Route::post('reviews/submit', 'submit_product_review')->middleware('auth:api');
             Route::put('review/update', 'updateProductReview')->middleware('auth:api');

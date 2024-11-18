@@ -27,6 +27,7 @@ use App\Utils\ProductManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\ProductOffer;
 
 class ProductController extends Controller
 {
@@ -350,7 +351,14 @@ class ProductController extends Controller
         }
         return response()->json($reviews, 200);
     }
-
+    public function offers($id)
+    {
+        $offers = ProductOffer::where('product_id', $id)
+        ->select('q_from', 'q_to', 'price_unit') // استبدل field1, field2, field3 بالأعمدة التي تريدها
+        ->get()
+        ->toArray();
+        return response()->json($offers, 200);
+    }
     public function getProductReviewByOrder(Request $request, $productId, $orderId): JsonResponse
     {
         $user = $request->user();
