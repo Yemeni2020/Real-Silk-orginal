@@ -21,12 +21,19 @@ $index=1 ;
                     <label class="title-color">{{translate('qty_to')}}</label>
                     <div class="row">
                         <div class="col-10" >
-                            @if($offer['q_to']>-1)
-                            <input type="number" value="{{$offer['q_to']}}" onchange="change_min_to({{$index}})" id="offer_to{{$index}}" class="form-control" name="offers_to[]"
+                            <?php
+                                $hide="";
+                                ?>
+                            @if($offer['q_to']<0)
+                                    <?php
+                                    $hide="d-none";
+                                    ?>
+                            @endif
+                            <input type="number" value="{{$offer['q_to']}}" onchange="change_min_to({{$index}})" id="offer_to{{$index}}" class="form-control {{$hide}}" name="offers_to[]"
                             placeholder=" 
                             {{translate('qty_to')}} 
             "  onchange="getUpdateSKUFunctionality()">
-                            @endif
+                            
                         </div>
                         <div class="col-2">
                             <h2 class="btn btn-info" onclick="unlimitOffer({{$index}});"><strong>∞</strong></h2>

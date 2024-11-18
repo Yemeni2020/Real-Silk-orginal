@@ -112,7 +112,7 @@ class ProductController extends BaseController
         //MyCode
         if(isset($request->offers_price)){
 
-        $len=count($request->offers_price);
+            $len=count($request->offers_price);
             for ($i=0; $i < $len; $i++) { 
                 $productOffer = new ProductOffer();
                 $productOffer->product_id = $savedProduct['id'];
@@ -231,36 +231,42 @@ class ProductController extends BaseController
     }
     protected function update_offers(ProductUpdateRequest $request):void{
         $offers = ProductOffer::where('product_id', $request->product_id)->get()->toArray();
+        $i=0;
+        if(isset($request->offers_price)){
+            for ($i; $i < count($request->offers_from); $i++) { 
+                # code...
+                if($i<count($offers)){
+                    $id=$offers[$i]["id"];
+                    // dump( $id);
+                        // البحث عن العرض باستخدام الـ ID
+                    $offer = ProductOffer::findOrFail($id);
 
-        for ($i=0; $i < count($request->offers_from); $i++) { 
-            # code...
-            if($i<count($offers)){
-                $id=$offers[$i]["id"];
-                // dump( $id);
-                    // البحث عن العرض باستخدام الـ ID
-                $offer = ProductOffer::findOrFail($id);
-
-                // تحديث الحقل بالقيمة الجديدة
-                $offer->update([
-                    "q_from" => $request->offers_from[$i],
-                    "q_to" => $request->offers_to[$i],
-                    "price_unit" => currencyConverter($request->offers_price[$i])
-                ]);
-            }else{
-                $productOffer = new ProductOffer();
-                $productOffer->product_id = $request->product_id;
-                $productOffer->q_from = $request->offers_from[$i];
-                $productOffer->q_to = $request->offers_to[$i];
-                $productOffer->price_unit = currencyConverter($request->offers_price[$i]);
-                $productOffer->save();
+                    // تحديث الحقل بالقيمة الجديدة
+                    $offer->update([
+                        "q_from" => $request->offers_from[$i],
+                        "q_to" => $request->offers_to[$i],
+                        "price_unit" => currencyConverter($request->offers_price[$i])
+                    ]);
+                }else{
+                    $productOffer = new ProductOffer();
+                    $productOffer->product_id = $request->product_id;
+                    $productOffer->q_from = $request->offers_from[$i];
+                    $productOffer->q_to = $request->offers_to[$i];
+                    $productOffer->price_unit = currencyConverter($request->offers_price[$i]);
+                    $productOffer->save();
+                }
+                // echo count($offers);
             }
-            // echo count($offers);
         }
+
         //Delete Other حذف الزائد
-        if($i<count($offers)){
-            for ($i=0; $i < count($offers); $i++) { 
-                $offer = ProductOffer::findOrFail($id);
-                $offer->delete();
+        if(isset($offers)){
+            if($i<count($offers)){
+                for ($i; $i < count($offers); $i++) { 
+                    $id=$offers[$i]["id"];
+                    $offer = ProductOffer::findOrFail($id);
+                    $offer->delete();
+                }
             }
         }
     }
@@ -284,8 +290,9 @@ class ProductController extends BaseController
             params: ['product_id' => $product['id']],
             data: $service->getProductSEOData(request: $request, product: $product, action: 'update')
         );
+        
         $this->update_offers($request);
-
+        
         Toastr::success(translate('product_updated_successfully'));
         return redirect()->route(Product::VIEW[ROUTE], ['addedBy' => $product['added_by'], 'id' => $product['id']]);
     }
