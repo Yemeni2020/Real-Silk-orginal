@@ -178,6 +178,10 @@ class Product extends Model
     {
         return $this->hasMany(ProductOffer::class);
     }
+    public function options()
+    {
+        return $this->hasMany(ProductOption::class);
+    }
     public function scopeActive($query)
     {
         $brandSetting = getWebConfig(name: 'product_brand');

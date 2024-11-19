@@ -8804,4 +8804,6 @@ return [
 	"Price_Unit" => "Price Unit",
 	"Notification_Sent_to_All_Vendors_Fail" => "Notification Sent to All Vendors Fail",
 	"Notification_Sent_to_All_Vendors" => "Notification Sent to All Vendors",
+	"if_you don’t_want_to
+            see_the_information_in_the_mail" => "If you don’t want to see the information in the mail",
 ];

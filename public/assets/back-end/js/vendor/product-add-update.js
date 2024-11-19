@@ -184,12 +184,12 @@ $('input[name="colors_active"]').on("change", function () {
 });
 
 $("#choice_attributes").on("change", function () {
-    $("#sku_combination").empty().html("");
+    // $("#sku_combination").empty().html("");
     $("#customer_choice_options").empty().html("");
     $.each($("#choice_attributes option:selected"), function () {
         addMoreCustomerChoiceOption($(this).val(), $(this).text());
     });
-    getUpdateSKUFunctionality();
+    // getUpdateSKUFunctionality();
 });
 
 $("#add_Offers").on("click", function () {
