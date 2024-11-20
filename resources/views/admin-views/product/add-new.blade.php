@@ -503,12 +503,10 @@
                         </div>
 
                         <div class="col-md-6 mt-2 mb-2">
+                            <div class="row customer_choice_options mt-2" id="customer_choice_options"></div>
+
                             <div class="form-group sku_combination" id="sku_combination"></div>
 
-                        </div>
-                        <div class="col-md-6 mt-2 mb-2">
-                            <div class="row customer_choice_options mt-2" id="customer_choice_options"></div>
-    
                         </div>
                     </div>
                 </div>

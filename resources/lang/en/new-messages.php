@@ -8806,4 +8806,11 @@ return [
 	"Notification_Sent_to_All_Vendors" => "Notification Sent to All Vendors",
 	"if_you don’t_want_to
             see_the_information_in_the_mail" => "If you don’t want to see the information in the mail",
+	"Add_Options" => "Add Options",
+	"CheckBox" => "CheckBox",
+	"Input" => "Input",
+	"name_option" => "Name option",
+	"type_option" => "Type option",
+	"color_images_is_required" => "Color images is required",
+	"Color images is required!" => "Color images is required!",
 ];

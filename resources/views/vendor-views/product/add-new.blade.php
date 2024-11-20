@@ -492,13 +492,11 @@
                         </div>
 
                         <div class="col-md-6 mt-2 mb-2">
+                            <div class="row customer_choice_options mt-2" id="customer_choice_options"></div>
                             <div class="form-group sku_combination" id="sku_combination"></div>
 
                         </div>
-                        <div class="col-md-6 mt-2 mb-2">
-                            <div class="row customer_choice_options mt-2" id="customer_choice_options"></div>
 
-                        </div>
                         
                     </div>
                 </div>
@@ -720,6 +718,72 @@
                             </div>
                             
                             <button type="button" class="btn btn--primary px-5 " from="{{ translate('qty_from') }}" to="{{ translate('qty_to') }}" price="{{ translate('Price_Unit') }}" id="add_Offers">+</button>
+
+                            <!-- <select
+                                class="js-example-basic-multiple js-states js-example-responsive form-control color-var-select"
+                                name="colors[]" multiple="multiple" id="colors-selector" disabled>
+                                @foreach ($colors as $key => $color)
+                                    <option value="{{ $color->code }}">
+                                        {{ $color['name'] }}
+                                    </option>
+                                @endforeach
+                            </select> -->
+                        </div>
+
+                        
+
+                        <div class="col-md-12 mt-2 mb-2">
+                            <div class="row customer_choice_options mt-2" id="offers_options"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3 rest-part physical_product_show d-none">
+                <div class="card-header">
+                    <div class="d-flex gap-2">
+                        <i class="tio-user-big"></i>
+                        <h4 class="mb-0">{{ translate('Add_Options') }}</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-end">
+                        <div class="col-md-12">
+                            <div class="mb-3 d-flex align-items-center gap-2">
+                                <label for="colors" class="title-color mb-0">
+                                    {{ translate('Add_Options') }} :
+                                </label>                                
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <span>{{translate('name_option')}}</span>
+                                    <input type="text" id="name_option" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <span>{{translate('type_option')}}</span>
+
+                                    <select id="type_option" class="select2-selection custom-select">
+                                        <option value="">{{translate('CheckBox')}}</option>
+                                        <option value="">{{translate('Select')}}</option>
+                                        <option value="">{{translate('Input')}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn btn--primary px-5 " from="{{ translate('qty_from') }}" to="{{ translate('qty_to') }}" price="{{ translate('Price_Unit') }}" id="add_Options">+</button>
+
+                                </div>
+                            </div>
+
+
+                            <div class="options_Product">
+
+                            </div>
+                            
+
+
+
+
 
                             <!-- <select
                                 class="js-example-basic-multiple js-states js-example-responsive form-control color-var-select"

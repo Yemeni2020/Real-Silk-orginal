@@ -184,13 +184,19 @@ $('input[name="colors_active"]').on("change", function () {
 });
 
 $("#choice_attributes").on("change", function () {
-    // $("#sku_combination").empty().html("");
+    $("#sku_combination").empty().html("");
     $("#customer_choice_options").empty().html("");
     $.each($("#choice_attributes option:selected"), function () {
         addMoreCustomerChoiceOption($(this).val(), $(this).text());
     });
-    // getUpdateSKUFunctionality();
+    getUpdateSKUFunctionality();
 });
+
+$("#add_Options").on("click", function () {
+
+    addOption();
+});
+
 
 $("#add_Offers").on("click", function () {
 
@@ -514,6 +520,33 @@ function addMoreOffers() {
     ).tagsinput();
 }
 
+function addOption(){
+    let index=$("#options_Product").length+1;
+    var namefrom = $("#add_Offers").attr("name");
+
+    alert("dd");
+
+    var get_html=`<div class="row" id="options_Product`+index+`">
+                <div class="col-12">
+                    <div class="container mt-5">
+                        <div class="card">
+                                                                        <!-- زر التحكم بالطي -->
+                        <div class="card-header" style="cursor:pointer;" data-toggle="collapse" data-target="#collapseCard" aria-expanded="true" aria-controls="collapseCard">
+
+                        </div>
+                        <div id="collapseCard" class="">
+                            <div class="card-body">
+                            `+namefrom+`
+                            <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            $(".options_Product").append(get_html);
+
+}
 
 $(".delete_file_input").on("click", function () {
     let $parentDiv = $(this).parent().parent();
