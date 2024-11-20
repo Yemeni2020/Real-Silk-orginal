@@ -100,11 +100,12 @@ class ProductController extends BaseController
         return view(Product::ADD[VIEW], compact('categories', 'brands', 'brandSetting', 'digitalProductSetting', 'colors', 'attributes', 'languages', 'defaultLanguage', 'digitalProductFileTypes', 'digitalProductAuthors', 'publishingHouseList'));
     }
 
-    public function add(ProductAddRequest $request, ProductService $service): JsonResponse|RedirectResponse
+    public function add(ProductAddRequest $request, ProductService $service): JsonResponse|RedirectResponse|null
     {
         if ($request->ajax()) {
             return response()->json([], 200);
         }
+
 
         $dataArray = $service->getAddProductData(request: $request, addedBy: 'admin');
         $savedProduct = $this->productRepo->add(data: $dataArray);

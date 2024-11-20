@@ -390,7 +390,7 @@ function addMoreCustomerChoiceOption(index, name) {
                     <label class="title-color">${nameSplit}</label>
                     <input type="text" name="choice[]" value="${nameSplit}" hidden>
                     <div class="">
-                        <input type="text" class="form-control" name="choice_options_${index}[]"
+                        <input type="text"  class="form-control" name="choice_options_${index}[]"
                         placeholder="` +
         messageEnterChoiceValues +
         `" data-role="tagsinput" onchange="getUpdateSKUFunctionality()">

@@ -140,6 +140,7 @@ class ProductController extends BaseController
         if ($request->ajax()) {
             return response()->json([], 200);
         }
+        
 
         $dataArray = $service->getAddProductData(request: $request, addedBy: 'seller');
 

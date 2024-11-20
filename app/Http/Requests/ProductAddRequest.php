@@ -69,6 +69,27 @@ class ProductAddRequest extends Request
     {
         return [
             function (Validator $validator) {
+
+                for ($i=1; $i <100 ; $i++) { 
+                    # code...
+                    $var="choice_options_".$i;
+                    if(!isset($this->$var)){
+                        break;
+                    }
+                    else{
+                        // dump($request->$var);
+                        for ($x=0; $x <count($this->$var) ; $x++) { 
+                            # code...
+                            if(!isset($this->$var[$x])){
+                                $validator->errors()->add(
+                                    'images', translate('product_attributes_faild_is_required') . '!'
+                                );
+                            }
+                        }
+                        
+                    }
+                }
+
                 if (!$this->has('colors_active') && !$this->file('images') && !$this->has('existing_images')) {
                     $validator->errors()->add(
                         'images', translate('product_images_is_required') . '!'

@@ -8813,4 +8813,7 @@ return [
 	"type_option" => "Type option",
 	"color_images_is_required" => "Color images is required",
 	"Color images is required!" => "Color images is required!",
+	"There_Faild_In_Attrabute_Product_Is_requerd" => "There Faild In Attrabute Product Is requerd",
+	"product_attributes_faild_is_required" => "Product attributes faild is required",
+	"Product attributes faild is required!" => "Product attributes faild is required!",
 ];
