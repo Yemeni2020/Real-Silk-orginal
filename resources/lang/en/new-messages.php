@@ -6949,7 +6949,7 @@ return [
 	"already_have_store " => "Already have store ",
 	"all_vendors" => "All fictories",
 	"vendor_zone" => "fictory zone",
-	"become_a_vendor" => "Create Account",
+	"become_a_vendor" => "Create Account fictory",
 	"vendor_login" => "fictory login",
 	"vendor_Apply" => "fictory Apply",
 	"vendor_Info" => "fictory Info",
