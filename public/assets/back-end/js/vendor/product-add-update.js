@@ -244,6 +244,7 @@ function getUpdateSKUFunctionality() {
         url: $("#route-vendor-products-sku-combination").data("url"),
         data: $("#product_form").serialize(),
         success: function (data) {
+            console.log(data);
             $("#sku_combination").html(data.view);
             updateProductQuantity();
             updateProductQuantityByKeyUp();

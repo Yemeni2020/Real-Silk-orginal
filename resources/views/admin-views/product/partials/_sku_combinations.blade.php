@@ -1,4 +1,5 @@
 @if(isset($combinations) && count($combinations) > 0)
+
     <table class="table physical_product_show table-borderless">
         <thead class="thead-light thead-50 text-capitalize">
         <tr>
@@ -34,8 +35,9 @@
 
         @php
             $serial = 1;
-        @endphp
 
+        @endphp
+        
         @foreach ($combinations as $key => $combination)
             <tr>
                 <td class="text-center">
