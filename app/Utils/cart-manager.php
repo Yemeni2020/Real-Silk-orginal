@@ -722,7 +722,23 @@ class CartManager
             $cart['quantity'] = $request->quantity;
             $cart['shipping_cost'] = $product->product_type == 'physical' ? CartManager::get_shipping_cost_for_product_category_wise($product, $request->quantity) : 0;
         }
+        //MyCode
+        if(count($product->offers)>0){
+            $price = $product->unit_price;
+            $requestQuantity=$request->quantity;
 
+            foreach($product->offers as $offer){
+                if(($requestQuantity>=$offer->q_from && $requestQuantity<=$offer->q_to)|| $requestQuantity>=$offer->q_from && $offer->q_to == -1){
+                    $price = $offer->price_unit;
+                    break;
+                }
+            }
+        }
+        else{
+            $price = $product->unit_price;
+        }
+        $cart["price"]=$price;
+        //EndMyCode
         $cart->save();
 
         if ($request['buy_now'] == 1) {
