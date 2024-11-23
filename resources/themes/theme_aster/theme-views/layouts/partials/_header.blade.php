@@ -2,6 +2,9 @@
     use App\Models\Brand;
     use App\Models\Category;
     use App\Utils\Helpers;
+
+    $categories_menu = Category::where('menu', 1)->get();
+
 @endphp
 @if (isset($web_config['announcement']) && $web_config['announcement']['status']==1)
     <div class="offer-bar py-2 py-sm-3 announcement-color" data-bg-img="{{theme_asset('assets/img/media/top-offer-bg.png')}}">
@@ -412,6 +415,39 @@
                             <li class="{{request()->is('/')?'active':''}}">
                                 <a href="{{route('home')}}">{{ translate('home')}}</a>
                             </li>
+                            @php($categoryIndex=0)
+                            @foreach($categories_menu as $category)
+                                @php($categoryIndex++)
+                                @if($categoryIndex < 10)
+                                    <li>
+                                        <a class="cursor-pointer" href="{{route('products',['category_id'=> $category['id'],'data_from'=>'category','page'=>1])}}">
+                                            <span>{{ $category['name'] }}</span>
+                                        </a>
+                                        @if ($category->childes->count() > 0)
+                                            <ul class="sub-menu">
+                                                @foreach($category['childes'] as $subCategory)
+                                                    <li>
+                                                        <a class="gap-2 align-items-center text-capitalize" href="{{route('products',['category_id'=> $subCategory['id'],'data_from'=>'category','page'=>1])}}">
+                                                            <span >{{$subCategory['name']}}</span>
+                                                        </a>
+                                                        @if($subCategory->childes->count()>0)
+                                                            <ul class="sub-menu">
+                                                                @foreach($subCategory['childes'] as $subSubCategory)
+                                                                    <li>
+                                                                        <a href="{{route('products',['category_id'=> $subSubCategory['id'],'data_from'=>'category','page'=>1])}}">
+                                                                            {{$subSubCategory['name']}}
+                                                                        </a>
+                                                                    </li>
+                                                                @endforeach
+                                                            </ul>
+                                                        @endif
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    </li>
+                                @endif
+                            @endforeach
                             @if($web_config['featured_deals']->count() > 0 || ($web_config['flash_deals'] && count($web_config['flash_deals_products']) > 0) || $web_config['discount_product'] > 0)
                                 <li>
                                     <a class="cursor-pointer">{{ translate('offers')}}</a>
