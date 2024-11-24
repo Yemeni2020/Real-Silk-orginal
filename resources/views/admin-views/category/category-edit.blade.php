@@ -102,6 +102,21 @@
                                                        for="category-image">{{ translate('choose_File') }}</label>
                                             </div>
                                         </div>
+                                        <div class="from_part_2">
+                                            <label class="title-color">{{ translate('Show_Menu') }}</label>
+                                            <div class="custom-file text-left">
+                                            <input type="checkbox" name="show_menu" id="show_menu"   data-modal-id="toggle-status-modal"
+                                                        data-toggle-id="show_menu"
+                                                        <?php echo $category['menu']==1?"checked":"" ?>
+                                                    class="switcher_input toggle-switch-message"
+                                                        data-on-image="category-status-on.png"
+                                                    data-off-image="category-status-off.png"
+                                                    
+                                                    >
+                                                <label onclick="$('#show_menu').prop('checked', function(_, checked) { return !checked; });" class="switcher_control" style="cursor: pointer;"
+                                                    ></label>
+                                            </div>
+                                        </div>
                                 </div>
                                 <div class="col-lg-6 mt-5 mt-lg-0 from_part_2">
                                     <div class="form-group">

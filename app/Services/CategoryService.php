@@ -21,6 +21,7 @@ class CategoryService
             'parent_id' => $request->get('parent_id', 0),
             'position' => $request['position'],
             'priority' => $request['priority'],
+            'menu'=> isset($request['show_menu'])?true:false,
         ];
     }
 
@@ -38,6 +39,7 @@ class CategoryService
             'priority' => $request['priority'],
             'parent_id' => $request['parent']??0,
             'position' =>  $request['parent']>0 && isset($cat)? $cat['position']+1:0,
+            'menu'=> isset($request['show_menu'])?true:false,
         ];
     }
 

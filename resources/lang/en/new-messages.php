@@ -8804,8 +8804,6 @@ return [
 	"Price_Unit" => "Price Unit",
 	"Notification_Sent_to_All_Vendors_Fail" => "Notification Sent to All Vendors Fail",
 	"Notification_Sent_to_All_Vendors" => "Notification Sent to All Vendors",
-	"if_you don’t_want_to
-            see_the_information_in_the_mail" => "If you don’t want to see the information in the mail",
 	"Add_Options" => "Add Options",
 	"CheckBox" => "CheckBox",
 	"Input" => "Input",
@@ -8816,4 +8814,6 @@ return [
 	"There_Faild_In_Attrabute_Product_Is_requerd" => "There Faild In Attrabute Product Is requerd",
 	"product_attributes_faild_is_required" => "Product attributes faild is required",
 	"Product attributes faild is required!" => "Product attributes faild is required!",
+	"showMenu" => "ShowMenu",
+	"Show_Menu" => "Show Menu",
 ];

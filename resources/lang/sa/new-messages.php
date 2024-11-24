@@ -8216,4 +8216,6 @@ return [
 	"instruct_search_engines_not_to_display_this_webpages_cached_or_saved_version." => "Instruct search engines not to display this webpages cached or saved version.",
 	"instruct_search_engines_not_to_show_a_summary_or_snippet_of_this_webpages_content_in_search_results." => "Instruct search engines not to show a summary or snippet of this webpages content in search results.",
 	"determine_the_maximum_length_of_a_snippet_or_preview_text_of_the_webpage." => "Determine the maximum length of a snippet or preview text of the webpage.",
+	"Parent_Category" => "Parent Category",
+	"Show_Menu" => "Show Menu",
 ];
