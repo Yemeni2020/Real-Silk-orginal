@@ -442,27 +442,38 @@ class ProductController extends Controller
 
 
                 //MyCode
-                if(isset($request["offers"])){
-
-                    // $len=count($request->offers);
-                    // for ($i=0; $i < $len; $i++) { 
-                    //     $productOffer = new ProductOffer();
-                    //     $productOffer->product_id = $product->id;
-                    //     $productOffer->q_from = $request->offers[$i];
-                    //     $productOffer->q_to = $request->offers_to[$i];
-                    //     $productOffer->price_unit = currencyConverter($request->offers_price[$i]);
-                    //     $productOffer->save();
-                    // }
-                    foreach ($request->offers as $offer ) {
-                        # code...
+                
+                if (isset($request["offers"])) {
+                    // تحويل $request["offers"] من JSON String إلى مصفوفة
+                    $offersArray = json_decode($request["offers"], true);
+                
+                    // تحقق من نجاح التحويل
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        return response()->json(['error' => 'Invalid JSON format in offers'], 400);
+                    }
+                
+                    $len = count($offersArray);
+                
+                    // Debugging للتأكد من صحة البيانات
+                    // $offer = json_decode($offersArray[0], true);
+        
+                    // return response()->json(['error222' => $len], 403);
+                
+                    // معالجة العروض
+                    for ($i = 0; $i < $len; $i++) {
+                        $offer = $offersArray[$i];
+        
                         $productOffer = new ProductOffer();
+                        // return response()->json(['error222' => $len], 403);
                         $productOffer->product_id = $product->id;
-                        $productOffer->q_from = $offer['q_from'];
-                        $productOffer->q_to = $offer['q_to'];
-                        $productOffer->price_unit = currencyConverter($offer['price_unit']);
+                        $productOffer->q_from = $offer["q_from"] ?? 0;
+                        $productOffer->q_to = $offer["q_to"] ?? 0;
+                        
+                        $productOffer->price_unit = $offer["price_unit"] ??0;
                         $productOffer->save();
                     }
                 }
+        
                 //EndMyCode
         $this->updateProductAuthorAndPublishingHouse(request: $request, product: $product);
         $digitalFileArray = self::getAddProductDigitalVariationData(request: $request, product: $product);
