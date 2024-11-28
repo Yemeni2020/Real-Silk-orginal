@@ -34,6 +34,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use App\Models\ProductOffer;
 
 class ProductController extends Controller
 {
@@ -439,6 +440,30 @@ class ProductController extends Controller
 
         $product = Product::create($productArray);
 
+
+                //MyCode
+                if(isset($request["offers"])){
+
+                    // $len=count($request->offers);
+                    // for ($i=0; $i < $len; $i++) { 
+                    //     $productOffer = new ProductOffer();
+                    //     $productOffer->product_id = $product->id;
+                    //     $productOffer->q_from = $request->offers[$i];
+                    //     $productOffer->q_to = $request->offers_to[$i];
+                    //     $productOffer->price_unit = currencyConverter($request->offers_price[$i]);
+                    //     $productOffer->save();
+                    // }
+                    foreach ($request->offers as $offer ) {
+                        # code...
+                        $productOffer = new ProductOffer();
+                        $productOffer->product_id = $product->id;
+                        $productOffer->q_from = $offer['q_from'];
+                        $productOffer->q_to = $offer['q_to'];
+                        $productOffer->price_unit = currencyConverter($offer['price_unit']);
+                        $productOffer->save();
+                    }
+                }
+                //EndMyCode
         $this->updateProductAuthorAndPublishingHouse(request: $request, product: $product);
         $digitalFileArray = self::getAddProductDigitalVariationData(request: $request, product: $product);
         foreach ($digitalFileArray as $digitalFile) {

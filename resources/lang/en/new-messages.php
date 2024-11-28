@@ -8816,4 +8816,6 @@ return [
 	"Product attributes faild is required!" => "Product attributes faild is required!",
 	"showMenu" => "ShowMenu",
 	"Show_Menu" => "Show Menu",
+	"invalid_credential" => "Invalid credential",
+	"upload_bottom_banner" => "Upload bottom banner",
 ];
