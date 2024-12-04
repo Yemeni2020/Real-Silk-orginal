@@ -89,6 +89,9 @@ Route::group(['namespace' => 'RestAPI\v3\seller', 'prefix' => 'v3/seller', 'midd
                 Route::get('edit/{id}', 'edit');
                 Route::put('update/{id}', 'update');
                 Route::get('review-list/{id}', 'review_list');
+                
+                Route::get('offers/{product_id}', 'offers');
+
                 Route::put('quantity-update', 'product_quantity_update');
                 Route::delete('delete/{id}', 'delete');
                 Route::get('barcode/generate', 'barcode_generate');

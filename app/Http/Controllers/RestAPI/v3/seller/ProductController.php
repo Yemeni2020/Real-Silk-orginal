@@ -174,7 +174,14 @@ class ProductController extends Controller
             'storage' => config('filesystems.disks.default') ?? 'public',
         ], 200);
     }
-
+    public function offers($id)
+    {
+        $offers = ProductOffer::where('product_id', $id)
+        ->select('q_from', 'q_to', 'price_unit') // استبدل field1, field2, field3 بالأعمدة التي تريدها
+        ->get()
+        ->toArray();
+        return response()->json($offers, 200);
+    }
     // Digital product file upload
     public function upload_digital_product(Request $request)
     {
