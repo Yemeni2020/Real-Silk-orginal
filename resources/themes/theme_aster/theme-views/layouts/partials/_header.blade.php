@@ -673,7 +673,7 @@
                                             <div class="fz-16 text-capitalize">{{ translate('login')}}</div>
                                         </a>
                                         <a href="{{route('vendor.auth.registration.index')}}" class="gap-2 align-items-center text-capitalize">
-                                            <div class="fz-16 text-capitalize">{{ translate('sign-up')}}</div>
+                                            <div class="fz-16 text-capitalize">{{ translate('sign_up')}}</div>
                                         </a>
                                     </li>
                                 </ul>

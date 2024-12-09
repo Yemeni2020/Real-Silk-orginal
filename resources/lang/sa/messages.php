@@ -455,6 +455,7 @@
 "product_review_not_available" => "مراجعة المنتج غير متوفرة",
 "similar_products" => "منتجات مشابهة",
 "sign-up" => "اشتراك",
+"sign_up" => "انشاء مصنعك",
 "choose_payment" => "اختر طريقة الدفع",
 "your_order_confirm" => "تأكيد طلبك",
 "No" => "لا",
