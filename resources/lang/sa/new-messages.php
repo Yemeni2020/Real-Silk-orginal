@@ -8219,4 +8219,10 @@ return [
 	"Parent_Category" => "Parent Category",
 	"Show_Menu" => "Show Menu",
 	"3_easy_steps_to_start_sell" => "3 easy steps to start sell",
+	"want_to_turn_ON_paystack_as_the_Digital_Payment_method" => "Want to turn ON paystack as the Digital Payment method",
+	"callback_url" => "Callback url",
+	"Firebase_Auth" => "Firebase Auth",
+	"if_enabled,WhatsApp_chatting_option_will_be_available_in_the_system" => "If enabled WhatsApp chatting option will be available in the system",
+	"search_by_sub_category_name" => "Search by sub category name",
+	"category_image_is_required" => "Category image is required",
 ];

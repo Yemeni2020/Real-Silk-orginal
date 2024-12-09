@@ -421,7 +421,7 @@
                                 @if($categoryIndex < 10)
                                     <li>
                                         <a class="cursor-pointer" href="{{route('products',['category_id'=> $category['id'],'data_from'=>'category','page'=>1])}}">
-                                            <span>{{ $category['name'] }}</span>
+                                            <span>{{ $category->translations[0]->value?? $category['name'] }}</span>
                                         </a>
                                         @if ($category->childes->count() > 0)
                                             <ul class="sub-menu">

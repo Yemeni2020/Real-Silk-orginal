@@ -8798,4 +8798,6 @@ return [
 	"MyFatorah" => "MyFatorah",
 	"terms_and_Condition" => "Terms and Condition",
 	"1000" => "1000",
+	"Parent_Category" => "Parent Category",
+	"Show_Menu" => "Show Menu",
 ];

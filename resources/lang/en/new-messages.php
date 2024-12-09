@@ -8828,4 +8828,5 @@ return [
 	"you_don’t_have_any" => "You don’t have any",
 	"No_message_found" => "No message found",
 	"No_ticket_created_yet" => "No ticket created yet",
+	"Sign_Up_Fectory" => "Sign Up Fectory",
 ];
