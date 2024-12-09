@@ -8799,6 +8799,7 @@
 "qty_to" => "结束数量",
 "Price_Unit" => "单价",
 'show_menu' => '在主菜单中显示',
+"Sign_Up_Fectory" => "创建你的工厂",
 
 );
 ?>
