@@ -355,9 +355,10 @@
             <div class="aside-overlay"></div>
 
             <div class="d-flex justify-content-between gap-3 align-items-center position-relative">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="dropdown d-none d-xl-block">
+                <div class="d-flex align-items-center gap-3" style="width: 100%;">
+                    <div class="dropdown d-none d-xl-block"  style="width: 240px;">
                         <button
+                        style="width: 100%;"
                             class="btn btn-primary rounded-0 text-uppercase fw-bold fs-14 dropdown-toggle select-category-button text-capitalize"
                             type="button"
                             data-bs-toggle="dropdown"
