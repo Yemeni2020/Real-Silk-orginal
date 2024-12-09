@@ -8225,4 +8225,6 @@ return [
 	"if_enabled,WhatsApp_chatting_option_will_be_available_in_the_system" => "If enabled WhatsApp chatting option will be available in the system",
 	"search_by_sub_category_name" => "Search by sub category name",
 	"category_image_is_required" => "Category image is required",
+	"update_your_bank_details_with_correct_information" => "Update your bank details with correct information",
+	"it_will_be_used_for_your_withdraw_request_transactions by admin" => "It will be used for your withdraw request transactions by admin",
 ];

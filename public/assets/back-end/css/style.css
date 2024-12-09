@@ -6118,9 +6118,14 @@ body *::-webkit-scrollbar-thumb {
     border-radius: 10px 0 0 10px;
 }
 
-.bank-info-card .edit-btn {
+:dir(ltr) .bank-info-card .edit-btn {
     position: absolute;
     right: 20px;
+    top: 20px;
+}
+:dir(rtl) .bank-info-card .edit-btn {
+    position: absolute;
+    left: 20px;
     top: 20px;
 }
 .p-20 {
