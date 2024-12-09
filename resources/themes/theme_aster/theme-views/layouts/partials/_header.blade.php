@@ -660,11 +660,27 @@
                         </li>
                     @endif
                     @if($web_config['business_mode'] == 'multi' && $web_config['seller_registration'])
-                        <li class="d-none d-xl-block">
-                            <a href="{{route('vendor.auth.registration.index')}}" class="d-flex">
-                                <div class="fz-16 text-capitalize">{{ translate('become_a_vendor')}}</div>
-                            </a>
-                        </li>
+                        <ul class="nav main-menu align-items-center d-none d-xl-flex flex-nowrap">
+                            <li class="has-sub-item">
+                                <a  class="cursor-pointer">
+                                    {{ translate('become_a_vendor')}}
+                                </a>
+                                <ul class="sub-menu">
+                                    <!-- <li class="d-none d-xl-block"> -->
+                                    <li>
+                                        <!-- <a href="{{route('vendor.auth.registration.index')}}" class="d-flex"> -->
+                                        <a href="{{route('vendor.auth.login')}}" class="gap-2 align-items-center text-capitalize">
+                                            <div class="fz-16 text-capitalize">{{ translate('login')}}</div>
+                                        </a>
+                                        <a href="{{route('vendor.auth.registration.index')}}" class="gap-2 align-items-center text-capitalize">
+                                            <div class="fz-16 text-capitalize">{{ translate('sign-up')}}</div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        
+                        
                     @endif
                     <li class="d-none d-xl-block">
                         @if(auth('customer')->check())

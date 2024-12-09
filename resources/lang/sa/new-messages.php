@@ -8218,4 +8218,5 @@ return [
 	"determine_the_maximum_length_of_a_snippet_or_preview_text_of_the_webpage." => "Determine the maximum length of a snippet or preview text of the webpage.",
 	"Parent_Category" => "Parent Category",
 	"Show_Menu" => "Show Menu",
+	"3_easy_steps_to_start_sell" => "3 easy steps to start sell",
 ];
