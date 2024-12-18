@@ -105,8 +105,9 @@ class ProductController extends BaseController
         if ($request->ajax()) {
             return response()->json([], 200);
         }
-
-
+        // echo $request->description[0];
+        // dump($request);
+        // return null;
         $dataArray = $service->getAddProductData(request: $request, addedBy: 'admin');
         $savedProduct = $this->productRepo->add(data: $dataArray);
 

@@ -8800,4 +8800,9 @@ return [
 	"1000" => "1000",
 	"Parent_Category" => "Parent Category",
 	"Show_Menu" => "Show Menu",
+	"for_Ready_Product_deliveries,_customers_can_pay_&_instantly_download_pre-uploaded_digital_products" => "For Ready Product deliveries  customers can pay & instantly download pre-uploaded digital products",
+	"For_Ready_After_Sale_deliveries,_customers_pay_first_then_admin_uploads_the_digital_products_that_become_available_to_customers_for_download" => "For Ready After Sale deliveries  customers pay first then admin uploads the digital products that become available to customers for download",
+	"set_the_minimum_order_quantity_that_customers_must_choose._Otherwise,_the_checkout_process_won’t_start" => "Set the minimum order quantity that customers must choose. Otherwise  the checkout process won’t start",
+	"if_Flat,_discount_amount_will_be_set_as_fixed_amount._If_Percentage,_discount_amount_will_be_set_as_percentage." => "If Flat  discount amount will be set as fixed amount. If Percentage  discount amount will be set as percentage.",
+	"if_enabled,_the_shipping_charge_will_increase_with_the_product_quantity" => "If enabled  the shipping charge will increase with the product quantity",
 ];
