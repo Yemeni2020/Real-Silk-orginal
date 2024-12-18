@@ -37,6 +37,7 @@
         @endphp
 
         @foreach ($combinations as $key => $combination)
+
             <tr>
                 <td class="text-center">
                     {{ $serial++ }}
@@ -47,7 +48,7 @@
                 </td>
                 <td>
                     <input type="number" name="price_{{ $combination['type'] }}"
-                           value="{{ usdToDefaultCurrency($combination['price']) }}" min="0"
+                           value="{{isset($load) ?usdToDefaultCurrency($combination['price'])  : $combination['price']}}" min="0"
                            step="0.01"
                            class="form-control" required placeholder="{{ translate('ex').': 100'}}">
                     <!-- <input type="number" name="price_{{ $combination['type'] }}"
@@ -67,6 +68,9 @@
                 </td>
             </tr>
         @endforeach
+
+
+        
         </tbody>
     </table>
 @endif
