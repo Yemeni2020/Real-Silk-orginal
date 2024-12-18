@@ -633,7 +633,7 @@
 
                         <div class="col-md-12 mt-2 mb-2">
                             <div class="sku_combination table-responsive form-group mt-2" id="sku_combination">
-                                @include('vendor-views.product.partials._edit_sku_combinations', ['combinations'=>json_decode($product['variation'],true)])
+                                @include('vendor-views.product.partials._edit_sku_combinations', ['combinations'=>json_decode($product['variation'],true),'load'=>true])
                             </div>
                             <div class="row customer_choice_options mt-2" id="customer_choice_options">
                                 @include('vendor-views.product.partials._choices',['choice_no'=>json_decode($product['attributes']),'choice_options'=>json_decode($product['choice_options'],true)])
