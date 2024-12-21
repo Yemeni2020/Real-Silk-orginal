@@ -346,7 +346,7 @@
                 @else
                     <div class="d-flex justify-content-center mb-5 pb-5 mt-auto px-4">
                         <a href="" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-primary w-100">
-                            {{ translate('login').'/'.translate('register')}}
+                            {{ translate('login')}}
                         </a>
                     </div>
                 @endif
