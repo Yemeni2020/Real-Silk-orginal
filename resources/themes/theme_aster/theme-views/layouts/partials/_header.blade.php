@@ -652,7 +652,7 @@
                                     />
                               </span>
                                 <span
-                                    class="media-body d-none d-xl-block hover-primary">{{ translate('login').'/'. translate('register')}}</span>
+                                    class="media-body d-none d-xl-block hover-primary">{{  translate('register')}}</span>
                             </button>
                             <div class="menu-btn d-xl-none">
                                 <i class="bi bi-list fs-30"></i>
