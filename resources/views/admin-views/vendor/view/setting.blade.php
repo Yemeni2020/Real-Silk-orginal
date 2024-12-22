@@ -184,6 +184,46 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">{{translate('auto_active_product')}}</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ route('admin.vendors.update-setting',['id'=>$seller['id']]) }}" method="post">
+                            @csrf
+                            <input type="hidden" name="seller_acitve_product_update" value="1">
+                            <div class="form-group">
+                                <div class="d-flex justify-content-between align-items-center gap-10 form-control">
+                                    <span class="title-color text-capitalize">
+                                        {{translate('auto_active_product')}}
+                                        <span class="input-label-secondary cursor-pointer" data-toggle="tooltip" data-placement="right" title="{{translate('if_enabled_this_vendor_can_access_POS_from_the_website_and_vendor_app') }}">
+                                            <img width="16" src="{{dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg')}}" alt="">
+                                        </span>
+                                    </span>
+                                    <label class="switcher" for="seller-active_product">
+                                        <input type="checkbox" class="switcher_input toggle-switch-message" value="1" name="seller_acitve_product"
+                                               id="seller-active_product" {{ $seller['active_product'] == 1 ? 'checked':'' }}
+                                               data-modal-id="toggle-modal"
+                                               data-toggle-id="seller-active_product"
+                                               data-on-image="pos-seller-on.png"
+                                               data-off-image="pos-seller-off.png"
+                                               data-on-title="{{translate('want_to_Turn_ON_active_product_For_This_Vendor')}}"
+                                               data-off-title="{{translate('want_to_Turn_OFF_active_product_For_This_Vendor')}}"
+                                               data-on-message="<p>{{translate('if_enabled_this_vendor_can_access_active_product_from_the_website_and_vendor_app')}}</p>"
+                                               data-off-message="<p>{{translate('if_disabled_this_vendor_cannot_access_active_product_from_the_website_and_vendor_app')}}</p>">
+                                        <span class="switcher_control"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn--primary">{{translate('save')}}</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection

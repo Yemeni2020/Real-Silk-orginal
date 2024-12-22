@@ -59,6 +59,7 @@ class Seller extends Authenticatable
         'gst',
         'cm_firebase_token',
         'pos_status',
+        'active_product',
         'minimum_order_amount',
         'free_delivery_status',
         'app_language',

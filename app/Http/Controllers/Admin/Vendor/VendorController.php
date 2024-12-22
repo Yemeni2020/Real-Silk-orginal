@@ -428,6 +428,10 @@ class VendorController extends BaseController
             $this->vendorRepo->update(id: $id, data: ['pos_status' => $request->get('seller_pos', 0)]);
             Toastr::success(translate('vendor_pos_permission_updated'));
         }
+        if ($request->has('seller_acitve_product_update')) {
+            $this->vendorRepo->update(id: $id, data: ['active_product' => $request->get('seller_acitve_product', 0)]);
+            Toastr::success(translate('vendor_pos_permission_updated'));
+        }
         return redirect()->back();
     }
 

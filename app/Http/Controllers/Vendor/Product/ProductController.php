@@ -135,7 +135,8 @@ class ProductController extends BaseController
     public function add(ProductAddRequest $request, ProductService $service): JsonResponse|RedirectResponse|null
     {
         // echo count($request->offers_price);
-        
+        $vendorId = auth('seller')->id();
+
 
         if ($request->ajax()) {
             return response()->json([], 200);

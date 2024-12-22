@@ -8831,4 +8831,12 @@ return [
 	"Sign_Up_Fectory" => "Sign Up Fectory",
 	"brand_Update" => "Brand Update",
 	"brand_updated_successfully" => "Brand updated successfully",
+	"auto_active_product" => "Auto active product",
+	"offline_Payment_allows_customers_to_use_external_payment_methods._They_must_share_payment_details_with_the_vendor_afterward._Admin_can_set_whether_customers_can_make_offline_payments_by_enabling/disabling_this_button.
+                                            " => "Offline Payment allows customers to use external payment methods. They must share payment details with the vendor afterward. Admin can set whether customers can make offline payments by enabling/disabling this button. ",
+	"want_to_Turn_ON_active_product_For_This_Vendor" => "Want to Turn ON active product For This Vendor",
+	"want_to_Turn_OFF_active_product_For_This_Vendor" => "Want to Turn OFF active product For This Vendor",
+	"if_enabled_this_vendor_can_access_active_product_from_the_website_and_vendor_app" => "If enabled this vendor can access active product from the website and vendor app",
+	"if_disabled_this_vendor_cannot_access_active_product_from_the_website_and_vendor_app" => "If disabled this vendor cannot access active product from the website and vendor app",
+	"vendor_pos_permission_updated" => "Vendor pos permission updated",
 ];
