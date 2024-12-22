@@ -106,66 +106,67 @@
                             @endif
                         </div>
                     </div>
-
-                    @if(count($random_coupon)>0)
-                        <div class="col-xl-3 d-none d-sm-block">
-                            <div class="bg-primary-light rounded p-3 mt-lg-3">
-                                <h3 class="text-primary my-3">{{ translate('Happy_Club') }}</h3>
-                                <p>{{ translate('collect_coupons_from_stores_and_apply_to_get_special_discount_from_stores') }}</p>
-                                <div class="d-flex flex-wrap gap-3">
-                                    @foreach($random_coupon as $coupon)
-                                        <div
-                                            class="club-card card custom-border-color hover-shadow flex-grow-1 click-to-copy-code"
-                                            data-copy-code="{{ $coupon->code }}">
-                                            <div class="d-flex flex-column gap-2 p-3">
-                                                <h5 class="d-flex gap-2 align-items-center">
-                                                    @if($coupon->coupon_type == 'free_delivery')
-                                                        {{translate($coupon->coupon_type)}}
-                                                        <img src="{{ theme_asset('assets/img/svg/delivery-car.svg') }}"
-                                                             alt="" class="svg">
-                                                    @else
-                                                        {{ $coupon->discount_type == 'amount' ? webCurrencyConverter($coupon->discount) : $coupon->discount.'%'}}
-                                                        {{translate('off')}}
-                                                        <img src="{{ theme_asset('assets/img/svg/dollar.svg') }}" alt=""
-                                                             class="svg">
-                                                    @endif
-                                                </h5>
-                                                <h6 class="fs-12">
-                                                    <span class="text-muted">{{ translate('for') }}</span>
-                                                    <span class="text-uppercase ">
-                                                    @if($coupon->seller_id == '0')
-                                                            {{ translate('All_Shops') }}
-                                                        @elseif($coupon->seller_id == NULL)
-                                                            <a class="shop-name" href="{{route('shopView',['id'=>0])}}">
-                                                            {{ $web_config['name']->value }}
-                                                        </a>
+                    @if(isset($random_coupon))
+                        @if(count($random_coupon)>0)
+                            <div class="col-xl-3 d-none d-sm-block">
+                                <div class="bg-primary-light rounded p-3 mt-lg-3">
+                                    <h3 class="text-primary my-3">{{ translate('Happy_Club') }}</h3>
+                                    <p>{{ translate('collect_coupons_from_stores_and_apply_to_get_special_discount_from_stores') }}</p>
+                                    <div class="d-flex flex-wrap gap-3">
+                                        @foreach($random_coupon as $coupon)
+                                            <div
+                                                class="club-card card custom-border-color hover-shadow flex-grow-1 click-to-copy-code"
+                                                data-copy-code="{{ $coupon->code }}">
+                                                <div class="d-flex flex-column gap-2 p-3">
+                                                    <h5 class="d-flex gap-2 align-items-center">
+                                                        @if($coupon->coupon_type == 'free_delivery')
+                                                            {{translate($coupon->coupon_type)}}
+                                                            <img src="{{ theme_asset('assets/img/svg/delivery-car.svg') }}"
+                                                                alt="" class="svg">
                                                         @else
-                                                            <a class="shop-name get-view-by-onclick"
-                                                              data-link="{{isset($coupon->seller->shop) ? route('shopView',['id'=>$coupon->seller->shop['id']]) : 'javascript:'}}">
-                                                            {{ isset($coupon->seller->shop) ? $coupon->seller->shop->name : translate('shop_not_found') }}
-                                                        </a>
+                                                            {{ $coupon->discount_type == 'amount' ? webCurrencyConverter($coupon->discount) : $coupon->discount.'%'}}
+                                                            {{translate('off')}}
+                                                            <img src="{{ theme_asset('assets/img/svg/dollar.svg') }}" alt=""
+                                                                class="svg">
                                                         @endif
-                                                </span>
-                                                </h6>
-                                                <h6 class="text-primary fs-12">{{ translate('code').':' }}{{ $coupon->code }}</h6>
+                                                    </h5>
+                                                    <h6 class="fs-12">
+                                                        <span class="text-muted">{{ translate('for') }}</span>
+                                                        <span class="text-uppercase ">
+                                                        @if($coupon->seller_id == '0')
+                                                                {{ translate('All_Shops') }}
+                                                            @elseif($coupon->seller_id == NULL)
+                                                                <a class="shop-name" href="{{route('shopView',['id'=>0])}}">
+                                                                {{ $web_config['name']->value }}
+                                                            </a>
+                                                            @else
+                                                                <a class="shop-name get-view-by-onclick"
+                                                                data-link="{{isset($coupon->seller->shop) ? route('shopView',['id'=>$coupon->seller->shop['id']]) : 'javascript:'}}">
+                                                                {{ isset($coupon->seller->shop) ? $coupon->seller->shop->name : translate('shop_not_found') }}
+                                                            </a>
+                                                            @endif
+                                                    </span>
+                                                    </h6>
+                                                    <h6 class="text-primary fs-12">{{ translate('code').':' }}{{ $coupon->code }}</h6>
+                                                </div>
                                             </div>
-                                        </div>
-                                    @endforeach
+                                        @endforeach
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    @else
-                        <div class="col-xl-3 d-none d-sm-block">
-                            @if($top_side_banner)
-                                <a href="{{ $top_side_banner['url'] }}">
-                                    <img alt="" class="dark-support rounded w-100"
-                                        src="{{ getStorageImages(path: $top_side_banner['photo_full_url'], type:'banner', source: theme_asset('assets/img/top-side-banner-placeholder.png')) }}">
-                                </a>
-                            @else
-                                <img src="{{ theme_asset('assets/img/top-side-banner-placeholder.png') }}"
-                                     class="dark-support rounded w-100" alt="">
-                            @endif
-                        </div>
+                        @else
+                            <div class="col-xl-3 d-none d-sm-block">
+                                @if($top_side_banner)
+                                    <a href="{{ $top_side_banner['url'] }}">
+                                        <img alt="" class="dark-support rounded w-100"
+                                            src="{{ getStorageImages(path: $top_side_banner['photo_full_url'], type:'banner', source: theme_asset('assets/img/top-side-banner-placeholder.png')) }}">
+                                    </a>
+                                @else
+                                    <img src="{{ theme_asset('assets/img/top-side-banner-placeholder.png') }}"
+                                        class="dark-support rounded w-100" alt="">
+                                @endif
+                            </div>
+                        @endif
                     @endif
                 </div>
             </div>

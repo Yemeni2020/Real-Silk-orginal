@@ -52,6 +52,8 @@ class BrandRepository implements BrandRepositoryInterface
             })
             ->when(!empty($orderBy), function ($query) use ($orderBy) {
                 $query->orderBy(array_key_first($orderBy),array_values($orderBy)[0]);
+            })->when(isset($filters['seller_id']), function ($query) use ($filters) {
+                return $query->where(['seller_id' => $filters['seller_id']]);
             });
 
         $filters += ['searchValue' =>$searchValue];

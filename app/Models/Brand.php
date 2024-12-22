@@ -25,7 +25,8 @@ class Brand extends Model
         'image',
         'image_storage_type',
         'image_alt_text',
-        'status'
+        'status',
+        'seller_id'
     ];
 
     protected $casts = [

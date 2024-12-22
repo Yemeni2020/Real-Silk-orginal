@@ -4,6 +4,7 @@
     use App\Enums\ViewPaths\Vendor\Profile;
     use App\Enums\ViewPaths\Vendor\Refund;
     use App\Enums\ViewPaths\Vendor\Review;
+    use App\Enums\ViewPaths\Vendor\Brand;
     use App\Enums\ViewPaths\Vendor\DeliveryMan;
     use App\Enums\ViewPaths\Vendor\EmergencyContact;
     use App\Models\Order;
@@ -337,6 +338,31 @@
                                 </span>
                             </a>
                         </li>
+                                                    <li class="navbar-vertical-aside-has-menu {{Request::is('vendor/brand*')?'active':''}}">
+                                <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
+                                   href="javascript:" title="{{translate('brands')}}">
+                                    <i class="tio-star nav-icon"></i>
+                                    <span
+                                        class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('brands')}}</span>
+                                </a>
+                                <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
+                                    style="display: {{Request::is('vendor/brand*')?'block':'none'}}">
+                                    <li class="nav-item {{Request::is('vendor/brand/'.Brand::ADD[URI])?'active':''}}"
+                                        title="{{translate('add_new')}}">
+                                        <a class="nav-link " href="{{route('vendor.brand.add-new')}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">{{translate('add_new')}}</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item {{Request::is('vendor/brand/'.Brand::LIST[URI])?'active':''}}"
+                                        title="{{translate('list')}}">
+                                        <a class="nav-link " href="{{route('vendor.brand.list')}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">{{translate('list')}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
                         <li class="nav-item">
                             <small class="nav-subtitle">{{translate('promotion_management')}}</small>
                             <small class="tio-more-horizontal nav-subtitle-replacer"></small>

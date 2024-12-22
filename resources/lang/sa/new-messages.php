@@ -8235,4 +8235,6 @@ return [
 	"View More" => "View More",
 	"View Less" => "View Less",
 	"time_&_Date" => "Time & Date",
+	"The_password_must_be_at_least_8_characters" => "The password must be at least 8 characters",
+	"all_Pages_Banner " => "All Pages Banner ",
 ];

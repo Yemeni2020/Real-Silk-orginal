@@ -8829,4 +8829,6 @@ return [
 	"No_message_found" => "No message found",
 	"No_ticket_created_yet" => "No ticket created yet",
 	"Sign_Up_Fectory" => "Sign Up Fectory",
+	"brand_Update" => "Brand Update",
+	"brand_updated_successfully" => "Brand updated successfully",
 ];

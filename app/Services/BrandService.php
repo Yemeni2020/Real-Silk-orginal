@@ -17,6 +17,8 @@ class BrandService
             'image_storage_type' => $request->has('image') ? $storage : null,
             'image_alt_text' => $request['image_alt_text'] ?? null,
             'status' => 1,
+            'seller_id'=>auth('seller')->id()??0,
+
         ];
     }
 

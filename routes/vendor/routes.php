@@ -19,6 +19,8 @@ use App\Enums\ViewPaths\Vendor\Product;
 use App\Enums\ViewPaths\Vendor\Profile;
 use App\Enums\ViewPaths\Vendor\Refund;
 use App\Enums\ViewPaths\Vendor\Review;
+use App\Enums\ViewPaths\Vendor\Brand;
+use App\Http\Controllers\Vendor\Product\BrandController;
 use App\Enums\ViewPaths\Vendor\ShippingMethod;
 use App\Enums\ViewPaths\Vendor\ShippingType;
 use App\Enums\ViewPaths\Vendor\Shop;
@@ -192,7 +194,19 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
                     Route::post(Review::REVIEW_REPLY[URI], 'addReviewReply')->name('add-review-reply');
                 });
             });
-
+            Route::group(['prefix' => 'brand', 'as' => 'brand.'], function () {
+                Route::controller(BrandController::class)->group(function () {
+                    Route::get(Brand::LIST[URI], 'index')->name('list');
+                    Route::get(Brand::ADD[URI], 'getAddView')->name('add-new');
+                    Route::post(Brand::ADD[URI], 'add');
+                    Route::get(Brand::UPDATE[URI] . '/{id}', 'getUpdateView')->name('update');
+                    Route::post(Brand::UPDATE[URI] . '/{id}', 'update');
+                    Route::post(Brand::DELETE[URI], 'delete')->name('delete');
+                    Route::get(Brand::EXPORT[URI], 'exportList')->name('export');
+                    Route::post(Brand::STATUS[URI], 'updateStatus')->name('status-update');
+                });
+            });
+        
             Route::group(['prefix' => 'coupon', 'as' => 'coupon.'], function () {
                 Route::controller(CouponController::class)->group(function () {
                     Route::get(Coupon::INDEX[URI], 'index')->name('index')->middleware('actch');
