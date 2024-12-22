@@ -8,7 +8,7 @@ class BrandService
 {
     use FileManagerTrait;
 
-    public function getAddData(object $request): array
+    public function getAddData(object $request,bool $vendor=false): array
     {
         $storage = config('filesystems.disks.default') ?? 'public';
         return [
@@ -17,7 +17,7 @@ class BrandService
             'image_storage_type' => $request->has('image') ? $storage : null,
             'image_alt_text' => $request['image_alt_text'] ?? null,
             'status' => 1,
-            'seller_id'=>auth('seller')->id()??0,
+            'seller_id'=>$vendor?auth('seller')->id()??0:0,
 
         ];
     }

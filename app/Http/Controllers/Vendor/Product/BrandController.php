@@ -95,7 +95,7 @@ class BrandController extends BaseController
     {
         // $vendorId = auth('seller')->id();
 
-        $dataArray = $brandService->getAddData(request:$request);
+        $dataArray = $brandService->getAddData(request:$request,vendor:true);
         // dump($dataArray);
         // return null;
         $savedAttributes = $this->brandRepo->add(data:$dataArray);
