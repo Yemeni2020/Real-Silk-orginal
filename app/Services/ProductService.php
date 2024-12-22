@@ -426,9 +426,8 @@ class ProductService
             'minimum_order_qty' => $request['minimum_order_qty'],
             'video_provider' => 'youtube',
             'video_url' => $request['video_url'],
-            'status' => $addedBy == 'admin' ? 1 : 0,
-            // 'request_status' => $addedBy == 'admin' ? 1 : ($this->vendor_auto_product() == 0 ? 0 : 1),
-            'request_status' => $addedBy == 'admin' ? 1 : ((getWebConfig(name: 'new_product_approval') == 1 && $this->vendor_auto_product() == 0) ? 0 : 1),
+            'status' => $addedBy == 'admin' ? 1 : $this->vendor_auto_product()??0,
+            'request_status' => $addedBy == 'admin' ? 1 : (getWebConfig(name: 'new_product_approval') == 1 ? 0 : 1),
             'shipping_cost' => $request['product_type'] == 'physical' ? currencyConverter(amount: $request['shipping_cost']) : 0,
             'multiply_qty' => ($request['product_type'] == 'physical') ? ($request['multiply_qty'] == 'on' ? 1 : 0) : 0, //to be changed in form multiply_qty
             'color_image' => json_encode($processedImages['colored_image_names']),
