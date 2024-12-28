@@ -92,7 +92,7 @@
                    href="{{route('home')}}">
                     <img class="mobile-logo-img __inline-12"
                          src="{{ getStorageImages(path: $web_config['mob_logo'], type: 'logo') }}"
-                         style="width:230px !important;height:auto !important;" alt="{{$web_config['name']->value}}"/>
+                         style="width:130px !important;height:auto !important;" alt="{{$web_config['name']->value}}"/>
                 </a>
 
                 <div class="input-group-overlay mx-lg-4 search-form-mobile text-align-direction">
