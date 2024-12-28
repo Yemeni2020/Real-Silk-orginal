@@ -86,7 +86,7 @@
                    href="{{route('home')}}">
                     <img class="__inline-11"
                          src="{{ getStorageImages(path: $web_config['web_logo'], type: 'logo') }}"
-                         alt="{{$web_config['name']->value}}" style="width:230px !important;height:auto !important;">
+                         alt="{{$web_config['name']->value}}" style="width:130px !important;height:auto !important;">
                 </a>
                 <a class="navbar-brand d-sm-none"
                    href="{{route('home')}}">
