@@ -395,28 +395,28 @@ class ForgotPasswordController extends Controller
         if ($verificationData) {
             $validateBlock = 0;
             $errorMsg = translate('OTP_is_not_matched');
-            if (isset($verificationData->temp_block_time) && Carbon::parse($verificationData->temp_block_time)->DiffInSeconds() <= $tempBlockTime) {
-                $time = $tempBlockTime - Carbon::parse($verificationData->temp_block_time)->DiffInSeconds();
-                $validateBlock = 1;
-                $errorMsg = translate('please_try_again_after_') . CarbonInterval::seconds($time)->cascade()->forHumans();
-            } else if ($verificationData['is_temp_blocked'] == 1 && Carbon::parse($verificationData['updated_at'])->DiffInSeconds() >= $tempBlockTime) {
-                $this->phoneOrEmailVerificationRepo->updateOrCreate(params: ['phone_or_email' => $identity], value: [
-                    'otp_hit_count' => 0,
-                    'is_temp_blocked' => 0,
-                    'temp_block_time' => null,
-                ]);
-                $validateBlock = 1;
-                $errorMsg = translate('OTP_is_not_matched');
-            } else if ($verificationData['otp_hit_count'] >= $maxOTPHit && Carbon::parse($verificationData['updated_at'])->DiffInSeconds() < $maxOTPHitTime && $verificationData['is_temp_blocked'] == 0) {
-                $this->phoneOrEmailVerificationRepo->updateOrCreate(params: ['phone_or_email' => $identity], value: [
-                    'is_temp_blocked' => 1,
-                    'temp_block_time' => now(),
-                ]);
+            // if (isset($verificationData->temp_block_time) && Carbon::parse($verificationData->temp_block_time)->DiffInSeconds() <= $tempBlockTime) {
+            //     $time = $tempBlockTime - Carbon::parse($verificationData->temp_block_time)->DiffInSeconds();
+            //     $validateBlock = 1;
+            //     $errorMsg = translate('please_try_again_after_') . CarbonInterval::seconds($time)->cascade()->forHumans();
+            // } else if ($verificationData['is_temp_blocked'] == 1 && Carbon::parse($verificationData['updated_at'])->DiffInSeconds() >= $tempBlockTime) {
+            //     $this->phoneOrEmailVerificationRepo->updateOrCreate(params: ['phone_or_email' => $identity], value: [
+            //         'otp_hit_count' => 0,
+            //         'is_temp_blocked' => 0,
+            //         'temp_block_time' => null,
+            //     ]);
+            //     $validateBlock = 1;
+            //     $errorMsg = translate('OTP_is_not_matched');
+            // } else if ($verificationData['otp_hit_count'] >= $maxOTPHit && Carbon::parse($verificationData['updated_at'])->DiffInSeconds() < $maxOTPHitTime && $verificationData['is_temp_blocked'] == 0) {
+            //     $this->phoneOrEmailVerificationRepo->updateOrCreate(params: ['phone_or_email' => $identity], value: [
+            //         'is_temp_blocked' => 1,
+            //         'temp_block_time' => now(),
+            //     ]);
 
-                $validateBlock = 1;
-                $time = $tempBlockTime - Carbon::parse($verificationData['temp_block_time'])->DiffInSeconds();
-                $errorMsg = translate('Too_many_attempts.') .' '. translate('please_try_again_after_') . CarbonInterval::seconds($time)->cascade()->forHumans();
-            }
+            //     $validateBlock = 1;
+            //     $time = $tempBlockTime - Carbon::parse($verificationData['temp_block_time'])->DiffInSeconds();
+            //     $errorMsg = translate('Too_many_attempts.') .' '. translate('please_try_again_after_') . CarbonInterval::seconds($time)->cascade()->forHumans();
+            // }
             $verificationData = $this->phoneOrEmailVerificationRepo->getFirstWhere(params: ['phone_or_email' => $identity]);
             $this->phoneOrEmailVerificationRepo->updateOrCreate(params: ['phone_or_email' => $identity], value: [
                 'otp_hit_count' => ($verificationData['otp_hit_count'] + 1),

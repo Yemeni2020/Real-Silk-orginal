@@ -12,7 +12,7 @@
     } elseif ($customerOTPLogin && $customerManualLogin && $customerSocialLogin) {
         $multiColumn = 1;
     } else {
-        $multiColumn = 0;
+        $multiColumn = 1;
     }
 ?>
 <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
