@@ -261,10 +261,13 @@ class CustomerAPIAuthController extends Controller
         }
 
         $emailVerification = $this->loginSetupRepo->getFirstWhere(params: ['key' => 'email_verification'])?->value ?? 0;
+        
         if ($emailVerification == 1) {
-            $OTPIntervalTime = getWebConfig(name: 'otp_resend_time') ?? 60;// seconds
-            $OTPVerificationData = $this->phoneOrEmailVerificationRepo->getFirstWhere(params: ['phone_or_email' => $request['email']]);
 
+            $OTPIntervalTime = getWebConfig(name: 'otp_resend_time') ?? 60;// seconds
+            
+            $OTPVerificationData = $this->phoneOrEmailVerificationRepo->getFirstWhere(params: ['phone_or_email' => $request['email']]);
+            
             if (isset($OTPVerificationData) && Carbon::parse($OTPVerificationData['created_at'])->DiffInSeconds() < $OTPIntervalTime) {
                 $time = $OTPIntervalTime - Carbon::parse($OTPVerificationData['created_at'])->DiffInSeconds();
 
@@ -278,8 +281,11 @@ class CustomerAPIAuthController extends Controller
                 ], 403);
             }
 
+
+            
             $token = (env('APP_MODE') == 'live') ? rand(100000, 999999) : 123456;
 
+            
             $this->phoneOrEmailVerificationRepo->updateOrCreate(params: ['phone_or_email' => $request['email']], value: [
                 'phone_or_email' => $request['email'],
                 'token' => $token,

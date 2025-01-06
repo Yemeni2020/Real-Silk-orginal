@@ -8839,4 +8839,8 @@ return [
 	"if_enabled_this_vendor_can_access_active_product_from_the_website_and_vendor_app" => "If enabled this vendor can access active product from the website and vendor app",
 	"if_disabled_this_vendor_cannot_access_active_product_from_the_website_and_vendor_app" => "If disabled this vendor cannot access active product from the website and vendor app",
 	"vendor_pos_permission_updated" => "Vendor pos permission updated",
+	"assss!" => "Assss!",
+	"assss!1" => "Assss!1",
+	"if_you don’t_want_to
+            see_the_information_in_the_mail" => "If you don’t want to see the information in the mail",
 ];
