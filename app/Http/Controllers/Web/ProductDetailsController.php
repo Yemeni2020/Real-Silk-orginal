@@ -79,7 +79,8 @@ class ProductDetailsController extends Controller
         
         // التحقق من الحقول المطلوبة
         foreach ($Failds as $Faild) {
-            if (empty(trim($request["faild$Faild->item_name"])) && $Faild->is_required) {
+
+            if (empty(trim($request["faild$Faild->id"])) && $Faild->is_required) {
                 Toastr::error(translate('Error: Field '.$Faild->item_name.' is required'));
                 return back();
             }

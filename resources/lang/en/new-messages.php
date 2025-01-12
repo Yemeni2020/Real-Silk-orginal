@@ -8895,4 +8895,5 @@ return [
 	"Service_details " => "Service details ",
 	"Customer_details " => "Customer details ",
 	"Service " => "Service ",
+	"Error: Field kjk is required" => "Error: Field kjk is required",
 ];
