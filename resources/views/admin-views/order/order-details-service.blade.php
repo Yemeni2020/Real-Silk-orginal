@@ -26,7 +26,13 @@
                     <h6>
                         {{$data->name_faild}}:
                     </h6>    
+                    @if(in_array($data->item_type,["select","radios","checkbox"]))
+                    <input type="text" class="form-control input" readonly value="{{json_decode($data->value)}}">
+
+                    @else
                     <input type="text" class="form-control input" readonly value="{{$data->value}}">
+
+                    @endif
                     <hr>
                     @endforeach
                 </div>

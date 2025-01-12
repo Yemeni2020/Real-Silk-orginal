@@ -274,8 +274,8 @@ class OrderController extends BaseController
     {
         $DetailsOrder = DetailsOrderService::where("order_id",$id)->get();
         $order = ModelOrderService::where('id',$id)->first();
-        $product=Product::find($order->item);
-        $User=User::find($order->customer);
+        $product=Product::find($order->item??0);
+        $User=User::find($order->customer??0);
 
         return view(Order::VIEWSERVICE[VIEW], compact('order','product','DetailsOrder','User'));
     }
