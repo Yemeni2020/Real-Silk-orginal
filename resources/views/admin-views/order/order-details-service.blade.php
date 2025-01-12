@@ -24,7 +24,7 @@
 
                     @foreach($DetailsOrder as $data)
 
-                    if(in_array($data->item_type,["select","checkbox","radios","text","date","email","number"]))
+                    @if(in_array($data->item_type,["select","checkbox","radios","text","date","email","number"]))
                     <h6>
                         {{$data->name_faild}}:
                     </h6>    
@@ -32,6 +32,7 @@
                         <input type="text" class="form-control input" readonly value="{{json_decode($data->value)}}">
 
                     <hr>
+                    @endif
                     @endforeach
                 </div>
             </div>
