@@ -218,12 +218,14 @@
                                 @endif
                             </div>
                         @endif
+                        @if($product->product_type != "Service")
 
-                        <div class="product__price d-flex flex-wrap align-items-end gap-2 mb-4 ">
-                            <div class="text-primary fs-1-5rem d-flex align-items-end gap-2">
-                                {!! getPriceRangeWithDiscount(product: $product) !!}
+                            <div class="product__price d-flex flex-wrap align-items-end gap-2 mb-4 ">
+                                <div class="text-primary fs-1-5rem d-flex align-items-end gap-2">
+                                    {!! getPriceRangeWithDiscount(product: $product) !!}
+                                </div>
                             </div>
-                        </div>
+                        @endif
                         <form class="cart add-to-cart-form" id="add-to-cart-form" action="{{ route('cart.add') }}"
                               data-redirecturl="{{route('checkout-details')}}"
                               data-varianturl="{{ route('cart.variant_price') }}"
@@ -232,6 +234,7 @@
                             @csrf
                             <div class="">
                                 <input type="hidden" name="id" value="{{ $product->id }}">
+
                                 @if (count(json_decode($product->colors)) > 0)
                                     <div class="d-flex gap-4 flex-wrap align-items-center mb-3">
                                         <h6 class="fw-semibold">{{translate('color')}}</h6>
@@ -303,43 +306,47 @@
                                         </div>
                                     @endforeach
                                 @endif
+                                @if($product->product_type != "Service")
 
-                                <div class="d-flex gap-4 flex-wrap align-items-center mb-4">
-                                    <h6 class="fw-semibold">{{translate('quantity')}}</h6>
+                                    <div class="d-flex gap-4 flex-wrap align-items-center mb-4">
+                                        <h6 class="fw-semibold">{{translate('quantity')}}</h6>
 
-                                    <div class="quantity quantity--style-two">
-                                        <span class="quantity__minus single-quantity-minus">
-                                            <i class="bi bi-dash"></i>
-                                        </span>
-                                        <input type="text" class="quantity__qty product_quantity__qty" name="quantity"
-                                               data-details-page="1"
-                                               value="{{ $product->minimum_order_qty ?? 1 }}"
-                                               min="{{ $product->minimum_order_qty ?? 1 }}"
-                                               max="{{$product['product_type'] == 'physical' ? $product->current_stock : 100}}">
-                                        <span class="quantity__plus single-quantity-plus" {{($product->current_stock == 1?'disabled':'')}}>
-                                            <i class="bi bi-plus"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <input type="hidden" class="product-generated-variation-code" name="product_variation_code" data-product-id="{{ $product['id'] }}">
-                                <input type="hidden" value="" class="in_cart_key form-control w-50" name="key">
-
-                                <div class="bg-light mx-w rounded p-4">
-                                    <div class="flex-between-gap-3">
-                                        <div class="">
-                                            <h6 class="flex-middle-gap-2 mb-2">
-                                                <span class="text-muted">{{translate('total_price').':'}}</span>
-                                                <span
-                                                    class="total_price">{{webCurrencyConverter($product->unit_price)}}</span>
-                                            </h6>
-                                            <h6 class="flex-middle-gap-2">
-                                                <span class="text-muted">{{translate('tax').':'}}</span>
-                                                <span
-                                                    class="product_vat">{{webCurrencyConverter($product->tax)}}</span>
-                                            </h6>
+                                        <div class="quantity quantity--style-two">
+                                            <span class="quantity__minus single-quantity-minus">
+                                                <i class="bi bi-dash"></i>
+                                            </span>
+                                            <input type="text" class="quantity__qty product_quantity__qty" name="quantity"
+                                                data-details-page="1"
+                                                value="{{ $product->minimum_order_qty ?? 1 }}"
+                                                min="{{ $product->minimum_order_qty ?? 1 }}"
+                                                max="{{$product['product_type'] == 'physical' ? $product->current_stock : 100}}">
+                                            <span class="quantity__plus single-quantity-plus" {{($product->current_stock == 1?'disabled':'')}}>
+                                                <i class="bi bi-plus"></i>
+                                            </span>
                                         </div>
                                     </div>
-                                </div>
+                                    <input type="hidden" class="product-generated-variation-code" name="product_variation_code" data-product-id="{{ $product['id'] }}">
+                                    <input type="hidden" value="" class="in_cart_key form-control w-50" name="key">
+
+
+                                    <div class="bg-light mx-w rounded p-4">
+                                        <div class="flex-between-gap-3">
+                                            <div class="">
+                                                <h6 class="flex-middle-gap-2 mb-2">
+                                                    <span class="text-muted">{{translate('total_price').':'}}</span>
+                                                    <span
+                                                        class="total_price">{{webCurrencyConverter($product->unit_price)}}</span>
+                                                </h6>
+                                                <h6 class="flex-middle-gap-2">
+                                                    <span class="text-muted">{{translate('tax').':'}}</span>
+                                                    <span
+                                                        class="product_vat">{{webCurrencyConverter($product->tax)}}</span>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+
                                 <div class="d-flex gap-2 mt-4">
                                     @if(($product->added_by == 'seller' && ($seller_temporary_close || (isset($product->seller->shop) && $product->seller->shop->vacation_status && $currentDate >= $seller_vacation_start_date && $currentDate <= $seller_vacation_end_date))) ||
                                     ($product->added_by == 'admin' && ($inhouse_temporary_close || ($inHouseVacationStatus && $currentDate >= $inhouse_vacation_start_date && $currentDate <= $inhouse_vacation_end_date))))
@@ -351,18 +358,28 @@
                                         </button>
                                     @else
                                         @php($guest_checkout=getWebConfig(name: 'guest_checkout'))
-                                        <button type="button"
-                                                class="btn btn-secondary fs-16 buy-now"
-                                                data-form-id="add-to-cart-form"
-                                                data-redirect-status="{{($guest_checkout==1 || Auth::guard('customer')->check()?'true':'false')}}"
-                                                data-action="{{ route('shop-cart') }}"
-                                                >
-                                            {{translate('buy_now')}}
-                                        </button>
-                                        <button type="button"
+                                        
+                                        @if($product->product_type != "Service")
+                                            <button type="button"
+                                                    class="btn btn-secondary fs-16 buy-now"
+                                                    data-form-id="add-to-cart-form"
+                                                    data-redirect-status="{{($guest_checkout==1 || Auth::guard('customer')->check()?'true':'false')}}"
+                                                    data-action="{{ route('shop-cart') }}"
+                                                    >
+                                                {{translate('buy_now')}}
+                                            </button>
+                                            <button type="button"
                                                 class="btn btn-primary fs-16 text-capitalize add-to-cart"
                                                 data-form-id="add-to-cart-form" data-update-text="{{ translate('update_cart') }}"
                                                 data-add-text="{{ translate('add_to_cart') }}">{{translate('add_to_cart')}}</button>
+                                        @else
+                                            <a 
+                                                    class="btn btn-secondary fs-16 "
+                                                    href="{{route('product',$product->slug)}}"
+                                                    >
+                                                {{translate('Submit')}}
+                                            </a>
+                                        @endif
                                     @endif
                                 </div>
                                 @if(($product->added_by == 'seller' && ($seller_temporary_close || (isset($product->seller->shop) && $product->seller->shop->vacation_status && $currentDate >= $seller_vacation_start_date && $currentDate <= $seller_vacation_end_date))) ||

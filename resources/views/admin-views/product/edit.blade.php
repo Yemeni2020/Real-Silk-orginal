@@ -162,6 +162,9 @@
                                             {{ translate('digital') }}
                                         </option>
                                     @endif
+                                    <option value="Service" {{ $product->product_type=='Service' ? 'selected' : ''}}>
+                                        {{ translate('Service') }}
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -974,6 +977,82 @@
                 <input type="hidden" id="remove_url" value="{{ route('admin.products.delete-image') }}">
             </div>
 
+            
+
+
+            <div class="card mt-3 rest-part " id="service_form">
+                <div class="card-header">
+                    <div class="d-flex gap-2">
+                        <i class="tio-user-big"></i>
+                        <h4 class="mb-0">{{ translate('Service_Form') }}</h4>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <div class="row align-items-end">
+                        <div class="col-md-6">
+                            <div class="mb-3 d-flex align-items-center gap-2">
+                                <label for="colors" class="title-color mb-0">
+                                    {{ translate('Service_Form') }} :
+                                </label>
+                                
+                            </div>
+                            <span>{{translate('Add_Faild')}}  </span>
+                            <button type="button" class="btn btn-primary px-5" onclick="$('#btn-edit').hide();$('#btn-add').show();$('#itemName').val('');" id="service_form" data-toggle="modal" data-target="#ServiceNowModal">
+                                +
+                            </button>
+
+                            <table class="table table-hover table-borderless table-thead-bordered table-nowrap table-align-middle card-table w-100 text-start">
+                                <thead class="thead-light thead-50 text-capitalize">
+                                    <tr>
+                                        <th>{{translate('Name')}}</th>
+                                        <th>{{translate('Type')}}</th>
+                                        <th>{{translate('Action')}}</th>
+                                    </tr>
+                                    
+                                </thead>
+                                <tbody id="faild_form">
+
+                                    @foreach($failds as $faild)
+
+                                        <tr id='faild00{{$faild->id}}'>
+                                        <?php
+
+                                        $select_options = implode(',', $faild->select_options ?? []); // تحويل المصفوفة إلى سلسلة نصوص
+
+                                        ?>
+
+                                            <td>{{$faild->item_name}}</td>
+                                            <td>{{$faild->item_type}}</td>
+                                            <td>
+                                                <button onclick="openformedit('00{{$faild->id}}','{{$faild->item_name}}','{{$faild->item_type}}','{{$faild->item_order}}','{{$faild->is_required}}','{{$faild->item_length}}','{{$faild->default_value}}','{{$select_options}}');" type="button" class="btn btn-primary" data-toggle="modal" data-target="#ServiceNowModal"><i class="tio-edit"></i></button>
+                                                <button onclick='deleteFaildItem("00{{$faild->id}}")' type="button" class="btn btn-danger"><i class="tio-delete"></i></button>
+                                            </td>
+                                        
+                                            <input type="hidden" name="item[Name][]" value="{{$faild->item_name}}" />
+                                            <input type="hidden" name="item[Type][]" value="{{$faild->item_type}}" />
+                                            <input type="hidden" name="item[Order][]" value="{{$faild->item_order}}" />
+                                            <input type="hidden" name="item[isRequired][]" value="{{$faild->is_required}}" />
+                                            <input type="hidden" name="item[Length][]" value="{{$faild->item_length}}" />
+                                            <input type="hidden" name="item[defaultValue][]" value="{{$faild->default_value}}"/>
+                                            <input type='hidden' name='item[selectName][][]' value="{{$select_options}}" />
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            
+                        </div>
+
+                        
+
+                        
+                    </div>
+                </div>
+            </div>
+
+
+
+
             <div class="card mt-3 rest-part">
                 <div class="card-header">
                     <div class="d-flex gap-2">
@@ -1121,6 +1200,7 @@
             @endif
         </form>
     </div>
+    @include('admin-views.product.partials.FormServiceModel')
 
     <span id="route-admin-products-sku-combination" data-url="{{ route('admin.products.sku-combination') }}"></span>
     <span id="route-admin-products-digital-variation-combination" data-url="{{ route('admin.products.digital-variation-combination') }}"></span>
@@ -1146,6 +1226,7 @@
     <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/spartan-multi-image-picker.js') }}"></script>
     <script src="{{ dynamicAsset(path: 'public/assets/back-end/plugins/summernote/summernote.min.js') }}"></script>
     <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/admin/product-add-update.js') }}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/admin/formservice.js') }}"></script>
 
     <script>
         "use strict";

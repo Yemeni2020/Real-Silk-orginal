@@ -272,9 +272,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
     Route::group(['prefix' => 'orders', 'as' => 'orders.', 'middleware' => ['module:order_management']], function () {
         Route::controller(OrderController::class)->group(function () {
             Route::get(Order::LIST[URI] . '/{status}', 'index')->name('list');
+            Route::get(Order::LISTSERVICE[URI], 'listservice')->name('listservice');
             Route::get(Order::EXPORT_EXCEL[URI] . '/{status}', 'exportList')->name('export-excel');
             Route::get(Order::GENERATE_INVOICE[URI] . '/{id}', 'generateInvoice')->name('generate-invoice')->withoutMiddleware(['module:order_management']);
             Route::get(Order::VIEW[URI] . '/{id}', 'getView')->name('details');
+            Route::get(Order::VIEWSERVICE[URI] . '/{id}', 'getViewService')->name('servicedetails');
             Route::post(Order::UPDATE_ADDRESS[URI], 'updateAddress')->name('address-update');// update address from order details
             Route::post(Order::UPDATE_DELIVERY_INFO[URI], 'updateDeliverInfo')->name('update-deliver-info');
             Route::get(Order::ADD_DELIVERY_MAN[URI] . '/{order_id}/{d_man_id}', 'addDeliveryMan')->name('add-delivery-man');

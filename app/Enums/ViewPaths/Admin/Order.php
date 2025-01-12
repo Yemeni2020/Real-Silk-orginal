@@ -8,6 +8,11 @@ enum Order
         URI => 'list',
         VIEW => 'admin-views.order.list'
     ];
+    
+    const LISTSERVICE = [
+        URI => 'listservice',
+        VIEW => 'admin-views.order.listservice'
+    ];
 
     const EXPORT_EXCEL = [
         URI => 'export-excel',
@@ -22,6 +27,10 @@ enum Order
     const VIEW = [
         URI => 'details',
         VIEW => 'admin-views.order.order-details'
+    ];
+    const VIEWSERVICE = [
+        URI => 'servicedetails',
+        VIEW => 'admin-views.order.order-details-service'
     ];
 
     const VIEW_POS = [

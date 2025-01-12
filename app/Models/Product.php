@@ -182,18 +182,22 @@ class Product extends Model
     {
         return $this->hasMany(ProductOption::class);
     }
+    public function OrderService()
+    {
+        return $this->hasMany(OrderService::class, 'item', 'id');
+    }
     public function scopeActive($query)
     {
         $brandSetting = getWebConfig(name: 'product_brand');
         $digitalProductSetting = getWebConfig(name: 'digital_product');
         $businessMode = getWebConfig(name: 'business_mode');
-        $productType = $digitalProductSetting ? ['digital', 'physical'] : ['physical'];
+        $productType = $digitalProductSetting ? ['digital', 'physical',"Service"] : ['physical'];
 
         return $query->when($businessMode == 'single', function ($query) {
                 $query->where(['added_by' => 'admin']);
             })
             ->when($brandSetting, function ($query) use ($brandSetting, $productType) {
-                if (!in_array('digital', $productType)) {
+                if (!in_array('digital', $productType) ) {
                     $query->whereHas('brand', function ($query) {
                         $query->where('status', 1);
                     });

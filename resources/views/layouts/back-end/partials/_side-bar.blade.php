@@ -205,7 +205,14 @@
                                     </li>
                                 </ul>
                             </li>
-
+                            <li class="navbar-vertical-aside-has-menu {{Request::is('admin/pos*')?'active':''}}">
+                                <a class="js-navbar-vertical-aside-menu-link nav-link"
+                                   title="{{translate('services_order')}}" href="{{route('admin.orders.listservice')}}">
+                                    <i class="tio-shopping-cart-outlined nav-icon"></i>
+                                    <span
+                                        class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('services_order')}}</span>
+                                </a>
+                            </li>
                             <li class="navbar-vertical-aside-has-menu {{Request::is('admin/refund-section/refund/*')?'active':''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
                                    href="javascript:" title="{{translate('refund_Requests')}}">
@@ -271,6 +278,7 @@
                                     </li>
                                 </ul>
                             </li>
+                            
                         @endif
                         @if(Helpers::module_permission_check('product_management'))
                             <li class="nav-item {{(Request::is('admin/brand*') || Request::is('admin/category*') || Request::is('admin/sub*') || Request::is('admin/attribute*') || Request::is('admin/products*'))?'scroll-here':''}}">

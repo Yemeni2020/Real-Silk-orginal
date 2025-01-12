@@ -143,6 +143,8 @@ Route::group(['namespace' => 'Web', 'middleware' => ['maintenance_mode', 'guestC
 
     Route::controller(ProductDetailsController::class)->group(function () {
         Route::get('/product/{slug}', 'index')->name('product');
+        Route::post('/submitService', 'submit_service')->name('submitService');
+
     });
 
     Route::controller(ProductListController::class)->group(function () {

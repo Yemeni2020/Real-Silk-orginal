@@ -10,12 +10,16 @@ use App\Contracts\Repositories\ReviewRepositoryInterface;
 use App\Contracts\Repositories\SellerRepositoryInterface;
 use App\Contracts\Repositories\TagRepositoryInterface;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Request;
+use App\Models\FormItem;
 use App\Models\Product;
 use App\Models\ProductTag;
 use App\Models\Review;
 use App\Models\Seller;
 use App\Models\Tag;
 use App\Models\Wishlist;
+use App\Models\OrderService;
+use App\Models\DetailsOrderService;
 use App\Repositories\DealOfTheDayRepository;
 use App\Repositories\WishlistRepository;
 use App\Services\ProductService;
@@ -61,6 +65,68 @@ class ProductDetailsController extends Controller
             'theme_fashion' => self::getThemeFashion(slug: $slug),
             'theme_all_purpose' => self::theme_all_purpose($slug),
         };
+    }
+
+    public function submit_service(Request $request)
+    {
+        if (!Auth::guard('customer')->check()){
+            Toastr::error(translate('Login For Submit In This Service'));
+
+            return back();
+        }
+
+        $Failds = FormItem::where("item", $request->Product)->get();
+        
+        // التحقق من الحقول المطلوبة
+        foreach ($Failds as $Faild) {
+            if (empty(trim($request["$Faild->item_name"])) && $Faild->is_required) {
+                Toastr::error(translate('Error: Field '.$Faild->item_name.' is required'));
+                return back();
+            }
+        }
+    
+        // إنشاء الطلب في قاعدة البيانات
+        $order = OrderService::create([
+            'item' => $request->Product, // قيمة الـ item من جدول `products`
+            'customer' => Auth::guard('customer')->user()->id, // قيمة الـ item من جدول `products`
+        ]);
+    
+        $detailsText = ""; // نص تفاصيل الطلب لإرساله عبر WhatsApp
+        foreach ($Failds as $Faild) {
+            $value = json_encode($request[$Faild->id]) ?? "";
+    
+            // إضافة التفاصيل إلى قاعدة البيانات
+            $order->details()->create([
+                'faild_id' => $Faild->id,
+                'name_faild' => $Faild->item_name,
+                'type_faild' => $Faild->item_type,
+                'value' => $value,
+            ]);
+    
+            // إضافة التفاصيل إلى نص الرسالة
+            $detailsText .= "{$Faild->item_name}: {$value}\n";
+        }
+    
+        $whatsapp = getWebConfig(name: 'whatsapp');
+        if(isset($whatsapp['status']) && $whatsapp['status'] == 1 )
+        {
+            // $whatsappNumber = '+966536140455'; 
+            $whatsappNumber = $whatsapp['phone']; 
+            $productName    = Product::find($request->Product)->name ?? "Unknown Product"; // اسم المنتج
+            $whatsappMessage= "New Order Received:\nProduct: {$productName}\nDetails:\n{$detailsText}";
+            $encodedMessage = urlencode($whatsappMessage);
+            $whatsappUrl    = "https://wa.me/{$whatsappNumber}?text={$encodedMessage}";
+
+            // return redirect($whatsappUrl);
+
+            Toastr::success(translate('Order submitted successfully. Redirecting to WhatsApp...'));
+            return redirect($whatsappUrl);
+        }else{
+            Toastr::success(translate('Order submitted successfully. Redirecting to WhatsApp...'));
+            return back();
+        }
+        
+        
     }
 
     public function getDefaultTheme(string $slug): View|RedirectResponse
@@ -257,11 +323,16 @@ class ProductDetailsController extends Controller
             $positiveReview = $ratingCount != 0 ? ($vendorRattingStatusPositive * 100) / $ratingCount : 0;
             $previewFileInfo = getFileInfoFromURL(url: $product?->preview_file_full_url['path']);
 
+            $FaildsService = FormItem::where('item', $product->id)
+            ->orderBy('item_order', 'asc') 
+            ->get();
+
+            // dump($FaildsService);
             return view(VIEW_FILE_NAMES['products_details'], compact('product', 'wishlistStatus', 'countWishlist',
                 'countOrder', 'relatedProducts', 'dealOfTheDay', 'currentDate', 'sellerVacationStartDate', 'sellerVacationEndDate',
                 'sellerTemporaryClose', 'inHouseVacationStartDate', 'inHouseVacationEndDate', 'inHouseVacationStatus', 'inHouseTemporaryClose',
                 'overallRating', 'decimalPointSettings', 'moreProductFromSeller', 'productsForReview', 'totalReviews', 'rating', 'productReviews',
-                'avgRating', 'compareList', 'positiveReview', 'previewFileInfo', 'productAuthorsInfo', 'productPublishingHouseInfo'));
+                'avgRating', 'compareList', 'positiveReview', 'previewFileInfo', 'productAuthorsInfo', 'productPublishingHouseInfo','FaildsService'));
         }
 
         Toastr::error(translate('not_found'));

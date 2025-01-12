@@ -30,22 +30,42 @@ class ProductAddRequest extends Request
      */
     public function rules(): array
     {
-        return [
-            'name' => 'required',
-            'category_id' => 'required',
-            'product_type' => 'required',
-            'digital_product_type' => 'required_if' . ':' . 'product_type' . ',==,' . 'digital',
-            // 'digital_file_ready' => 'required_if' . ':' . 'digital_product_type' . ',==,' . 'ready_product' . '|' . 'mimes' . ':jpg,jpeg,png,gif,zip,pdf',
-            'unit' => 'required_if' . ':' . 'product_type' . ',==,' . 'physical',
-            'image' => $this->has('existing_thumbnail') ? 'nullable' : 'required',
-            'tax' => 'required' . '|' . 'min' . ':0',
-            'tax_model' => 'required',
-            'unit_price' => 'required' . '|' . 'numeric' . '|' . 'gt' . ':0',
-            'discount' => 'required' . '|' . 'gt' . ':-1',
-            'shipping_cost' => 'required_if' . ':' . 'product_type' . ',==,' . 'physical' . '|' . 'gt' . ':-1',
-            'code' => 'required' . '|' . 'regex:/^[a-zA-Z0-9]+$/' . '|' . 'min' . ':6|' . 'max' . ':20|' . 'unique' . ':products',
-            'minimum_order_qty' => 'required' . '|' . 'numeric' . '|' . 'min' . ':1',
-        ];
+        if($this->product_type=="Service"){
+            return [
+                'name' => 'required',
+                'category_id' => 'required',
+                'item' => 'required',
+                'product_type' => 'required',
+                'digital_product_type' => 'required_if' . ':' . 'product_type' . ',==,' . 'digital',
+                // 'digital_file_ready' => 'required_if' . ':' . 'digital_product_type' . ',==,' . 'ready_product' . '|' . 'mimes' . ':jpg,jpeg,png,gif,zip,pdf',
+                'unit' => 'required_if' . ':' . 'product_type' . ',==,' . 'physical',
+                'image' => $this->has('existing_thumbnail') ? 'nullable' : 'required',
+                'tax' =>  'min' . ':0',
+                'unit_price' => 'numeric',
+                // 'unit_price' =>  'numeric' . '|' . 'gt' . ':0',
+                'discount' =>  'gt' . ':-1',
+                'shipping_cost' => 'required_if' . ':' . 'product_type' . ',==,' . 'physical' . '|' . 'gt' . ':-1',
+                'code' => 'required' . '|' . 'regex:/^[a-zA-Z0-9]+$/' . '|' . 'min' . ':6|' . 'max' . ':20|' . 'unique' . ':products',
+                'minimum_order_qty' => 'numeric' . '|' . 'min' . ':1',
+            ];
+        }else{
+            return [
+                'name' => 'required',
+                'category_id' => 'required',
+                'product_type' => 'required',
+                'digital_product_type' => 'required_if' . ':' . 'product_type' . ',==,' . 'digital',
+                // 'digital_file_ready' => 'required_if' . ':' . 'digital_product_type' . ',==,' . 'ready_product' . '|' . 'mimes' . ':jpg,jpeg,png,gif,zip,pdf',
+                'unit' => 'required_if' . ':' . 'product_type' . ',==,' . 'physical',
+                'image' => $this->has('existing_thumbnail') ? 'nullable' : 'required',
+                'tax' => 'required' . '|' . 'min' . ':0',
+                'tax_model' => 'required',
+                'unit_price' => 'required' . '|' . 'numeric' . '|' . 'gt' . ':0',
+                'discount' => 'required' . '|' . 'gt' . ':-1',
+                'shipping_cost' => 'required_if' . ':' . 'product_type' . ',==,' . 'physical' . '|' . 'gt' . ':-1',
+                'code' => 'required' . '|' . 'regex:/^[a-zA-Z0-9]+$/' . '|' . 'min' . ':6|' . 'max' . ':20|' . 'unique' . ':products',
+                'minimum_order_qty' => 'required' . '|' . 'numeric' . '|' . 'min' . ':1',
+            ];
+        }
     }
 
     public function messages(): array

@@ -20,20 +20,22 @@
                                         <div class="pd-img-wrap position-relative h-100">
                                             <div class="swiper-container quickviewSlider2 border rounded aspect-1 border--gray">
                                                 <div class="product__actions d-flex flex-column gap-2">
-                                                    <a class="btn-wishlist add-to-wishlist cursor-pointer wishlist-{{$product['id']}} {{($wishlistStatus == 1?'wishlist_icon_active':'')}}"
-                                                       data-action="{{route('store-wishlist')}}"
-                                                       data-product-id="{{$product['id']}}"
-                                                       id="wishlist-{{$product['id']}}"
-                                                       title="{{translate('add_to_wishlist')}}">
-                                                        <i class="bi bi-heart"></i>
-                                                    </a>
-                                                    <a id="compare_list-{{$product['id']}}"
-                                                       class="btn-compare stopPropagation add-to-compare compare_list-{{$product['id']}} {{($compareList == 1?'compare_list_icon_active':'')}}"
-                                                       data-action="{{route('product-compare.index')}}"
-                                                       data-product-id="{{$product['id']}}"
-                                                       title="{{translate('add_to_compare_list')}}">
-                                                        <i class="bi bi-repeat"></i>
-                                                    </a>
+                                                    @if($product->product_type!="Service")
+                                                        <a class="btn-wishlist add-to-wishlist cursor-pointer wishlist-{{$product['id']}} {{($wishlistStatus == 1?'wishlist_icon_active':'')}}"
+                                                        data-action="{{route('store-wishlist')}}"
+                                                        data-product-id="{{$product['id']}}"
+                                                        id="wishlist-{{$product['id']}}"
+                                                        title="{{translate('add_to_wishlist')}}">
+                                                            <i class="bi bi-heart"></i>
+                                                        </a>
+                                                        <a id="compare_list-{{$product['id']}}"
+                                                        class="btn-compare stopPropagation add-to-compare compare_list-{{$product['id']}} {{($compareList == 1?'compare_list_icon_active':'')}}"
+                                                        data-action="{{route('product-compare.index')}}"
+                                                        data-product-id="{{$product['id']}}"
+                                                        title="{{translate('add_to_compare_list')}}">
+                                                            <i class="bi bi-repeat"></i>
+                                                        </a>
+                                                    @endif
                                                     <div class="product-share-icons">
                                                         <a href="javascript:" title="Share">
                                                             <i class="bi bi-share-fill"></i>
@@ -277,12 +279,109 @@
                                                     @endif
                                                 </div>
                                             @endif
-
+                                            @if($product['product_type'] != 'Service' )
                                             <div class="product__price d-flex flex-wrap align-items-end gap-2 mb-4 ">
                                                 <div class="text-primary fs-1-5rem d-flex align-items-end gap-2">
                                                     {!! getPriceRangeWithDiscount(product: $product) !!}
                                                 </div>
                                             </div>
+                                            @endif
+                                            
+
+                                            @if($product['product_type'] == 'Service' )
+                                                <form method="post" action="{{ route('submitService') }}">
+                                                    @csrf
+
+                                                    <input type="hidden" name="Product" value="{{$product->id}}">
+
+                                                    
+                                                        @foreach($FaildsService as $Faild)
+                                                            @if(in_array($Faild->item_type, ["text", "date", "email", "select", "number", "radios", "checkbox"]))
+
+
+                                                            @if($Faild->item_type == "select")
+                                                                    @php
+                                                                    $Options = [];
+
+                                                                    if (is_array($Faild->select_options) && isset($Faild->select_options[0]) && is_string($Faild->select_options[0])) {
+
+                                                                        $Options = is_string($Faild->select_options[0]) ? explode(',', $Faild->select_options[0]) : [];
+                                                                    }
+                                                                    @endphp
+                                                                    <span>{{$Faild->item_name}}</span>
+                                                                    <select class="form-control" name="{{$Faild->id}}" id="{{$Faild->id}}">
+                                                                        @foreach($Options as $Option)
+                                                                            <option value="{{$Option}}">{{$Option}}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                @elseif($Faild->item_type == "checkbox")
+                                                                    @php
+                                                                        $Options = [];
+
+                                                                        if (is_array($Faild->select_options) && isset($Faild->select_options[0]) && is_string($Faild->select_options[0])) {
+
+                                                                            $Options = is_string($Faild->select_options[0]) ? explode(',', $Faild->select_options[0]) : [];
+                                                                        }
+                                                                        $i=0;
+                                                                    @endphp
+                                                                    <h6>{{$Faild->item_name}}</h6>
+                                                                    <div class="form-control">
+                                                                        @foreach($Options as $Option)
+                                                                            <span>{{$Option}}</span>
+                                                                            <input type="checkbox" name="{{$Faild->id}}[]" id="{{$Faild->id}}" value="{{$Option}}">
+                                                                            @php($i++)
+                                                                        @endforeach
+                                                                    </div>
+                                                                @elseif($Faild->item_type == "radios")
+                                                                    <?php
+                                                                        $Options = [];
+
+                                                                        if (is_array($Faild->select_options) && isset($Faild->select_options[0]) && is_string($Faild->select_options[0])) {
+                                                                            $Options = explode(',', $Faild->select_options[0]);
+                                                                        }
+                                                                        $i=0;
+                                                                    ?>
+                                                                    <h6>{{$Faild->item_name}}</h6>
+                                                                    <div class="form-control">
+                                                                        @foreach($Options as $Option)
+                                                                            <span>{{$Option}}</span>
+                                                                            <input type="radio" {{$i==0?'checked':''}} name="{{$Faild->id}}" id="{{$Faild->id}}" value="{{$Option}}">
+                                                                            @php($i++)
+                                                                        @endforeach
+                                                                    </div>
+                                                                @else
+                                                                <h6>{{$Faild->item_name}}</h6>
+                                                                <input class="form-control"  {{$Faild->is_required?"required":""}} type="{{$Faild->item_type}}"  name="{{$Faild->id}}" value="{{$Faild->default_value}}" max="{{$Faild->item_length}}">
+
+                                                                @endif
+                                                                    
+                                                            
+                                                            @else
+                                                                <{{$Faild->item_type}}>{{$Faild->item_name}}</{{$Faild->item_type}}>
+                                                            
+                                                            @endif
+
+                                                        @endforeach
+                                                        @if(!Auth::guard('customer')->check())
+                                                            <button type="button" class="btn btn-secondary fs-16 " data-bs-toggle="modal" data-bs-target="#loginModal">
+                                                                {{translate('Login')}}
+                                                            </button>
+                                                        @else
+                                                            <button  class="btn btn-secondary fs-16">
+                                                                {{translate('Submit')}}
+                                                            </button>
+                                                        @endif
+                                                    
+                                                    
+                                                </form>
+                                               
+                                                @endif
+
+                                            
+
+
+
+                                            
                                             <form class="cart add-to-cart-form" action="{{ route('cart.add') }}"
                                                   id="add-to-cart-form" data-redirecturl="{{route('checkout-details')}}"
                                                   data-varianturl="{{ route('cart.variant_price') }}"
@@ -365,29 +464,30 @@
                                                         @endforeach
                                                     @endif
 
+                                                    @if($product->product_type != "Service")
 
-                                                    <div class="d-flex gap-4 flex-wrap align-items-center mb-4">
-                                                        <h6 class="fw-semibold">{{translate('quantity')}}</h6>
-                                                        <div class="quantity quantity--style-two">
-                                                            <span class="quantity__minus single-quantity-minus" >
-                                                                <i class="bi bi-dash"></i>
-                                                            </span>
-                                                            <input type="text"
-                                                                   data-details-page="1"
-                                                                   class="quantity__qty product_quantity__qty"
-                                                                   id="qquantity"
-                                                                   name="quantity"
-                                                                   value="{{ $product?->minimum_order_qty ?? 1 }}"
-                                                                   min="{{ $product?->minimum_order_qty ?? 1 }}"
-                                                                   max="{{$product['product_type'] == 'physical' ? $product->current_stock : 100}}">
-                                                            <span id="Q_plus" class="quantity__plus single-quantity-plus" {{($product->current_stock == 1?'disabled':'')}}>
-                                                                <i class="bi bi-plus"></i>
-                                                            </span>
+                                                        <div class="d-flex gap-4 flex-wrap align-items-center mb-4">
+                                                            <h6 class="fw-semibold">{{translate('quantity')}}</h6>
+                                                            <div class="quantity quantity--style-two">
+                                                                <span class="quantity__minus single-quantity-minus" >
+                                                                    <i class="bi bi-dash"></i>
+                                                                </span>
+                                                                <input type="text"
+                                                                    data-details-page="1"
+                                                                    class="quantity__qty product_quantity__qty"
+                                                                    id="qquantity"
+                                                                    name="quantity"
+                                                                    value="{{ $product?->minimum_order_qty ?? 1 }}"
+                                                                    min="{{ $product?->minimum_order_qty ?? 1 }}"
+                                                                    max="{{$product['product_type'] == 'physical' ? $product->current_stock : 100}}">
+                                                                <span id="Q_plus" class="quantity__plus single-quantity-plus" {{($product->current_stock == 1?'disabled':'')}}>
+                                                                    <i class="bi bi-plus"></i>
+                                                                </span>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <input type="hidden" class="product-generated-variation-code" name="product_variation_code" data-product-id="{{ $product['id'] }}">
-                                                    <input type="hidden" value="" class="in_cart_key form-control w-50" name="key">
-
+                                                        <input type="hidden" class="product-generated-variation-code" name="product_variation_code" data-product-id="{{ $product['id'] }}">
+                                                        <input type="hidden" value="" class="in_cart_key form-control w-50" name="key">
+                                                    @endif
                                                     @if(count($product->offers)>0)
 
                                                         <h4>{{translate('offers')}}</h4>
@@ -418,6 +518,7 @@
                                                             @endforeach
                                                         </div>
                                                     @endif
+                                                    @if($product->product_type != "Service")
                                                     <div class="mx-w width--24rem">
                                                         <div class="bg-light w-100 rounded p-4">
                                                             <div class="flex-between-gap-3">
@@ -438,9 +539,12 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    @endif
                                                     <div class="mx-w d-flex flex-wrap gap-3 mt-4 width--24rem">
                                                         @if(($product->added_by == 'seller' && ($sellerTemporaryClose || (isset($product->seller->shop) && $product->seller->shop->vacation_status && $currentDate >= $sellerVacationStartDate && $currentDate <= $sellerVacationEndDate))) ||
                                                         ($product->added_by == 'admin' && ($inHouseTemporaryClose || ($inHouseVacationStatus && $currentDate >= $inHouseVacationStartDate && $currentDate <= $inHouseVacationEndDate))))
+                                                        @if($product->product_type != "Service")
+                                                            {{$product->product_type}}
                                                             <button type="button"
                                                                     class="btn btn-secondary fs-16 flex-grow-1"
                                                                     disabled>
@@ -452,22 +556,27 @@
                                                                     disabled>
                                                                 {{translate('add_to_cart')}}
                                                             </button>
+                                                        
+                                                        @endif
                                                         @else
-                                                            @php($guest_checkout=getWebConfig(name: 'guest_checkout'))
-                                                            <button type="button"
-                                                                    class="btn btn-secondary fs-16 buy-now"
-                                                                    data-form-id="add-to-cart-form"
-                                                                    data-redirect-status="{{($guest_checkout==1 || Auth::guard('customer')->check()?'true':'false')}}"
-                                                                    data-action="{{route('shop-cart')}}">
-                                                                {{translate('buy_now')}}
-                                                            </button>
-                                                            <button type="button"
-                                                                    class="btn btn-primary fs-16 text-capitalize add-to-cart"
-                                                                    data-form-id="add-to-cart-form"
-                                                                    data-update-text="{{ translate('update_cart') }}"
-                                                                    data-add-text="{{ translate('add_to_cart') }}">
-                                                                {{ translate('add_to_cart') }}
-                                                            </button>
+                                                        @php($guest_checkout=getWebConfig(name: 'guest_checkout'))
+                                                            @if($product->product_type != "Service")
+                                                                <button type="button"
+                                                                        class="btn btn-secondary fs-16 buy-now"
+                                                                        data-form-id="add-to-cart-form"
+                                                                        data-redirect-status="{{($guest_checkout==1 || Auth::guard('customer')->check()?'true':'false')}}"
+                                                                        data-action="{{route('shop-cart')}}">
+                                                                    {{translate('buy_now')}}
+                                                                </button>
+                                                                <button type="button"
+                                                                        class="btn btn-primary fs-16 text-capitalize add-to-cart"
+                                                                        data-form-id="add-to-cart-form"
+                                                                        data-update-text="{{ translate('update_cart') }}"
+                                                                        data-add-text="{{ translate('add_to_cart') }}">
+                                                                    {{ translate('add_to_cart') }}
+                                                                </button>
+                                                            
+                                                            @endif
                                                         @endif
                                                     </div>
                                                     @if(($product->added_by == 'seller' && ($sellerTemporaryClose || (isset($product->seller->shop) && $product->seller->shop->vacation_status && $currentDate >= $sellerVacationStartDate && $currentDate <= $sellerVacationEndDate))) ||

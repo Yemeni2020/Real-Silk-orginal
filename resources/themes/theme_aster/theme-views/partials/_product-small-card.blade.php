@@ -3,6 +3,13 @@
 <div class="product border rounded text-center d-flex flex-column gap-10 get-view-by-onclick"
      data-link="{{route('product',$product->slug)}}">
     <div class="product__top width--100 height-12-5-rem aspect-1">
+        @if($product->product_type == "Service")
+            <span class="product__discount-badge" style="rotate: 25deg;">
+                <span>
+                    {{translate("Service");}}
+                </span>
+            </span>
+        @endif
         @if($product->discount > 0)
             <span class="product__discount-badge">
                 <span>
@@ -17,6 +24,8 @@
         <div class="product__actions d-flex flex-column gap-2">
             @php($wishlist = count($product->wishList)>0 ? 1 : 0)
             @php($compare_list = count($product->compareList)>0 ? 1 : 0)
+            @if($product->product_type != "Service")
+
             <a class="btn-wishlist stopPropagation add-to-wishlist cursor-pointer wishlist-{{$product['id']}} {{($wishlist == 1?'wishlist_icon_active':'')}}"
                data-action="{{route('store-wishlist')}}"
                data-product-id="{{$product['id']}}"
@@ -30,6 +39,7 @@
                id="compare_list-{{$product['id']}}" title="{{translate('add_to_compare')}}">
                 <i class="bi bi-repeat"></i>
             </a>
+            @endif
             <a href="javascript:" class="btn-quickview stopPropagation get-quick-view"
                data-action="{{route('quick-view')}}"
                data-product-id="{{$product['id']}}" title="{{translate('quick_view')}}"
@@ -72,17 +82,19 @@
             <a href="{{route('product',$product->slug)}}"
                class="text-capitalize text-truncate">{{ $product['name'] }}</a>
         </h6>
-        <a href="{{route('product',$product->slug)}}">
-            <div class="product__price d-flex flex-wrap column-gap-2">
-                @if($product->discount > 0)
-                    <del class="product__old-price">{{webCurrencyConverter($product->unit_price)}}</del>
-                @endif
-                <ins class="product__new-price">
-                    {{webCurrencyConverter(
-                        $product->unit_price-(Helpers::getProductDiscount($product,$product->unit_price))
-                    )}}
-                </ins>
-            </div>
-        </a>
+        @if($product->product_type != "Service")
+            <a href="{{route('product',$product->slug)}}">
+                <div class="product__price d-flex flex-wrap column-gap-2">
+                    @if($product->discount > 0)
+                        <del class="product__old-price">{{webCurrencyConverter($product->unit_price)}}</del>
+                    @endif
+                    <ins class="product__new-price">
+                        {{webCurrencyConverter(
+                            $product->unit_price-(Helpers::getProductDiscount($product,$product->unit_price))
+                        )}}
+                    </ins>
+                </div>
+            </a>
+        @endif
     </div>
 </div>

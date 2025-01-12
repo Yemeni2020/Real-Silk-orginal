@@ -10,6 +10,7 @@ use App\Traits\FileManagerTrait;
 use Illuminate\Support\Str;
 use phpDocumentor\Reflection\Types\Boolean;
 use Rap2hpoutre\FastExcel\FastExcel;
+use App\Models\FormItem;
 use function React\Promise\all;
 
 class ProductService
@@ -371,6 +372,103 @@ class ProductService
         $seller = Seller::findOrFail(auth('seller')->id());
         return $seller->active_product??0;
     }
+    
+    public function getfaildservice($product){
+        return FormItem::where("item",$product)->get();
+    }
+
+    public function BuildForm($request,$item)  {
+
+        $count=count($request["Name"])??0;
+        for ($i=0; $i < $count; $i++) { 
+            # code...
+            $select_options=[];
+
+            for ($x=0; $x < count($request["selectName"][$i]); $x++) { 
+                # code...
+                if($request["selectName"][$i][$x] != null)
+                    $select_options[]=$request["selectName"][$i][$x];
+            }
+
+            $data = [
+                'item' => $item,
+                'item_name' => $request["Name"][$i],
+                'item_type' => $request["Type"][$i],
+                'item_order' => $request["Order"][$i],
+                'is_required' => $request["isRequired"][$i],
+                'item_length' => $request["Length"][$i],
+                'default_value' => $request["defaultValue"][$i],
+                'select_options' => $select_options, // قائمة الخيارات
+            ];
+            FormItem::create($data);
+
+        }
+
+
+        // $data = [
+        //     'item_name' => $request["Name"],
+        //     'item_type' => $request["Type"],
+        //     'item_order' => $request["Order"],
+        //     'is_required' => $request["isRequired"],
+        //     'item_length' => $request["Length"],
+        //     'default_value' => $request["defaultValue"],
+        //     'select_options' => ['Option 1', 'Option 2'], // قائمة الخيارات
+        // ];
+        // dump($request);
+        
+        return true;
+    }
+
+    public function UpdateForm($request,$item)  {
+        
+        $existingFields = FormItem::where('item', $item)->get();
+        $existingCount = $existingFields->count();
+        $count=count($request["Name"])??0;
+        for ($i=0; $i < $count; $i++) { 
+            # code...
+            $select_options=[];
+
+            for ($x=0; $x < count($request["selectName"][$i]); $x++) { 
+                # code...
+                if($request["selectName"][$i][$x] != null)
+                    $select_options[]=$request["selectName"][$i][$x];
+            }
+
+            $data = [
+                'item' => $item,
+                'item_name' => $request["Name"][$i],
+                'item_type' => $request["Type"][$i],
+                'item_order' => $request["Order"][$i],
+                'is_required' => $request["isRequired"][$i],
+                'item_length' => $request["Length"][$i],
+                'default_value' => $request["defaultValue"][$i],
+                'select_options' => $select_options, // قائمة الخيارات
+            ];
+            // تحديث أو إنشاء الحقول بناءً على العدد الحالي
+            if ($i < $existingCount) {
+                // تحديث الحقل إذا كان موجودًا
+                $existingField = $existingFields[$i];
+                $existingField->update($data);
+                
+            } else {
+                // إنشاء حقل جديد إذا تجاوز عدد الحقول الحالية
+                FormItem::create($data);
+
+            }
+        }
+        // حذف الحقول الزائدة إذا تم تقليل الحقول المرسلة
+        if ($count < $existingCount) {
+            $fieldsToDelete = $existingFields->slice($count);
+            foreach ($fieldsToDelete as $field) {
+                $field->delete();
+            }
+        }
+
+        
+        return true;
+    }
+
+
     public function getAddProductData(object $request, string $addedBy): array
     {
         $storage = config('filesystems.disks.default') ?? 'public';
@@ -414,12 +512,12 @@ class ProductService
             'variation' => $request['product_type'] == 'physical' ? json_encode($variations) : json_encode([]),
             'digital_product_file_types' => $request->has('extensions_type') ? $request->get('extensions_type') : [],
             'digital_product_extensions' => $digitalFileCombinations,
-            'unit_price' => currencyConverter(amount: $request['unit_price']),
+            'unit_price' => $request['unit_price'] != null ? currencyConverter(amount: $request['unit_price']):0,
             'purchase_price' => 0,
-            'tax' => $request['tax_type'] == 'flat' ? currencyConverter(amount: $request['tax']) : $request['tax'],
+            'tax' => $request['tax_type'] == 'flat' && $request['tax'] != null ? currencyConverter(amount: $request['tax']) : $request['tax'],
             'tax_type' => $request->get('tax_type', 'percent'),
             'tax_model' => $request['tax_model'],
-            'discount' => $request['discount_type'] == 'flat' ? currencyConverter(amount: $request['discount']) : $request['discount'],
+            'discount' => $request['discount_type'] == 'flat' && $request['discount'] != null ? currencyConverter(amount: $request['discount']) : $request['discount'],
             'discount_type' => $request['discount_type'],
             'attributes' => $request['product_type'] == 'physical' ? json_encode($request['choice_attributes']) : json_encode([]),
             'current_stock' => $request['product_type'] == 'physical' ? abs($stockCount) : 999999999,
@@ -428,7 +526,7 @@ class ProductService
             'video_url' => $request['video_url'],
             'status' => $addedBy == 'admin' ? 1 : $this->vendor_auto_product()??0,
             'request_status' => $addedBy == 'admin' ? 1 : (getWebConfig(name: 'new_product_approval') == 1 ? 0 : 1),
-            'shipping_cost' => $request['product_type'] == 'physical' ? currencyConverter(amount: $request['shipping_cost']) : 0,
+            'shipping_cost' => $request['product_type'] == 'physical' && $request['shipping_cost'] != null ? currencyConverter(amount: $request['shipping_cost']) : 0,
             'multiply_qty' => ($request['product_type'] == 'physical') ? ($request['multiply_qty'] == 'on' ? 1 : 0) : 0, //to be changed in form multiply_qty
             'color_image' => json_encode($processedImages['colored_image_names']),
             'images' => json_encode($processedImages['image_names']),

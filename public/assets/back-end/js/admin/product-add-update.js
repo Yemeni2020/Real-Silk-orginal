@@ -93,6 +93,7 @@ function getProductTypeFunctionality() {
         $(".physical_product_show").show();
         $(".digital-product-sections-show").hide();
         $(".digitalProductVariationSetupSection").hide();
+        $("#service_form").hide();
     } else if (productType && productType.toString() === "digital") {
         elementProductColorSwitcherByID.prop("checked", false);
         $("#color-wise-image-section").empty().html("");
@@ -101,7 +102,22 @@ function getProductTypeFunctionality() {
         $(".digital-product-sections-show").show();
         $(".digitalProductVariationSetupSection").show();
         $(".physical_product_show").hide();
+        $("#service_form").hide();
+
     }
+    else if (productType && productType.toString() === "Service") {
+        $("#service_form").show();
+        elementDigitalProductTypeByID.val(
+            $("#digital_product_type option:first").val()
+        );
+        elementProductColorSwitcherByIDFunctionality("reset");
+        $("#digital_product_type_show").hide();
+        $("#digital_file_ready").val("");
+        $(".physical_product_show").hide();
+        $(".digital-product-sections-show").hide();
+        $(".digitalProductVariationSetupSection").hide();
+    }
+
 
     try {
         if (productType && productType.toString() === "physical") {

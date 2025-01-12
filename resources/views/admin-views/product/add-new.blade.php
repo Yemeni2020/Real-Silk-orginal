@@ -150,6 +150,7 @@
                                     @if($digitalProductSetting)
                                         <option value="digital">{{ translate('digital') }}</option>
                                     @endif
+                                    <option value="Service">{{ translate('Service') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -747,6 +748,51 @@
                 </div>
             </div>
 
+            <div class="card mt-3 rest-part " id="service_form">
+                <div class="card-header">
+                    <div class="d-flex gap-2">
+                        <i class="tio-user-big"></i>
+                        <h4 class="mb-0">{{ translate('Service_Form') }}</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-end">
+                        <div class="col-md-6">
+                            <div class="mb-3 d-flex align-items-center gap-2">
+                                <label for="colors" class="title-color mb-0">
+                                    {{ translate('Service_Form') }} :
+                                </label>
+                                
+                            </div>
+                            <span>{{translate('Add_Faild')}}  </span>
+
+                            <button type="button" class="btn btn-primary px-5" onclick="$('#btn-edit').hide();$('#btn-add').show();$('#itemName').val('');" id="service_form" data-toggle="modal" data-target="#ServiceNowModal">
+                                +
+                            </button>
+
+                            <table class="table table-hover table-borderless table-thead-bordered table-nowrap table-align-middle card-table w-100 text-start">
+                                <thead class="thead-light thead-50 text-capitalize">
+                                    <tr>
+                                        <th>{{translate('Name')}}</th>
+                                        <th>{{translate('Type')}}</th>
+                                        <th>{{translate('Action')}}</th>
+                                    </tr>
+                                    
+                                </thead>
+                                <tbody id="faild_form">
+
+                                </tbody>
+                            </table>
+                            
+                        </div>
+
+                        
+
+                        
+                    </div>
+                </div>
+            </div>
+
             <div class="card mt-3 rest-part">
                 <div class="card-header">
                     <div class="d-flex gap-2">
@@ -877,6 +923,7 @@
             </div>
         </form>
     </div>
+    @include('admin-views.product.partials.FormServiceModel')
 
     <span id="route-admin-products-sku-combination" data-url="{{ route('admin.products.sku-combination') }}"></span>
     <span id="route-admin-products-digital-variation-combination" data-url="{{ route('admin.products.digital-variation-combination') }}"></span>
@@ -902,4 +949,10 @@
     <script src="{{ dynamicAsset(path: 'public/assets/back-end/plugins/summernote/summernote.min.js') }}"></script>
     <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/admin/product-add-update.js') }}"></script>
     <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/admin/product-add-colors-img.js') }}"></script>
+    <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/admin/formservice.js') }}"></script>
+    <script>
+         
+        // document.getElementById('addItemSelectButton').addEventListener('click',addItemSelectButton2());
+    </script>
+
 @endpush

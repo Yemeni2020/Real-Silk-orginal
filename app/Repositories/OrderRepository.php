@@ -11,6 +11,7 @@ use App\Models\OrderTransaction;
 use App\Models\Product;
 use App\Models\SellerWallet;
 use App\Models\Transaction;
+use App\Models\OrderService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -29,6 +30,8 @@ class OrderRepository implements OrderRepositoryInterface
         private readonly SellerWallet                 $sellerWallet,
         private readonly Transaction                  $transaction,
         private readonly OrderTransaction             $orderTransaction,
+        private readonly OrderService                 $order_service,
+
     )
     {
     }
@@ -143,6 +146,16 @@ class OrderRepository implements OrderRepositoryInterface
             ->when(isset($filters['whereIn_payment_status']) && $filters['whereIn_payment_status'] != 'all', function ($query) use($filters) {
                 $query->whereIn('payment_status',$filters['whereIn_payment_status']);
             })
+            ->when(!empty($orderBy), function ($query) use ($orderBy) {
+                $query->orderBy(array_key_first($orderBy), array_values($orderBy)[0]);
+            });
+
+        $filters += ['searchValue' => $searchValue];
+        return $dataLimit == 'all' ? $query->get() : $query->paginate($dataLimit)->appends($filters);
+    }
+    public function getListServiceWhere(array $orderBy = [], string $searchValue = null, array $filters = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
+    {
+        $query = $this->order_service
             ->when(!empty($orderBy), function ($query) use ($orderBy) {
                 $query->orderBy(array_key_first($orderBy), array_values($orderBy)[0]);
             });

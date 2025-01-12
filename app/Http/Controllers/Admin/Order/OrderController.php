@@ -41,7 +41,12 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use App\Models\FormItem;
 use Illuminate\Support\Facades\View as PdfView;
+use App\Models\DetailsOrderService;
+use App\Models\OrderService as ModelOrderService;
+use App\Models\Product;
+use App\Models\User;
 
 class OrderController extends BaseController
 {
@@ -83,7 +88,36 @@ class OrderController extends BaseController
     {
         return $this->getListView(request: $request, status: $type);
     }
+    public function listservice(Request|null $request): View
+    {
+        return $this->getListViewService(request: $request);
+    }
 
+    public function getListViewService(object $request): View
+    {
+
+        $searchValue = $request['searchValue'];
+
+        $filter = $request['filter'];
+        $from = $request['from'];
+        $to = $request['to'];
+
+        
+
+        $dateType = $request['date_type'];
+        $filters = [];
+        
+        $orders = $this->orderRepo->getListServiceWhere(orderBy: ['id' => 'desc'], searchValue: $request['searchValue'], filters: $filters, relations: [], dataLimit: getWebConfig(name: WebConfigKey::PAGINATION_LIMIT));
+
+
+
+        return view(Order::LISTSERVICE[VIEW], compact(
+            'orders',
+            'searchValue',
+            'from', 'to',
+            'filter',
+        ));
+    }
     public function getListView(object $request, string $status): View
     {
 
@@ -234,6 +268,16 @@ class OrderController extends BaseController
             'defaultCurrencyCode'=>getCurrencyCode(),
         ];
         return Excel::download(new OrderExport($data), 'Orders.xlsx');
+    }
+
+    public function getViewService(string|int $id): View|RedirectResponse
+    {
+        $DetailsOrder = DetailsOrderService::where("order_id",$id)->get();
+        $order = ModelOrderService::where('id',$id)->first();
+        $product=Product::find($order->item);
+        $User=User::find($order->customer);
+
+        return view(Order::VIEWSERVICE[VIEW], compact('order','product','DetailsOrder','User'));
     }
 
     public function getView(string|int $id, DeliveryCountryCodeService $service, OrderService $orderService): View|RedirectResponse

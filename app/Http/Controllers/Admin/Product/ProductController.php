@@ -102,14 +102,25 @@ class ProductController extends BaseController
 
     public function add(ProductAddRequest $request, ProductService $service): JsonResponse|RedirectResponse|null
     {
+        
+
         if ($request->ajax()) {
             return response()->json([], 200);
         }
+
         // echo $request->description[0];
         // dump($request);
         // return null;
+
+
+        // echo count($request["item"]["Name"]);
+        // dump($request->product_type);
+        
         $dataArray = $service->getAddProductData(request: $request, addedBy: 'admin');
         $savedProduct = $this->productRepo->add(data: $dataArray);
+
+        if($request->product_type=="Service")
+            $service->BuildForm($request["item"],$savedProduct->id);
 
         //MyCode
         if(isset($request->offers_price)){
@@ -229,7 +240,13 @@ class ProductController extends BaseController
         $digitalProductAuthors = $this->authorRepo->getListWhere(dataLimit: 'all');
         $publishingHouseList = $this->publishingHouseRepo->getListWhere(dataLimit: 'all');
 
-        return view(Product::UPDATE[VIEW], compact('product', 'categories', 'brands', 'brandSetting', 'digitalProductSetting', 'colors', 'attributes', 'languages', 'defaultLanguage', 'digitalProductFileTypes', 'digitalProductAuthors', 'publishingHouseList', 'productAuthorIds', 'productPublishingHouseIds'));
+        $failds=null;
+        if($product->product_type=="Service"){
+            $failds=$this->productService->getfaildservice($product->id);
+        }
+
+
+        return view(Product::UPDATE[VIEW], compact('product', 'categories', 'brands', 'brandSetting', 'digitalProductSetting', 'colors', 'attributes', 'languages', 'defaultLanguage', 'digitalProductFileTypes', 'digitalProductAuthors', 'publishingHouseList', 'productAuthorIds', 'productPublishingHouseIds',"failds"));
     }
     protected function update_offers(ProductUpdateRequest $request):void{
         $offers = ProductOffer::where('product_id', $request->product_id)->get()->toArray();
@@ -272,8 +289,10 @@ class ProductController extends BaseController
             }
         }
     }
-    public function update(ProductUpdateRequest $request, ProductService $service, string|int $id): JsonResponse|RedirectResponse
+    public function update(ProductUpdateRequest $request, ProductService $service, string|int $id): JsonResponse|RedirectResponse|null
     {
+        // dump($request);
+        // return null;
         if ($request->ajax()) {
             return response()->json([], 200);
         }
@@ -285,6 +304,9 @@ class ProductController extends BaseController
         $this->productRepo->update(id: $id, data: $dataArray);
         $this->productRepo->addRelatedTags(request: $request, product: $product);
         $this->translationRepo->update(request: $request, model: 'App\Models\Product', id: $id);
+
+        if($request->product_type=="Service")
+            $service->UpdateForm($request["item"],$id);
 
         self::getDigitalProductUpdateProcess($request, $product);
 
@@ -379,11 +401,13 @@ class ProductController extends BaseController
     public function getView(string $addedBy, string|int $id): View|RedirectResponse
     {
         $productActive = $this->productRepo->getFirstWhere(params: ['id' => $id], relations: ['digitalVariation', 'seoInfo']);
+
         if (!$productActive) {
             Toastr::error(translate('product_not_found') . '!');
             return redirect()->route('admin.products.list', ['in_house']);
         }
         $isActive = $this->productRepo->getWebFirstWhereActive(params: ['id' => $id]);
+
         $relations = ['category', 'brand', 'reviews', 'rating', 'orderDetails', 'orderDelivered', 'digitalVariation', 'seoInfo'];
         $product = $this->productRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $id], relations: $relations);
         $product['priceSum'] = $product?->orderDelivered->sum('price');
