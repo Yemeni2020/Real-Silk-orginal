@@ -94,7 +94,7 @@ class ProductDetailsController extends Controller
     
         $detailsText = ""; // نص تفاصيل الطلب لإرساله عبر WhatsApp
         foreach ($Failds as $Faild) {
-            $value = json_encode($request["faild$Faild->id"]) ?? "";
+            $value = $request["faild$Faild->id"] ;
     
             // إضافة التفاصيل إلى قاعدة البيانات
             $order->details()->create([
