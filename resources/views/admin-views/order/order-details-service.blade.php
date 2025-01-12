@@ -24,7 +24,7 @@
 
                     @foreach($DetailsOrder as $data)
 
-                    @if(!in_array($data->item_type,["select","checkbox","radios","text","date","email","number"]))
+                    @if(in_array($data->type_faild,["select","checkbox","radios","text","date","email","number"]))
                     <h6>
                         {{$data->name_faild}}:
                     </h6>    
