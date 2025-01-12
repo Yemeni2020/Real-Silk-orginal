@@ -79,7 +79,7 @@ class ProductDetailsController extends Controller
         
         // التحقق من الحقول المطلوبة
         foreach ($Failds as $Faild) {
-            if (empty(trim($request["$Faild->item_name"])) && $Faild->is_required) {
+            if (empty(trim($request["faild$Faild->item_name"])) && $Faild->is_required) {
                 Toastr::error(translate('Error: Field '.$Faild->item_name.' is required'));
                 return back();
             }
@@ -93,7 +93,7 @@ class ProductDetailsController extends Controller
     
         $detailsText = ""; // نص تفاصيل الطلب لإرساله عبر WhatsApp
         foreach ($Failds as $Faild) {
-            $value = json_encode($request[$Faild->id]) ?? "";
+            $value = json_encode($request["faild$Faild->id"]) ?? "";
     
             // إضافة التفاصيل إلى قاعدة البيانات
             $order->details()->create([

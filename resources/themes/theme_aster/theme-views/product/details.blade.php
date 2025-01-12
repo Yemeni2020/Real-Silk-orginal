@@ -309,7 +309,7 @@
                                                                     }
                                                                     @endphp
                                                                     <span>{{$Faild->item_name}}</span>
-                                                                    <select class="form-control" name="{{$Faild->id}}" id="{{$Faild->id}}">
+                                                                    <select class="form-control" name="faild{{$Faild->id}}" id="{{$Faild->id}}">
                                                                         @foreach($Options as $Option)
                                                                             <option value="{{$Option}}">{{$Option}}</option>
                                                                         @endforeach
@@ -328,7 +328,7 @@
                                                                     <div class="form-control">
                                                                         @foreach($Options as $Option)
                                                                             <span>{{$Option}}</span>
-                                                                            <input type="checkbox" name="{{$Faild->id}}[]" id="{{$Faild->id}}" value="{{$Option}}">
+                                                                            <input type="checkbox" name="faild{{$Faild->id}}[]" id="{{$Faild->id}}" value="{{$Option}}">
                                                                             @php($i++)
                                                                         @endforeach
                                                                     </div>
@@ -345,13 +345,13 @@
                                                                     <div class="form-control">
                                                                         @foreach($Options as $Option)
                                                                             <span>{{$Option}}</span>
-                                                                            <input type="radio" {{$i==0?'checked':''}} name="{{$Faild->id}}" id="{{$Faild->id}}" value="{{$Option}}">
+                                                                            <input type="radio" {{$i==0?'checked':''}} name="faild{{$Faild->id}}" id="{{$Faild->id}}" value="{{$Option}}">
                                                                             @php($i++)
                                                                         @endforeach
                                                                     </div>
                                                                 @else
                                                                 <h6>{{$Faild->item_name}}</h6>
-                                                                <input class="form-control"  {{$Faild->is_required?"required":""}} type="{{$Faild->item_type}}"  name="{{$Faild->id}}" value="{{$Faild->default_value}}" max="{{$Faild->item_length}}">
+                                                                <input class="form-control"  {{$Faild->is_required?"required":""}} type="{{$Faild->item_type}}"  name="faild{{$Faild->id}}" value="{{$Faild->default_value}}" max="{{$Faild->item_length}}">
 
                                                                 @endif
                                                                     
