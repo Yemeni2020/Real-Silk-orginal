@@ -41,7 +41,7 @@ class ProductAddRequest extends Request
                 'unit' => 'required_if' . ':' . 'product_type' . ',==,' . 'physical',
                 'image' => $this->has('existing_thumbnail') ? 'nullable' : 'required',
                 'tax' =>  'min' . ':0',
-                'unit_price' => 'numeric',
+                // 'unit_price' => 'numeric',
                 // 'unit_price' =>  'numeric' . '|' . 'gt' . ':0',
                 'discount' =>  'gt' . ':-1',
                 'shipping_cost' => 'required_if' . ':' . 'product_type' . ',==,' . 'physical' . '|' . 'gt' . ':-1',

@@ -382,13 +382,14 @@ class ProductService
         $count=count($request["Name"])??0;
         for ($i=0; $i < $count; $i++) { 
             # code...
-            $select_options=[];
+            // $select_options=[];
 
-            for ($x=0; $x < count($request["selectName"][$i]); $x++) { 
-                # code...
-                if($request["selectName"][$i][$x] != null)
-                    $select_options[]=$request["selectName"][$i][$x];
-            }
+            
+            // for ($x=0; $x < count($request["selectName"][$i]); $x++) { 
+            //     # code...
+            //     if($request["selectName"][$i][$x] != null)
+            //         $select_options[]=$request["selectName"][$i][$x];
+            // }
 
             $data = [
                 'item' => $item,
@@ -398,7 +399,7 @@ class ProductService
                 'is_required' => $request["isRequired"][$i],
                 'item_length' => $request["Length"][$i],
                 'default_value' => $request["defaultValue"][$i],
-                'select_options' => $select_options, // قائمة الخيارات
+                'select_options' => isset($request["selectName"][$i])? $request["selectName"][$i]:'', // قائمة الخيارات
             ];
             FormItem::create($data);
 
@@ -426,13 +427,13 @@ class ProductService
         $count=count($request["Name"])??0;
         for ($i=0; $i < $count; $i++) { 
             # code...
-            $select_options=[];
+            // $select_options=[];
 
-            for ($x=0; $x < count($request["selectName"][$i]); $x++) { 
-                # code...
-                if($request["selectName"][$i][$x] != null)
-                    $select_options[]=$request["selectName"][$i][$x];
-            }
+            // for ($x=0; $x < count($request["selectName"][$i]); $x++) { 
+            //     # code...
+            //     if($request["selectName"][$i][$x] != null)
+            //         $select_options[]=$request["selectName"][$i][$x];
+            // }
 
             $data = [
                 'item' => $item,
@@ -442,7 +443,7 @@ class ProductService
                 'is_required' => $request["isRequired"][$i],
                 'item_length' => $request["Length"][$i],
                 'default_value' => $request["defaultValue"][$i],
-                'select_options' => $select_options, // قائمة الخيارات
+                'select_options' => isset($request["selectName"][$i])? $request["selectName"][$i]:'', // قائمة الخيارات
             ];
             // تحديث أو إنشاء الحقول بناءً على العدد الحالي
             if ($i < $existingCount) {

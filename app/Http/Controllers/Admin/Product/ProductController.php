@@ -109,8 +109,7 @@ class ProductController extends BaseController
         }
 
         // echo $request->description[0];
-        // dump($request);
-        // return null;
+       
 
 
         // echo count($request["item"]["Name"]);
