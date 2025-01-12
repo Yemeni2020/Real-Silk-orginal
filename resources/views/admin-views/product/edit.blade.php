@@ -1018,7 +1018,9 @@
                                         <tr id='faild00{{$faild->id}}'>
                                         <?php
 
-                                        $select_options = implode(',', $faild->select_options ?? []); // تحويل المصفوفة إلى سلسلة نصوص
+                                        $options = is_array($faild->select_options) ? $faild->select_options : explode(',', $faild->select_options);
+
+                                        $select_options = implode(', ', $options); // تحويل المصفوفة إلى سلسلة نصوص
 
                                         ?>
 
