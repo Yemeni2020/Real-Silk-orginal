@@ -31,6 +31,8 @@
                                             <option value="facebook">{{translate('facebook')}}</option>
                                             <option value="twitter">{{translate('twitter')}}</option>
                                             <option value="linkedin">{{translate('linkedIn')}}</option>
+                                            <option value="tiktok">{{translate('tiktok')}}</option>
+                                            <option value="snapchat">{{translate('snapchat')}}</option>
                                             <option value="pinterest">{{translate('pinterest')}}</option>
                                             <option value="google-plus">{{translate('google_plus')}}</option>
                                         </select>

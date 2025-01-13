@@ -8896,4 +8896,8 @@ return [
 	"Customer_details " => "Customer details ",
 	"Service " => "Service ",
 	"Error: Field kjk is required" => "Error: Field kjk is required",
+	"tiktok" => "Tiktok",
+	"name_already_used" => "Name already used",
+	"the_link_field_is_required" => "The link field is required",
+	"snapchat" => "Snapchat",
 ];

@@ -205,7 +205,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li class="navbar-vertical-aside-has-menu {{Request::is('admin/pos*')?'active':''}}">
+                            <li class="navbar-vertical-aside-has-menu {{Request::is(route('admin.orders.listservice'))?'active':''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link"
                                    title="{{translate('services_order')}}" href="{{route('admin.orders.listservice')}}">
                                     <i class="tio-shopping-cart-outlined nav-icon"></i>
