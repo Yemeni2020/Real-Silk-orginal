@@ -244,17 +244,20 @@ function editFaildItem(idx){
         // alert($(lang[i]).val());
 
         if($("#itemTableBody"+$(lang[i]).val()+" tr").length==0){
-            if($("#itemTableBody"+$(lang[0]).val()+" tr").length==0){
-                showToast("Error: Must Enter All Select Fields", "error"); // عرض رسالة الخطأ باستخدام Toast
-                return;
-            }
-            else{
-                document.querySelectorAll("#itemTableBody"+$(lang[0]).val()+" tr").forEach((row) => {
-                    var selectName = row.querySelector("td:first-child").textContent;
-                    // alert(selectName);
-                    selectOptions.push(selectName);
-                    
-                });
+            if($("#itemType").val()=="select" || $("#itemType").val()=="radios" || $("#itemType").val()=="checkbox"){
+
+                if($("#itemTableBody"+$(lang[0]).val()+" tr").length==0){
+                    showToast("Error: Must Enter All Select Fields", "error"); // عرض رسالة الخطأ باستخدام Toast
+                    return;
+                }
+                else{
+                    document.querySelectorAll("#itemTableBody"+$(lang[0]).val()+" tr").forEach((row) => {
+                        var selectName = row.querySelector("td:first-child").textContent;
+                        // alert(selectName);
+                        selectOptions.push(selectName);
+                        
+                    });
+                }
             }
         }
         document.querySelectorAll("#itemTableBody"+$(lang[i]).val()+" tr").forEach((row) => {
