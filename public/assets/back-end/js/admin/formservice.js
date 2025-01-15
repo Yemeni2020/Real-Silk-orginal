@@ -34,39 +34,83 @@ function Select_type(){
     }
 }
 
+
 function addFaildItem(){
-    if($("#itemType").val()=="" || $("#itemName").val()=="" || $("#itemName").val()==null || $("#itemName").val()==undefined){
-        showToast("Error: Must Enter All Fields", "error"); // عرض رسالة الخطأ باستخدام Toast
-        return;
-    }
-    else if($("#itemType").val()=="select" || $("#itemName").val()=="radios" || $("#itemName").val()=="checkbox"){
+    
+    
+   if($("#itemType").val()=="select" || $("#itemType").val()=="radios" || $("#itemType").val()=="checkbox"){
         if($("#itemTableBody").html()==""){
             showToast("Error: Must Add Option On Type Faild "+$("#itemType").val(), "error"); // عرض رسالة الخطأ باستخدام Toast
             return;
         }
     }
-    const itemName = document.getElementById("itemName").value;
+    // const itemName = document.getElementById("itemName").value;
     const itemType = document.getElementById("itemType").value;
     const itemOrder = document.getElementById("itemOrder").value;
     const isRequired = document.getElementById("isRequired").value;
     const itemLength = document.getElementById("itemLength").value;
     const defaultValue = document.getElementById("defaultValue").value;
 
-    const selectOptions = [];
+    var selectOptions = [];
+    const itemName = [];
 
     var value=``;
     // alert(defaultValue);
-    document.querySelectorAll("#itemTableBody tr").forEach((row) => {
-        const selectName = row.querySelector("td:first-child").textContent;
-        // alert(selectName);
-        selectOptions.push(selectName);
-    });
-    value=`<input type='hidden' name='item[selectName][][]' value="`+selectOptions+`" />`;
+    var lang=$(".lang-input");
+    var len=$(".lang-input").length;
+    
+    for (let i = 0; i < len; i++) {
+        selectOptions = [];
+        // const element = array[i];
+        // alert($(lang[i]).val());
+
+        if($("#itemTableBody"+$(lang[i]).val()+" tr").length==0){
+            if($("#itemType").val()=="select" || $("#itemType").val()=="radios" || $("#itemType").val()=="checkbox"){
+                if($("#itemTableBody"+$(lang[0]).val()+" tr").length==0 ){
+                    showToast("Error: Must Enter All Select Fields", "error"); // عرض رسالة الخطأ باستخدام Toast
+                    return;
+                }
+                else{
+                    document.querySelectorAll("#itemTableBody"+$(lang[0]).val()+" tr").forEach((row) => {
+                        var selectName = row.querySelector("td:first-child").textContent;
+                        // alert(selectName);
+                        selectOptions.push(selectName);
+                        
+                    });
+                }
+            }
+        }
+        document.querySelectorAll("#itemTableBody"+$(lang[i]).val()+" tr").forEach((row) => {
+            var selectName = row.querySelector("td:first-child").textContent;
+            // alert(selectName);
+            
+
+                selectOptions.push(selectName);
+            
+        });
+        var itemname2=$(".itemName22");
+
+        // alert($(itemname2[i]).val());
+        if($(itemname2[i]).val()=="" || $(itemname2[i]).val() ==undefined || $(itemname2[i]).val()==null){
+            itemName.push($(itemname2[0]).val());
+        }
+        else{
+            itemName.push($(itemname2[i]).val());
+        }
+        value+=`<input type='hidden' name='item[selectName${$(lang[i]).val()}][][]' value="`+selectOptions+`" />`;
+    }
+    
+
+
+    if(itemName[0]=="" || itemName[0]=="" || itemName[0]==null || itemName[0]==undefined){
+        showToast("Error: Must Enter All Fields ", "error"); // عرض رسالة الخطأ باستخدام Toast
+        return;
+    }
 
     // alert("d");
     const html = `
     <tr id='faild${index}'>
-        <td>${itemName}</td>
+        <td>${itemName[0]}</td>
         <td>${itemType}</td>
         <td>
             <button onclick="openformedit(${index},'${itemName}','${itemType}','${itemOrder}','${isRequired}','${itemLength}','${defaultValue}','${selectOptions}');" type="button" class="btn btn-primary" data-toggle="modal" data-target="#ServiceNowModal"><i class="tio-edit"></i></button>
@@ -90,55 +134,81 @@ function addFaildItem(){
 
 }
 
+
 function openformedit(idx, itemName, itemType, itemOrder, isRequired, itemLength, defaultValue, selectOptions) {
     $('#btn-edit').show(); $('#btn-add').hide();
     $("#IndexFaild").val(idx);
-    $("#itemName").val(itemName);
+
+
+    // $("#itemName").val(itemName);
     $("#itemType").val(itemType).trigger('change'); // لتحديث الحقول المعتمدة على التغيير
     $("#itemOrder").val(itemOrder);
     $("#isRequired").val(isRequired);
     $("#itemLength").val(itemLength);
     $("#defaultValue").val(defaultValue);
 
-    // التحقق من الخيارات وإعادة بناء الجدول
-    if (!selectOptions || selectOptions.trim() === '') {
-        console.error('selectOptions is empty.');
-        return;
+    // // التحقق من الخيارات وإعادة بناء الجدول
+    // if (!selectOptions || selectOptions.trim() === '') {
+    //     console.error('selectOptions is empty.');
+    //     return;
+    // }
+
+    var lang=$(".lang-input");
+    var len=$(".lang-input").length;
+    var array = itemName.split(","); // تحويل النص إلى مصفوفة باستخدام split()
+
+    // alert(len);
+    itemname2=$(".itemName22");
+    for (let i = 0; i < len; i++) {
+        console.log(i);
+        // alert(array[i]);
+
+        $(itemname2[i]).val(array[i]);
+        // alert("val="+$(itemname2[i]).val());
+        // alert("#faild"+idx+" [name='item"+$(lang[i]).val()+"[selectName][][]']");
+        selectOptions2=$("#faild"+idx+" [name='item[selectName"+$(lang[i]).val()+"][][]']").val();
+        // alert(selectOptions2);
+
+
+        const selectOptionsArray = selectOptions2.split(','); // تحويل النص إلى قائمة
+
+        console.log(selectOptionsArray);
+        $("#itemTableBody"+$(lang[i]).val()).html(''); // إعادة تعيين الجدول
+    
+        
+        selectOptionsArray.forEach(option => {
+            const itemValue = option.trim(); // إزالة الفراغات الزائدة
+            if (itemValue) {
+                const tableBody = document.getElementById('itemTableBody'+$(lang[i]).val());
+                const newRow = document.createElement('tr');
+    
+                // إنشاء خلية العنصر
+                const itemCell = document.createElement('td');
+                itemCell.textContent = itemValue;
+                newRow.appendChild(itemCell);
+    
+                // إنشاء خلية الإجراءات
+                const actionCell = document.createElement('td');
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete'; // استبدل النص بالترجمة
+                deleteButton.className = 'btn btn-danger btn-sm';
+                deleteButton.onclick = function () {
+                    newRow.remove();
+                };
+                actionCell.appendChild(deleteButton);
+                newRow.appendChild(actionCell);
+    
+                // إضافة الصف إلى الجدول
+                tableBody.appendChild(newRow);
+            } else {
+                console.warn('Empty option detected.');
+            }
+        });
     }
-
-    const selectOptionsArray = selectOptions.split(','); // تحويل النص إلى قائمة
-    console.log(selectOptionsArray);
-    $("#itemTableBody").html(''); // إعادة تعيين الجدول
-
-    selectOptionsArray.forEach(option => {
-        const itemValue = option.trim(); // إزالة الفراغات الزائدة
-        if (itemValue) {
-            const tableBody = document.getElementById('itemTableBody');
-            const newRow = document.createElement('tr');
-
-            // إنشاء خلية العنصر
-            const itemCell = document.createElement('td');
-            itemCell.textContent = itemValue;
-            newRow.appendChild(itemCell);
-
-            // إنشاء خلية الإجراءات
-            const actionCell = document.createElement('td');
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Delete'; // استبدل النص بالترجمة
-            deleteButton.className = 'btn btn-danger btn-sm';
-            deleteButton.onclick = function () {
-                newRow.remove();
-            };
-            actionCell.appendChild(deleteButton);
-            newRow.appendChild(actionCell);
-
-            // إضافة الصف إلى الجدول
-            tableBody.appendChild(newRow);
-        } else {
-            console.warn('Empty option detected.');
-        }
-    });
 }
+
+
+
 
 function editFaildItem(idx){
     if($("#itemType").val()=="" || $("#itemName").val()=="" || $("#itemName").val()==null || $("#itemName").val()==undefined){
@@ -151,30 +221,79 @@ function editFaildItem(idx){
             return;
         }
     }
-    const itemName = document.getElementById("itemName").value;
+
+    // const itemName = document.getElementById("itemName").value;
     const itemType = document.getElementById("itemType").value;
     const itemOrder = document.getElementById("itemOrder").value;
     const isRequired = document.getElementById("isRequired").value;
     const itemLength = document.getElementById("itemLength").value;
     const defaultValue = document.getElementById("defaultValue").value;
 
-    const selectOptions = [];
+    var selectOptions = [];
+    const itemName = [];
 
     var value=``;
 
-    document.querySelectorAll("#itemTableBody tr").forEach((row) => {
-        const selectName = row.querySelector("td:first-child").textContent;
-        // alert(selectName);
-        selectOptions.push(selectName);
-    });
 
-    if(selectOptions.length>0){
-        value=`<input type='hidden' name='item[selectName][][]' value="`+selectOptions+`" />`;
+    var lang=$(".lang-input");
+    var len=$(".lang-input").length;
+    
+    for (let i = 0; i < len; i++) {
+        selectOptions = [];
+        // const element = array[i];
+        // alert($(lang[i]).val());
+
+        if($("#itemTableBody"+$(lang[i]).val()+" tr").length==0){
+            if($("#itemTableBody"+$(lang[0]).val()+" tr").length==0){
+                showToast("Error: Must Enter All Select Fields", "error"); // عرض رسالة الخطأ باستخدام Toast
+                return;
+            }
+            else{
+                document.querySelectorAll("#itemTableBody"+$(lang[0]).val()+" tr").forEach((row) => {
+                    var selectName = row.querySelector("td:first-child").textContent;
+                    // alert(selectName);
+                    selectOptions.push(selectName);
+                    
+                });
+            }
+        }
+        document.querySelectorAll("#itemTableBody"+$(lang[i]).val()+" tr").forEach((row) => {
+            var selectName = row.querySelector("td:first-child").textContent;
+            // alert(selectName);
+            
+
+                selectOptions.push(selectName);
+            
+        });
+        var itemname2=$(".itemName22");
+
+        // alert($(itemname2[i]).val());
+        if($(itemname2[i]).val()=="" || $(itemname2[i]).val() ==undefined || $(itemname2[i]).val()==null){
+            itemName.push($(itemname2[0]).val());
+        }
+        else{
+            itemName.push($(itemname2[i]).val());
+        }
+        value+=`<input type='hidden' name='item[selectName${$(lang[i]).val()}][][]' value="`+selectOptions+`" />`;
     }
+
+
+
+
+
+    // document.querySelectorAll("#itemTableBody tr").forEach((row) => {
+    //     const selectName = row.querySelector("td:first-child").textContent;
+    //     // alert(selectName);
+    //     selectOptions.push(selectName);
+    // });
+
+    // if(selectOptions.length>0){
+    //     value=`<input type='hidden' name='item[selectName][][]' value="`+selectOptions+`" />`;
+    // }
 
     
     const html = `
-        <td>${itemName}</td>
+        <td>${itemName[0]}</td>
         <td>${itemType}</td>
         <td>
             <button onclick="openformedit('${idx}','${itemName}','${itemType}','${itemOrder}','${isRequired}','${itemLength}','${defaultValue}','${selectOptions}');" type="button" class="btn btn-primary" data-toggle="modal" data-target="#ServiceNowModal"><i class="tio-edit"></i></button>
@@ -199,20 +318,20 @@ function editFaildItem(idx){
 
 }
 
+
+
 function deleteFaildItem(idx){
     $("#faild"+idx).remove();
 }
 
 
 
-
-
-function addItemSelectButton2() {
-    var itemInput = document.getElementById('itemSelectInput');
+function addItemSelectButton2(lang) {
+    var itemInput = document.getElementById('itemSelectInput'+lang);
     var itemValue = itemInput.value.trim();
     
     if (itemValue) {
-        var tableBody = document.getElementById('itemTableBody');
+        var tableBody = document.getElementById('itemTableBody'+lang);
         var newRow = document.createElement('tr');
 
         var itemCell = document.createElement('td');
@@ -235,8 +354,6 @@ function addItemSelectButton2() {
         alert('Please enter an item'); // استبدل بالنص المترجم
     }
 }
-
-
 
 
 
@@ -286,4 +403,7 @@ function showToast(message, type) {
         toast.remove();
     }, 3000);
 }
+
+
+
 

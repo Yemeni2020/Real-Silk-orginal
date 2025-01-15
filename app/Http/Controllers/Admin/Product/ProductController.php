@@ -103,7 +103,10 @@ class ProductController extends BaseController
     public function add(ProductAddRequest $request, ProductService $service): JsonResponse|RedirectResponse|null
     {
         
+        // dump($request);
+        // $service->BuildForm($request,33);
 
+        // return null;
         if ($request->ajax()) {
             return response()->json([], 200);
         }
@@ -119,7 +122,7 @@ class ProductController extends BaseController
         $savedProduct = $this->productRepo->add(data: $dataArray);
 
         if($request->product_type=="Service")
-            $service->BuildForm($request["item"],$savedProduct->id);
+            $service->BuildForm($request,$savedProduct->id);
 
         //MyCode
         if(isset($request->offers_price)){
@@ -291,6 +294,8 @@ class ProductController extends BaseController
     public function update(ProductUpdateRequest $request, ProductService $service, string|int $id): JsonResponse|RedirectResponse|null
     {
         // dump($request);
+        // $service->UpdateForm($request,$id);
+
         // return null;
         if ($request->ajax()) {
             return response()->json([], 200);
@@ -305,7 +310,7 @@ class ProductController extends BaseController
         $this->translationRepo->update(request: $request, model: 'App\Models\Product', id: $id);
 
         if($request->product_type=="Service")
-            $service->UpdateForm($request["item"],$id);
+            $service->UpdateForm($request,$id);
 
         self::getDigitalProductUpdateProcess($request, $product);
 

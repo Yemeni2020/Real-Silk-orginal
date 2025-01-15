@@ -21,15 +21,17 @@
                 <div class="card-body">
                     
                     <hr>
-
+                    
                     @foreach($DetailsOrder as $data)
-
+                    <?php
+                        // $value=is_array($data->value)?json_decode($data->value):$data->value;
+                    ?>
                     @if(in_array($data->type_faild,["select","checkbox","radios","text","date","email","number"]))
                     <h6>
                         {{$data->name_faild}}:
                     </h6>    
                     
-                        <input type="text" class="form-control input" readonly value="{{json_decode($data->value)}}">
+                        <input type="text" class="form-control input" readonly value="{{$data->value}}">
 
                     <hr>
                     @endif
@@ -52,7 +54,7 @@
                 </div>
                 <div class="card-body">
                     
-                {!! $product->details !!}
+                    {!! $product->details !!}
                 </div>
             </div>
             @endif

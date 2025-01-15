@@ -1017,10 +1017,14 @@
 
                                         <tr id='faild00{{$faild->id}}'>
                                         <?php
-
+                                        
+                                        
                                         $options = is_array($faild->select_options) ? $faild->select_options : explode(',', $faild->select_options);
-
+                                        $options=str_replace("[","",$options);
+                                        $options=str_replace("]","",$options);
+                                        $options=str_replace('"',"",$options);
                                         $select_options = implode(', ', $options); // تحويل المصفوفة إلى سلسلة نصوص
+                                        $item_name=$faild->item_name;
 
                                         ?>
 
@@ -1031,13 +1035,38 @@
                                                 <button onclick='deleteFaildItem("00{{$faild->id}}")' type="button" class="btn btn-danger"><i class="tio-delete"></i></button>
                                             </td>
                                         
-                                            <input type="hidden" name="item[Name][]" value="{{$faild->item_name}}" />
                                             <input type="hidden" name="item[Type][]" value="{{$faild->item_type}}" />
                                             <input type="hidden" name="item[Order][]" value="{{$faild->item_order}}" />
                                             <input type="hidden" name="item[isRequired][]" value="{{$faild->is_required}}" />
                                             <input type="hidden" name="item[Length][]" value="{{$faild->item_length}}" />
                                             <input type="hidden" name="item[defaultValue][]" value="{{$faild->default_value}}"/>
-                                            <input type='hidden' name='item[selectName][][]' value="{{$select_options}}" />
+                                            
+                                            @foreach($languages as $language)
+
+                                            <?php
+                                                $options2 = is_array($faild->getTranslation("select_options",$language)) ? $faild->getTranslation("select_options",$language) : explode(',', $faild->getTranslation("select_options",$language));
+                                                $options2=str_replace("[","",$options2);
+                                                $options2=str_replace("]","",$options2);
+                                                $options2=str_replace('"',"",$options2);
+
+                                                $select_options2 = implode(', ', $options2);
+                                                if($language!="en"){
+                                                    $item_name.=",".$faild->getTranslation("item_name",$language);
+                                                }
+                                                
+
+
+                                            ?>
+
+                                            @if($language!="en")
+                                                <input type='hidden' name='item[selectName{{$language}}][][]' value="{{$select_options2}}" />
+                                            @else
+                                                <input type='hidden' name='item[selectName{{$language}}][][]' value="{{$select_options}}" />
+                                            @endif
+
+                                            @endforeach
+                                            <input type="hidden" name="item[Name][]" value="{{$item_name}}" />
+
                                         </tr>
                                     @endforeach
                                 </tbody>

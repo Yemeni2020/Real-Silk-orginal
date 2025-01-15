@@ -11,6 +11,10 @@ use Illuminate\Support\Str;
 use phpDocumentor\Reflection\Types\Boolean;
 use Rap2hpoutre\FastExcel\FastExcel;
 use App\Models\FormItem;
+use App\Models\Translation;
+use Illuminate\Http\Request;
+use PhpParser\JsonDecoder;
+
 use function React\Promise\all;
 
 class ProductService
@@ -377,94 +381,164 @@ class ProductService
         return FormItem::where("item",$product)->get();
     }
 
-    public function BuildForm($request,$item)  {
-
-        $count=count($request["Name"])??0;
-        for ($i=0; $i < $count; $i++) { 
-            # code...
-            // $select_options=[];
-
-            
-            // for ($x=0; $x < count($request["selectName"][$i]); $x++) { 
-            //     # code...
-            //     if($request["selectName"][$i][$x] != null)
-            //         $select_options[]=$request["selectName"][$i][$x];
-            // }
-
-            $data = [
-                'item' => $item,
-                'item_name' => $request["Name"][$i],
-                'item_type' => $request["Type"][$i],
-                'item_order' => $request["Order"][$i],
-                'is_required' => $request["isRequired"][$i],
-                'item_length' => $request["Length"][$i],
-                'default_value' => $request["defaultValue"][$i],
-                'select_options' => isset($request["selectName"][$i])? $request["selectName"][$i]:'', // قائمة الخيارات
-            ];
-            FormItem::create($data);
-
-        }
-
-
-        // $data = [
-        //     'item_name' => $request["Name"],
-        //     'item_type' => $request["Type"],
-        //     'item_order' => $request["Order"],
-        //     'is_required' => $request["isRequired"],
-        //     'item_length' => $request["Length"],
-        //     'default_value' => $request["defaultValue"],
-        //     'select_options' => ['Option 1', 'Option 2'], // قائمة الخيارات
-        // ];
+    public function BuildForm(Request $request, $item) {
         // dump($request);
-        
-        return true;
+        $itemId = intval($item); // تأكد أن `item` هو عدد صحيح
+        $lang = $request["lang"];
+        $count = count($request["item"]["Name"] ?? []);
+    
+        // dump($count);
+    
+        for ($i = 0; $i < $count; $i++) {
+            $item_name = is_string($request["item"]["Name"][$i]) 
+                ? explode(',', $request["item"]["Name"][$i]) 
+                : $request["item"]["Name"][$i];
+    
+            $data = [
+                'item' => $itemId, // تأكد أن `item` هو عدد صحيح
+                'item_name' => $item_name[0],
+                'item_type' => $request["item"]["Type"][$i],
+                'item_order' => $request["item"]["Order"][$i],
+                'is_required' => $request["item"]["isRequired"][$i],
+                'item_length' => $request["item"]["Length"][$i],
+                'default_value' => $request["item"]["defaultValue"][$i],
+                'select_options' => isset($request["item"]["selectName" . $lang[0]][$i]) 
+                    ? json_encode($request["item"]["selectName" . $lang[0]][$i]) 
+                    : '',
+            ];
+    
+            // dump($data);
+    
+            // إنشاء السجل في قاعدة البيانات
+            $FormItem = FormItem::create($data);
+    
+            for ($x = 1; $x < count($lang); $x++) {
+                $datatranslate = [
+                    "translationable_type" => "App\Models\FormItem",
+                    "translationable_id" => $FormItem->id,
+                    "locale" => $lang[$x],
+                    "key" => "item_name",
+                    "value" => $item_name[$x] ?? '',
+                ];
+                Translation::create($datatranslate);
+    
+                $datatranslate = [
+                    "translationable_type" => "App\Models\FormItem",
+                    "translationable_id" => $FormItem->id,
+                    "locale" => $lang[$x],
+                    "key" => "select_options",
+                    "value" => isset($request["item"]["selectName" . $lang[$x]][$i]) 
+                        ? json_encode($request["item"]["selectName" . $lang[$x]][$i]) 
+                        : '',
+                ];
+                Translation::create($datatranslate);
+            }
+        }
     }
 
-    public function UpdateForm($request,$item)  {
-        
+    public function UpdateForm(Request $request, $item)
+    {
+        // استرجاع الحقول الحالية المرتبطة بالعنصر
         $existingFields = FormItem::where('item', $item)->get();
         $existingCount = $existingFields->count();
-        $count=count($request["Name"])??0;
-        for ($i=0; $i < $count; $i++) { 
-            # code...
-            // $select_options=[];
 
-            // for ($x=0; $x < count($request["selectName"][$i]); $x++) { 
-            //     # code...
-            //     if($request["selectName"][$i][$x] != null)
-            //         $select_options[]=$request["selectName"][$i][$x];
-            // }
+        // استرجاع اللغات
+        $lang = $request["lang"];
+        $count = count($request["item"]["Name"] ?? []);
+
+        for ($i = 0; $i < $count; $i++) {
+            // استخراج أسماء العناصر
+            $item_name = is_string($request["item"]["Name"][$i])
+                ? explode(',', $request["item"]["Name"][$i])
+                : $request["item"]["Name"][$i];
 
             $data = [
                 'item' => $item,
-                'item_name' => $request["Name"][$i],
-                'item_type' => $request["Type"][$i],
-                'item_order' => $request["Order"][$i],
-                'is_required' => $request["isRequired"][$i],
-                'item_length' => $request["Length"][$i],
-                'default_value' => $request["defaultValue"][$i],
-                'select_options' => isset($request["selectName"][$i])? $request["selectName"][$i]:'', // قائمة الخيارات
+                'item_name' => $item_name[0], // الاسم الافتراضي
+                'item_type' => $request["item"]["Type"][$i],
+                'item_order' => $request["item"]["Order"][$i],
+                'is_required' => $request["item"]["isRequired"][$i],
+                'item_length' => $request["item"]["Length"][$i],
+                'default_value' => $request["item"]["defaultValue"][$i],
+                'select_options' => isset($request["item"]["selectName" . $lang[0]][$i])
+                    ? json_encode($request["item"]["selectName" . $lang[0]][$i])
+                    : '',
             ];
+
             // تحديث أو إنشاء الحقول بناءً على العدد الحالي
             if ($i < $existingCount) {
                 // تحديث الحقل إذا كان موجودًا
                 $existingField = $existingFields[$i];
                 $existingField->update($data);
-                
+
+                // تحديث الترجمات المرتبطة
+                for ($x = 1; $x < count($lang); $x++) {
+                    Translation::updateOrCreate(
+                        [
+                            "translationable_type" => "App\Models\FormItem",
+                            "translationable_id" => $existingField->id,
+                            "locale" => $lang[$x],
+                            "key" => "item_name",
+                        ],
+                        [
+                            "value" => $item_name[$x] ?? '',
+                        ]
+                    );
+
+                    Translation::updateOrCreate(
+                        [
+                            "translationable_type" => "App\Models\FormItem",
+                            "translationable_id" => $existingField->id,
+                            "locale" => $lang[$x],
+                            "key" => "select_options",
+                        ],
+                        [
+                            "value" => isset($request["item"]["selectName" . $lang[$x]][$i])
+                                ? json_encode($request["item"]["selectName" . $lang[$x]][$i])
+                                : '',
+                        ]
+                    );
+                }
             } else {
                 // إنشاء حقل جديد إذا تجاوز عدد الحقول الحالية
-                FormItem::create($data);
+                $newField = FormItem::create($data);
+
+                // إضافة الترجمات الجديدة
+                for ($x = 1; $x < count($lang); $x++) {
+                    Translation::create([
+                        "translationable_type" => "App\Models\FormItem",
+                        "translationable_id" => $newField->id,
+                        "locale" => $lang[$x],
+                        "key" => "item_name",
+                        "value" => $item_name[$x] ?? '',
+                    ]);
+
+                    Translation::create([
+                        "translationable_type" => "App\Models\FormItem",
+                        "translationable_id" => $newField->id,
+                        "locale" => $lang[$x],
+                        "key" => "select_options",
+                        "value" => isset($request["item"]["selectName" . $lang[$x]][$i])
+                            ? json_encode($request["item"]["selectName" . $lang[$x]][$i])
+                            : '',
+                    ]);
+                }
             }
         }
+
         // حذف الحقول الزائدة إذا تم تقليل الحقول المرسلة
         if ($count < $existingCount) {
             $fieldsToDelete = $existingFields->slice($count);
             foreach ($fieldsToDelete as $field) {
+                // حذف الترجمات المرتبطة بالحقل
+                Translation::where('translationable_type', 'App\Models\FormItem')
+                    ->where('translationable_id', $field->id)
+                    ->delete();
+
                 $field->delete();
             }
         }
 
-        
         return true;
     }
 

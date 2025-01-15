@@ -295,37 +295,74 @@
 
                                                     <input type="hidden" name="Product" value="{{$product->id}}">
 
-                                                    
+                                                    @if(isset($FaildsService))
                                                         @foreach($FaildsService as $Faild)
                                                             @if(in_array($Faild->item_type, ["text", "date", "email", "select", "number", "radios", "checkbox"]))
 
+                                                            <?php
+                                                            $lang=getDefaultLanguage();
+
+                                                            $item_name=$Faild->getTranslation("item_name",$lang)??$Faild->item_name;
+                                                            
+                                                            ?>
 
                                                             @if($Faild->item_type == "select")
+                                                                @php
+                                                                $Options = [];
+                                                                $select_option=$Faild->getTranslation("select_options",$lang)??$Faild["select_options"];
+                                                                // التحقق من أن select_options موجودة وغير فارغة
+                                                                if (isset($select_option) && is_string($select_option)) {
+                                                                    // محاولة فك سلسلة JSON إذا كانت select_options عبارة عن JSON صالح
+                                                                    $decodedOptions = json_decode($select_option, true);
+
+                                                                    if (is_array($decodedOptions)) {
+                                                                        // إذا كان JSON صالح وتم فكّه كمصفوفة
+                                                                        $Options = $decodedOptions;
+                                                                    } else {
+                                                                        // إذا لم يكن JSON صالح، يتم محاولة الفصل باستخدام الفاصلة
+                                                                        $Options = explode(',', $select_option);
+                                                                    }
+
+                                                                    // تنظيف القيم وإزالة المسافات البيضاء
+                                                                    $Options = array_map('trim', $Options);
+                                                                    $Options = explode(',', $Options[0]);
+                                                                    // طباعة النتيجة
+
+                                                                }
+                                                                @endphp
+
+                                                                <span>{{$Faild->item_name}}</span>
+                                                                <select class="form-control" name="faild{{$Faild->id}}" id="{{$Faild->id}}">
+                                                                    @foreach($Options as $Option)
+                                                                        <option value="{{ trim($Option) }}">{{ trim($Option) }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            @elseif($Faild->item_type == "checkbox")
                                                                     @php
                                                                     $Options = [];
+                                                                    $select_option=$Faild->getTranslation("select_options",$lang)??$Faild["select_options"];
+                                                                    // التحقق من أن select_options موجودة وغير فارغة
+                                                                    if (isset($select_option) && is_string($select_option)) {
+                                                                        // محاولة فك سلسلة JSON إذا كانت select_options عبارة عن JSON صالح
+                                                                        $decodedOptions = json_decode($select_option, true);
 
-                                                                    if (is_array($Faild->select_options) && isset($Faild->select_options[0]) && is_string($Faild->select_options[0])) {
+                                                                        if (is_array($decodedOptions)) {
+                                                                            // إذا كان JSON صالح وتم فكّه كمصفوفة
+                                                                            $Options = $decodedOptions;
+                                                                        } else {
+                                                                            // إذا لم يكن JSON صالح، يتم محاولة الفصل باستخدام الفاصلة
+                                                                            $Options = explode(',', $select_option);
+                                                                        }
 
-                                                                        $Options = is_string($Faild->select_options[0]) ? explode(',', $Faild->select_options[0]) : [];
-                                                                    }
-                                                                    @endphp
-                                                                    <span>{{$Faild->item_name}}</span>
-                                                                    <select class="form-control" name="faild{{$Faild->id}}" id="{{$Faild->id}}">
-                                                                        @foreach($Options as $Option)
-                                                                            <option value="{{$Option}}">{{$Option}}</option>
-                                                                        @endforeach
-                                                                    </select>
-                                                                @elseif($Faild->item_type == "checkbox")
-                                                                    @php
-                                                                        $Options = [];
+                                                                        // تنظيف القيم وإزالة المسافات البيضاء
+                                                                        $Options = array_map('trim', $Options);
+                                                                        $Options = explode(',', $Options[0]);
+                                                                        // طباعة النتيجة
 
-                                                                        if (is_array($Faild->select_options) && isset($Faild->select_options[0]) && is_string($Faild->select_options[0])) {
-
-                                                                            $Options = is_string($Faild->select_options[0]) ? explode(',', $Faild->select_options[0]) : [];
                                                                         }
                                                                         $i=0;
                                                                     @endphp
-                                                                    <h6>{{$Faild->item_name}}</h6>
+                                                                    <h6>{{$item_name}}</h6>
                                                                     <div class="form-control">
                                                                         @foreach($Options as $Option)
                                                                             <span>{{$Option}}</span>
@@ -336,13 +373,26 @@
                                                                 @elseif($Faild->item_type == "radios")
                                                                     <?php
                                                                         $Options = [];
-
-                                                                        if (is_array($Faild->select_options) && isset($Faild->select_options[0]) && is_string($Faild->select_options[0])) {
-                                                                            $Options = explode(',', $Faild->select_options[0]);
+                                                                        $select_option=$Faild->getTranslation("select_options",$lang)??$Faild["select_options"];
+                                                                        // التحقق من أن select_options موجودة وغير فارغة
+                                                                        if (isset($select_option) && is_string($select_option)) {
+                                                                            // محاولة فك سلسلة JSON إذا كانت select_options عبارة عن JSON صالح
+                                                                            $decodedOptions = json_decode($select_option, true);
+        
+                                                                            if (is_array($decodedOptions)) {
+                                                                                // إذا كان JSON صالح وتم فكّه كمصفوفة
+                                                                                $Options = $decodedOptions;
+                                                                            } else {
+                                                                                // إذا لم يكن JSON صالح، يتم محاولة الفصل باستخدام الفاصلة
+                                                                                $Options = explode(',', $select_option);
+                                                                            }
                                                                         }
+                                                                        // تنظيف القيم وإزالة المسافات البيضاء
+                                                                        $Options = array_map('trim', $Options);
+                                                                        $Options = explode(',', $Options[0]);
                                                                         $i=0;
                                                                     ?>
-                                                                    <h6>{{$Faild->item_name}}</h6>
+                                                                    <h6>{{$item_name}}</h6>
                                                                     <div class="form-control">
                                                                         @foreach($Options as $Option)
                                                                             <span>{{$Option}}</span>
@@ -351,18 +401,19 @@
                                                                         @endforeach
                                                                     </div>
                                                                 @else
-                                                                <h6>{{$Faild->item_name}}</h6>
+                                                                <h6>{{$item_name}}</h6>
                                                                 <input class="form-control"  {{$Faild->is_required?"required":""}} type="{{$Faild->item_type}}"  name="faild{{$Faild->id}}" value="{{$Faild->default_value}}" max="{{$Faild->item_length}}">
 
                                                                 @endif
                                                                     
                                                             
                                                             @else
-                                                                <{{$Faild->item_type}}>{{$Faild->item_name}}</{{$Faild->item_type}}>
+                                                                <{{$Faild->item_type}}>{{$item_name}}</{{$Faild->item_type}}>
                                                             
                                                             @endif
 
                                                         @endforeach
+                                                    @endif
                                                         @if(!Auth::guard('customer')->check())
                                                             <button type="button" class="btn btn-secondary fs-16 " data-bs-toggle="modal" data-bs-target="#loginModal">
                                                                 {{translate('Login')}}

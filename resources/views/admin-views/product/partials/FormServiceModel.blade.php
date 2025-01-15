@@ -10,12 +10,45 @@
             <div class="modal-body">
                 <form id="addItemForm">
                     <div class="row">
-                        <div class="col-md-6" id="dvitemName">
+                        <div class="col-md-12" id="dvitemName">
+                        <div class="card">
+                            <div class="px-4 pt-3 d-flex justify-content-between">
+                                <ul class="nav nav-tabs w-fit-content mb-4">
+                                    @foreach ($languages as $lang)
+                                        <li class="nav-item">
+                                            <span class="nav-link text-capitalize form-system-language-tab-faild {{ $lang == $defaultLanguage ? 'active' : '' }} cursor-pointer"
+                                                id="{{ $lang }}-link-faild">{{ getLanguageName($lang) . '(' . strtoupper($lang) . ')' }}</span>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+
+                            <div class="card-body">
+                                @foreach ($languages as $lang)
+                                    <div class="{{ $lang != $defaultLanguage ? 'd-none' : '' }} form-system-language-form-faild"
+                                        id="{{ $lang }}-form-faild">
+                                        <div class="form-group">
+                                            <label class="title-color"
+                                                for="{{ $lang }}_name_faild">{{ translate('faild_name') }}
+                                                ({{ strtoupper($lang) }})
+                                                @if($lang == $defaultLanguage)
+                                                    <span class="input-required-icon">*</span>
+                                                @endif
+                                            </label>
+                                            <input type="text" class="form-control itemName22" id="itemName" placeholder="{{ translate('enter_Item_Name') }}" required>
+
+                                        </div>
+                                        <input type="hidden" name="lang[]" class="lang-input" value="{{ $lang }}">
+                                        
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
                         <!-- اسم العنصر -->
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label for="itemName">{{ translate('item_Name') }}</label>
                                 <input type="text" class="form-control" id="itemName" placeholder="{{ translate('enter_Item_Name') }}" required>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="col-md-6" id="dvitemType">
                             <!-- نوع العنصر -->
@@ -76,43 +109,84 @@
 
                     
 
-                    <div id="AddItem_Select" style="display: none;">
-                        <div class="row">
-                            <!-- إضافة عنصر -->
-                            <div class="form-row align-items-center mb-4">
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" id="itemSelectInput" placeholder="{{ translate('enter_Item_select') }}">
-                                </div>
-                                <div class="col-md-4">
-                                    <button type="button" class="btn btn-primary btn-block" onclick="addItemSelectButton2();" id="addItemSelectButton">{{ translate('add') }}</button>
-                                </div>
+
+
+
+
+
+
+                    <div class="card" id="AddItem_Select" style="display: none;">
+                            <div class="px-4 pt-3 d-flex justify-content-between">
+                                <ul class="nav nav-tabs w-fit-content mb-4">
+                                    @foreach ($languages as $lang)
+                                        <li class="nav-item">
+                                            <span class="nav-link text-capitalize form-system-language-tab-faild2 {{ $lang == $defaultLanguage ? 'active' : '' }} cursor-pointer"
+                                                id="{{ $lang }}-link-faild">{{ getLanguageName($lang) . '(' . strtoupper($lang) . ')' }}</span>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+
+                            <div class="card-body" >
+                                @foreach ($languages as $lang)
+
+                                    <div  class="{{ $lang != $defaultLanguage ? 'd-none' : '' }} form-system-language-form-faild2"
+                                        id="{{ $lang }}-form-faild2">
+                                        <div class="form-group">
+                                            <label class="title-color"
+                                                for="{{ $lang }}_name_faild">{{ translate('Items') }}
+                                                ({{ strtoupper($lang) }})
+                                                @if($lang == $defaultLanguage)
+                                                    <span class="input-required-icon">*</span>
+                                                @endif
+                                            </label>
+                                            
+                                            <div>
+                                                <div class="row">
+                                                    <!-- إضافة عنصر -->
+                                                    <div class="form-row align-items-center mb-4">
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control" id="itemSelectInput{{$lang}}" placeholder="{{ translate('enter_Item_select') }}">
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <button type="button" class="btn btn-primary btn-block" onclick="addItemSelectButton2('{{$lang}}');" id="addItemSelectButton">{{ translate('add') }}</button>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- الجدول -->
+                                            <table class="table table-hover table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>{{ translate('Select_Name') }}</th>
+                                                        <th>{{ translate('actions') }}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="itemTableBody{{$lang}}">
+                                                    <!-- الصفوف المضافة ديناميكيًا -->
+
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                        </div>
+                                        
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
-                        
-                        <!-- الجدول -->
-                        <table class="table table-hover table-bordered">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>{{ translate('Select_Name') }}</th>
-                                    <th>{{ translate('actions') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody id="itemTableBody">
-                                <!-- الصفوف المضافة ديناميكيًا -->
-                            </tbody>
-                        </table>
 
-                    </div>
-                    
 
 
 
                     <div class="modal-footer">
                         <input type="hidden" id="IndexFaild" >
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ translate('close') }}</button>
-                        <button type="button" id="btn-add" onclick="addFaildItem()" class="btn btn-primary">{{ translate('save') }}</button>
-                        <button type="button" id="btn-edit" onclick="editFaildItem($('#IndexFaild').val())" class="btn btn-primary" >{{ translate('save') }}</button>
+                        <button type="button" id="btn-add" onclick="addFaildItem()" class="btn btn-primary">{{ translate('Add') }}</button>
+                        <button type="button" id="btn-edit" onclick="editFaildItem($('#IndexFaild').val())" class="btn btn-primary" >{{ translate('Edit') }}</button>
                     </div>
+             
                     
                 </form>
             </div>

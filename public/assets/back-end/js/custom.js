@@ -1218,6 +1218,54 @@ $(".form-system-language-tab").on("click", function (e) {
     $("." + lang + "-form").removeClass("d-none");
 });
 
+$(".form-system-language-tab-faild").on("click", function (e) {
+    e.preventDefault();
+    $(".form-system-language-tab-faild").removeClass("active");
+    $(".form-system-language-form-faild").addClass("d-none");
+    $(this).addClass("active");
+    let form_id = this.id;
+    let lang = form_id.split("-")[0];
+    $("#" + lang + "-form-faild").removeClass("d-none");
+    $("." + lang + "-form-faild").removeClass("d-none");
+});
+
+$(".form-system-language-tab-faild").on("click", function (e) {
+    e.preventDefault();
+    $(".form-system-language-tab-faild").removeClass("active");
+    $(".form-system-language-form-faild").addClass("d-none");
+    $(this).addClass("active");
+    let form_id = this.id;
+    let lang = form_id.split("-")[0];
+    $("#" + lang + "-form-faild").removeClass("d-none");
+    $("." + lang + "-form-faild").removeClass("d-none");
+});
+
+$(".form-system-language-tab-faild2").on("click", function (e) {
+    e.preventDefault();
+    $(".form-system-language-tab-faild2").removeClass("active");
+    $(".form-system-language-form-faild2").addClass("d-none");
+    $(this).addClass("active");
+    let form_id = this.id;
+    let lang = form_id.split("-")[0];
+    $("#" + lang + "-form-faild2").removeClass("d-none");
+    $("." + lang + "-form-faild2").removeClass("d-none");
+});
+
+
+
+$(".form-system-language-tab-faild2").on("click", function (e) {
+    e.preventDefault();
+    $(".form-system-language-tab-faild2").removeClass("active");
+    $(".form-system-language-form-faild2").addClass("d-none");
+    $(this).addClass("active");
+    let form_id = this.id;
+    let lang = form_id.split("-")[0];
+    $("#" + lang + "-form-faild2").removeClass("d-none");
+    $("." + lang + "-form-faild2").removeClass("d-none");
+});
+
+
+
 $(".open-info-web").on("click", function () {
     let websiteInfo = document.getElementById("website_info");
     if (websiteInfo.style.display === "none") {

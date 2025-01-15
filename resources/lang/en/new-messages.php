@@ -8900,4 +8900,5 @@ return [
 	"name_already_used" => "Name already used",
 	"the_link_field_is_required" => "The link field is required",
 	"snapchat" => "Snapchat",
+	"faild_name" => "Faild name",
 ];

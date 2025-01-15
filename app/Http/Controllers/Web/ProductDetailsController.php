@@ -80,12 +80,14 @@ class ProductDetailsController extends Controller
         // التحقق من الحقول المطلوبة
         foreach ($Failds as $Faild) {
 
-            if (empty(trim($request["faild$Faild->id"])) && $Faild->is_required) {
+            if (!isset($request["faild$Faild->id"]) && $Faild->is_required) {
                 Toastr::error(translate('Error: Field '.$Faild->item_name.' is required'));
                 return back();
             }
         }
     
+        
+
         // إنشاء الطلب في قاعدة البيانات
         $order = OrderService::create([
             'item' => $request->Product, // قيمة الـ item من جدول `products`
@@ -94,14 +96,15 @@ class ProductDetailsController extends Controller
     
         $detailsText = ""; // نص تفاصيل الطلب لإرساله عبر WhatsApp
         foreach ($Failds as $Faild) {
-            $value = $request["faild$Faild->id"] ;
-    
+            $value = is_array($request["faild$Faild->id"])?implode(',', $request["faild$Faild->id"]):$request["faild$Faild->id"] ;
+
+            
             // إضافة التفاصيل إلى قاعدة البيانات
             $order->details()->create([
                 'faild_id' => $Faild->id,
                 'name_faild' => $Faild->item_name,
                 'type_faild' => $Faild->item_type,
-                'value' => $value,
+                'value' => $value ,
             ]);
     
             // إضافة التفاصيل إلى نص الرسالة
@@ -327,7 +330,7 @@ class ProductDetailsController extends Controller
             $FaildsService = FormItem::where('item', $product->id)
             ->orderBy('item_order', 'asc') 
             ->get();
-
+            // dump(getDefaultLanguage());
             // dump($FaildsService);
             return view(VIEW_FILE_NAMES['products_details'], compact('product', 'wishlistStatus', 'countWishlist',
                 'countOrder', 'relatedProducts', 'dealOfTheDay', 'currentDate', 'sellerVacationStartDate', 'sellerVacationEndDate',

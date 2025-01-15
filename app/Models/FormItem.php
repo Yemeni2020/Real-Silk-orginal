@@ -24,4 +24,17 @@ class FormItem extends Model
     protected $casts = [
         'select_options' => 'array', // لتعامل السلسلة النصية مع خيارات التحديد كـ JSON
     ];
+    
+    public function translations()
+    {
+        return $this->morphMany(Translation::class, 'translationable');
+    }
+
+    public function getTranslation($key, $locale)
+    {
+        return $this->translations()
+            ->where('locale', $locale)
+            ->where('key', $key)
+            ->value('value');
+    }
 }
