@@ -181,7 +181,7 @@ class HomeController extends Controller
 
     public function theme_aster(): View
     {
-        $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(dataLimit: 11);
+        $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(dataLimit: 30);
         $userId = Auth::guard('customer')->user() ? Auth::guard('customer')->id() : 0;
         $flashDeal = ProductManager::getPriorityWiseFlashDealsProductsQuery(userId: $userId);
 

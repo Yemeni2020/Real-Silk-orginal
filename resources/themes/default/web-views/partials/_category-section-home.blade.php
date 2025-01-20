@@ -2,7 +2,24 @@
     <section class="pb-4 rtl">
         <div class="container">
             <div>
-                <div class="card __shadow h-100 max-md-shadow-0">
+                <div class="mt-sm-3 mb-3 brand-slider">
+                    <div class="owl-carousel owl-theme p-2 brands-slider">
+                        @foreach($categories as $category)
+                            <div class="text-center __m-5px __cate-item ">
+                                <a href="{{route('products',['category_id'=> $category['id'],'data_from'=>'category','page'=>1])}}"
+                                   class="__brand-item" >
+                                   <div class="__img">
+                                        <img alt="{{ $category->name }}"
+                                                src="{{ getStorageImages(path:$category->icon_full_url, type: 'category') }}">
+                                                
+                                    </div>
+                                    <p class="text-center fs-13 font-semibold mt-2" style="position: absolute;background: var(--web-primary) !important;color: white;bottom: -15%;border-radius:5px;">{{Str::limit($category->name, 12)}}</p>
+                                </a>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="card d-none __shadow h-100 max-md-shadow-0">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div class="categories-title m-0">
@@ -24,6 +41,7 @@
                                                 <div class="__img">
                                                     <img alt="{{ $category->name }}"
                                                          src="{{ getStorageImages(path:$category->icon_full_url, type: 'category') }}">
+                                                         
                                                 </div>
                                                 <p class="text-center fs-13 font-semibold mt-2">{{Str::limit($category->name, 12)}}</p>
                                             </a>
