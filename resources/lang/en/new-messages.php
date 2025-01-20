@@ -8901,4 +8901,5 @@ return [
 	"the_link_field_is_required" => "The link field is required",
 	"snapchat" => "Snapchat",
 	"faild_name" => "Faild name",
+	"sign_up2" => "Sign up2",
 ];

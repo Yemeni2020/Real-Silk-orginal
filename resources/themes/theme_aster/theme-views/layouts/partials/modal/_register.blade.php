@@ -33,7 +33,7 @@
                 <form action="{{ route('customer.auth.sign-up') }}" method="POST" id="customer-form"
                       enctype="multipart/form-data">
                     @csrf
-                    <div class="custom-scrollbar height-45vh">
+                    <div class="">
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group mb-4">
@@ -180,7 +180,7 @@
 
                     <div class="d-flex justify-content-center mt-4 mb-3">
                         <button type="submit" id="sign-up" class="btn btn-primary px-5 text-capitalize"
-                                disabled>{{ translate('sign_up') }}</button>
+                                disabled>{{ translate('sign_up2') }}</button>
                     </div>
                 </form>
 
@@ -257,7 +257,9 @@
                         $("#loading").addClass("d-grid");
                     },
                     success: function (data) {
+                        console.log(data);
                         if (data.errors) {
+                            console.log(data.errors);
                             for (let index = 0; index < data.errors.length; index++) {
                                 toastr.error(data.errors[index].message, {
                                     CloseButton: true,
@@ -265,6 +267,7 @@
                                 });
                             }
                         } else {
+
                             toastr.success(
                                 '{{translate("Customer_Added_Successfully")}}!', {
                                     CloseButton: true,
@@ -272,6 +275,7 @@
                                 });
                             if (data.redirect_url !== '') {
                                 window.location.href = data.redirect_url;
+                                
                             } else {
                                 $('#registerModal').modal('hide');
                                 $('#loginModal').modal('show');
@@ -279,6 +283,7 @@
                         }
                     },
                     complete: function () {
+                        alert("completed22")
                         $("#loading").removeClass("d-grid");
                     },
                 });

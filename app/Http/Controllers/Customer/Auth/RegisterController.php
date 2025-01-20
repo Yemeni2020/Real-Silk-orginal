@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Modules\Gateways\Traits\SmsGateway;
 use Illuminate\Support\Facades\Session;
+use Workbench\App\Models\User as ModelsUser;
 
 class RegisterController extends Controller
 {
@@ -62,24 +63,28 @@ class RegisterController extends Controller
         $emailVerification = getLoginConfig(key: 'email_verification');
 
         if ($request->ajax()) {
+            
+
             if ($phoneVerification && !$user->is_phone_verified) {
                 $this->phoneOrEmailVerificationRepo->delete(params: ['phone_or_email' => $user?->phone]);
-                $this->getCustomerVerificationCheck($user, 'phone');
+                // $this->getCustomerVerificationCheck($user, 'phone');
                 return response()->json([
                     'redirect_url' => route('customer.auth.check-verification', ['identity' => base64_encode($user['phone']), 'type' => base64_encode('phone_verification')]),
-                ]);
+                ],200);
             } else if ($emailVerification && !$user->is_email_verified) {
+                // return response()->json(['errors' => "Any Error"]);
                 $this->phoneOrEmailVerificationRepo->delete(params: ['phone_or_email' => $user?->email]);
-                $this->getCustomerVerificationCheck($user, 'email');
+                // $userCopy = clone $user;
+                // $this->getCustomerVerificationCheck($userCopy, 'email');
                 return response()->json([
-                    'redirect_url' => route('customer.auth.check-verification', ['identity' => base64_encode($user['email']), 'type' => base64_encode('email_verification')]),
-                ]);
+                    'redirect_url' => route('customer.auth.check-verification', ['identity' => base64_encode($user['email']), 'type' => base64_encode('email_verification')]),'user'=>$user
+                ],200, [], JSON_UNESCAPED_SLASHES);
             }
             return response()->json([
                 'status' => 1,
                 'message' => translate('registration_successful'),
                 'redirect_url' => theme_root_path() == 'default' ? route('customer.auth.login') : '',
-            ]);
+            ],200);
         } else {
             if ($phoneVerification && !$user->is_phone_verified) {
                 $this->phoneOrEmailVerificationRepo->delete(params: ['phone_or_email' => $user?->phone]);
@@ -98,7 +103,9 @@ class RegisterController extends Controller
 
     public function getCustomerVerificationCheck($user, $type, $config = []): array|RedirectResponse|string|null
     {
+        
         // return [];
+        // $user=$this->customerRepo->getFirstWhere(['id' => $user->id]);
         $token = $this->customerAuthService->getCustomerVerificationToken();
         $phoneVerification = getLoginConfig(key: 'phone_verification');
         $emailVerification = getLoginConfig(key: 'email_verification');
