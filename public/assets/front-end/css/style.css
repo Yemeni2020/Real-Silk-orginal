@@ -512,6 +512,45 @@ a {
     }
 } */
 
+/* MyCode */
+.category-scroll-container {
+    display: flex;
+    align-items: center;
+    overflow-x: auto; /* لتمكين التمرير الأفقي */
+    scroll-behavior: smooth; /* للتمرير السلس */
+    padding: 10px 0;
+    gap: 15px; /* مسافة بين العناصر */
+}
+
+.category-scroll-container::-webkit-scrollbar {
+    height: 6px; /* ارتفاع شريط التمرير */
+}
+
+.category-scroll-container::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+    border-radius: 10px;
+}
+
+.__cate-item {
+    flex: 0 0 auto; /* يضمن أن العناصر لا تلتف */
+    text-align: center;
+    margin: 0 10px;
+}
+
+.__cate-item img {
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+.__cate-item img:hover {
+    transform: scale(1.1); /* تأثير التكبير عند التمرير */
+}
+
+/* End MyCode */
+
+
+
+
 @media (min-width: 1280px) {
 
     .vertical-slider .owl-stage {
@@ -528,7 +567,7 @@ a {
         max-width: calc(100% - 254px);
         flex: 0 0 calc(100% - 254px); */
     /* } */
-    
+
     .__top-slider-cate {
         flex: 0 0 254px;
     }
