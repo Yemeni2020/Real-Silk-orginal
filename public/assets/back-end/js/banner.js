@@ -14,6 +14,15 @@ $('#banner_type_select').on('change', function () {
     }
 });
 
+$('#banner_type_select').on('change', function () {
+    let inputValue = $(this).val().toString();
+    if (inputValue === "Said Banner") {
+        $('.input-field-for-main-banner').removeClass('d-none');
+    } else {
+        $('.input-field-for-main-banner').addClass('d-none');
+    }
+});
+
 $(".js-example-theme-single").select2({theme: "classic"});
 $(".js-example-responsive").select2({width: 'resolve'});
 

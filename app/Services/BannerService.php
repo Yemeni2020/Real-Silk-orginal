@@ -36,6 +36,7 @@ class BannerService
         if (theme_root_path() == 'default') {
             $bannerTypes = [
                 "Main Banner" => translate('main_Banner'),
+                "Said Banner" => translate('said_Banner'),
                 "Popup Banner" => translate('popup_Banner'),
                 "Footer Banner" => translate('footer_Banner'),
                 "Main Section Banner" => translate('main_Section_Banner')

@@ -3,7 +3,7 @@
     <div class="container position-relative">
         <div class="row no-gutters position-relative rtl">
             @if ($categories->count() > 0 )
-                <div class="col-xl-3 position-static d-none d-xl-block __top-slider-cate">
+                <!-- <div class="col-xl-3 position-static d-none d-xl-block __top-slider-cate">
                     <div class="category-menu-wrap position-static">
                         <ul class="category-menu mt-0">
                             @foreach ($categories as $key=>$category)
@@ -32,10 +32,24 @@
                             </li>
                         </ul>
                     </div>
-                </div>
+                </div> -->
             @endif
-
-            <div class="col-12 col-xl-9 __top-slider-images">
+            <!-- السلايدر العمودي -->
+            <!-- <div class="col-xl-2 position-static d-none d-xl-block __top-slider-cate">
+                <div class="{{ Session::get('direction') === 'rtl' ? 'pr-xl-2' : 'pl-xl-2' }}">
+                    <div class="owl-theme owl-carousel vertical-slider">
+                        @foreach($side_banner as $key => $banner)
+                            <a href="{{ $banner['url'] }}" class="d-block" target="_blank">
+                                <img class="w-100 __slide-img" alt=""
+                                    style="height: 100px; object-fit: cover;"
+                                    src="{{ getStorageImages(path: $banner->photo_full_url, type: 'banner') }}">
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            </div> -->
+           
+            <div class="col-12 col-xl-12 __top-slider-images">
                 <div class="{{Session::get('direction') === "rtl" ? 'pr-xl-2' : 'pl-xl-2'}}">
                     <div class="owl-theme owl-carousel hero-slider">
                         @foreach($main_banner as $key=>$banner)
@@ -47,6 +61,9 @@
                     </div>
                 </div>
             </div>
+
+
+            
         </div>
     </div>
 </section>

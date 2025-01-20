@@ -17,6 +17,7 @@ class BannerController extends Controller
         $banner_array = match ($theme_name) {
             'default' => array(
                 'Main Banner',
+                'Said Banner',
                 'Footer Banner',
                 'Popup Banner',
                 'Main Section Banner'

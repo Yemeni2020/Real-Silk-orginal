@@ -180,7 +180,7 @@
 
                     <div class="d-flex justify-content-center mt-4 mb-3">
                         <button type="submit" id="sign-up" class="btn btn-primary px-5 text-capitalize"
-                                disabled>{{ translate('sign_up2') }}</button>
+                                disabled>{{ translate('sign_up') }}</button>
                     </div>
                 </form>
 

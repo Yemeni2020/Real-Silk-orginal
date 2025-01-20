@@ -8832,8 +8832,6 @@ return [
 	"brand_Update" => "Brand Update",
 	"brand_updated_successfully" => "Brand updated successfully",
 	"auto_active_product" => "Auto active product",
-	"offline_Payment_allows_customers_to_use_external_payment_methods._They_must_share_payment_details_with_the_vendor_afterward._Admin_can_set_whether_customers_can_make_offline_payments_by_enabling/disabling_this_button.
-                                            " => "Offline Payment allows customers to use external payment methods. They must share payment details with the vendor afterward. Admin can set whether customers can make offline payments by enabling/disabling this button. ",
 	"want_to_Turn_ON_active_product_For_This_Vendor" => "Want to Turn ON active product For This Vendor",
 	"want_to_Turn_OFF_active_product_For_This_Vendor" => "Want to Turn OFF active product For This Vendor",
 	"if_enabled_this_vendor_can_access_active_product_from_the_website_and_vendor_app" => "If enabled this vendor can access active product from the website and vendor app",
@@ -8841,8 +8839,6 @@ return [
 	"vendor_pos_permission_updated" => "Vendor pos permission updated",
 	"assss!" => "Assss!",
 	"assss!1" => "Assss!1",
-	"if_you don’t_want_to
-            see_the_information_in_the_mail" => "If you don’t want to see the information in the mail",
 	"Service_Form" => "Service Form",
 	"item_Name" => "Item Name",
 	"enter_Item_Name" => "Enter Item Name",
@@ -8902,4 +8898,7 @@ return [
 	"snapchat" => "Snapchat",
 	"faild_name" => "Faild name",
 	"sign_up2" => "Sign up2",
+	"banner_type22" => "Banner type22",
+	"said_Banner" => "Said Banner",
+	"Said Banner" => "Said Banner",
 ];
