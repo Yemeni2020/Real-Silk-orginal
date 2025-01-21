@@ -21,7 +21,7 @@ trait RecaptchaTrait
 
     public function generateDefaultReCaptcha(int $captureLength): CaptchaBuilder
     {
-        $phrase = new PhraseBuilder;
+        $phrase = new PhraseBuilder(4, '0123456789');
         $code = $phrase->build($captureLength);
         $builder = new CaptchaBuilder($code, $phrase);
         $builder->setBackgroundColor(220, 210, 230);

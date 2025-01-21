@@ -8323,4 +8323,6 @@ return [
 	"riad_uddin" => "Riad uddin",
 	"said_Banner" => "Said Banner",
 	"Said Banner" => "Said Banner",
+	"Frequently Asked Questions" => "Frequently Asked Questions",
+	"Ex: XYZ store" => "Ex: XYZ store",
 ];

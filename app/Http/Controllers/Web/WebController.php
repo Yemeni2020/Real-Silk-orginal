@@ -1191,7 +1191,7 @@ class WebController extends Controller
     public function captcha($tmp)
     {
 
-        $phrase = new PhraseBuilder;
+        $phrase = new PhraseBuilder(4, '0123456789');;
         $code = $phrase->build(4);
         $builder = new CaptchaBuilder($code, $phrase);
         $builder->setBackgroundColor(220, 210, 230);
