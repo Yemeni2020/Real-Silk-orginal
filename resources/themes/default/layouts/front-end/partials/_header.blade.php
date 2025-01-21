@@ -1,3 +1,9 @@
+@php
+    use App\Models\Category;
+
+    $categories_menu = Category::where('menu', 1)->get();
+
+@endphp
 @php($announcement=getWebConfig(name: 'announcement'))
 
 @if (isset($announcement) && $announcement['status']==1)
@@ -364,6 +370,29 @@
                                     {{ translate('All_Products')}}
                                 </a>
                         </li>
+                        @php($categoryIndex=0)
+                            @foreach($categories_menu as $category)
+                                @php($categoryIndex++)
+                                @if($categoryIndex < 10)
+                                    <li class="nav-item dropdown {{request()->is('/')?'active':''}}">
+                                        <a class="nav-link dropdown-toggle" href="{{route('products',['category_id'=> $category['id'],'data_from'=>'category','page'=>1])}}">
+                                            <span>{{ $category->translations[0]->value?? $category['name'] }}</span>
+                                        </a>
+                                        @if ($category->childes->count() > 0)
+                                            <ul class="text-align-direction dropdown-menu __dropdown-menu-sizing dropdown-menu-{{Session::get('direction') === "rtl" ? 'right' : 'left'}} scroll-bar">
+                                                @foreach($category['childes'] as $subCategory)
+                                                    <li class="__inline-17">
+                                                        <a class="dropdown-item" href="{{route('products',['category_id'=> $subCategory['id'],'data_from'=>'category','page'=>1])}}">
+                                                            <span >{{$subCategory['name']}}</span>
+                                                        </a>
+                                                        
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    </li>
+                                @endif
+                            @endforeach
                         @if ($web_config['digital_product_setting'] && count($web_config['publishing_houses']) == 1)
                             <li class="nav-item dropdown d-none d-md-block {{request()->is('/')?'active':''}}">
                                 <a class="nav-link" href="{{ route('products',['publishing_house_id' => 0, 'product_type' => 'digital', 'page'=>1]) }}">
