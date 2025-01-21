@@ -18832,10 +18832,12 @@ body {
 
 .nav-link {
     color: white !important;
-    font-size: 14px !important;
-    /* font-weight: bold; */
-}
 
+}
+.navbar-nav  .nav-link {
+    font-size: 14px !important;
+
+}
 .navbar-stuck-menu {
     min-height: 0;
     padding-top: 0;

@@ -316,7 +316,7 @@
                         </li>
                     </ul>
 
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav w-100">
                         <li class="nav-item dropdown d-none d-md-block {{request()->is('/')?'active':''}}">
                             <a class="nav-link" href="{{route('home')}}">{{ translate('home')}}</a>
                         </li>
