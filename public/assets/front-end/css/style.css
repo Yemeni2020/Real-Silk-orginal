@@ -519,6 +519,9 @@ a {
 
 @media (min-width: 1280px) {
     /* MyCode */
+    .navbar-nav .dropdown a{
+        display: block;
+    }
 .category-scroll-container {
     display: flex;
     align-items: center;
@@ -556,7 +559,7 @@ a {
 /* End MyCode */
 
 
-
+    
     .vertical-slider .owl-stage {
         display: flex !important;
         flex-direction: column;
@@ -1816,6 +1819,7 @@ a {
     background-color: #ffffff;
     color: #050b16 !important;
     font-size: 0.9375rem;
+    
     border: 1px solid #e4dfdf;
 }
 

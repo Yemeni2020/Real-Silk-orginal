@@ -18832,6 +18832,8 @@ body {
 
 .nav-link {
     color: white !important;
+    font-size: 14px !important;
+    /* font-weight: bold; */
 }
 
 .navbar-stuck-menu {
