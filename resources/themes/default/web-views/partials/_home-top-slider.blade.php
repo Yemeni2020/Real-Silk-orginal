@@ -36,7 +36,11 @@
             @endif
 
            
-            <div class="col-12 col-xl-9 __top-slider-images">
+            @if($side_banner->count()>0)
+            <div class="col-9 col-md-12 col-sm-12 col-xm-12 col-lg-9 __top-slider-images">
+            @else
+            <div class="col-12 col-xl-12 __top-slider-images">
+            @endif
                 <div class="{{Session::get('direction') === "rtl" ? 'pr-xl-2' : 'pl-xl-2'}}">
                     <div class="owl-theme owl-carousel hero-slider">
                         @foreach($main_banner as $key=>$banner)
@@ -50,7 +54,7 @@
             </div>
 
 
-             <div class="col-12 col-xl-3 __top-slider-images">
+             <div class="col-12 col-xl-3 d-none d-lg-block __top-slider-images">
                 <div class="{{Session::get('direction') === "rtl" ? 'pr-xl-1' : 'pl-xl-1'}}">
                     <div class="owl-theme owl-carousel hero-slider">
                         @foreach($side_banner as $key=>$banner)
