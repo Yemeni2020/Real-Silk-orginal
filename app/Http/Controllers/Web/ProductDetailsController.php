@@ -133,7 +133,7 @@ class ProductDetailsController extends Controller
         
     }
 
-    public function getDefaultTheme(string $slug): View|RedirectResponse
+    public function getDefaultTheme(string $slug): View|RedirectResponse | null
     {
         $product = $this->productRepo->getWebFirstWhereActive(
             params: ['slug' => $slug, 'customer_id' => Auth::guard('customer')->user()->id ?? 0],
@@ -207,11 +207,15 @@ class ProductDetailsController extends Controller
             $inHouseTemporaryClose = $product['added_by'] == 'admin' ? $temporaryClose['status'] : false;
 
             $previewFileInfo = getFileInfoFromURL(url: $product?->preview_file_full_url['path']);
+            $FaildsService = FormItem::where('item', $product->id)
+            ->orderBy('item_order', 'asc') 
+            ->get();
+
 
             return view(VIEW_FILE_NAMES['products_details'], compact('product', 'countWishlist', 'countOrder', 'relatedProducts',
                 'dealOfTheDay', 'currentDate', 'sellerVacationStartDate', 'sellerVacationEndDate', 'sellerTemporaryClose',
                 'inHouseVacationStartDate', 'inHouseVacationEndDate', 'inHouseVacationStatus', 'inHouseTemporaryClose', 'overallRating',
-                'wishlistStatus', 'productReviews', 'rating', 'totalReviews', 'productsForReview', 'moreProductFromSeller', 'decimalPointSettings', 'previewFileInfo', 'productAuthorsInfo', 'productPublishingHouseInfo'));
+                'wishlistStatus', 'productReviews', 'rating', 'totalReviews', 'productsForReview', 'moreProductFromSeller', 'decimalPointSettings', 'previewFileInfo', 'productAuthorsInfo', 'productPublishingHouseInfo','FaildsService'));
         }
 
         Toastr::error(translate('not_found'));

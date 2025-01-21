@@ -194,243 +194,345 @@
                                     </div>
                                 @endif
 
-                                <div class="mb-3">
-                                    <span class="font-weight-normal text-accent d-flex align-items-end gap-2">
-                                        {!! getPriceRangeWithDiscount(product: $product) !!}
-                                        
-                                    </span>
-                                </div>
+                                
+                                @if($product->product_type == "Service")
+                                    
+                                    <form method="post" action="{{ route('submitService') }}">
+                                        @csrf
+                                        <input type="hidden" name="Product" value="{{$product->id}}">
 
-                                <form id="add-to-cart-form" class="mb-2">
-                                    @csrf
-                                    <input type="hidden" name="id" value="{{ $product->id }}">
-                                    <div
-                                        class="position-relative {{Session::get('direction') === "rtl" ? 'ml-n4' : 'mr-n4'}} mb-2">
-                                        @if (count(json_decode($product->colors)) > 0)
-                                            <div class="flex-start align-items-center mb-2">
+                                        <?php  
+                                        
+                                        if(isset($FaildsService)):
+                                        ?>
+                                            <?php 
+                                            foreach($FaildsService as $Faild):
+                                            ?>
+                                                <?php 
+                                                if(in_array($Faild->item_type, ["text", "date", "email", "select", "number", "radios", "checkbox"])):
+                                                    ?>
+                                                    @php
+                                                    $lang = getDefaultLanguage();
+                                                    $item_name = $Faild->getTranslation("item_name", $lang) ?? $Faild->item_name;
+                                                    $Options = [];
+                                                    $select_option = $Faild->getTranslation("select_options", $lang) ?? $Faild["select_options"];
+
+                                                    if (isset($select_option) && is_string($select_option)) {
+                                                        // محاولة فك سلسلة JSON إذا كانت select_options عبارة عن JSON صالح
+                                                        $decodedOptions = json_decode($select_option, true);
+
+                                                        if (is_array($decodedOptions)) {
+                                                            // إذا كان JSON صالح وتم فكّه كمصفوفة
+                                                            $Options = $decodedOptions;
+                                                        } else {
+                                                            // إذا لم يكن JSON صالح، يتم محاولة الفصل باستخدام الفاصلة
+                                                            $Options = explode(',', $select_option);
+                                                        }
+                                                        // تنظيف القيم وإزالة المسافات البيضاء
+                                                        $Options = array_map('trim', $Options);
+                                                        if(isset($Options[0])){
+                                                            $Options = explode(',', $Options[0]);
+
+                                                        }
+                                                    }
+                                                    @endphp
+
+                                                    @if($Faild->item_type == "select")
+                                                        <h6>{{$item_name}}</h6>
+                                                        <select class="form-control" name="faild{{$Faild->id}}" id="{{$Faild->id}}">
+                                                            @foreach($Options as $Option)
+                                                                <option value="{{ trim($Option) }}">{{ trim($Option) }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    @elseif($Faild->item_type == "checkbox")
+                                                        <h6>{{$item_name}}</h6>
+                                                        <div class="form-control">
+                                                            @php $i = 0; @endphp
+                                                            @foreach($Options as $Option)
+                                                                <span>{{$Option}}</span>
+                                                                <input type="checkbox" name="faild{{$Faild->id}}[]" id="{{$Faild->id}}{{$i}}" value="{{$Option}}">
+                                                                @php $i++; @endphp
+                                                            @endforeach
+                                                        </div>
+                                                    @elseif($Faild->item_type == "radios")
+                                                        <h6>{{$item_name}}</h6>
+                                                        <div class="form-control">
+                                                            @php $i = 0; @endphp
+                                                            @foreach($Options as $Option)
+                                                                <span>{{$Option}}</span>
+                                                                <input type="radio" {{$i == 0 ? 'checked' : ''}} name="faild{{$Faild->id}}" id="{{$Faild->id}}" value="{{$Option}}">
+                                                                @php $i++; @endphp
+                                                            @endforeach
+                                                        </div>
+                                                    @else
+                                                        <h6>{{$item_name}}</h6>
+                                                        <input class="form-control" {{$Faild->is_required ? "required" : ""}} type="{{$Faild->item_type}}" name="faild{{$Faild->id}}" value="{{$Faild->default_value}}" max="{{$Faild->item_length}}">
+                                                    @endif
+                                                <?php
+                                                else:
+                                                ?>
+                                                    <{{$Faild->item_type}}>{{$item_name}}</{{$Faild->item_type}}>
+                                                <?php 
+                                                endif;
+                                                ?>
+                                        <?php endforeach; ?>
+                                        <?php 
+                                        endif;
+                                        ?>
+
+                                        @if(!Auth::guard('customer')->check())
+                                            <a href="{{route('customer.auth.login')}}" class="btn btn-secondary fs-16" >
+                                                {{translate('Login')}}
+                                            </a>
+                                        @else
+                                            <button class="btn btn-secondary fs-16">
+                                                {{translate('Submit')}}
+                                            </button>
+                                        @endif
+                                    </form>
+
+                                @endif
+
+                                @if($product->product_type != "Service")
+                                    <div class="mb-3">
+                                        <span class="font-weight-normal text-accent d-flex align-items-end gap-2">
+                                            {!! getPriceRangeWithDiscount(product: $product) !!}
+                                            
+                                        </span>
+                                    </div>
+
+                                    <form id="add-to-cart-form" class="mb-2">
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{ $product->id }}">
+                                        <div
+                                            class="position-relative {{Session::get('direction') === "rtl" ? 'ml-n4' : 'mr-n4'}} mb-2">
+                                            @if (count(json_decode($product->colors)) > 0)
+                                                <div class="flex-start align-items-center mb-2">
+                                                    <div
+                                                        class="product-description-label m-0 text-dark font-bold">{{translate('color')}}
+                                                        :
+                                                    </div>
+                                                    <div>
+                                                        <ul class="list-inline checkbox-color mb-0 flex-start ms-2 ps-0">
+                                                            @foreach (json_decode($product->colors) as $key => $color)
+                                                                <li>
+                                                                    <input type="radio"
+                                                                        id="{{ str_replace(' ', '', ($product->id. '-color-'. str_replace('#','',$color))) }}"
+                                                                        name="color" value="{{ $color }}"
+                                                                        @if($key == 0) checked @endif>
+                                                                    <label style="background: {{ $color }};"
+                                                                        class="focus-preview-image-by-color shadow-border"
+                                                                        for="{{ str_replace(' ', '', ($product->id. '-color-'. str_replace('#','',$color))) }}"
+                                                                        data-toggle="tooltip"
+                                                                        data-key="{{ str_replace('#','',$color) }}"
+                                                                    data-colorid="preview-box-{{ str_replace('#','',$color) }}" data-title="{{ \App\Utils\get_color_name($color) }}">
+                                                                        <span class="outline"></span></label>
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                            @php
+                                                $qty = 0;
+                                                if(!empty($product->variation)){
+                                                foreach (json_decode($product->variation) as $key => $variation) {
+                                                        $qty += $variation->qty;
+                                                    }
+                                                }
+                                            @endphp
+                                        </div>
+
+                                        @php($extensionIndex=0)
+                                        @if($product['product_type'] == 'digital' && $product['digital_product_file_types'] && count($product['digital_product_file_types']) > 0 && $product['digital_product_extensions'])
+                                            @foreach($product['digital_product_extensions'] as $extensionKey => $extensionGroup)
+                                            <div class="row flex-start mx-0 align-items-center mb-1">
+                                                <div class="product-description-label text-dark font-bold {{Session::get('direction') === "rtl" ? 'pl-2' : 'pr-2'}} text-capitalize mb-2">
+                                                    {{ translate($extensionKey) }} :
+                                                </div>
+                                                <div>
+                                                    @if(count($extensionGroup) > 0)
+                                                    <div class="list-inline checkbox-alphanumeric checkbox-alphanumeric--style-1 mb-0 mx-1 flex-start row ps-0">
+                                                        @foreach($extensionGroup as $index => $extension)
+                                                        <div>
+                                                            <div class="for-mobile-capacity">
+                                                                <input type="radio" hidden
+                                                                    id="extension_{{ str_replace(' ', '-', $extension) }}"
+                                                                    name="variant_key"
+                                                                    value="{{ $extensionKey.'-'.preg_replace('/\s+/', '-', $extension) }}"
+                                                                    {{ $extensionIndex == 0 ? 'checked' : ''}}>
+                                                                <label for="extension_{{ str_replace(' ', '-', $extension) }}"
+                                                                    class="__text-12px">
+                                                                    {{ $extension }}
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        @php($extensionIndex++)
+                                                        @endforeach
+                                                    </div>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                        @endif
+
+                                        @foreach (json_decode($product->choice_options) as $key => $choice)
+                                            <div class="row flex-start mx-0 align-items-center">
                                                 <div
-                                                    class="product-description-label m-0 text-dark font-bold">{{translate('color')}}
+                                                    class="product-description-label text-dark font-bold {{Session::get('direction') === "rtl" ? 'pl-2' : 'pr-2'}} text-capitalize mb-2">{{ $choice->title }}
                                                     :
                                                 </div>
                                                 <div>
-                                                    <ul class="list-inline checkbox-color mb-0 flex-start ms-2 ps-0">
-                                                        @foreach (json_decode($product->colors) as $key => $color)
-                                                            <li>
-                                                                <input type="radio"
-                                                                       id="{{ str_replace(' ', '', ($product->id. '-color-'. str_replace('#','',$color))) }}"
-                                                                       name="color" value="{{ $color }}"
-                                                                       @if($key == 0) checked @endif>
-                                                                <label style="background: {{ $color }};"
-                                                                    class="focus-preview-image-by-color shadow-border"
-                                                                    for="{{ str_replace(' ', '', ($product->id. '-color-'. str_replace('#','',$color))) }}"
-                                                                    data-toggle="tooltip"
-                                                                    data-key="{{ str_replace('#','',$color) }}"
-                                                                   data-colorid="preview-box-{{ str_replace('#','',$color) }}" data-title="{{ \App\Utils\get_color_name($color) }}">
-                                                                    <span class="outline"></span></label>
-                                                            </li>
+                                                    <div class="list-inline checkbox-alphanumeric checkbox-alphanumeric--style-1 mb-0 mx-1 flex-start row ps-0">
+                                                        @foreach ($choice->options as $index => $option)
+                                                            <div>
+                                                                <div class="for-mobile-capacity">
+                                                                    <input type="radio"
+                                                                        id="{{ str_replace(' ', '', ($choice->name. '-'. $option)) }}"
+                                                                        name="{{ $choice->name }}" value="{{ $option }}"
+                                                                        @if($index == 0) checked @endif >
+                                                                    <label class="__text-12px"
+                                                                        for="{{ str_replace(' ', '', ($choice->name. '-'. $option)) }}"">{{ $option }}</label>
+                                                                </div>
+                                                            </div>
                                                         @endforeach
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        @endif
-                                        @php
-                                            $qty = 0;
-                                            if(!empty($product->variation)){
-                                            foreach (json_decode($product->variation) as $key => $variation) {
-                                                    $qty += $variation->qty;
-                                                }
-                                            }
-                                        @endphp
-                                    </div>
-
-                                    @php($extensionIndex=0)
-                                    @if($product['product_type'] == 'digital' && $product['digital_product_file_types'] && count($product['digital_product_file_types']) > 0 && $product['digital_product_extensions'])
-                                        @foreach($product['digital_product_extensions'] as $extensionKey => $extensionGroup)
-                                        <div class="row flex-start mx-0 align-items-center mb-1">
-                                            <div class="product-description-label text-dark font-bold {{Session::get('direction') === "rtl" ? 'pl-2' : 'pr-2'}} text-capitalize mb-2">
-                                                {{ translate($extensionKey) }} :
-                                            </div>
-                                            <div>
-                                                @if(count($extensionGroup) > 0)
-                                                <div class="list-inline checkbox-alphanumeric checkbox-alphanumeric--style-1 mb-0 mx-1 flex-start row ps-0">
-                                                    @foreach($extensionGroup as $index => $extension)
-                                                    <div>
-                                                        <div class="for-mobile-capacity">
-                                                            <input type="radio" hidden
-                                                                   id="extension_{{ str_replace(' ', '-', $extension) }}"
-                                                                   name="variant_key"
-                                                                   value="{{ $extensionKey.'-'.preg_replace('/\s+/', '-', $extension) }}"
-                                                                {{ $extensionIndex == 0 ? 'checked' : ''}}>
-                                                            <label for="extension_{{ str_replace(' ', '-', $extension) }}"
-                                                                   class="__text-12px">
-                                                                {{ $extension }}
-                                                            </label>
-                                                        </div>
                                                     </div>
-                                                    @php($extensionIndex++)
-                                                    @endforeach
                                                 </div>
+                                            </div>
+                                        @endforeach
+
+                                        <div class="mt-3">
+                                            <div class="product-quantity d-flex flex-column __gap-15">
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="product-description-label text-dark font-bold mt-0">
+                                                        {{translate('quantity')}} :
+                                                    </div>
+                                                    <div class="d-flex justify-content-center align-items-center quantity-box border rounded border-base web-text-primary">
+                                                        <span class="input-group-btn">
+                                                            <button class="btn btn-number __p-10 web-text-primary" type="button"
+                                                                    data-type="minus" data-field="quantity"
+                                                                    disabled="disabled">
+                                                                -
+                                                            </button>
+                                                        </span>
+                                                        <input type="text" id="qquantity" name="quantity"
+                                                            class="form-control input-number text-center cart-qty-field __inline-29 border-0 "
+                                                            placeholder="{{ translate('1') }}"
+                                                            value="{{ $product->minimum_order_qty ?? 1 }}"
+                                                            data-producttype="{{ $product->product_type }}"
+                                                            min="{{ $product->minimum_order_qty ?? 1 }}"
+                                                            max="{{$product['product_type'] == 'physical' ? $product->current_stock : 100}}">
+                                                        <span class="input-group-btn">
+                                                            <button id="Q_plus" class="btn btn-number __p-10 web-text-primary" type="button"
+                                                                    data-producttype="{{ $product->product_type }}"
+                                                                    data-type="plus" data-field="quantity">
+                                                                    +
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                    <input type="hidden" class="product-generated-variation-code" name="product_variation_code" data-product-id="{{ $product['id'] }}">
+                                                    <input type="hidden" value="" class="in_cart_key form-control w-50" name="key">
+                                                </div>
+                                                @if(count($product->offers)>0)
+
+                                                    <h4>{{translate('offers')}}</h4>
+                                                    <div class="row" id="offers" >
+                                                        @foreach ($product->offers as $offer)
+                                                            <div class="col-lg-5 card mb-2 ms-1 me-2" onclick="window.qquantity.value='{{$offer->q_from -1}}';window.Q_plus.click();" style="cursor:pointer;box-shadow:2px 2px 5px 2px;background:linear-gradient(to right, var(--light), var(--light));font-size:14px;">
+                                                                <div class="card-body" style="padding:5%;padding-inline-start: 15%;">
+                                                                        <div class="row" style="padding: 0 ;">
+                                                                            <div class="col-5" style="padding: 0 ;text-align:start;">
+                                                                                {{translate('Quantity')}}
+                                                                            </div>
+                                                                            <div class="col-7" style="padding: 0 ;text-align:start;">
+                                                                                {{$offer->q_from}} - {{$offer->q_to>-1?$offer->q_to:'Up'}}
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row" style="padding: 0 ;">
+                                                                            <hr>
+                                                                            <div class="col-5" style="padding: 0 ;text-align:start;">
+                                                                                {{translate('Price_Unit')}}
+                                                                            </div>
+                                                                            <div class="col-7" style="padding: 0 ;text-align:start;">
+                                                                                <strong  class="text-base">{!!webCurrencyConverter( $offer->price_unit)!!}</strong> 
+                                                                            </div>
+                                                                        </div>
+
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                                <div id="chosen_price_div">
+                                                    <div
+                                                        class="d-none d-sm-flex justify-content-start align-items-center me-2">
+                                                        <div
+                                                            class="product-description-label text-dark font-bold text-capitalize">
+                                                            <strong>{{translate('total_price')}}</strong> :
+                                                        </div>
+                                                        &nbsp; <strong id="chosen_price" class="text-base"></strong>
+                                                        <small
+                                                            class="ms-2 font-regular">
+                                                            (<small>{{translate('tax')}} : </small>
+                                                            <small id="set-tax-amount"></small>)
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="__btn-grp mt-2 mb-3 d-none d-sm-flex">
+                                            @if(($product->added_by == 'seller' && ($sellerTemporaryClose || (isset($product->seller->shop) && $product->seller->shop->vacation_status && $currentDate >= $sellerVacationStartDate && $currentDate <= $sellerVacationEndDate))) ||
+                                            ($product->added_by == 'admin' && ($inHouseTemporaryClose || ($inHouseVacationStatus && $currentDate >= $inHouseVacationStartDate && $currentDate <= $inHouseVacationEndDate))))
+                                                <button class="btn btn-secondary" type="button" disabled>
+                                                    {{ translate('buy_now') }}
+                                                </button>
+                                                <button class="btn btn--primary string-limit" type="button" disabled>
+                                                    {{ translate('add_to_cart') }}
+                                                </button>
+                                            @else
+                                                <button type="button"
+                                                    data-auth-status="{{($guestCheckout == 1 || Auth::guard('customer')->check() ? 'true':'false')}}"
+                                                    data-route="{{ route('shop-cart') }}"
+                                                    class="btn btn-secondary element-center btn-gap-{{Session::get('direction') === "rtl" ? 'left' : 'right'}} action-buy-now-this-product">
+                                                    <span class="string-limit">{{ translate('buy_now') }}</span>
+                                                </button>
+                                                <button class="btn btn--primary element-center btn-gap-{{Session::get('direction') === "rtl" ? 'left' : 'right'}} action-add-to-cart-form"
+                                                    type="button" data-update-text="{{ translate('update_cart') }}" data-add-text="{{ translate('add_to_cart') }}">
+                                                    <span class="string-limit">{{ translate('add_to_cart') }}</span>
+                                                </button>
+                                            @endif
+                                            <button type="button" data-product-id="{{ $product['id'] }}" class="btn __text-18px border d-none d-sm-block product-action-add-wishlist">
+                                                <i class="fa {{($wishlistStatus == 1?'fa-heart':'fa-heart-o')}} wishlist_icon_{{$product['id']}} web-text-primary"
+                                                aria-hidden="true"></i>
+                                                <span class="fs-14 text-muted align-bottom countWishlist-{{$product['id']}}">{{$countWishlist}}</span>
+                                                <div class="wishlist-tooltip" x-placement="top">
+                                                    <div class="arrow"></div><div class="inner">
+                                                        <span class="add">{{translate('added_to_wishlist')}}</span>
+                                                        <span class="remove">{{translate('removed_from_wishlist')}}</span>
+                                                    </div>
+                                                </div>
+                                            </button>
+                                            @if(($product->added_by == 'seller' && ($sellerTemporaryClose || (isset($product->seller->shop) && $product->seller->shop->vacation_status && $currentDate >= $sellerVacationStartDate && $currentDate <= $sellerVacationEndDate))) ||
+                                            ($product->added_by == 'admin' && ($inHouseTemporaryClose || ($inHouseVacationStatus && $currentDate >= $inHouseVacationStartDate && $currentDate <= $inHouseVacationEndDate))))
+                                                <div class="alert alert-danger" role="alert">
+                                                    {{translate('this_shop_is_temporary_closed_or_on_vacation._You_cannot_add_product_to_cart_from_this_shop_for_now')}}
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        <div class="row no-gutters d-none flex-start d-flex">
+                                            <div class="col-12">
+                                                @if(($product['product_type'] == 'physical'))
+                                                    <h5 class="text-danger out-of-stock-element d--none">{{translate('out_of_stock')}}</h5>
                                                 @endif
                                             </div>
                                         </div>
-                                        @endforeach
-                                    @endif
 
-                                    @foreach (json_decode($product->choice_options) as $key => $choice)
-                                        <div class="row flex-start mx-0 align-items-center">
-                                            <div
-                                                class="product-description-label text-dark font-bold {{Session::get('direction') === "rtl" ? 'pl-2' : 'pr-2'}} text-capitalize mb-2">{{ $choice->title }}
-                                                :
-                                            </div>
-                                            <div>
-                                                <div class="list-inline checkbox-alphanumeric checkbox-alphanumeric--style-1 mb-0 mx-1 flex-start row ps-0">
-                                                    @foreach ($choice->options as $index => $option)
-                                                        <div>
-                                                            <div class="for-mobile-capacity">
-                                                                <input type="radio"
-                                                                       id="{{ str_replace(' ', '', ($choice->name. '-'. $option)) }}"
-                                                                       name="{{ $choice->name }}" value="{{ $option }}"
-                                                                       @if($index == 0) checked @endif >
-                                                                <label class="__text-12px"
-                                                                       for="{{ str_replace(' ', '', ($choice->name. '-'. $option)) }}"">{{ $option }}</label>
-                                                            </div>
-                                                        </div>
-                                                    @endforeach
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-
-                                    <div class="mt-3">
-                                        <div class="product-quantity d-flex flex-column __gap-15">
-                                            <div class="d-flex align-items-center gap-3">
-                                                <div class="product-description-label text-dark font-bold mt-0">
-                                                    {{translate('quantity')}} :
-                                                </div>
-                                                <div class="d-flex justify-content-center align-items-center quantity-box border rounded border-base web-text-primary">
-                                                    <span class="input-group-btn">
-                                                        <button class="btn btn-number __p-10 web-text-primary" type="button"
-                                                                data-type="minus" data-field="quantity"
-                                                                disabled="disabled">
-                                                            -
-                                                        </button>
-                                                    </span>
-                                                    <input type="text" id="qquantity" name="quantity"
-                                                           class="form-control input-number text-center cart-qty-field __inline-29 border-0 "
-                                                           placeholder="{{ translate('1') }}"
-                                                           value="{{ $product->minimum_order_qty ?? 1 }}"
-                                                           data-producttype="{{ $product->product_type }}"
-                                                           min="{{ $product->minimum_order_qty ?? 1 }}"
-                                                           max="{{$product['product_type'] == 'physical' ? $product->current_stock : 100}}">
-                                                    <span class="input-group-btn">
-                                                        <button id="Q_plus" class="btn btn-number __p-10 web-text-primary" type="button"
-                                                                data-producttype="{{ $product->product_type }}"
-                                                                data-type="plus" data-field="quantity">
-                                                                +
-                                                        </button>
-                                                    </span>
-                                                </div>
-                                                <input type="hidden" class="product-generated-variation-code" name="product_variation_code" data-product-id="{{ $product['id'] }}">
-                                                <input type="hidden" value="" class="in_cart_key form-control w-50" name="key">
-                                            </div>
-                                            @if(count($product->offers)>0)
-
-                                                <h4>{{translate('offers')}}</h4>
-                                                <div class="row" id="offers" >
-                                                    @foreach ($product->offers as $offer)
-                                                        <div class="col-lg-5 card mb-2 ms-1 me-2" onclick="window.qquantity.value='{{$offer->q_from -1}}';window.Q_plus.click();" style="cursor:pointer;box-shadow:2px 2px 5px 2px;background:linear-gradient(to right, var(--light), var(--light));font-size:14px;">
-                                                            <div class="card-body" style="padding:5%;padding-inline-start: 15%;">
-                                                                    <div class="row" style="padding: 0 ;">
-                                                                        <div class="col-5" style="padding: 0 ;text-align:start;">
-                                                                            {{translate('Quantity')}}
-                                                                        </div>
-                                                                        <div class="col-7" style="padding: 0 ;text-align:start;">
-                                                                            {{$offer->q_from}} - {{$offer->q_to>-1?$offer->q_to:'Up'}}
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="row" style="padding: 0 ;">
-                                                                        <hr>
-                                                                        <div class="col-5" style="padding: 0 ;text-align:start;">
-                                                                            {{translate('Price_Unit')}}
-                                                                        </div>
-                                                                        <div class="col-7" style="padding: 0 ;text-align:start;">
-                                                                            <strong  class="text-base">{!!webCurrencyConverter( $offer->price_unit)!!}</strong> 
-                                                                        </div>
-                                                                    </div>
-
-                                                            </div>
-                                                        </div>
-                                                    @endforeach
-                                                </div>
-                                            @endif
-                                            <div id="chosen_price_div">
-                                                <div
-                                                    class="d-none d-sm-flex justify-content-start align-items-center me-2">
-                                                    <div
-                                                        class="product-description-label text-dark font-bold text-capitalize">
-                                                        <strong>{{translate('total_price')}}</strong> :
-                                                    </div>
-                                                    &nbsp; <strong id="chosen_price" class="text-base"></strong>
-                                                    <small
-                                                        class="ms-2 font-regular">
-                                                        (<small>{{translate('tax')}} : </small>
-                                                        <small id="set-tax-amount"></small>)
-                                                    </small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="__btn-grp mt-2 mb-3 d-none d-sm-flex">
-                                        @if(($product->added_by == 'seller' && ($sellerTemporaryClose || (isset($product->seller->shop) && $product->seller->shop->vacation_status && $currentDate >= $sellerVacationStartDate && $currentDate <= $sellerVacationEndDate))) ||
-                                         ($product->added_by == 'admin' && ($inHouseTemporaryClose || ($inHouseVacationStatus && $currentDate >= $inHouseVacationStartDate && $currentDate <= $inHouseVacationEndDate))))
-                                            <button class="btn btn-secondary" type="button" disabled>
-                                                {{ translate('buy_now') }}
-                                            </button>
-                                            <button class="btn btn--primary string-limit" type="button" disabled>
-                                                {{ translate('add_to_cart') }}
-                                            </button>
-                                        @else
-                                            <button type="button"
-                                                data-auth-status="{{($guestCheckout == 1 || Auth::guard('customer')->check() ? 'true':'false')}}"
-                                                data-route="{{ route('shop-cart') }}"
-                                                 class="btn btn-secondary element-center btn-gap-{{Session::get('direction') === "rtl" ? 'left' : 'right'}} action-buy-now-this-product">
-                                                <span class="string-limit">{{ translate('buy_now') }}</span>
-                                            </button>
-                                            <button class="btn btn--primary element-center btn-gap-{{Session::get('direction') === "rtl" ? 'left' : 'right'}} action-add-to-cart-form"
-                                                type="button" data-update-text="{{ translate('update_cart') }}" data-add-text="{{ translate('add_to_cart') }}">
-                                                <span class="string-limit">{{ translate('add_to_cart') }}</span>
-                                            </button>
-                                        @endif
-                                        <button type="button" data-product-id="{{ $product['id'] }}" class="btn __text-18px border d-none d-sm-block product-action-add-wishlist">
-                                            <i class="fa {{($wishlistStatus == 1?'fa-heart':'fa-heart-o')}} wishlist_icon_{{$product['id']}} web-text-primary"
-                                               aria-hidden="true"></i>
-                                            <span class="fs-14 text-muted align-bottom countWishlist-{{$product['id']}}">{{$countWishlist}}</span>
-                                            <div class="wishlist-tooltip" x-placement="top">
-                                                <div class="arrow"></div><div class="inner">
-                                                    <span class="add">{{translate('added_to_wishlist')}}</span>
-                                                    <span class="remove">{{translate('removed_from_wishlist')}}</span>
-                                                </div>
-                                            </div>
-                                        </button>
-                                        @if(($product->added_by == 'seller' && ($sellerTemporaryClose || (isset($product->seller->shop) && $product->seller->shop->vacation_status && $currentDate >= $sellerVacationStartDate && $currentDate <= $sellerVacationEndDate))) ||
-                                         ($product->added_by == 'admin' && ($inHouseTemporaryClose || ($inHouseVacationStatus && $currentDate >= $inHouseVacationStartDate && $currentDate <= $inHouseVacationEndDate))))
-                                            <div class="alert alert-danger" role="alert">
-                                                {{translate('this_shop_is_temporary_closed_or_on_vacation._You_cannot_add_product_to_cart_from_this_shop_for_now')}}
-                                            </div>
-                                        @endif
-                                    </div>
-
-                                    <div class="row no-gutters d-none flex-start d-flex">
-                                        <div class="col-12">
-                                            @if(($product['product_type'] == 'physical'))
-                                                <h5 class="text-danger out-of-stock-element d--none">{{translate('out_of_stock')}}</h5>
-                                            @endif
-                                        </div>
-                                    </div>
-
-                                </form>
-
+                                    </form>
+                                @endif    
+                                
+                                
                             </div>
                         </div>
                     </div>

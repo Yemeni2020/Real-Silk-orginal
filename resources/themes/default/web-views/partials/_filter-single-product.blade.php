@@ -3,7 +3,7 @@
 <div class="product-single-hover style--card">
     <div class="overflow-hidden position-relative">
         <div class=" inline_product clickable d-flex justify-content-center">
-            @if($product->discount > 0)
+            @if($product->discount > 0 && $product->product_type != "Service")
                 <span class="for-discount-value p-1 pl-2 pr-2 font-bold fs-13">
                     <span class="direction-ltr d-block">
                         @if ($product->discount_type == 'percent')
@@ -17,6 +17,13 @@
                 <div class="d-flex justify-content-end">
                     <span class="for-discount-value-null"></span>
                 </div>
+            @endif
+            @if( $product->product_type == "Service")
+                <span class="for-discount-value p-1 pl-2 pr-2 font-bold fs-13" style="transform:rotate(10deg);">
+                    <span class="direction-ltr d-block">
+                        {{translate('service')}}
+                    </span>
+                </span>
             @endif
             <div class="p-10px pb-0">
                 <a href="{{route('product',$product->slug)}}" class="w-100">
