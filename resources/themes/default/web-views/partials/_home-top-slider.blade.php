@@ -54,7 +54,7 @@
             </div>
 
 
-             <div class="col-12 col-xl-3 d-none d-lg-block __top-slider-images">
+             <div class="col-3 col-xl-3 d-none d-lg-block __top-slider-images">
                 <div class="{{Session::get('direction') === "rtl" ? 'pr-xl-1' : 'pl-xl-1'}}">
                     <div class="owl-theme owl-carousel hero-slider">
                         @foreach($side_banner as $key=>$banner)
