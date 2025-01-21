@@ -29,10 +29,10 @@
                                 <span class="font-semibold">{{ translate('categories')}}</span>
                             </div>
                             <div>
-                                <a class="text-capitalize view-all-text web-text-primary"
+                                <!-- <a class="text-capitalize view-all-text web-text-primary"
                                    href="{{route('categories')}}">{{ translate('view_all')}}
                                     <i class="czi-arrow-{{Session::get('direction') === "rtl" ? 'left mr-1 ml-n1 mt-1 float-left' : 'right ml-1 mr-n1'}}"></i>
-                                </a>
+                                </a> -->
                             </div>
                         </div>
                         <div class="d-none d-md-block">
@@ -55,7 +55,7 @@
                                                         src="{{ getStorageImages(path:$category->icon_full_url, type: 'category') }}"
                                                         style="width: 100%; height: 100%; object-fit: cover;">
                                                 </div>
-                                                <p class="text-center fs-13 font-semibold mt-2">{{Str::limit($category->name, 12)}}</p>
+                                                <p class="text-center fs-13 font-semibold mt-2 wrapped-text" style="white-space: normal; word-wrap: break-word; word-break: break-word; overflow-wrap: break-word;">{{$category->name}}</p>
                                             </a>
                                         </div>
                                     @endforeach
@@ -74,10 +74,10 @@
                                 <span class="font-semibold">{{ translate('categories')}}</span>
                             </div>
                             <div>
-                                <a class="text-capitalize view-all-text web-text-primary"
+                                <!-- <a class="text-capitalize view-all-text web-text-primary"
                                    href="{{route('categories')}}">{{ translate('view_all')}}
                                     <i class="czi-arrow-{{Session::get('direction') === "rtl" ? 'left mr-1 ml-n1 mt-1 float-left' : 'right ml-1 mr-n1'}}"></i>
-                                </a>
+                                </a> -->
                             </div>
                         </div>
                         <div class="d-none d-md-block">

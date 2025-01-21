@@ -472,7 +472,7 @@ enum GlobalConstant{
     const THEME_RATIO = [
         'default' => [
             'Main Banner'=>'(2400 x 996 px)',
-            'Said Banner'=>'Ratio 2:2 (600 x 600 px)',
+            'Said Banner'=>'Ratio 1:2 (1256 x 1517 px)',
             'Footer Banner'=>'Ratio 2:1 (2000 x 1000 px)',
             'Popup Banner'=>'Ratio 1:1 (1200 x 1200 px)',
             'Main Section Banner'=>'Ratio 4:1 (2000 x 500 px)',

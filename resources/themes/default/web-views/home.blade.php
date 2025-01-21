@@ -101,9 +101,7 @@
         @endif
 
         @php($businessMode = getWebConfig(name: 'business_mode'))
-        @if ($businessMode == 'multi' && count($topVendorsList) > 0)
-            @include('web-views.partials._top-sellers')
-        @endif
+        
 
         @include('web-views.partials._deal-of-the-day', ['decimal_point_settings'=>$decimalPointSettings])
 
@@ -149,6 +147,10 @@
         </section>
 
 
+        @if ($businessMode == 'multi' && count($topVendorsList) > 0)
+            @include('web-views.partials._top-sellers')
+        @endif
+        
         @if (count($footer_banner) > 1)
             <div class="container rtl pt-4">
                 <div class="promotional-banner-slider owl-carousel owl-theme">

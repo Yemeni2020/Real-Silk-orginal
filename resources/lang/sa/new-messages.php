@@ -8321,4 +8321,6 @@ return [
 	"invalid_theme" => "Invalid theme",
 	"theme_upload_successfully" => "Theme upload successfully",
 	"riad_uddin" => "Riad uddin",
+	"said_Banner" => "Said Banner",
+	"Said Banner" => "Said Banner",
 ];
