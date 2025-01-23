@@ -119,6 +119,7 @@ class ProductController extends BaseController
         // dump($request->product_type);
         
         $dataArray = $service->getAddProductData(request: $request, addedBy: 'admin');
+
         $savedProduct = $this->productRepo->add(data: $dataArray);
 
         if($request->product_type=="Service")

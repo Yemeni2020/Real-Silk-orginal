@@ -8900,4 +8900,9 @@ return [
 	"enter_Item_select" => "Enter Item select",
 	"Select_Name" => "Select Name",
 	"actions" => "Actions",
+	"for_Ready_Product_deliveries,_customers_can_pay_&_instantly_download_pre-uploaded_digital_products._For_Ready_After_Sale_deliveries,_customers_pay_first,_then_admin_uploads_the_digital_products_that_become_available_to_customers_for_download" => "For Ready Product deliveries  customers can pay & instantly download pre-uploaded digital products. For Ready After Sale deliveries  customers pay first  then admin uploads the digital products that become available to customers for download",
+	"color_images_is_required" => "Color images is required",
+	"Color images is required!" => "Color images is required!",
+	"ex:美元" => "Ex:美元",
+	"Select Language" => "Select Language",
 ];

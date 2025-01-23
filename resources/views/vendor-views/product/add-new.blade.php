@@ -1,3 +1,8 @@
+@php
+
+$curnnet_lang = session()->get("local");
+
+@endphp
 @extends('layouts.back-end.app-seller')
 
 @section('title', translate('product_Add'))

@@ -8325,4 +8325,10 @@ return [
 	"Said Banner" => "Said Banner",
 	"Frequently Asked Questions" => "Frequently Asked Questions",
 	"Ex: XYZ store" => "Ex: XYZ store",
+	"for_Ready_Produc”_deliveries,_customers_can_pay_&_instantly_download_pre-uploaded_digital_products._For_Ready_After_Sale_deliveries,_customers_pay_first_then_vendor_uploads_the_digital_products_that_become_available_to_customers_for_download" => "For Ready Produc  deliveries  customers can pay & instantly download pre-uploaded digital products. For Ready After Sale deliveries  customers pay first then vendor uploads the digital products that become available to customers for download",
+	"123412" => "123412",
+	"Add_Options" => "Add Options",
+	"name_option" => "Name option",
+	"type_option" => "Type option",
+	"CheckBox" => "CheckBox",
 ];

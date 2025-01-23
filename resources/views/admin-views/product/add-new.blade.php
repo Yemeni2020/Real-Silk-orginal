@@ -1,3 +1,8 @@
+@php
+
+$curnnet_lang = session()->get("local");
+
+@endphp
 @extends('layouts.back-end.app')
 
 @section('title', translate('product_Add'))
@@ -281,7 +286,7 @@
                                 <div class="d-flex gap-2 mb-2">
                                     <label class="title-color mb-0">
                                         {{ translate('unit_price') }}
-                                        ({{ getCurrencySymbol(currencyCode: getCurrencyCode()) }})
+                                        ({{getCurrencySymbol(currencyCode: getCurrencyCode()) }})
                                         <span class="input-required-icon">*</span>
                                     </label>
 

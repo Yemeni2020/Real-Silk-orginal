@@ -118,6 +118,7 @@ class CurrencyController extends BaseController
             'symbol' => $request['symbol'],
             'code' => $request['code'],
             'exchange_rate' => $request->has('exchange_rate') ? $request['exchange_rate'] : 1,
+            'language' => $request->has('lang') ? $request['lang'] : "",
         ]);
         Toastr::success(translate('New_Currency_inserted_successfully'));
         return redirect()->back();
@@ -164,6 +165,7 @@ class CurrencyController extends BaseController
             'symbol' => $request['symbol'],
             'code' => $request['code'],
             'exchange_rate' => $request->has('exchange_rate') ? $request['exchange_rate'] : 1,
+            'language' => $request->has('lang') ? $request['lang'] :"",
         ];
         $this->currencyRepo->update(id: $currency['id'], data: $dataArray);
 

@@ -100,7 +100,28 @@
                                                placeholder="{{translate('ex').':'.'120'}}" required>
                                     </div>
                                 </div>
+                                <div class="col-sm-6 col-lg-4 col-xl-3">
+                                        <div class="form-group">
+                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                <label for="exchange_rate"
+                                                       class="title-color mb-0">{{translate('Language')}}</label>
+                                                <i class="tio-info-outined" data-toggle="tooltip"
+                                                   title="{{translate('based_on_your_region_set_the_exchange_rate_of_the_currency_you_want_to_add')}}"></i>
+                                            </div>
+                                            @php
+                                                $languages = getWebConfig(name: 'pnc_language') ?? null;
+                                            @endphp
+                                            <select class="select2-selection custom-select" name="lang" >
+                                                <option value="">{{translate('Select Language')}}</option>
+                                                
+                                                @foreach($languages as $lang)
+                                                    <option value="{{$lang}}">{{$lang}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                </div>
                             @endif
+
                             <div class="col-12">
                                 <div class="d-flex justify-content-end gap-3">
                                     <button type="reset" class="btn btn-secondary px-5">{{translate('reset')}}</button>

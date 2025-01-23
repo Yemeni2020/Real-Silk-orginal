@@ -59,6 +59,19 @@
                                                    class="form-control" id="exchange_rate"
                                                    value="{{$currency['exchange_rate']}}">
                                         </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="title-color">{{translate('Language').':'}}</label>
+                                            @php
+                                                $languages = getWebConfig(name: 'pnc_language') ?? null;
+                                            @endphp
+                                            <select class="select2-selection custom-select" name="lang" >
+                                                <option value="">{{translate('Select Language')}}</option>
+                                                
+                                                @foreach($languages as $lang)
+                                                    <option @if($currency['language']==$lang) selected @endif value="{{$lang}}">{{$lang}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     @endif
                                 </div>
                             </div>

@@ -33,12 +33,27 @@ if (!function_exists('currencyConverter')) {
      */
     function currencyConverter(float $amount, string $to = USD): float|int
     {
+
         $currencyModel = getWebConfig('currency_model');
+        $curnnet_lang = session()->get("local");
         if ($currencyModel == MULTI_CURRENCY) {
             $default = Currency::find(getWebConfig('system_default_currency'))->exchange_rate;
+            $currencylang = Currency::where(['language' => $curnnet_lang])->first();
+
+            if($currencylang->count()){
+                if($curnnet_lang==$currencylang->language){
+                    $amount=$amount/$currencylang->exchange_rate;
+                }
+            }
+            
+            
             $exchangeRate = exchangeRate($to);
+            
+            
             $rate = $default / $exchangeRate;
+
             $value = $amount / floatval($rate);
+
         } else {
             $value = $amount;
         }
@@ -63,6 +78,11 @@ if (!function_exists('usdToDefaultCurrency')) {
                 session()->put('default', $default);
             }
 
+            $curnnet_lang = session()->get("local");
+
+            
+
+
             if (session()->has('usd')) {
                 $usd = session('usd');
             } else {
@@ -72,6 +92,13 @@ if (!function_exists('usdToDefaultCurrency')) {
 
             $rate = $default / $usd;
             $value = $amount * floatval($rate);
+            $currencylang = Currency::where(['language' => $curnnet_lang])->first();
+
+            if($currencylang->count()>0){
+                if($curnnet_lang==$currencylang->language){
+                    $value=$value*$currencylang->exchange_rate;
+                }
+            }
         } else {
             $value = $amount;
         }
@@ -141,7 +168,7 @@ if (!function_exists('exchangeRate')) {
      * @return float|int
      */
     function exchangeRate(string $currencyCode = USD): float|int
-    {
+    {        
         return Currency::where('code', $currencyCode)->first()->exchange_rate ?? 1;
     }
 }
@@ -158,9 +185,20 @@ if (!function_exists('getCurrencySymbol')) {
         if ($type == 'web' && session()->has('currency_symbol')) {
             $currentSymbol = session('currency_symbol');
         } else {
+            
             $systemDefaultCurrencyInfo = session('system_default_currency_info');
             $currentSymbol = $systemDefaultCurrencyInfo->symbol;
+            $curnnet_lang = session()->get("local");
+            $currencylang = Currency::where(['language' => $curnnet_lang])->first();
+
+            if($curnnet_lang==$currencylang->language){
+                $currentSymbol=$currencylang->code;
+            }
         }
+
+        
+        
+
         return $currentSymbol;
     }
 }
