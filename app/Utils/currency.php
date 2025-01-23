@@ -40,7 +40,7 @@ if (!function_exists('currencyConverter')) {
             $default = Currency::find(getWebConfig('system_default_currency'))->exchange_rate;
             $currencylang = Currency::where(['language' => $curnnet_lang])->first();
 
-            if($currencylang->count()){
+            if(isset($currencylang)){
                 if($curnnet_lang==$currencylang->language){
                     $amount=$amount/$currencylang->exchange_rate;
                 }
@@ -94,7 +94,7 @@ if (!function_exists('usdToDefaultCurrency')) {
             $value = $amount * floatval($rate);
             $currencylang = Currency::where(['language' => $curnnet_lang])->first();
 
-            if($currencylang->count()>0){
+            if(isset($currencylang)){
                 if($curnnet_lang==$currencylang->language){
                     $value=$value*$currencylang->exchange_rate;
                 }
@@ -191,8 +191,11 @@ if (!function_exists('getCurrencySymbol')) {
             $curnnet_lang = session()->get("local");
             $currencylang = Currency::where(['language' => $curnnet_lang])->first();
 
-            if($curnnet_lang==$currencylang->language){
-                $currentSymbol=$currencylang->code;
+            if(isset($currencylang)){
+
+                if($curnnet_lang==$currencylang->language){
+                    $currentSymbol=$currencylang->code;
+                }
             }
         }
 
