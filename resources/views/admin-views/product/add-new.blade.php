@@ -346,8 +346,8 @@
                                 </div>
 
                                 <select class="form-control" name="discount_type" id="discount_type">
-                                    <option value="flat">{{ translate('flat') }}</option>
                                     <option value="percent">{{ translate('percent') }}</option>
+                                    <option value="flat">{{ translate('flat') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -357,7 +357,7 @@
                                     <label class="title-color" for="discount">
                                         {{ translate('discount_amount') }}
                                         <span class="discount_amount_symbol">
-                                            ({{getCurrencySymbol(currencyCode: getCurrencyCode()) }})
+                                            %
                                         </span>
                                         <span class="input-required-icon">*</span>
                                     </label>

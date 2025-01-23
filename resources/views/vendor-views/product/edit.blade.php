@@ -361,10 +361,11 @@
                                 </div>
 
                                 <select class="form-control" name="discount_type" id="discount_type">
-                                    <option
+                                <option
+                                        value="percent" {{ $product['discount_type']=='percent'?'selected':''}}>{{ translate('percent') }}</option>    
+                                <option
                                         value="flat" {{ $product['discount_type']=='flat'?'selected':''}}>{{ translate('flat') }}</option>
-                                    <option
-                                        value="percent" {{ $product['discount_type']=='percent'?'selected':''}}>{{ translate('percent') }}</option>
+                                    
                                 </select>
                             </div>
                         </div>

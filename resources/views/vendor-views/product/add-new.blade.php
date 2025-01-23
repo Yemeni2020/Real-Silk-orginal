@@ -334,8 +334,8 @@
                                 </div>
 
                                 <select class="form-control" name="discount_type" id="discount_type">
-                                    <option value="flat">{{ translate('flat') }}</option>
                                     <option value="percent">{{ translate('percent') }}</option>
+                                    <option value="flat">{{ translate('flat') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -343,7 +343,7 @@
                             <div class="form-group">
                                 <div class="d-flex gap-2">
                                     <label class="title-color" for="discount">{{ translate('discount_amount') }} <span
-                                            class="discount_amount_symbol">({{ getCurrencySymbol(currencyCode: getCurrencyCode()) }})</span></label>
+                                            class="discount_amount_symbol">%</span></label>
 
                                     <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
                                           title="{{ translate('add_the_discount_amount_in_percentage_or_a_fixed_value_here') }}.">
