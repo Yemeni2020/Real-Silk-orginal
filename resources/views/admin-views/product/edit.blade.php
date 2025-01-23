@@ -1013,6 +1013,7 @@
                                 </thead>
                                 <tbody id="faild_form">
 
+                                @if(isset($failds))
                                     @foreach($failds as $faild)
 
                                         <tr id='faild00{{$faild->id}}'>
@@ -1069,6 +1070,7 @@
 
                                         </tr>
                                     @endforeach
+                                @endif
                                 </tbody>
                             </table>
                             
