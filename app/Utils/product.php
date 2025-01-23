@@ -113,7 +113,7 @@ if (!function_exists('getRatingCount')) {
 if (!function_exists('units')) {
     function units(): array
     {
-        return ['kg', 'pc', 'gms', 'ltrs','pair','oz','lb'];
+        return ['pc','kg', 'gms', 'ltrs','pair','oz','lb'];
     }
 }
 if (!function_exists('getVendorProductsCount')) {
