@@ -345,8 +345,8 @@
                             @endforeach
                         @if(getWebConfig(name: 'product_brand'))
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="{{route('brands')}}"
-                                   data-toggle="dropdown">{{ translate('brand') }}</a>
+                                <a class="nav-link " href="{{route('brands')}}"
+                                  >{{ translate('brand') }}</a>
                                 <ul class="text-align-direction dropdown-menu __dropdown-menu-sizing dropdown-menu-{{Session::get('direction') === "rtl" ? 'right' : 'left'}} scroll-bar">
                                     @php($brandIndex=0)
                                     @foreach(\App\Utils\BrandManager::getActiveBrandWithCountingAndPriorityWiseSorting() as $brand)
