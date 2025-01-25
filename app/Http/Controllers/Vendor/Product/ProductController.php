@@ -261,6 +261,8 @@ class ProductController extends BaseController
 
         $product = $this->productRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $id], relations: ['translations','seoInfo']);
         $dataArray = $service->getUpdateProductData(request: $request, product: $product, updateBy: 'seller');
+
+
         $this->updateProductAuthorAndPublishingHouse(request: $request, product: $product);
 
         $this->productRepo->update(id: $id, data: $dataArray);

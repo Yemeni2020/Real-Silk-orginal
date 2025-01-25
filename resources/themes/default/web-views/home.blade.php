@@ -104,9 +104,7 @@
         
 
         @include('web-views.partials._deal-of-the-day', ['decimal_point_settings'=>$decimalPointSettings])
-
-        <section class="new-arrival-section">
-
+        <div class="new-arrival-section">
             @if ($newArrivalProducts->count() >0 )
                 <div class="container rtl mt-4">
                     <div class="section-header">
@@ -131,20 +129,8 @@
                     </div>
                 </div>
             @endif
-
-            <div class="container rtl px-0 px-md-3">
-                <div class="row g-3 mx-max-md-0">
-
-                    @if ($bestSellProduct->count() >0)
-                        @include('web-views.partials._best-selling')
-                    @endif
-
-                    @if ($topRated->count() >0)
-                        @include('web-views.partials._top-rated')
-                    @endif
-                </div>
-            </div>
-        </section>
+        </div>
+        
 
         @if ($homeCategories->count() > 0)
             @foreach($homeCategories as $category)
@@ -178,6 +164,46 @@
             </div>
         @endif
 
+        <section class="new-arrival-section">
+
+            @if ($newArrivalProducts->count() >0 )
+                <!-- <div class="container rtl mt-4">
+                    <div class="section-header">
+                        <div class="arrival-title d-block">
+                            <div class="text-capitalize">
+                                {{ translate('new_arrivals')}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container rtl mb-3 overflow-hidden">
+                    <div class="py-2">
+                        <div class="new_arrival_product">
+                            <div class="carousel-wrap">
+                                <div class="owl-carousel owl-theme new-arrivals-product">
+                                    @foreach($newArrivalProducts as $key=> $product)
+                                        @include('web-views.partials._product-card-2',['product'=>$product,'decimal_point_settings'=>$decimalPointSettings])
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+            @endif
+
+            <div class="container rtl px-0 px-md-3">
+                <div class="row g-3 mx-max-md-0">
+
+                    @if ($bestSellProduct->count() >0)
+                        @include('web-views.partials._best-selling')
+                    @endif
+
+                    @if ($topRated->count() >0)
+                        @include('web-views.partials._top-rated')
+                    @endif
+                </div>
+            </div>
+        </section>
         @if($web_config['brand_setting'] && $brands->count() > 0)
             <section class="container rtl pt-4">
 

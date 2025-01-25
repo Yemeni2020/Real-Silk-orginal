@@ -129,11 +129,19 @@ class ProductUpdateRequest extends FormRequest
                     );
                 }
 
-                if (is_null($this['name'][array_search('EN', $this['lang'])])) {
+
+                $curnnet_lang = session()->get("local");
+                if (is_null($this['name'][array_search($curnnet_lang, $this['lang'])])) {
                     $validator->errors()->add(
                         'name', translate('name_field_is_required') . '!'
                     );
                 }
+                
+                // if (is_null($this['name'][array_search('EN', $this['lang'])])) {
+                //     $validator->errors()->add(
+                //         'name', translate('name_field_is_required') . '!'
+                //     );
+                // }
 
                 if ($this->has('colors_active') && $this->has('colors') && count($this['colors']) > 0) {
                     $databaseColorImages = $product['color_image'] ? json_decode($product['color_image'], true) : [];

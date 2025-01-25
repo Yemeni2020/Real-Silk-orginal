@@ -127,12 +127,19 @@ class ProductAddRequest extends Request
                         'unit_price', translate('discount_can_not_be_more_or_equal_to_the_price') . '!'
                     );
                 }
+                $curnnet_lang = session()->get("local");
 
-                if (is_null($this['name'][array_search('EN', $this['lang'])])) {
+                if (is_null($this['name'][array_search($curnnet_lang, $this['lang'])])) {
                     $validator->errors()->add(
                         'name', translate('name_field_is_required') . '!'
                     );
                 }
+                // Old Code
+                // if (is_null($this['name'][array_search('EN', $this['lang'])])) {
+                //     $validator->errors()->add(
+                //         'name', translate('name_field_is_required') . '!'
+                //     );
+                // }
 
                 $productImagesCount = 0;
                 if ($this->has('colors_active') && $this->has('colors') && count($this['colors']) > 0) {

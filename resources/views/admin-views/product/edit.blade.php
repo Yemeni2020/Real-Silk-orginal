@@ -31,7 +31,7 @@ $curnnet_lang = session()->get("local");
                     <ul class="nav nav-tabs w-fit-content mb-4">
                         @foreach($languages as $language)
                             <li class="nav-item text-capitalize">
-                                <a class="nav-link form-system-language-tab  {{ $language == $defaultLanguage? 'active':''}}" href="#"
+                                <a class="nav-link form-system-language-tab  {{ $language == $curnnet_lang? 'active':''}}" href="#"
                                    id="{{ $language}}-link">{{getLanguageName($language).'('.strtoupper($language).')'}}</a>
                             </li>
                         @endforeach
@@ -52,26 +52,26 @@ $curnnet_lang = session()->get("local");
                                 }
                             }
                             ?>
-                        <div class="{{ $language != 'en'? 'd-none':''}} form-system-language-form" id="{{ $language}}-form">
+                        <div class="{{ $language != $curnnet_lang? 'd-none':''}} form-system-language-form" id="{{ $language}}-form">
                             <div class="form-group">
                                 <label class="title-color" for="{{ $language}}_name">
                                     {{ translate('product_name') }}
                                     ({{strtoupper($language) }})
 
-                                    @if($language == 'en')
+                                    @if($language == $curnnet_lang)
                                         <span class="input-required-icon">*</span>
                                     @endif
                                 </label>
-                                <input type="text" {{ $language == 'en'? 'required':''}} name="name[]"
+                                <input type="text" {{ $language == $curnnet_lang? 'required':''}} name="name[]"
                                        id="{{ $language}}_name"
                                        value="{{ $translate[$language]['name']??$product['name']}}"
-                                       class="form-control {{ $language == 'en' ? 'product-title-default-language' : '' }}" placeholder="{{ translate('new_Product') }}" required>
+                                       class="form-control {{ $language == $curnnet_lang ? 'product-title-default-language' : '' }}" placeholder="{{ translate('new_Product') }}" required>
                             </div>
                             <input type="hidden" name="lang[]" value="{{ $language}}">
                             <div class="form-group pt-4">
                                 <label class="title-color">{{ translate('description') }}
                                     ({{strtoupper($language) }})</label>
-                                <textarea name="description[]" class="summernote {{ $language == 'en' ? 'product-description-default-language' : '' }}"
+                                <textarea name="description[]" class="summernote {{ $language == $curnnet_lang ? 'product-description-default-language' : '' }}"
                                 >{!! $translate[$language]['description']??$product['details'] !!}</textarea>
                             </div>
                         </div>
@@ -314,11 +314,11 @@ $curnnet_lang = session()->get("local");
                                 </div>
 
                                 <input type="number" min="0" step="0.01"
-                                       placeholder="{{ translate('unit_price') }}"
+                                       placeholder="{{ translate('unit_price') }}" {{CalcCurrency('main_price')}}
                                        name="unit_price" class="form-control"
                                        value={{usdToDefaultCurrency($product->unit_price) }} required>
 
-                                       
+                                <span id="main_price"></span>
                             </div>
                         </div>
                         <div class="col-md-6 col-lg-4 col-xl-3" id="minimum_order_qty">
@@ -456,12 +456,15 @@ $curnnet_lang = session()->get("local");
                                           title="{{ translate('set_the_shipping_cost_for_this_product_here._Shipping_cost_will_only_be_applicable_if_product-wise_shipping_is_enabled.') }}">
                                         <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
                                     </span>
+
+                                    
                                 </div>
 
                                 <input type="number" min="0" value="{{usdToDefaultCurrency($product->shipping_cost) }}"
-                                       step="1"
-                                       placeholder="{{ translate('shipping_cost') }}"
+                                       step="1" {{CalcCurrency('main_price_shipping')}}
+                                       placeholder="{{ translate('shipping_cost') }}" 
                                        name="shipping_cost" class="form-control" required>
+                                       <span id="main_price_shipping"></span>
                             </div>
                         </div>
                         <div class="col-md-6 physical_product_show" id="shipping_cost_multy">

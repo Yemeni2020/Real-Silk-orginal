@@ -563,11 +563,22 @@ class ProductService
 
         $digitalFileOptions = $this->getDigitalVariationOptions(request: $request);
         $digitalFileCombinations = $this->getDigitalVariationCombinations(arrays: $digitalFileOptions);
+        
+        $curnnet_lang = session()->get("local");
+        $name=$request['name'][array_search('en', $request['lang'])];
+        $details=$request['description'][array_search('en', $request['lang'])];
+        if(empty($name)){
+            $name=$request['name'][array_search($curnnet_lang, $request['lang'])];
+        }
+        if(empty($details)){
+            $details=$request['description'][array_search($curnnet_lang, $request['lang'])];
+        }
 
         return [
             'added_by' => $addedBy,
             'user_id' => $addedBy == 'admin' ? auth('admin')->id() : auth('seller')->id(),
-            'name' => $request['name'][array_search('en', $request['lang'])],
+            'name' => $name,
+            // 'name' => $request['name'][array_search('en', $request['lang'])],
             'code' => $request['code'],
             'slug' => $this->getSlug($request),
             'category_ids' => json_encode($this->getCategoriesArray(request: $request)),
@@ -580,7 +591,7 @@ class ProductService
             'digital_file_ready' => $digitalFile,
             'digital_file_ready_storage_type' => $digitalFile ? $storage : null,
             'product_type' => $request['product_type'],
-            'details' => $request['description'][array_search('en', $request['lang'])],
+            'details' => $details,
             'colors' => $this->getColorsObject(request: $request),
             'choice_options' => $request['product_type'] == 'physical' ? json_encode($this->getChoiceOptions(request: $request)) : json_encode([]),
             'variation' => $request['product_type'] == 'physical' ? json_encode($variations) : json_encode([]),
@@ -642,8 +653,20 @@ class ProductService
         $digitalFileOptions = $this->getDigitalVariationOptions(request: $request);
         $digitalFileCombinations = $this->getDigitalVariationCombinations(arrays: $digitalFileOptions);
 
+
+        $curnnet_lang = session()->get("local");
+        $name=$request['name'][array_search('en', $request['lang'])];
+        $details=$request['description'][array_search('en', $request['lang'])];
+        if(empty($name)){
+            $name=$request['name'][array_search($curnnet_lang, $request['lang'])];
+        }
+        if(empty($details)){
+            $details=$request['description'][array_search($curnnet_lang, $request['lang'])];
+        }
+
+
         $dataArray = [
-            'name' => $request['name'][array_search('en', $request['lang'])],
+            'name' => $name,
             'code' => $request['code'],
             'product_type' => $request['product_type'],
             'category_ids' => json_encode($this->getCategoriesArray(request: $request)),
@@ -653,7 +676,7 @@ class ProductService
             'brand_id' => $request['product_type'] == 'physical' ? $request['brand_id'] : null,
             'unit' => $request['product_type'] == 'physical' ? $request['unit'] : null,
             'digital_product_type' => $request['product_type'] == 'digital' ? $request['digital_product_type'] : null,
-            'details' => $request['description'][array_search('en', $request['lang'])],
+            'details' => $details,
             'colors' => $this->getColorsObject(request: $request),
             'choice_options' => $request['product_type'] == 'physical' ? json_encode($this->getChoiceOptions(request: $request)) : json_encode([]),
             'variation' => $request['product_type'] == 'physical' ? json_encode($variations) : json_encode([]),

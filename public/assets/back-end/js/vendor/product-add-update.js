@@ -1,5 +1,34 @@
 "use strict";
 
+
+function converttomain(input, val, span, currency) {
+    // التحقق من صحة القيم المدخلة
+    if (!input || !val || !span || !currency) {
+        console.error("Invalid parameters provided to converttomain22");
+        return;
+    }
+
+    // تحويل قيمة الإدخال بناءً على معامل معين
+    var result = input.value / val;
+
+    // التحقق إذا كانت النتيجة صالحة وإيجابية
+    if (result > 0) {
+        // تنسيق الرقم باستخدام Intl.NumberFormat
+        var formattedResult = new Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 2, // منزلتان عشريتان
+            maximumFractionDigits: 2 // منزلتان عشريتان
+        }).format(result);
+
+        // تحديث العنصر الذي يحتوي على النتيجة بالتنسيق المناسب
+        $("#" + span).html(" nearly : "+formattedResult + " " + currency);
+    } else {
+        // إخفاء أو مسح النتيجة إذا لم تكن صالحة
+        $("#" + span).html("");
+    }
+}
+
+
+
 let elementProductTypeByID = $("#product_type");
 let elementAdditionalImageColumn = $(".additional_image_column");
 let elementCustomUploadInputFileByID = $(".custom-upload-input-file");
@@ -68,6 +97,8 @@ $(document).on("ready", function () {
             return m;
         },
     });
+
+    
 
     function colorCodeSelect(state) {
         let colorCode = $(state.element).val();

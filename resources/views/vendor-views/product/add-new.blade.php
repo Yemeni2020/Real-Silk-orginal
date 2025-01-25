@@ -30,7 +30,7 @@ $curnnet_lang = session()->get("local");
                     <ul class="nav nav-tabs w-fit-content mb-4">
                         @foreach ($languages as $lang)
                             <li class="nav-item">
-                                <span class="nav-link text-capitalize form-system-language-tab {{ $lang == $defaultLanguage ? 'active' : '' }} cursor-pointer"
+                                <span class="nav-link text-capitalize form-system-language-tab {{ $lang == $curnnet_lang ? 'active' : '' }} cursor-pointer"
                                       id="{{ $lang }}-link">{{ getLanguageName($lang) . '(' . strtoupper($lang) . ')' }}</span>
                             </li>
                         @endforeach
@@ -42,18 +42,18 @@ $curnnet_lang = session()->get("local");
 
                 <div class="card-body">
                     @foreach ($languages as $lang)
-                        <div class="{{ $lang != $defaultLanguage ? 'd-none' : '' }} form-system-language-form"
+                        <div class="{{ $lang != $curnnet_lang ? 'd-none' : '' }} form-system-language-form"
                              id="{{ $lang }}-form">
                             <div class="form-group">
                                 <label class="title-color"
                                        for="{{ $lang }}_name">{{ translate('product_name') }}
                                     ({{ strtoupper($lang) }})
-                                    @if($lang == $defaultLanguage)
+                                    @if($lang == $curnnet_lang)
                                         <span class="input-required-icon">*</span>
                                     @endif
                                 </label>
-                                <input type="text" {{ $lang == $defaultLanguage ? 'required' : '' }} name="name[]"
-                                       id="{{ $lang }}_name" class="form-control {{ $lang == $defaultLanguage ? 'product-title-default-language' : '' }}"
+                                <input type="text" {{ $lang == $curnnet_lang ? 'required' : '' }} name="name[]"
+                                       id="{{ $lang }}_name" class="form-control {{ $lang == $curnnet_lang ? 'product-title-default-language' : '' }}"
                                        placeholder="{{ translate('new_product') }}">
                             </div>
                             <input type="hidden" name="lang[]" value="{{ $lang }}">
@@ -61,7 +61,7 @@ $curnnet_lang = session()->get("local");
                                 <label class="title-color"
                                        for="{{ $lang }}_description">{{ translate('description') }}
                                     ({{ strtoupper($lang) }})</label>
-                                <textarea name="description[]" class="summernote {{ $lang == $defaultLanguage ? 'product-description-default-language' : '' }}">{{ old('details') }}</textarea>
+                                <textarea name="description[]" class="summernote {{ $lang == $curnnet_lang ? 'product-description-default-language' : '' }}">{{ old('details') }}</textarea>
                             </div>
                         </div>
                     @endforeach
@@ -286,8 +286,9 @@ $curnnet_lang = session()->get("local");
                                     </span>
                                 </div>
                                 <input type="number" min="0" step="0.01"
-                                       placeholder="{{ translate('unit_price') }}" name="unit_price"
+                                       placeholder="{{ translate('unit_price') }}" {{CalcCurrency('main_price')}} name="unit_price"
                                        value="{{ old('unit_price') }}" class="form-control" required>
+                                       <span id="main_price"></span>
                             </div>
                         </div>
                         <div class="col-md-6 col-lg-4 col-xl-3" id="minimum_order_qty">
@@ -415,8 +416,9 @@ $curnnet_lang = session()->get("local");
                                 </div>
 
                                 <input type="number" min="0" value="0" step="1"
-                                       placeholder="{{ translate('shipping_cost') }}" name="shipping_cost"
+                                       placeholder="{{ translate('shipping_cost') }}" {{CalcCurrency('main_price_shipping')}} name="shipping_cost"
                                        class="form-control" required>
+                                <span id="main_price_shipping"></span>
                             </div>
                         </div>
 

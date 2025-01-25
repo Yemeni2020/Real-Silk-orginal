@@ -194,16 +194,45 @@ if (!function_exists('getCurrencySymbol')) {
             if(isset($currencylang)){
 
                 if($curnnet_lang==$currencylang->language){
-                    $currentSymbol=$currencylang->code;
+                    $currentSymbol=$currencylang->code . "($currencylang->exchange_rate$currencylang->code = 1$currentSymbol)";
                 }
             }
         }
-
         
         
 
         return $currentSymbol;
     }
+    
+}
+if (!function_exists('CalcCurrency')) {
+    /**
+     * @param string $currencyCode
+     * @param string $type
+     * @return float|int|string
+     */
+    function CalcCurrency($span): float|int|string
+    {
+        loadCurrency();
+        $calc="";
+
+            $systemDefaultCurrencyInfo = session('system_default_currency_info');
+            $currentSymbol = $systemDefaultCurrencyInfo->symbol;
+            $curnnet_lang = session()->get("local");
+            $currencylang = Currency::where(['language' => $curnnet_lang])->first();
+
+            if(isset($currencylang)){
+
+                if($curnnet_lang==$currencylang->language){
+                    $calc=" onchange = converttomain(this,$currencylang->exchange_rate,'$span','$currentSymbol')";
+                }
+            }
+        
+        
+
+        return $calc;
+    }
+
 }
 
 if (!function_exists('setCurrencySymbol')) {
