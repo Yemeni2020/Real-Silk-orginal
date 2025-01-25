@@ -129,8 +129,8 @@ $languages = getWebConfig(name: 'pnc_language') ?? null;
                                     <div class="form-group mb-0" >
                                         <label
                                                class="title-color text-capitalize">{{ translate('language') }}</label>
-                                        <select class="js-example-responsive form-control w-100"
-                                                name="lang">
+                                        <select class="js-example-responsive form-control w-100" multiple="multiple"
+                                                name="lang[]">
                                             @foreach($languages as $lang)
                                                 <option value="{{ $lang }}">{{ $lang }}</option>
                                             @endforeach
@@ -245,6 +245,7 @@ $languages = getWebConfig(name: 'pnc_language') ?? null;
                                 <th class="pl-xl-5">{{ translate('SL') }}</th>
                                 <th>{{ translate('image') }}</th>
                                 <th>{{ translate('banner_type') }}</th>
+                                <th>{{ translate('language') }}</th>
                                 <th>{{ translate('published') }}</th>
                                 <th class="text-center">{{ translate('action') }}</th>
                             </tr>
@@ -258,6 +259,7 @@ $languages = getWebConfig(name: 'pnc_language') ?? null;
                                              src="{{ getStorageImages(path: $banner->photo_full_url , type: 'backend-banner') }}">
                                     </td>
                                     <td>{{ translate(str_replace('_',' ',$banner->banner_type)) }}</td>
+                                    <td>{{ str_replace('_',' ',$banner->language) }}</td>
                                     <td>
                                         <form action="{{ route('admin.banner.status') }}" method="post" id="banner-status{{ $banner['id'] }}-form">
                                             @csrf

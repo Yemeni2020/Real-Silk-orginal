@@ -69,6 +69,7 @@ class BannerController extends BaseController
     public function add(BannerAddRequest $request): RedirectResponse
     {
         $data = $this->bannerService->getProcessedData(request: $request);
+
         $this->bannerRepo->add(data:$data);
         Toastr::success(translate('banner_added_successfully'));
         return redirect()->route('admin.banner.list');

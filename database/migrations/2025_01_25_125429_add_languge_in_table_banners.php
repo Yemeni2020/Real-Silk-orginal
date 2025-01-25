@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('banners', function (Blueprint $table) {
             //
-            $table->string('language', 10)->nullable()->after('resource_id'); 
+            $table->string('language', 255)->nullable()->after('resource_id'); 
 
         });
     }

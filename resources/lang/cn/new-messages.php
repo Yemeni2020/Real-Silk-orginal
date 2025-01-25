@@ -8905,4 +8905,7 @@ return [
 	"Color images is required!" => "Color images is required!",
 	"ex:美元" => "Ex:美元",
 	"Select Language" => "Select Language",
+	"said_Banner" => "Said Banner",
+	"_again_,_you_will_see_the_saved_data." => " again   you will see the saved data.",
+	"Said Banner" => "Said Banner",
 ];

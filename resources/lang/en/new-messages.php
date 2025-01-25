@@ -8901,4 +8901,7 @@ return [
 	"banner_type22" => "Banner type22",
 	"said_Banner" => "Said Banner",
 	"Said Banner" => "Said Banner",
+	"[en]" => "[en]",
+	"[en,sa,cn]" => "[en sa cn]",
+	"en" => "En",
 ];
