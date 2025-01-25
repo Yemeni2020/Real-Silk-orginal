@@ -11,17 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_offers', function (Blueprint $table) {
-            $table->id(); // حقل ID
-            $table->unsignedBigInteger('product_id'); // ربط مع جدول المنتجات
-            $table->integer('q_from'); // الكمية الدنيا
-            $table->integer('q_to'); // الكمية العليا
-            $table->decimal('price_unit', 10, 2); // سعر الوحدة
-            $table->timestamps();
+        if (!Schema::hasTable('product_offers')) {
 
-            // إضافة مفتاح أجنبي لربط المنتج
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-        });
+            Schema::create('product_offers', function (Blueprint $table) {
+                $table->id(); // حقل ID
+                $table->unsignedBigInteger('product_id'); // ربط مع جدول المنتجات
+                $table->integer('q_from'); // الكمية الدنيا
+                $table->integer('q_to'); // الكمية العليا
+                $table->decimal('price_unit', 10, 2); // سعر الوحدة
+                $table->timestamps();
+
+                // إضافة مفتاح أجنبي لربط المنتج
+                $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            });
+        }
     }
 
     /**
