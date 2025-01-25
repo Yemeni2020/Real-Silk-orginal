@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('help_topics', function (Blueprint $table) {
-            //
-            $table->string('lang')->nullable(); // أو استخدم النوع الذي تريده
-        });
+        if (!Schema::hasColumn('help_topics', 'lang')) {
+            Schema::table('help_topics', function (Blueprint $table) {
+                $table->string('lang')->nullable();
+            });
+        }
     }
 
     /**
