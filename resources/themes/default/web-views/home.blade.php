@@ -139,31 +139,6 @@
         @endif
 
         
-
-        @if (count($footer_banner) > 1)
-            <div class="container rtl pt-4">
-                <div class="promotional-banner-slider owl-carousel owl-theme">
-                    @foreach($footer_banner as $banner)
-                        <a href="{{ $banner['url'] }}" class="d-block" target="_blank">
-                            <img class="footer_banner_img __inline-63"  alt="" src="{{ getStorageImages(path:$banner->photo_full_url, type: 'banner') }}">
-                        </a>
-                    @endforeach
-                </div>
-            </div>
-        @else
-            <div class="container rtl pt-4">
-                <div class="row">
-                    @foreach($footer_banner as $banner)
-                        <div class="col-md-6">
-                            <a href="{{ $banner['url'] }}" class="d-block" target="_blank">
-                                <img class="footer_banner_img __inline-63"  alt="" src="{{ getStorageImages(path:$banner->photo_full_url, type: 'banner') }}">
-                            </a>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        @endif
-
         <section class="new-arrival-section">
 
             @if ($newArrivalProducts->count() >0 )
@@ -204,6 +179,32 @@
                 </div>
             </div>
         </section>
+
+        @if (count($footer_banner) > 1)
+            <div class="container rtl pt-4">
+                <div class="promotional-banner-slider owl-carousel owl-theme">
+                    @foreach($footer_banner as $banner)
+                        <a href="{{ $banner['url'] }}" class="d-block" target="_blank">
+                            <img class="footer_banner_img __inline-63"  alt="" src="{{ getStorageImages(path:$banner->photo_full_url, type: 'banner') }}">
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        @else
+            <div class="container rtl pt-4">
+                <div class="row">
+                    @foreach($footer_banner as $banner)
+                        <div class="col-md-6">
+                            <a href="{{ $banner['url'] }}" class="d-block" target="_blank">
+                                <img class="footer_banner_img __inline-63"  alt="" src="{{ getStorageImages(path:$banner->photo_full_url, type: 'banner') }}">
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
+        
         @if($web_config['brand_setting'] && $brands->count() > 0)
             <section class="container rtl pt-4">
 
