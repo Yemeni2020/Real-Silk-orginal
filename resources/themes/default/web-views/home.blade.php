@@ -90,6 +90,23 @@
             </section>
         @endif
 
+        
+
+        @php($businessMode = getWebConfig(name: 'business_mode'))
+        
+
+        @include('web-views.partials._deal-of-the-day', ['decimal_point_settings'=>$decimalPointSettings])
+        
+        
+
+        @if ($homeCategories->count() > 0)
+            @foreach($homeCategories as $category)
+                @include('web-views.partials._category-wise-product', ['decimal_point_settings'=>$decimalPointSettings])
+            @endforeach
+        @endif
+
+
+
         @if (isset($main_section_banner))
             <div class="container rtl pt-4 px-0 px-md-3">
                 <a href="{{$main_section_banner->url}}" target="_blank"
@@ -99,12 +116,9 @@
                 </a>
             </div>
         @endif
-
-        @php($businessMode = getWebConfig(name: 'business_mode'))
         
+        <section class="new-arrival-section">
 
-        @include('web-views.partials._deal-of-the-day', ['decimal_point_settings'=>$decimalPointSettings])
-        <div class="new-arrival-section">
             @if ($newArrivalProducts->count() >0 )
                 <div class="container rtl mt-4">
                     <div class="section-header">
@@ -128,42 +142,6 @@
                         </div>
                     </div>
                 </div>
-            @endif
-        </div>
-        
-
-        @if ($homeCategories->count() > 0)
-            @foreach($homeCategories as $category)
-                @include('web-views.partials._category-wise-product', ['decimal_point_settings'=>$decimalPointSettings])
-            @endforeach
-        @endif
-
-        
-        <section class="new-arrival-section">
-
-            @if ($newArrivalProducts->count() >0 )
-                <!-- <div class="container rtl mt-4">
-                    <div class="section-header">
-                        <div class="arrival-title d-block">
-                            <div class="text-capitalize">
-                                {{ translate('new_arrivals')}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="container rtl mb-3 overflow-hidden">
-                    <div class="py-2">
-                        <div class="new_arrival_product">
-                            <div class="carousel-wrap">
-                                <div class="owl-carousel owl-theme new-arrivals-product">
-                                    @foreach($newArrivalProducts as $key=> $product)
-                                        @include('web-views.partials._product-card-2',['product'=>$product,'decimal_point_settings'=>$decimalPointSettings])
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
             @endif
 
             <div class="container rtl px-0 px-md-3">
