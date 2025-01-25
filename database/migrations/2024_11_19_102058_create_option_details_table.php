@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('option_product_details', function (Blueprint $table) {
-            $table->id();
-            $table->string('name'); // اسم التفاصيل
-            $table->foreignId('option_id')->constrained('product_options')->onDelete('cascade'); // ربط التفاصيل بخيار المنتج
-            $table->timestamps();
-        });
+        if(!Schema::hasTable("option_product_details")){
+
+            Schema::create('option_product_details', function (Blueprint $table) {
+                $table->id();
+                $table->string('name'); // اسم التفاصيل
+                $table->foreignId('option_id')->constrained('product_options')->onDelete('cascade'); // ربط التفاصيل بخيار المنتج
+                $table->timestamps();
+            });
+        }
     }
 
     /**

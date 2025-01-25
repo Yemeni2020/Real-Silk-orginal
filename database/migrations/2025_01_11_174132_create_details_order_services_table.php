@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('details_order_services', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        if(!Schema::hasTable("details_order_services")){
+            Schema::create('details_order_services', function (Blueprint $table) {
+                $table->id();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

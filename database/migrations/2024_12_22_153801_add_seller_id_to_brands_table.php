@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('brands', function (Blueprint $table) {
-            $table->integer('seller_id')->nullable()->after('name'); // إضافة الحقل seller_id
-        });
+        if(!Schema::hasColumn("brands","seller_id")){
+
+            Schema::table('brands', function (Blueprint $table) {
+                $table->integer('seller_id')->nullable()->after('name'); // إضافة الحقل seller_id
+            });
+        }
     }
 
     /**

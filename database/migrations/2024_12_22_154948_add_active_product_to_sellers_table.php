@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('sellers', function (Blueprint $table) {
-            //
-            $table->boolean('active_product')->default(false)->nullable()->after('pos_status'); // إضافة الحقل seller_id
+        if(!Schema::hasColumn("sellers","active_product")){
 
-        });
+            Schema::table('sellers', function (Blueprint $table) {
+                //
+                $table->boolean('active_product')->default(false)->nullable()->after('pos_status'); // إضافة الحقل seller_id
+
+            });
+        }
     }
 
     /**

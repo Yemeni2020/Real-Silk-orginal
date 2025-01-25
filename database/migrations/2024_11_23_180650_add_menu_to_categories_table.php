@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('categories', function (Blueprint $table) {
-            $table->boolean('menu')->default(false)->after('name'); // أضف العمود بعد عمود name
-        });
+        if(!Schema::hasColumn("categories","menu")){
+
+            Schema::table('categories', function (Blueprint $table) {
+                $table->boolean('menu')->default(false)->after('name'); // أضف العمود بعد عمود name
+            });
+        }
     }
 
     /**

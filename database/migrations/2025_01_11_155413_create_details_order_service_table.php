@@ -11,18 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('details_order_service', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('order_id'); // تطابق النوع
-            $table->unsignedBigInteger('faild_id');
-            $table->string('name_faild');
-            $table->string('type_faild');
-            $table->text('value');
-            $table->timestamps();
-        
-            $table->foreign('order_id')->references('id')->on('order_service')->onDelete('cascade');
-            $table->foreign('faild_id')->references('id')->on('form_items')->onDelete('cascade');
-        });
+        if(!Schema::hasTable("details_order_service")){
+            Schema::create('details_order_service', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('order_id'); // تطابق النوع
+                $table->unsignedBigInteger('faild_id');
+                $table->string('name_faild');
+                $table->string('type_faild');
+                $table->text('value');
+                $table->timestamps();
+            
+                $table->foreign('order_id')->references('id')->on('order_service')->onDelete('cascade');
+                $table->foreign('faild_id')->references('id')->on('form_items')->onDelete('cascade');
+            });
+        }
     }
 
     /**

@@ -11,14 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_service', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('item'); // استخدام unsignedBigInteger ليتطابق مع نوع الحقل id في جدول products
-            $table->timestamps();
-        
-            // إضافة المفتاح الأجنبي
-            $table->foreign('item')->references('id')->on('products')->onDelete('cascade');
-        });
+        if(!Schema::hasTable("order_service")){
+
+            Schema::create('order_service', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('item'); // استخدام unsignedBigInteger ليتطابق مع نوع الحقل id في جدول products
+                $table->timestamps();
+            
+                // إضافة المفتاح الأجنبي
+                $table->foreign('item')->references('id')->on('products')->onDelete('cascade');
+            });
+        }
     }
 
     /**

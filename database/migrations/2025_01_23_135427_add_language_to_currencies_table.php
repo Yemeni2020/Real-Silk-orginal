@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('currencies', function (Blueprint $table) {
-            //
-            $table->string('language', 10)->nullable()->after('exchange_rate'); // ضع اسم العمود السابق الذي تريد أن يكون الحقل بعده بدلاً من "column_name"
-
-        });
+        if(!Schema::hasColumn("currencies","language")){
+            Schema::table('currencies', function (Blueprint $table) {
+                //
+                $table->string('language', 10)->nullable()->after('exchange_rate'); // ضع اسم العمود السابق الذي تريد أن يكون الحقل بعده بدلاً من "column_name"
+            });
+        }
     }
 
     /**
