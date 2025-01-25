@@ -1,3 +1,7 @@
+@php
+$languages = getWebConfig(name: 'pnc_language') ?? null;
+
+@endphp
 @extends('layouts.back-end.app')
 
 @section('title', translate('banner'))
@@ -94,7 +98,16 @@
                                             @endforeach
                                         </select>
                                     </div>
-
+                                    <div class="form-group mb-0" >
+                                        <label
+                                               class="title-color text-capitalize">{{ translate('language') }}</label>
+                                        <select class="js-example-responsive form-control w-100"
+                                                name="lang">
+                                            @foreach($languages as $lang)
+                                                <option @if($banner['language']==$lang) selected @endif value="{{ $lang }}">{{ $lang }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     @if(theme_root_path() == 'theme_fashion')
                                     <div class="form-group mt-4 input-field-for-main-banner {{$banner['banner_type'] !='Main Banner'?'d-none':''}}">
                                         <label for="button_text" class="title-color text-capitalize">{{ translate('Button_Text') }}</label>

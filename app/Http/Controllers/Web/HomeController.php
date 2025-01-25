@@ -161,14 +161,22 @@ class HomeController extends Controller
         if ($topRated->count() == 0) {
             $topRated = $bestSellProduct;
         }
+        $curnnet_lang = session()->get("local");
 
         $deal_of_the_day = DealOfTheDay::join('products', 'products.id', '=', 'deal_of_the_days.product_id')->select('deal_of_the_days.*', 'products.unit_price')->where('products.status', 1)->where('deal_of_the_days.status', 1)->first();
-        $main_banner = $this->banner->where(['banner_type' => 'Main Banner', 'theme' => $theme_name, 'published' => 1])->latest()->get();
-        $side_banner = $this->banner->where(['banner_type' => 'Said Banner', 'theme' => $theme_name, 'published' => 1])->latest()->get();
-        $main_section_banner = $this->banner->where(['banner_type' => 'Main Section Banner', 'theme' => $theme_name, 'published' => 1])->orderBy('id', 'desc')->latest()->first();
+        $main_banner = $this->banner->where(['banner_type' => 'Main Banner', 'theme' => $theme_name, 'published' => 1,"language"=>$curnnet_lang])->latest()->get();
 
+        
+
+        $side_banner = $this->banner->where(['banner_type' => 'Said Banner', 'theme' => $theme_name, 'published' => 1,"language"=>$curnnet_lang])->latest()->get();
+        
+
+        $main_section_banner = $this->banner->where(['banner_type' => 'Main Section Banner', 'theme' => $theme_name, 'published' => 1,"language"=>$curnnet_lang])->orderBy('id', 'desc')->latest()->first();
+
+        
         $recommendedProduct = $this->product->active()->inRandomOrder()->first();
-        $footer_banner = $this->banner->where('banner_type', 'Footer Banner')->where('theme', theme_root_path())->where('published', 1)->orderBy('id', 'desc')->get();
+        $footer_banner = $this->banner->where('banner_type', 'Footer Banner')->where('theme', theme_root_path())->where('published', 1)->where("language",$curnnet_lang)->orderBy('id', 'desc')->get();
+        
 
         return view(VIEW_FILE_NAMES['home'],
             compact(

@@ -27,6 +27,7 @@ class BannerService
             'background_color' => $request['background_color'],
             'url' => $request['url'],
             'photo' => $imageName,
+            'language'=>isset($request['lang'])?$request['lang']:""
         ];
     }
 

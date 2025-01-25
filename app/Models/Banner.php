@@ -46,6 +46,7 @@ class Banner extends Model
         'url',
         'resource_type',
         'resource_id',
+        'language',
         'title',
         'sub_title',
         'button_text',
