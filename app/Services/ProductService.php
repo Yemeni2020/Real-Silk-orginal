@@ -403,7 +403,7 @@ class ProductService
                 'item_length' => $request["item"]["Length"][$i],
                 'default_value' => $request["item"]["defaultValue"][$i],
                 'select_options' => isset($request["item"]["selectName" . $lang[0]][$i]) 
-                    ? json_encode($request["item"]["selectName" . $lang[0]][$i]) 
+                    ? json_encode($request["item"]["selectName" . $lang[0]][$i], JSON_UNESCAPED_UNICODE) 
                     : '',
             ];
     
@@ -428,7 +428,7 @@ class ProductService
                     "locale" => $lang[$x],
                     "key" => "select_options",
                     "value" => isset($request["item"]["selectName" . $lang[$x]][$i]) 
-                        ? json_encode($request["item"]["selectName" . $lang[$x]][$i]) 
+                        ? json_encode($request["item"]["selectName" . $lang[$x]][$i], JSON_UNESCAPED_UNICODE) 
                         : '',
                 ];
                 Translation::create($datatranslate);
@@ -461,7 +461,7 @@ class ProductService
                 'item_length' => $request["item"]["Length"][$i],
                 'default_value' => $request["item"]["defaultValue"][$i],
                 'select_options' => isset($request["item"]["selectName" . $lang[0]][$i])
-                    ? json_encode($request["item"]["selectName" . $lang[0]][$i])
+                    ? json_encode($request["item"]["selectName" . $lang[0]][$i], JSON_UNESCAPED_UNICODE)
                     : '',
             ];
 
@@ -494,7 +494,7 @@ class ProductService
                         ],
                         [
                             "value" => isset($request["item"]["selectName" . $lang[$x]][$i])
-                                ? json_encode($request["item"]["selectName" . $lang[$x]][$i])
+                                ? json_encode($request["item"]["selectName" . $lang[$x]][$i], JSON_UNESCAPED_UNICODE)
                                 : '',
                         ]
                     );
@@ -519,7 +519,7 @@ class ProductService
                         "locale" => $lang[$x],
                         "key" => "select_options",
                         "value" => isset($request["item"]["selectName" . $lang[$x]][$i])
-                            ? json_encode($request["item"]["selectName" . $lang[$x]][$i])
+                            ? json_encode($request["item"]["selectName" . $lang[$x]][$i], JSON_UNESCAPED_UNICODE)
                             : '',
                     ]);
                 }

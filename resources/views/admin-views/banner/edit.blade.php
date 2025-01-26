@@ -104,12 +104,10 @@ $languages = getWebConfig(name: 'pnc_language') ?? null;
                                                class="title-color text-capitalize">{{ translate('language') }}</label>
                                                <select class="js-example-responsive form-control w-100" multiple="multiple" name="lang[]">
                                                @php
-                                                    // تحويل اللغة إلى مصفوفة إذا لم تكن كذلك
                                                     $bannerLanguages = is_array($banner['language']) 
                                                         ? $banner['language'] 
                                                         : json_decode($banner['language'], true);
 
-                                                    // إذا لم يتم تحويلها بنجاح، نضمن أن تكون مصفوفة فارغة
                                                     $bannerLanguages = $bannerLanguages ?? [];
                                                 @endphp
                                                                                         @foreach($languages as $lang)
