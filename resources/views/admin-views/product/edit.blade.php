@@ -70,7 +70,11 @@ $curnnet_lang = session()->get("local");
                             <input type="hidden" name="lang[]" value="{{ $language}}">
                             <div class="form-group pt-4">
                                 <label class="title-color">{{ translate('description') }}
-                                    ({{strtoupper($language) }})</label>
+                                    ({{strtoupper($language) }})
+                                    @if($lang == $curnnet_lang)
+                                        <span class="input-required-icon">*</span>
+                                    @endif
+                                </label>
                                 <textarea name="description[]" class="summernote {{ $language == $curnnet_lang ? 'product-description-default-language' : '' }}"
                                 >{!! $translate[$language]['description']??$product['details'] !!}</textarea>
                             </div>

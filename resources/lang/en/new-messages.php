@@ -8904,4 +8904,6 @@ return [
 	"[en]" => "[en]",
 	"[en,sa,cn]" => "[en sa cn]",
 	"en" => "En",
+	"description_field_is_required" => "Description field is required",
+	"Description field is required!" => "Description field is required!",
 ];

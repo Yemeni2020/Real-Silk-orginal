@@ -8333,4 +8333,6 @@ return [
 	"CheckBox" => "CheckBox",
 	"For_Ready_After_Sale_deliveries,_customers_pay_first_then_vendor_uploads_the_digital_products_that_become_available_to_customers_for_download" => "For Ready After Sale deliveries  customers pay first then vendor uploads the digital products that become available to customers for download",
 	"535" => "535",
+	"description_field_is_required" => "Description field is required",
+	"Description field is required!" => "Description field is required!",
 ];

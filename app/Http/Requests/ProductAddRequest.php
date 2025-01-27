@@ -134,6 +134,11 @@ class ProductAddRequest extends Request
                         'name', translate('name_field_is_required') . '!'
                     );
                 }
+                if (is_null($this['description'][array_search($curnnet_lang, $this['lang'])])) {
+                    $validator->errors()->add(
+                        'description', translate('description_field_is_required') . '!'
+                    );
+                }
                 // Old Code
                 // if (is_null($this['name'][array_search('EN', $this['lang'])])) {
                 //     $validator->errors()->add(
