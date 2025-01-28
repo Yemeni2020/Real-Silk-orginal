@@ -71,7 +71,7 @@ $curnnet_lang = session()->get("local");
                             <div class="form-group pt-4">
                                 <label class="title-color">{{ translate('description') }}
                                     ({{strtoupper($language) }})
-                                    @if($lang == $curnnet_lang)
+                                    @if($language == $curnnet_lang)
                                         <span class="input-required-icon">*</span>
                                     @endif
                                 </label>
