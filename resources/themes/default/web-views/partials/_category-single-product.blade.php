@@ -14,6 +14,14 @@
                         </span>
                     </span>
                 </div>
+            @elseif($product->product_type=="Service")
+                <div class="d-flex">
+                    <span class="for-discount-value p-1 pl-2 pr-2 font-bold fs-13" style="transform:rotate(10deg);">
+                        <span class="direction-ltr d-block">
+                            {{translate("Service")}}
+                        </span>
+                    </span>
+                </div>
             @else
                 <div class="d-flex justify-content-end">
                     <span class="for-discount-value-null"></span>
@@ -57,20 +65,22 @@
                     {{ $product['name'] }}
                 </a>
             </div>
-            <div class="justify-content-between ">
-                <div class="product-price d-flex flex-wrap gap-8 align-items-center row-gap-0">
-                    @if($product->discount > 0)
-                        <del class="category-single-product-price">
-                            {{ webCurrencyConverter(amount: $product->unit_price) }}
-                        </del>
-                    @endif
-                    <span class="text-accent text-dark">
-                        {{ webCurrencyConverter(amount:
-                            $product->unit_price-(getProductDiscount(product: $product, price: $product->unit_price))
-                        ) }}
-                    </span>
+            @if($product->product_type!="Service" )
+                <div class="justify-content-between ">
+                    <div class="product-price d-flex flex-wrap gap-8 align-items-center row-gap-0">
+                        @if($product->discount > 0)
+                            <del class="category-single-product-price">
+                                {{ webCurrencyConverter(amount: $product->unit_price) }}
+                            </del>
+                        @endif
+                        <span class="text-accent text-dark">
+                            {{ webCurrencyConverter(amount:
+                                $product->unit_price-(getProductDiscount(product: $product, price: $product->unit_price))
+                            ) }}
+                        </span>
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 </div>
