@@ -392,7 +392,7 @@ $curnnet_lang = session()->get("local");
 
                                 <input type="number" min="0" step="0.01"
                                        placeholder="{{ translate('ex: 5') }}" name="tax" id="tax"
-                                       value="{{ old('tax') ?? 0 }}" class="form-control">
+                                       value="{{ old('tax') ?? 15 }}" class="form-control">
                                 <input name="tax_type" value="percent" class="d-none">
                             </div>
                         </div>

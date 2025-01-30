@@ -8906,4 +8906,5 @@ return [
 	"en" => "En",
 	"description_field_is_required" => "Description field is required",
 	"Description field is required!" => "Description field is required!",
+	"Select Language" => "Select Language",
 ];
