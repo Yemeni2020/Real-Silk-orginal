@@ -314,12 +314,19 @@
                                                     </div>
                                                     <div>
                                                         <ul class="list-inline checkbox-color mb-0 flex-start ms-2 ps-0">
+                                                            
                                                             @foreach (json_decode($product->colors) as $key => $color)
+
+
                                                                 <li>
                                                                     <input type="radio"
                                                                         id="{{ str_replace(' ', '', ($product->id. '-color-'. str_replace('#','',$color))) }}"
                                                                         name="color" value="{{ $color }}"
-                                                                        @if($key == 0) checked @endif>
+                                                                        >
+                                                                    <!-- <input type="radio"
+                                                                        id="{{ str_replace(' ', '', ($product->id. '-color-'. str_replace('#','',$color))) }}"
+                                                                        name="color" value="{{ $color }}"
+                                                                        @if($key == 0) checked @endif> -->
                                                                     <label style="background: {{ $color }};"
                                                                         class="focus-preview-image-by-color shadow-border"
                                                                         for="{{ str_replace(' ', '', ($product->id. '-color-'. str_replace('#','',$color))) }}"
@@ -360,7 +367,12 @@
                                                                     id="extension_{{ str_replace(' ', '-', $extension) }}"
                                                                     name="variant_key"
                                                                     value="{{ $extensionKey.'-'.preg_replace('/\s+/', '-', $extension) }}"
-                                                                    {{ $extensionIndex == 0 ? 'checked' : ''}}>
+                                                                   >
+                                                                <!-- <input type="radio" hidden
+                                                                    id="extension_{{ str_replace(' ', '-', $extension) }}"
+                                                                    name="variant_key"
+                                                                    value="{{ $extensionKey.'-'.preg_replace('/\s+/', '-', $extension) }}"
+                                                                    {{ $extensionIndex == 0 ? 'checked' : ''}}> -->
                                                                 <label for="extension_{{ str_replace(' ', '-', $extension) }}"
                                                                     class="__text-12px">
                                                                     {{ $extension }}

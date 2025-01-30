@@ -204,7 +204,11 @@
                                                     <input type="radio"
                                                         id="{{ $product->id }}-color-{{ str_replace('#','',$color) }}"
                                                         name="color" value="{{ $color }}"
-                                                        @if($key == 0) checked @endif>
+                                                        >
+                                                    <!-- <input type="radio"
+                                                        id="{{ $product->id }}-color-{{ str_replace('#','',$color) }}"
+                                                        name="color" value="{{ $color }}"
+                                                        @if($key == 0) checked @endif> -->
                                                     <label style="background: {{ $color }};"
                                                         class="quick-view-preview-image-by-color shadow-border"
                                                         for="{{ $product->id }}-color-{{ str_replace('#','',$color) }}"
@@ -238,7 +242,9 @@
                                         @foreach ($choice->options as $index => $option)
                                             <span>
                                                 <input type="radio" id="{{ $choice->name }}-{{ $option }}" name="{{ $choice->name }}"
-                                                    value="{{ $option }}" @if($index==0) checked @endif>
+                                                    value="{{ $option }}" >
+                                                <!-- <input type="radio" id="{{ $choice->name }}-{{ $option }}" name="{{ $choice->name }}"
+                                                    value="{{ $option }}" @if($index==0) checked @endif> -->
                                                 <label class="user-select-none" for="{{ $choice->name }}-{{ $option }}">{{ $option }}</label>
                                             </span>
                                         @endforeach

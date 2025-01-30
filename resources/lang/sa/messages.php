@@ -564,7 +564,7 @@
 "out_of_stock!" => "غير متوفر!",
 "successfully_added!" => "تمت الإضافة بنجاح!",
 "already_added!" => "تمت الإضافة بالفعل!",
-"please_choose_all_the_options" => "يرجى اختيار جميع الخيارات",
+"please_choose_all_the_options" => "يرجى اختيار جميع الخيارات الموجودة من الوان ومواصفات للمنتج",
 "successfully_updated!" => "تم التحديث بنجاح!",
 "successfully_removed" => "تم الإزالة بنجاح",
 "order_can_be_canceled_only_when_pending." => "يمكن إلغاء الطلب فقط عندما يكون قيد الانتظار.",
