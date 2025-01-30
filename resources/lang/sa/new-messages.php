@@ -8385,4 +8385,11 @@ return [
 	"this_point_is_the_required_amount_which_is_needed_to_convert_the_point_to_the_wallet_balance" => "This point is the required amount which is needed to convert the point to the wallet balance",
 	"admin_can_setup_the_rules_how_much_the_customer_will_earn_for_referring_others" => "Admin can setup the rules how much the customer will earn for referring others",
 	"this_set_amount_will_be_the_reward_point_which_will_get_the_customer_for_each_successful_referral." => "This set amount will be the reward point which will get the customer for each successful referral.",
+	"Width" => "Width",
+	"Height" => "Height",
+	"Weight" => "Weight",
+	"Power Requirements" => "Power Requirements",
+	"Size (EUR)" => "Size (EUR)",
+	"Size (UK)" => "Size (UK)",
+	"Size (US)" => "Size (US)",
 ];

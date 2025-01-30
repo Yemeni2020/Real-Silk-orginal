@@ -323,10 +323,6 @@
                                                                         id="{{ str_replace(' ', '', ($product->id. '-color-'. str_replace('#','',$color))) }}"
                                                                         name="color" value="{{ $color }}"
                                                                         >
-                                                                    <!-- <input type="radio"
-                                                                        id="{{ str_replace(' ', '', ($product->id. '-color-'. str_replace('#','',$color))) }}"
-                                                                        name="color" value="{{ $color }}"
-                                                                        @if($key == 0) checked @endif> -->
                                                                     <label style="background: {{ $color }};"
                                                                         class="focus-preview-image-by-color shadow-border"
                                                                         for="{{ str_replace(' ', '', ($product->id. '-color-'. str_replace('#','',$color))) }}"
@@ -367,12 +363,7 @@
                                                                     id="extension_{{ str_replace(' ', '-', $extension) }}"
                                                                     name="variant_key"
                                                                     value="{{ $extensionKey.'-'.preg_replace('/\s+/', '-', $extension) }}"
-                                                                   >
-                                                                <!-- <input type="radio" hidden
-                                                                    id="extension_{{ str_replace(' ', '-', $extension) }}"
-                                                                    name="variant_key"
-                                                                    value="{{ $extensionKey.'-'.preg_replace('/\s+/', '-', $extension) }}"
-                                                                    {{ $extensionIndex == 0 ? 'checked' : ''}}> -->
+                                                                    {{ $extensionIndex == 0 ? 'checked' : ''}}>
                                                                 <label for="extension_{{ str_replace(' ', '-', $extension) }}"
                                                                     class="__text-12px">
                                                                     {{ $extension }}
@@ -402,7 +393,7 @@
                                                                     <input type="radio"
                                                                         id="{{ str_replace(' ', '', ($choice->name. '-'. $option)) }}"
                                                                         name="{{ $choice->name }}" value="{{ $option }}"
-                                                                        @if($index == 0) checked @endif >
+                                                                         >
                                                                     <label class="__text-12px"
                                                                         for="{{ str_replace(' ', '', ($choice->name. '-'. $option)) }}"">{{ $option }}</label>
                                                                 </div>
