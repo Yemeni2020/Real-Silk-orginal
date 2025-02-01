@@ -34,11 +34,21 @@
                 </a>
             </div>
 
+            @if($product->product_type == 'Service' )
+
             <div class="quick-view">
-                <a class="btn-circle stopPropagation action-product-quick-view" href="javascript:" data-product-id="{{ $product->id }}">
+                <a class="btn-circle stopPropagation " href="{{route('product',$product->slug)}}">
                     <i class="czi-eye align-middle"></i>
                 </a>
             </div>
+            @else
+            <div class="quick-view">
+                <a class="btn-circle stopPropagation action-product-quick-view"  href="javascript:" data-product-id="{{ $product->id }}">
+                    <i class="czi-eye align-middle"></i>
+                </a>
+            </div>
+            @endif
+
             @if($product->product_type == 'physical' && $product->current_stock <= 0)
                 <span class="out_fo_stock">{{translate('out_of_stock')}}</span>
             @endif
