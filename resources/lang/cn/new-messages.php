@@ -8908,4 +8908,10 @@ return [
 	"said_Banner" => "Said Banner",
 	"_again_,_you_will_see_the_saved_data." => " again   you will see the saved data.",
 	"Said Banner" => "Said Banner",
+	"employee Add" => "Employee Add",
+	"add_new_employee" => "Add new employee",
+	"role_id_is_required" => "Role id is required",
+	"email_must_be_valid" => "Email must be valid",
+	"email_already_in_use" => "Email already in use",
+	"employee_added_successfully" => "Employee added successfully",
 ];

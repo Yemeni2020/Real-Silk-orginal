@@ -891,7 +891,7 @@
                                 </ul>
                             </li>
 
-                            @if(auth('admin')->user()->admin_role_id==1)
+                            @if(Helpers::module_permission_check('system_settings'))
                                 <li class="navbar-vertical-aside-has-menu {{(Request::is('admin/employee*') || Request::is('admin/custom-role*'))?'active':''}}">
                                     <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
                                        href="javascript:" title="{{translate('employees')}}">

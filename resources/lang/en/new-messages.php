@@ -8908,4 +8908,10 @@ return [
 	"Description field is required!" => "Description field is required!",
 	"Select Language" => "Select Language",
 	"55525" => "55525",
+	"employee Add" => "Employee Add",
+	"add_new_employee" => "Add new employee",
+	"role_id_is_required" => "Role id is required",
+	"email_must_be_valid" => "Email must be valid",
+	"email_already_in_use" => "Email already in use",
+	"employee_added_successfully" => "Employee added successfully",
 ];
