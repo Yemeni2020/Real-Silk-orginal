@@ -354,20 +354,26 @@ class OrderController extends BaseController
         DeliveryManTransactionService $deliveryManTransactionService,
         DeliveryManWalletService      $deliveryManWalletService,
         OrderStatusHistoryService     $orderStatusHistoryService,
-    ): JsonResponse
+    ): JsonResponse|null
     {
+        
         $order = $this->orderRepo->getFirstWhere(params: ['id' => $request['id']], relations: ['customer', 'seller.shop', 'deliveryMan']);
-
+        
         if (!$order['is_guest'] && !isset($order['customer'])) {
             return response()->json(['customer_status' => 0], 200);
         }
+        
         $this->orderRepo->updateStockOnOrderStatusChange($request['id'], $request['order_status']);
         $this->orderRepo->update(id: $request['id'], data: ['order_status' => $request['order_status']]);
+        
         if ($request['order_status'] == 'delivered') {
+            
             $this->orderRepo->update(id: $request['id'], data: ['payment_status' => 'paid']);
             $this->orderDetailRepo->updateWhere(params: ['order_id' => $order['id']], data: ['delivery_status' => $request['order_status'], 'payment_status' => 'paid']);
         }
+        
         event(new OrderStatusEvent(key: $request['order_status'], type: 'customer', order: $order));
+        
         if ($request['order_status'] == 'canceled') {
             event(new OrderStatusEvent(key: 'canceled', type: 'delivery_man', order: $order));
         }
@@ -378,7 +384,7 @@ class OrderController extends BaseController
                 event(new OrderStatusEvent(key: 'delivered', type: 'seller', order: $order));
             }
         }
-
+        
         $loyaltyPointStatus = getWebConfig(name: 'loyalty_point_status');
 
         if ($loyaltyPointStatus == 1 && !$order['is_guest'] && $request['order_status'] == 'delivered') {
@@ -387,6 +393,8 @@ class OrderController extends BaseController
 
         $refEarningStatus = getWebConfig(name: 'ref_earning_status') ?? 0;
         $refEarningExchangeRate = getWebConfig(name: 'ref_earning_exchange_rate') ?? 0;
+
+        
 
         if (!$order['is_guest'] && $refEarningStatus == 1 && $request['order_status'] == 'delivered') {
             $customer = $this->customerRepo->getFirstWhere(params: ['id' => $order['customer_id']]);
@@ -421,14 +429,20 @@ class OrderController extends BaseController
             }
         }
 
+        
         $orderStatusHistoryData = $orderStatusHistoryService->getOrderHistoryData(orderId: $request['id'], userId: 0, userType: 'admin', status: $request['order_status']);
         $this->orderStatusHistoryRepo->add($orderStatusHistoryData);
-
+        
         $transaction = $this->orderTransactionRepo->getFirstWhere(params: ['order_id' => $order['id']]);
+
+        // echo $transaction['status']."sdsdsdsdsd2222";
+        // return null;
         if (isset($transaction) && $transaction['status'] == 'disburse') {
             return response()->json($request['order_status']);
         }
+        
         if ($request['order_status'] == 'delivered' && $order['seller_id'] != null) {
+            
             $this->orderRepo->manageWalletOnOrderStatusChange(order: $order, receivedBy: 'admin');
         }
         return response()->json($request['order_status']);

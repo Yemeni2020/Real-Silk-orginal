@@ -220,6 +220,29 @@ class MyFatorahSettingsController extends Controller
 
     public function createPayment(Request $request)
     {
+        // return  null;
+        // $TransactionId=555;
+        //     $this->payment::where(['id' => $request['payment_id']])->update([
+        //         'payment_method' => 'my_fatorah',
+        //         'is_paid' => 1,
+        //         'transaction_id' => $TransactionId,
+
+        //     ]);
+        //     $data = $this->payment::where(['id' => $request->payment_id])->first();
+        //     dump($data);
+            
+        //     if (isset($data) && function_exists($data->success_hook)) {
+        //         call_user_func($data->success_hook, $data);
+        //     }
+        //     return  null;
+            // dump($data);
+            
+            // return null;
+
+            return $this->payment_response($data,'success');
+            
+
+
         
         $data = $this->payment::where(['id' => $request['payment_id']])->where(['is_paid' => 0])->first();
         $customer = $this->customerRepo->getFirstWhere(params: ['id' => $data->payer_id]) ?? 0;

@@ -898,7 +898,6 @@ class CustomerAPIAuthController extends Controller
                     }
 
                 } catch (\Exception $exception) {
-                    dump($exception);
                     return response()->json(['errors' => [
                         ['code' => 'config-missing', 'message' => translate('Email configuration issue.'),
                         ]

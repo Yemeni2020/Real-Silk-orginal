@@ -376,6 +376,7 @@
                                         value="canceled" {{$order->order_status == 'canceled'?'selected':''}} >{{translate('canceled')}} </option>
                                 @endif
                             </select>
+                            
                         </div>
                         <div class="d-flex justify-content-between align-items-center gap-10 form-control flex-wrap h-100">
                             <span class="title-color">

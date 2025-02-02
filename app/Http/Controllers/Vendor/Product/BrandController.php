@@ -93,7 +93,6 @@ class BrandController extends BaseController
 
     public function add(BrandAddRequest $request, BrandService $brandService): RedirectResponse|null
     {
-        // $vendorId = auth('seller')->id();
 
         $dataArray = $brandService->getAddData(request:$request,vendor:true);
         // dump($dataArray);

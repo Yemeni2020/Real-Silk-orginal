@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 if (!function_exists('digital_payment_success')) {
     function digital_payment_success($paymentData)
     {
+        
         if (isset($paymentData) && $paymentData['is_paid'] == 1) {
             $generateUniqueId = OrderManager::gen_unique_id();
             $orderIds = [];
@@ -20,6 +21,8 @@ if (!function_exists('digital_payment_success')) {
 
             $addCustomer = null;
             $newCustomerInfo = $additionalData['new_customer_info'] ?? null;
+            
+            
 
             if ($newCustomerInfo) {
                 $checkCustomer = User::where(['email' => $newCustomerInfo['email']])->orWhere(['phone' => $newCustomerInfo['phone']])->first();
@@ -48,6 +51,8 @@ if (!function_exists('digital_payment_success')) {
                         ->update(['customer_id' => $addCustomer['id'], 'is_guest' => 0]);
                 }
             }
+            
+            
 
             $isGuestUserInOrder = $additionalData['is_guest_in_order'];
             $data = [
@@ -93,12 +98,14 @@ if (!function_exists('digital_payment_success')) {
                     'cart_group_id' => $cartGroupId,
                     'newCustomerRegister' => $addCustomer,
                 ];
+                
                 $orderId = OrderManager::generate_order($data);
+
                 unset($data['payment_method']);
                 unset($data['cart_group_id']);
                 $orderIds[] = $orderId;
             }
-
+            
             if (isset($additionalData['payment_request_from']) && in_array($additionalData['payment_request_from'], ['app'])) {
                 CartManager::cart_clean_for_api_digital_payment($data);
             } else {

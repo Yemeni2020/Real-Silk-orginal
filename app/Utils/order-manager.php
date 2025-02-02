@@ -490,7 +490,7 @@ class OrderManager
             'coupon_code' => 0,
             'coupon_type' => NULL,
         );
-
+        
         if (!$isGuestUser && (isset($req['coupon_code']) && $req['coupon_code']) || session()->has('coupon_code')) {
             $coupon_code = $req['coupon_code'] ?? session('coupon_code');
             $coupon = Coupon::where(['code' => $coupon_code])
@@ -556,6 +556,7 @@ class OrderManager
                 $shipping_type = isset($seller_shipping) == true ? $seller_shipping->shipping_type : 'order_wise';
             }
         }
+        
         $or = [
             'id' => $order_id,
             'verification_code' => rand(100000, 999999),
@@ -602,11 +603,11 @@ class OrderManager
                 'created_at' => Carbon::now(),
             ]);
         }
-
+        
         // confirmed
         DB::table('orders')->insertGetId($or);
         self::add_order_status_history($order_id, $getCustomerID, $data['payment_status'] == 'paid' ? 'confirmed' : 'pending', 'customer');
-
+        
         foreach (CartManager::get_cart(groupId: $data['cart_group_id'], type: 'checked') as $cartSingleItem) {
             $product = Product::where(['id' => $cartSingleItem['product_id']])->with('digitalVariation')->first()->toArray();
             unset($product['is_shop_temporary_close']);
@@ -672,9 +673,11 @@ class OrderManager
             DB::table('order_details')->insert($orderDetails);
 
         }
-
+        
         $order = Order::with('customer', 'seller.shop','details')->find($order_id);
-        if ($or['payment_method'] != 'cash_on_delivery' && $or['payment_method'] != 'offline_payment') {
+        //Old Code
+        // if ($or['payment_method'] != 'cash_on_delivery' && $or['payment_method'] != 'offline_payment') {
+        if ($or['payment_method'] != 'offline_payment' || 1==1) {
             $order_summary = OrderManager::order_summary($order);
             $order_amount = $order_summary['subtotal'] - $order_summary['total_discount_on_product'] - $order['discount'];
 
