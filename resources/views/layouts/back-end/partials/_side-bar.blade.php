@@ -445,7 +445,7 @@
                                            href="{{route('admin.products.list',['vendor', 'status'=>'4'])}}">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate">{{translate('Unactive_Products')}}
-                                                 <span class="badge badge-soft-success badge-pill ml-1">
+                                                 <span class="badge badge-soft-warning badge-pill ml-1">
                                                     {{getVendorProductsCount('unactive')}}
                                                 </span>
                                             </span>
