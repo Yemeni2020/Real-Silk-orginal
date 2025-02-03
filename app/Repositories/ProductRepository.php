@@ -164,9 +164,16 @@ class ProductRepository implements ProductRepositoryInterface
                     $query->orWhereIn('id', $product_ids)->where(['added_by' => 'admin']);
                 });
         })->when(isset($filters['product_search_type']) && $filters['product_search_type'] == 'product_gallery', function ($query) use ($filters) {
-            return $query->when(isset($filters['request_status']) && $filters['request_status'] != 'all', function ($query) use ($filters) {
+            if(isset($filters['status'])){
+                return $query->when(isset($filters['request_status']) && $filters['request_status'] != 'all', function ($query) use ($filters) {
+                    $query->where(['request_status' => $filters['request_status']])->where("status",$filters['status']);
+                });
+            }else{
+                return $query->when(isset($filters['request_status']) && $filters['request_status'] != 'all', function ($query) use ($filters) {
                     $query->where(['request_status' => $filters['request_status']]);
                 });
+            }
+            
         })->when(isset($filters['brand_id']) && $filters['brand_id'] != 'all', function ($query) use ($filters) {
             return $query->where(['brand_id' => $filters['brand_id']]);
         })->when(isset($filters['category_id']) && $filters['category_id'] != 'all', function ($query) use ($filters) {
@@ -188,6 +195,9 @@ class ProductRepository implements ProductRepositoryInterface
         });
 
         $filters += ['searchValue' => $searchValue];
+        if(isset($filters['status'])){
+            $filters["status"]=$filters['status']==0?4:3;
+        }
         return $dataLimit == 'all' ? $query->get() : $query->paginate($dataLimit)->appends($filters);
     }
 
@@ -220,6 +230,9 @@ class ProductRepository implements ProductRepositoryInterface
                 return $query->where(['added_by' => 'admin']);
             })->when(isset($filters['added_by']) && !$this->isAddedByInHouse($filters['added_by']), function ($query) use ($filters) {
                 return $query->where(['added_by' => 'seller'])
+                    ->when(isset($filters['request_status']) && isset($filters['status']), function ($query) use ($filters) {
+                        $query->where(['request_status' => $filters['request_status']])->where(['status' => $filters['status']]);
+                    })
                     ->when(isset($filters['request_status']), function ($query) use ($filters) {
                         $query->where(['request_status' => $filters['request_status']]);
                     })

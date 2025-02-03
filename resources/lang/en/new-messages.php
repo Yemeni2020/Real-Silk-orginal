@@ -8914,4 +8914,7 @@ return [
 	"email_must_be_valid" => "Email must be valid",
 	"email_already_in_use" => "Email already in use",
 	"employee_added_successfully" => "Employee added successfully",
+	"unactive_Products" => "Unactive Products",
+	"Not_activated_Products" => "Not activated Products",
+	"Unactive_Products" => "Unactive Products",
 ];

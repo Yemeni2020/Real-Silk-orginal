@@ -427,6 +427,30 @@
                                             </a>
                                         </li>
                                     @endif
+                                    <li class="nav-item {{str_contains(url()->current().'?status='.request()->get('status'),'/admin/products/'.Product::LIST[URI].'/vendor?status=3')==1?'active':''}}">
+                                        <a class="nav-link"
+                                           title="{{translate('approved_Products')}}"
+                                           href="{{route('admin.products.list',['vendor', 'status'=>'3'])}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">{{translate('active_Products')}}
+                                                 <span class="badge badge-soft-success badge-pill ml-1">
+                                                    {{getVendorProductsCount('active')}}
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item {{str_contains(url()->current().'?status='.request()->get('status'),'/admin/products/'.Product::LIST[URI].'/vendor?status=4')==1?'active':''}}">
+                                        <a class="nav-link"
+                                           title="{{translate('approved_Products')}}"
+                                           href="{{route('admin.products.list',['vendor', 'status'=>'4'])}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">{{translate('Unactive_Products')}}
+                                                 <span class="badge badge-soft-success badge-pill ml-1">
+                                                    {{getVendorProductsCount('unactive')}}
+                                                </span>
+                                            </span>
+                                        </a>
+                                    </li>
                                     <li class="nav-item {{str_contains(url()->current().'?status='.request()->get('status'),'/admin/products/'.Product::LIST[URI].'/vendor?status=1')==1?'active':''}}">
                                         <a class="nav-link"
                                            title="{{translate('approved_Products')}}"

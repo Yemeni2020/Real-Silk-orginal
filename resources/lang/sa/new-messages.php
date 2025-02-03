@@ -8491,4 +8491,6 @@ return [
 	"enter" => "Enter",
 	"invoice_logo" => "Invoice logo",
 	"want_update_this_invoice_settings" => "Want update this invoice settings",
+	"unactive_Products" => "Unactive Products",
+	"Not_activated_Products" => "Not activated Products",
 ];

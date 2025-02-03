@@ -125,6 +125,8 @@ if (!function_exists('getVendorProductsCount')) {
             'product-updated-request' => $products->whereNotNull('is_shipping_cost_updated')->where('is_shipping_cost_updated', 0)->count(),
             'approved' => $products->where('request_status', 1)->count(),
             'denied' => $products->where('request_status', 2)->where('status' , 0)->count(),
+            'active' => $products->where('status', 1)->count(),
+            'unactive' => $products->where('status', 0)->count(),
         };
     }
 }

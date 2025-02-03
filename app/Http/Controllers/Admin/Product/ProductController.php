@@ -201,8 +201,7 @@ class ProductController extends BaseController
     public function getListView(Request $request, string $type): View
     {
         $filters = [
-            'added_by' => $type,
-            'request_status' => $request['status'],
+            'added_by' => $type,  
             'seller_id' => $request['seller_id'],
             'brand_id' => $request['brand_id'],
             'category_id' => $request['category_id'],
@@ -210,6 +209,16 @@ class ProductController extends BaseController
             'sub_sub_category_id' => $request['sub_sub_category_id'],
         ];
 
+        if($request['status']=="3"){
+            $filters['request_status'] = 1;
+            $filters['status'] = 1;
+        }
+        elseif($request['status']=="4"){
+            $filters['request_status'] = 1;
+            $filters['status'] = 0;
+        }else{
+            $filters['request_status'] = $request['status'];
+        }
         $products = $this->productRepo->getListWhere(orderBy: ['id' => 'desc'], searchValue: $request['searchValue'], filters: $filters, dataLimit: getWebConfig(name: WebConfigKey::PAGINATION_LIMIT));
         $sellers = $this->sellerRepo->getByStatusExcept(status: 'pending', relations: ['shop'], paginateBy: getWebConfig(name: WebConfigKey::PAGINATION_LIMIT));
         $brands = $this->brandRepo->getListWhere(filters: ['status' => 1], dataLimit: 'all');
