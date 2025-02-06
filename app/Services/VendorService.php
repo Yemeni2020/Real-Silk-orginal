@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Seller;
+use App\Models\ReferralVendors;
 use App\Traits\FileManagerTrait;
 use Illuminate\Support\Str;
+use App\Utils\Helpers;
 
 class VendorService
 {
@@ -25,6 +28,45 @@ class VendorService
     /**
      * @return array
      */
+    public function generate_code(int $vendorId):string{
+        
+            // $vandor["referral_code"];
+            $seller = Seller::findOrFail($vendorId);
+            if(empty($seller["referral_code"])){
+                $referral_code =Helpers::generate_referer_code("seller");
+                $seller->referral_code =$referral_code ;
+                $seller->save();
+                return $referral_code ;
+            }
+            return $seller->referral_code ;
+    }
+
+    public function create_referral_vendor(int $vendorId,$referral_code): void{
+        
+        // $vandor["referral_code"];
+        if(!empty($referral_code)){
+            $seller = Seller::where("referral_code",$referral_code)->first();
+            if($seller!=null){
+                $ReferralVendors=new ReferralVendors();
+                $ReferralVendors->vendor =$vendorId ;
+                $ReferralVendors->office =$seller->id ;
+                $ReferralVendors->save();
+            }
+        }
+    }
+    public function Delete_referral_vendor(int $vendorId): void{
+        
+        // $vandor["referral_code"];
+        if(!empty($vendorId)){
+            $seller = ReferralVendors::where("vendor",$vendorId)->first();
+            $seller->delete();
+        }
+    }
+
+    public function get_referral_vendor(int $officeid){
+        $seller = Seller::findOrFail($officeid);
+        return $seller->referredVendors;
+    }
     public function getInitialWalletData(int $vendorId): array
     {
         return [
@@ -116,6 +158,7 @@ class VendorService
             'email' => $request['email'],
             'image' => $this->upload(dir: 'seller/', format: 'webp', image: $request->file('image')),
             'password' => bcrypt($request['password']),
+            'referral_code' => Helpers::generate_referer_code("seller"),
             'status' => $request['status'] == 'approved' ? 'approved' : 'pending',
         ];
     }

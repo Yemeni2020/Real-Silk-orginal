@@ -12,6 +12,7 @@
             </h2>
         </div>
         @include('vendor-views.shop.inline-menu')
+
         <div class="card mb-3">
             <div class="card-body">
                 <form action="{{route('vendor.shop.close-shop-temporary',[$shop['id']])}}" method="POST"  id="temporary-close-form" data-from="shop">

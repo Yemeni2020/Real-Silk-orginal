@@ -444,6 +444,7 @@ class OrderManager
 
     public static function generate_order($data)
     {
+        
         $req = array_key_exists('request', $data) ? $data['request'] : null;
         $user = Helpers::getCustomerInformation($req);
 
@@ -594,7 +595,7 @@ class OrderManager
             'updated_at' => now(),
             'order_note' => $order_note
         ];
-
+        
         if($data['payment_method'] == 'offline_payment')
         {
             OfflinePayments::insert([
@@ -651,7 +652,7 @@ class OrderManager
                 'created_at' => now(),
                 'updated_at' => now()
             ];
-
+            
             if ($cartSingleItem['variant'] != null) {
                 $type = $cartSingleItem['variant'];
                 $var_store = [];
@@ -679,8 +680,10 @@ class OrderManager
         // if ($or['payment_method'] != 'cash_on_delivery' && $or['payment_method'] != 'offline_payment') {
         if ($or['payment_method'] != 'offline_payment' || 1==1) {
             $order_summary = OrderManager::order_summary($order);
-            $order_amount = $order_summary['subtotal'] - $order_summary['total_discount_on_product'] - $order['discount'];
-
+            $amount_tax=0;//$cartSingleItem['tax_model']=="exclude"?$order_summary['total_tax']:0;
+            $order_amount = $order_summary['subtotal'] - $order_summary['total_discount_on_product'] - $order['discount']-$amount_tax;
+            
+            
             DB::table('order_transactions')->insert([
                 'transaction_id' => OrderManager::gen_unique_id(),
                 'customer_id' => $order['customer_id'],

@@ -97,6 +97,7 @@
                                 {{$refundTransactions->firstItem()+$key}}
                             </td>
                             <td>
+                                @if(isset($refund_transaction->orderDetails->product))
                                 @if($refund_transaction->orderDetails->product)
                                     <a href="{{route('admin.products.view',['addedBy'=>($refund_transaction->orderDetails->product->added_by =='seller'?'vendor' : 'in-house'),'id'=>$refund_transaction->orderDetails->product->id])}}"
                                        class="media align-items-center gap-2">
@@ -109,6 +110,7 @@
                                     </a>
                                 @else
                                     <span>{{translate('not_found')}}</span>
+                                @endif
                                 @endif
                             </td>
                             <td class="text-center">

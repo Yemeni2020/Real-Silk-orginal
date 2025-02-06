@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if(!Schema::hasColumn("banners","language")){
-            Schema::table('banners', function (Blueprint $table) {
-                //
-                $table->string('language', 255)->nullable()->after('resource_id'); 
-    
+        //
+        if(!Schema::hasColumn("sellers","referral_code")){
+            Schema::table("sellers",function (Blueprint $table){
+                $table->string("referral_code",255)->nullable()->unique();
             });
+
         }
     }
 
@@ -25,10 +25,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('banners', function (Blueprint $table) {
-            //
-            $table->dropColumn('language');
-
+        //
+        
+        Schema::table("sellers",function (Blueprint $table){
+            $table->dropColumn("referral_code");
         });
     }
 };

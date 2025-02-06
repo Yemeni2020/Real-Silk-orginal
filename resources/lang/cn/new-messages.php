@@ -8915,4 +8915,6 @@ return [
 	"email_already_in_use" => "Email already in use",
 	"employee_added_successfully" => "Employee added successfully",
 	"unactive_Products" => "Unactive Products",
+	"referral_code" => "Referral code",
+	"referral_vendor" => "Referral vendor",
 ];

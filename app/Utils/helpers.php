@@ -770,14 +770,21 @@ class Helpers
         $mpdf->Output($file_prefix . $file_postfix . '.pdf', 'D');
     }
 
-    public static function generate_referer_code()
+    public static function generate_referer_code(string $type="User")
     {
         $ref_code = strtoupper(Str::random('20'));
-        if (User::where('referral_code', '=', $ref_code)->exists()) {
-            return generate_referer_code();
+        if($type=="User"){
+            if (User::where('referral_code', '=', $ref_code)->exists()) {
+                return generate_referer_code();
+            }
+        }else{
+            if (Seller::where('referral_code', '=', $ref_code)->exists()) {
+                return generate_referer_code("seller");
+            }
         }
         return $ref_code;
     }
+    
 
     public static function add_fund_to_wallet_bonus($amount)
     {

@@ -70,6 +70,10 @@
                         <a class="nav-link active"
                            href="{{ route('admin.vendors.view',['id'=>$seller->id, 'tab'=>'review']) }}">{{translate('review')}}</a>
                     </li>
+                    <li class="nav-item">
+                            <a class="nav-link"
+                               href="{{ route('admin.vendors.referral',['id'=>$seller['id'], 'tab'=>'referral']) }}">{{translate('referral')}}</a>
+                    </li>
                 </ul>
             </div>
         </div>

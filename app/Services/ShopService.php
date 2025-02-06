@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Seller;
 use App\Traits\FileManagerTrait;
+use App\Utils\Helpers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 
@@ -15,11 +17,21 @@ class ShopService
      */
     public function getShopDataForAdd(object $vendor):array
     {
+        if(empty($vandor["referral_code"])){
+            // $vandor["referral_code"];
+            $referral_code =Helpers::generate_referer_code("seller");
+
+            $seller = Seller::findOrFail($vendor['id']);
+            $seller->referral_code =$referral_code ;
+            $seller->save();
+            $vandor["referral_code"]=$referral_code ;
+        }
         return [
             'seller_id' =>$vendor['id'],
             'name' => $vendor['f_name'],
             'address' => '',
             'contact' => $vendor['phone'],
+            'referral_code' => $vandor["referral_code"],
             'image' => 'def.png',
             'created_at' => now(),
             'updated_at' => now()

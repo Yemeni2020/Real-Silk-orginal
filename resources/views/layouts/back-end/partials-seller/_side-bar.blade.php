@@ -467,6 +467,16 @@
                                 </span>
                             </a>
                         </li>
+                        <li class="navbar-vertical-aside-has-menu {{Request::is('vendor/referral_vendor*')?'active':''}}">
+                            <a class="js-navbar-vertical-aside-menu-link nav-link"
+                               href="{{route('vendor.referral_vendor.index')}}">
+                                <i class="tio-home nav-icon"></i>
+                                <span
+                                    class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate text-capitalize">
+                                    {{translate('referral_vendor')}}
+                                </span>
+                            </a>
+                        </li>
                         @php( $shippingMethod = getWebConfig('shipping_method'))
                         @if($shippingMethod=='sellerwise_shipping')
                             <li class="nav-item {{Request::is('vendor/delivery-man*')?'scroll-here':''}}">

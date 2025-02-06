@@ -84,6 +84,19 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="col-sm-12">
+                                                <div class="mb-4">
+                                                    <label for="referral_code" class="text-capitalize">
+                                                        {{translate('referral_code')}}
+                                                        <span class="text-danger fs-12 confirm-referral_code-error"></span>
+                                                    </label>
+                                                    <div class="referral_code-toggle rtl">
+                                                        <input class="form-control text-align-direction" name="referral_code"  value="{{$referral_code}}" type="referral_code" id="referral_code"
+                                                            placeholder="{{ translate('referral_code') }}" required>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="col-12">
                                                 <div class="d-flex justify-content-end">
                                                     <button type="button" class="btn btn--primary proceed-to-next-btn text-capitalize" >{{translate('proceed_to_next')}}</button>

@@ -6,6 +6,7 @@ use App\Traits\StorageTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -63,6 +64,7 @@ class Seller extends Authenticatable
         'minimum_order_amount',
         'free_delivery_status',
         'app_language',
+        'referral_code',
     ];
 
     protected $casts = [
@@ -89,6 +91,30 @@ class Seller extends Authenticatable
     {
         return $this->hasMany(Shop::class, 'seller_id');
     }
+
+    // التجار الذين قام هذا التاجر بإحالتهم (التجار الذين قام هذا التاجر بجلبهم)
+    public function referredVendors(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Seller::class,       // الربط مع نفس جدول التجار
+            'referral_vendors',  // اسم الجدول الوسيط
+            'office',            // العمود الذي يمثل التاجر الذي قام بالإحالة
+            'vendor'             // العمود الذي يمثل التاجر الذي تم إحالته
+        );
+    }
+
+    // التاجر الذي قام بإحالة هذا التاجر
+    public function referredBy(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Seller::class,       // الربط مع نفس جدول التجار
+            'referral_vendors',  // اسم الجدول الوسيط
+            'vendor',            // العمود الذي يمثل التاجر الذي تم إحالته
+            'office'             // العمود الذي يمثل التاجر الذي قام بالإحالة
+        );
+    }
+
+
 
     public function orders():HasMany
     {

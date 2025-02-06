@@ -24,6 +24,7 @@ use App\Http\Controllers\Vendor\Product\BrandController;
 use App\Enums\ViewPaths\Vendor\ShippingMethod;
 use App\Enums\ViewPaths\Vendor\ShippingType;
 use App\Enums\ViewPaths\Vendor\Shop;
+use App\Enums\ViewPaths\Vendor\ReferralVendor;
 use App\Enums\ViewPaths\Vendor\Withdraw;
 use App\Http\Controllers\Vendor\Auth\ForgotPasswordController;
 use App\Http\Controllers\Vendor\Auth\LoginController;
@@ -49,6 +50,7 @@ use App\Http\Controllers\Vendor\Shipping\CategoryShippingCostController;
 use App\Http\Controllers\Vendor\Shipping\ShippingMethodController;
 use App\Http\Controllers\Vendor\Shipping\ShippingTypeController;
 use App\Http\Controllers\Vendor\ShopController;
+use App\Http\Controllers\Vendor\ReferralVendorController;
 use App\Http\Controllers\Vendor\SystemController;
 use App\Http\Controllers\Vendor\WithdrawController;
 use App\Http\Middleware\MaintenanceModeMiddleware;
@@ -82,6 +84,7 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
             Route::group(['prefix' => 'registration', 'as' => 'registration.'], function () {
                 Route::controller(RegisterController::class)->group(function () {
                     Route::get(Auth::VENDOR_REGISTRATION[URI], 'index')->name('index');
+                    Route::get(Auth::VENDOR_REGISTRATION[URI]."/{referral_code}", 'index');
                     Route::post(Auth::VENDOR_REGISTRATION[URI], 'add');
                 });
             });
@@ -287,6 +290,11 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
                 });
             });
 
+            Route::group(['prefix' => 'referral_vendor', 'as' => 'referral_vendor.'], function () {
+                Route::controller(ReferralVendorController::class)->group(function () {
+                    Route::get(ReferralVendor::INDEX[URI], 'index')->name('index');
+                });
+            });
             Route::group(['prefix' => 'shop', 'as' => 'shop.'], function () {
                 Route::controller(ShopController::class)->group(function () {
                     Route::get(Shop::INDEX[URI], 'index')->name('index');

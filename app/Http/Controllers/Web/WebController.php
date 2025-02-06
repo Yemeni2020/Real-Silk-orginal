@@ -510,7 +510,7 @@ class WebController extends Controller
         return back();
     }
 
-    public function getCashOnDeliveryCheckoutComplete(Request $request): View|RedirectResponse
+    public function getCashOnDeliveryCheckoutComplete(Request $request): View|RedirectResponse|null
     {
         if ($request['payment_method'] != 'cash_on_delivery') {
             return back()->with('error', 'Something went wrong!');

@@ -5,6 +5,7 @@ $(document).ready(function() {
         let phone = $('.phone-input-with-country-picker').val();
         let password = $('#password').val();
         let confirmPassword = $('#confirm_password').val();
+        let referral_code = $('#referral_code').val();
         let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         let getErrorMessages = $('#proceed-to-next-validation-message');
         if (email === '') {

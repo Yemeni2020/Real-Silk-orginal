@@ -47,21 +47,25 @@ class ShopController extends BaseController
      */
     public function getView(?Request $request, string $type = null): View|Collection|LengthAwarePaginator|null|callable
     {
+        
+        $referral_code=$this->vendorService->generate_code(auth('seller')->id());
         $shop = $this->shopRepo->getFirstWhere(['seller_id' => auth('seller')->id()]);
         $vendor = $this->vendorRepo->getFirstWhere(params: ['id' => auth('seller')->id()]);
+
+        
         if (!isset($shop)) {
             $this->shopRepo->add($this->shopService->getShopDataForAdd(vendor: $vendor));
             $shop = $this->shopRepo->getFirstWhere(['seller_id' => auth('seller')->id()]);
         }
-
+        
         $minimumOrderAmountStatus = getWebConfig(name: 'minimum_order_amount_status');
         $minimumOrderAmountByVendor = getWebConfig(name: 'minimum_order_amount_by_seller');
         $freeDeliveryStatus = getWebConfig(name: 'free_delivery_status');
         $freeDeliveryResponsibility = getWebConfig(name: 'free_delivery_responsibility');
         if ($request['pagetype'] == 'order_settings' && (($minimumOrderAmountStatus && $minimumOrderAmountByVendor) || ($freeDeliveryStatus && $freeDeliveryResponsibility == 'seller'))) {
-            return view(Shop::ORDER_SETTINGS[VIEW], compact('vendor', 'minimumOrderAmountStatus', 'minimumOrderAmountByVendor', 'freeDeliveryStatus', 'freeDeliveryResponsibility'));
+            return view(Shop::ORDER_SETTINGS[VIEW], compact('vendor', 'minimumOrderAmountStatus', 'minimumOrderAmountByVendor', 'freeDeliveryStatus', 'freeDeliveryResponsibility',"referral_code"));
         }
-        return view(Shop::INDEX[VIEW], compact('shop','minimumOrderAmountStatus','minimumOrderAmountByVendor','freeDeliveryStatus','freeDeliveryResponsibility'));
+        return view(Shop::INDEX[VIEW], compact('shop','minimumOrderAmountStatus','minimumOrderAmountByVendor','freeDeliveryStatus','freeDeliveryResponsibility',"referral_code"));
      }
 
     /**

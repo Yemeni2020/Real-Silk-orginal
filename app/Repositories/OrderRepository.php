@@ -9,6 +9,7 @@ use App\Models\OrderDetail;
 use App\Models\OrderExpectedDeliveryHistory;
 use App\Models\OrderTransaction;
 use App\Models\Product;
+use App\Models\Seller;
 use App\Models\SellerWallet;
 use App\Models\Transaction;
 use App\Models\OrderService;
@@ -332,10 +333,32 @@ class OrderRepository implements OrderRepositoryInterface
 
     public function manageWalletOnOrderStatusChange(object $order, string $receivedBy): bool
     {
+        
+        
         $order = $this->order->find($order['id']);
         $orderSummary = getOrderSummary(order: $order);
+        
         $orderAmount = $orderSummary['subtotal'] - $orderSummary['total_discount_on_product'] - $order['discount_amount'];
+ 
         $commission = $order['admin_commission'];
+        
+
+        $seller=Seller::findOrFail($order['seller_id']);
+        $referredBy=$seller->referredBy;
+        $referral_commission=0;
+        $referral_seller=0;
+        if(isset($referredBy)){
+            if($referredBy->count()>0){
+                $_referral_commission = getWebConfig('sales_commission_referral')/100;
+                $referral_commission = $_referral_commission * $commission;
+                // $commission= $commission - $referral_commission;
+                $referral_seller=$referredBy->first()->id;
+                $wallet = $this->sellerWallet->where('seller_id', $order['seller_id'])->first();
+
+            }
+        }
+
+
         $shippingModel = $order->shipping_responsibility;
 
         $adminWallet = $this->adminWallet->where('admin_id', 1)->first();
@@ -470,11 +493,13 @@ class OrderRepository implements OrderRepositoryInterface
                 'transaction_id' => getUniqueId(),
                 'customer_id' => $order['customer_id'],
                 'seller_id' => $order['seller_id'],
+                'referral_seller' => $referral_seller,
                 'seller_is' => $order['seller_is'],
                 'order_id' => $order['id'],
                 'order_amount' => $orderAmount,
                 'seller_amount' => $orderAmount - $commission,
-                'admin_commission' => $commission,
+                'admin_commission' => $commission - $referral_commission,
+                'referral_commission' => $referral_commission,
                 'received_by' => $receivedBy,
                 'status' => 'disburse',
                 'delivery_charge' => $order['shipping_cost'] - ($order['is_shipping_free'] ? $order['extra_discount'] : 0),
@@ -487,7 +512,7 @@ class OrderRepository implements OrderRepositoryInterface
             $this->orderTransaction->create($transaction);
 
             $wallet = $this->adminWallet->where('admin_id', 1)->first();
-            $wallet->commission_earned += $commission;
+            $wallet->commission_earned += $commission - $referral_commission;
             ($shippingModel == 'inhouse_shipping' && !$order['is_shipping_free']) ? $wallet->delivery_charge_earned += $order['shipping_cost'] : null;
             $wallet->save();
 
@@ -500,14 +525,16 @@ class OrderRepository implements OrderRepositoryInterface
                 $wallet->save();
             } else {
                 $wallet = $this->sellerWallet->where('seller_id', $order['seller_id'])->first();
-                $wallet->commission_given += $commission;
+                $wallet->commission_given += $commission -$referral_commission;
                 $wallet->total_tax_collected += $orderSummary['total_tax'];
 
                 if ($shippingModel == 'sellerwise_shipping') {
                     !$order['is_shipping_free'] ? $wallet->delivery_charge_earned += $order['shipping_cost'] : null;
                     $wallet->collected_cash += $order['order_amount']; //total order amount
                 } else {
-                    $wallet->total_earning += ($orderAmount - $commission) + $orderSummary['total_tax'];
+                    $wallet->total_earning += ($orderAmount - ($commission)) ;//+ $orderSummary['total_tax'];
+                    $wallet->referral_commission += $referral_commission;
+                    
                 }
 
                 $wallet->save();
@@ -518,7 +545,7 @@ class OrderRepository implements OrderRepositoryInterface
             $transaction->save();
 
             $wallet = $this->adminWallet->where('admin_id', 1)->first();
-            $wallet->commission_earned += $commission;
+            $wallet->commission_earned += $commission - $referral_commission;
             $wallet->pending_amount -= $order['order_amount'];
             ($shippingModel == 'inhouse_shipping' && !$order['is_shipping_free']) ? $wallet->delivery_charge_earned += $order['shipping_cost'] : null;
             $wallet->save();
@@ -531,20 +558,46 @@ class OrderRepository implements OrderRepositoryInterface
                 $wallet->save();
             } else {
                 $wallet = $this->sellerWallet->where('seller_id', $order['seller_id'])->first();
-                $wallet->commission_given += $commission;
+                $wallet->commission_given += $commission - $referral_commission;
 
                 if ($shippingModel == 'sellerwise_shipping') {
                     !$order['is_shipping_free'] ? $wallet->delivery_charge_earned += $order['shipping_cost'] : null;
-                    $wallet->total_earning += ($orderAmount - $commission) + $orderSummary['total_tax'] + $order['shipping_cost'];
+                    $wallet->total_earning += ($orderAmount - $commission ) + $order['shipping_cost']; //+ $orderSummary['total_tax'] ;
+                    $wallet->referral_commission += $referral_commission;
                 } else {
-                    $wallet->total_earning += ($orderAmount - $commission) + $orderSummary['total_tax'];
+                    $wallet->total_earning += ($orderAmount - $commission) ;//+ $orderSummary['total_tax'];
+                    $wallet->referral_commission += $referral_commission;
                 }
 
                 $wallet->total_tax_collected += $orderSummary['total_tax'];
                 $wallet->save();
             }
         }
-
+        //referredBy wallet
+        if(isset($referredBy)){
+            if($referredBy->count()>0){
+                
+                $referral_seller=$referredBy->first()->id;
+                $wallet = $this->sellerWallet->where('seller_id', $referral_seller)->first();
+                if (!$wallet) {
+                    $sellerWalletData = [
+                        'seller_id' => $referral_seller,
+                        'withdrawn' => 0,
+                        'commission_given' => 0,
+                        'total_earning' => 0,
+                        'pending_withdraw' => 0,
+                        'delivery_charge_earned' => 0,
+                        'collected_cash' => 0,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                    $this->sellerWallet->create($sellerWalletData);
+                    $wallet = $this->sellerWallet->where('seller_id', $referral_seller)->first();
+                }
+                $wallet->total_earning+=$referral_commission;
+                $wallet->save();
+            }
+        }
         return true;
     }
 

@@ -23,6 +23,7 @@ use App\Exports\VendorWithdrawRequest;
 use App\Exports\VendorOrderListExport;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\VendorAddRequest;
+use App\Models\Seller;
 use App\Services\ShopService;
 use App\Services\VendorService;
 use App\Traits\CommonTrait;
@@ -37,6 +38,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Illuminate\Support\Facades\DB;
 
 class VendorController extends BaseController
 {
@@ -581,5 +583,45 @@ class VendorController extends BaseController
 
     }
 
+    public function getReferral(Request $request,$id){
+        $referredVendors=Seller::findOrFail($id)->referredVendors;
+        $office=Seller::findOrFail($id)->referredBy;
+        $seller     =Seller::findOrFail($id);
+        $sellers    =Seller::all();
+        return view(Vendor::VIEW_REFERRAL[VIEW], compact("referredVendors","seller","sellers","office"));
+
+    }
+    public function AddReferral(Request $request,$id){
+        $request->validate([
+            'Seller' => 'required|integer', // تأكد أن Seller رقم صحيح وليس نصًا
+        ], [
+            'Seller.required' => translate('You Must Select Seller'),
+        ]);
+        
+        // استخدم الاستعلام للتحقق من وجود البائع في referral_vendors
+        $exists = DB::table('referral_vendors')->where('vendor', $request->Seller)->exists();
+        
+        if ($exists) {
+            return back()->withErrors(['Seller' => translate('This Seller Already Exists In The Referral System')]);
+        }
+        
+
+        $office     =Seller::findOrFail($id);
+        
+        if(isset($request->Seller))
+            if(!empty($office->referral_code))
+                $this->vendorService->create_referral_vendor($request->Seller,$office->referral_code);
+            else{
+                $code=$this->vendorService->generate_code($id);
+                $this->vendorService->create_referral_vendor($request->Seller,$code);
+            }
+        Toastr::success(translate('Add_Referral_successfully_added'));
+        return redirect()->back();
+    }
+    public function DeleteReferral(Request $request,$id){
+        $this->vendorService->Delete_referral_vendor($id);
+        Toastr::success(translate('Delete_Referral_successfully_Deleted'));
+        return redirect()->back();
+    }
 
 }

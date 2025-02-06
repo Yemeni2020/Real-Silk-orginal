@@ -42,11 +42,11 @@ class RegisterController extends BaseController
     {
     }
 
-    public function index(?Request $request, string $type = null): View|Collection|LengthAwarePaginator|null|callable|RedirectResponse
+    public function index(?Request $request,$referral_code=null, string $type = null): View|Collection|LengthAwarePaginator|null|callable|RedirectResponse
     {
-        return $this->getView();
+        return $this->getView($referral_code);
     }
-    public function getView():View|RedirectResponse
+    public function getView($referral_code=null):View|RedirectResponse
     {
         $businessMode = getWebConfig(name:'business_mode');
         $vendorRegistration = getWebConfig(name:'seller_registration');
@@ -65,12 +65,16 @@ class RegisterController extends BaseController
             orderBy: ['id' => 'desc'],
             filters: ['type' => 'vendor_registration', 'status' => '1'],
             dataLimit: 'all');
-        return view(VIEW_FILE_NAMES[Auth::VENDOR_REGISTRATION[VIEW]],compact('vendorRegistrationHeader','vendorRegistrationReasons','sellWithUs','downloadVendorApp','helpTopics','businessProcess','businessProcessStep'));
+        return view(VIEW_FILE_NAMES[Auth::VENDOR_REGISTRATION[VIEW]],compact('vendorRegistrationHeader','vendorRegistrationReasons','sellWithUs','downloadVendorApp','helpTopics','businessProcess','businessProcessStep',"referral_code"));
     }
 
-    public function add(VendorAddRequest $request): JsonResponse
+    public function add(VendorAddRequest $request): JsonResponse|null
     {
+        
+        
         $vendor = $this->vendorRepo->add(data: $this->vendorService->getAddData($request));
+        if(!empty($request->referral_code))
+            $this->vendorService->create_referral_vendor($vendor->id,$request->referral_code);
         $this->shopRepo->add($this->shopService->getAddShopDataForRegistration(request: $request, vendorId: $vendor['id']));
         $this->vendorWalletRepo->add($this->vendorService->getInitialWalletData(vendorId: $vendor['id']));
 

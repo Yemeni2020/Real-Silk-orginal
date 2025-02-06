@@ -149,6 +149,7 @@ use App\Http\Controllers\Admin\Settings\InvoiceSettingsController;
 use App\Http\Controllers\Admin\ThirdParty\PaymentMethodController;
 use App\Http\Controllers\Admin\Notification\NotificationController;
 use App\Http\Controllers\Admin\Settings\BusinessSettingsController;
+use App\Http\Controllers\Admin\Settings\ReferralVendorSettingsController;
 use App\Http\Controllers\Admin\Settings\RobotsMetaContentController;
 use App\Http\Controllers\Admin\ThirdParty\SocialMediaChatController;
 use App\Http\Controllers\Admin\Deliveryman\EmergencyContactController;
@@ -169,6 +170,7 @@ use App\Http\Controllers\Admin\Settings\VendorRegistrationSettingController;
 use App\Http\Controllers\Admin\Notification\PushNotificationSettingsController;
 use App\Http\Controllers\Payment_Methods\TapPaymentSettingsController;
 use App\Http\Controllers\Payment_Methods\MyFatorahSettingsController;
+use App\Enums\ViewPaths\Admin\ReferralVendorSettings;
 
 Route::controller(SharedController::class)->group(function () {
     Route::post('change-language', 'changeLanguage')->name('change-language');
@@ -435,6 +437,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
             Route::get(Vendor::ORDER_DETAILS[URI] . '/{order_id}/{vendor_id}', 'getOrderDetailsView')->name('order-details');
             Route::get(Vendor::VIEW[URI] . '/{id}/{tab?}', 'getView')->name('view');
             Route::post(Vendor::UPDATE_SETTING[URI] . '/{id}', 'updateSetting')->name('update-setting');
+
+            Route::get(Vendor::VIEW[URI] . '-referral/{id}/{tab?}', 'getReferral')->name('referral');
+            Route::post(Vendor::VIEW[URI] . '-referral/{id}/{tab?}', 'AddReferral');
+            Route::put(Vendor::VIEW[URI] . '-referral/{id}/{tab?}', 'DeleteReferral');
 
             Route::get(Vendor::WITHDRAW_LIST[URI], 'getWithdrawListView')->name('withdraw_list');
             Route::get(Vendor::WITHDRAW_LIST_EXPORT[URI], 'exportWithdrawList')->name('withdraw-list-export-excel');
@@ -830,6 +836,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
             Route::controller(InvoiceSettingsController::class)->group(function () {
                 Route::get(InvoiceSettings::VIEW[URI], 'index')->name('index');
                 Route::post(InvoiceSettings::VIEW[URI], 'update')->name('update');
+            });
+        });
+        Route::group(['prefix' => 'referral-vendor', 'as' => 'referral-vendor.', 'middleware' => ['module:system_settings']], function () {
+            Route::controller(ReferralVendorSettingsController::class)->group(function () {
+                Route::get(ReferralVendorSettings::VIEW[URI], 'index')->name('index');
+                Route::post(ReferralVendorSettings::VIEW[URI], 'update')->name('update');
             });
         });
 

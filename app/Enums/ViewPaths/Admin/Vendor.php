@@ -61,6 +61,10 @@ enum Vendor
         VIEW => 'admin-views.vendor.view.review'
     ];
 
+    const VIEW_REFERRAL = [
+        URI => '',
+        VIEW => 'admin-views.vendor.view.referral'
+    ];
     const VIEW_TRANSACTION = [
         URI => '',
         VIEW => 'admin-views.vendor.view.transaction'
