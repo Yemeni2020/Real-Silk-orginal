@@ -8495,7 +8495,7 @@ return [
 	"Not_activated_Products" => "Not activated Products",
 	"referral_code" => "Referral code",
 	"ReferralVendor" => "ReferralVendor",
-	"referral_url" => "Referral url",
+	"referral_url" => "رابط الاحالة",
 	"referral_vendor" => "ادارة الاحالات",
 	"Referral_Vendor" => "ادارة الاحالات",
 	"money" => "Money",
@@ -8519,6 +8519,9 @@ return [
 	"Select_Office" => "حدد المكتب",
 	"The percentage is from the admin’s commission percentage. For example, if you enter the value 20 and the admin takes 30 percent from the merchant, then the merchant who was given the referral will take 20 percent of the admin’s commission." => "النسبة هي من نسبة العمولة الخاصة بالادمن مثلا اذا ادخلت القيمة ٢٠ وكان الادمن بياخذ ٣٠ بالمئة من التاجر فان التاجر الذي اعطاء له الاحالة بياخذ ٢٠ بالمئة من عمولة الادمن ",
 	"Add commission for referral's Seller" => "اضافة نسبة عمولة لاحالة التاجر",
-	"offline_Payment_allows_customers_to_use_external_payment_methods._They_must_share_payment_details_with_the_vendor_afterward._Admin_can_set_whether_customers_can_make_offline_payments_by_enabling/disabling_this_button.
-                                            " => "Offline Payment allows customers to use external payment methods. They must share payment details with the vendor afterward. Admin can set whether customers can make offline payments by enabling/disabling this button. ",
+	"count_referral" => "عدد المحالين",
+	"total_referral_Commission" => "اجمالي الدخل من المحالين",
+	"Sellers_referral" => "مكاسب الاحالة من المصنع",
+	"search_by_vendor_Name" => "البحث باسم التاجر",
+	"search_by_Vendor_Name" => "البحث باسم التاجر",
 ];

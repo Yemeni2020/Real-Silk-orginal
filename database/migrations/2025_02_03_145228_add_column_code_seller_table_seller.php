@@ -26,9 +26,11 @@ return new class extends Migration
     public function down(): void
     {
         //
-        
-        Schema::table("sellers",function (Blueprint $table){
-            $table->dropColumn("referral_code");
-        });
+        if(!Schema::hasColumn("sellers","referral_code")){
+
+            Schema::table("sellers",function (Blueprint $table){
+                $table->dropColumn("referral_code");
+            });
+        }
     }
 };

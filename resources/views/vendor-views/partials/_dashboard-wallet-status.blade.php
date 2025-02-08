@@ -47,6 +47,19 @@
                 <div class="card card-body h-100 justify-content-center">
                     <div class="d-flex gap-2 justify-content-between align-items-center">
                         <div class="d-flex flex-column align-items-start">
+                            <h3 class="mb-1 fz-24">{{setCurrencySymbol(amount: usdToDefaultCurrency(amount: $dashboardData['total_referral']), currencyCode: getCurrencyCode(type: 'default'))}}</h3>
+                            <div class="text-capitalize mb-0">{{translate('total_referral_Commission')}}</div>
+                        </div>
+                        <div>
+                            <img width="40" src="{{dynamicAsset(path: 'public/assets/back-end/img/tcg.png')}}" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-body h-100 justify-content-center">
+                    <div class="d-flex gap-2 justify-content-between align-items-center">
+                        <div class="d-flex flex-column align-items-start">
                             <h3 class="mb-1 fz-24">{{setCurrencySymbol(amount: usdToDefaultCurrency(amount: $dashboardData['withdrawn']), currencyCode: getCurrencyCode(type: 'default'))}}</h3>
                             <div class="text-capitalize mb-0">{{translate('already_Withdrawn')}}</div>
                         </div>
@@ -91,6 +104,19 @@
                         </div>
                         <div>
                             <img width="40" src="{{dynamicAsset(path: 'public/assets/back-end/img/cc.png')}}" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card card-body h-100 justify-content-center">
+                    <div class="d-flex gap-2 justify-content-between align-items-center">
+                        <div class="d-flex flex-column align-items-start">
+                            <h3 class="mb-1 fz-24">{{ $dashboardData['count_referral']}}</h3>
+                            <div class="text-capitalize mb-0">{{translate('count_referral')}}</div>
+                        </div>
+                        <div>
+                            <img width="40" src="{{dynamicAsset(path: 'public/assets/back-end/img/customer.png')}}" alt="">
                         </div>
                     </div>
                 </div>

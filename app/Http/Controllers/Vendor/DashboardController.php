@@ -20,6 +20,8 @@ use App\Services\VendorWalletService;
 use App\Services\WithdrawRequestService;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
+use App\Models\SellerWallet;
+use App\Models\Seller;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
@@ -59,7 +61,7 @@ class DashboardController extends BaseController
     /**
      * @return View
      */
-    public function getView():View
+    public function getView():View|null
     {
         $vendorId = auth('seller')->id();
         $topSell = $this->productRepo->getTopSellList(
@@ -90,6 +92,16 @@ class DashboardController extends BaseController
             relations: ['deliveredOrders'],
         )->take(DASHBOARD_DATA_LIMIT);
 
+
+        // جلب جميع التجار المحالين لهذا التاجر
+        $referredVendorIds = Seller::findOrFail($vendorId)->referredVendors()->pluck('sellers.id');
+
+
+        // التحقق مما إذا كان هناك سجلات في `seller_wallet`
+        $total_referral = SellerWallet::whereIn('seller_id', $referredVendorIds)->sum('referral_commission');
+
+
+
         $from = now()->startOfYear()->format('Y-m-d');
         $to = now()->endOfYear()->format('Y-m-d');
         $range = range(1,12);
@@ -107,6 +119,8 @@ class DashboardController extends BaseController
             'topSell' => $topSell,
             'topRatedProducts' => $topRatedProducts,
             'topRatedDeliveryMan' => $topRatedDeliveryMan,
+            'total_referral' => $total_referral ?? 0,
+            'count_referral' => $referredVendorIds->count() ?? 0,
             'totalEarning' => $vendorWallet->total_earning ?? 0,
             'withdrawn' => $vendorWallet->withdrawn ?? 0,
             'pendingWithdraw' => $vendorWallet->pending_withdraw ?? 0,

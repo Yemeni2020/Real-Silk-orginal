@@ -40,8 +40,8 @@ class VendorProductSaleReportController extends Controller
         $chart_data = self::seller_report_chart_filter($request);
 
         $orders_query = Order::with(['seller.shop'])
-            ->selectRaw('seller_id, sum(order_amount) as total_order_amount, sum(admin_commission) as total_admin_commission')
-            ->where(['seller_is'=> 'seller', 'order_status'=>'delivered'])
+            ->selectRaw('orders.seller_id, sum(orders.order_amount) as total_order_amount, sum(orders.admin_commission) as total_admin_commission,sum(order_transactions.tax) as total_tax_collected,sum(order_transactions.referral_commission) as total_referral_commission')
+            ->where(['orders.seller_is'=> 'seller', 'order_status'=>'delivered',"order_transactions.status"=>"disburse"])->join('order_transactions', 'order_transactions.order_id', '=', 'orders.id')
             ->when($seller_id && $seller_id != 'all', function ($query) use ($seller_id) {
                 $query->where('seller_id', $seller_id);
             })
@@ -50,7 +50,7 @@ class VendorProductSaleReportController extends Controller
                     $q->where('name', 'like', "%{$search}%");
                 });
             });
-        $orders = self::date_wise_common_filter($orders_query, $date_type, $from, $to)->groupBy('seller_id')->paginate(Helpers::pagination_limit())->appends($query_param);
+        $orders = self::date_wise_common_filter($orders_query, $date_type, $from, $to,"orders")->groupBy('seller_id')->paginate(Helpers::pagination_limit())->appends($query_param);
 
         $refunds_query = RefundTransaction::where(['paid_by'=>'seller', 'transaction_type'=>'Refund'])
             ->selectRaw('payer_id, sum(amount) as total_refund_amount')
@@ -94,12 +94,12 @@ class VendorProductSaleReportController extends Controller
         $deliveryman = self::date_wise_common_filter($deliveryman_query, $date_type, $from, $to)->count();
 
         //total store earning calculate start
-        $seller_earn_commission_query = Order::where(['seller_is'=>'seller','order_status'=>'delivered'])
-            ->selectRaw('(sum(order_amount) - sum(shipping_cost)) as earn_from_order, sum(admin_commission) as admin_commission')
+        $seller_earn_commission_query = Order::where(['orders.seller_is'=>'seller','order_status'=>'delivered',"order_transactions.status"=>"disburse"])
+            ->selectRaw('(sum(orders.order_amount) - sum(orders.shipping_cost)) as earn_from_order, sum(orders.admin_commission) as admin_commission,SUM(order_transactions.tax) as total_tax_collected,SUM(order_transactions.referral_commission) as referral_commission')->join('order_transactions', 'order_transactions.order_id', '=', 'orders.id')
             ->when($seller_id && $seller_id != 'all', function ($query) use ($seller_id) {
                 $query->where('seller_id', $seller_id);
             });
-        $seller_earn_commission = self::date_wise_common_filter($seller_earn_commission_query, $date_type, $from, $to)->first();
+        $seller_earn_commission = self::date_wise_common_filter($seller_earn_commission_query, $date_type, $from, $to,"orders")->first();
 
         $shipping_earn_query = Order::whereHas('deliveryMan', function ($query){
                 $query->where('seller_id', '!=', '0');
@@ -116,10 +116,13 @@ class VendorProductSaleReportController extends Controller
         $refund = self::date_wise_common_filter($refund_query, $date_type, $from, $to)->first();
 
         $total_store_earning = $seller_earn_commission->earn_from_order+$shipping_earn->shipping_earn - $seller_earn_commission->admin_commission-$refund->refund_amount;
+        $total_tax_collected = $seller_earn_commission->total_tax_collected;
+        $admin_commission = $seller_earn_commission->admin_commission;
+        $referral_commission = $seller_earn_commission->referral_commission;
         //total store earning end
 
         return view('admin-views.report.seller-product-sale', compact('sellers', 'refunds', 'total_product', 'deliveryman',
-            'delivered_order', 'total_store_earning', 'ongoing_order', 'canceled_order', 'chart_data', 'orders', 'seller_id', 'date_type', 'from', 'to', 'search'));
+            'delivered_order', 'total_store_earning', 'ongoing_order', 'canceled_order', 'chart_data', 'orders', 'seller_id', 'date_type', 'from', 'to', 'search','total_tax_collected','admin_commission','referral_commission'));
     }
 
     public function seller_report_chart_filter($request)
@@ -356,24 +359,26 @@ class VendorProductSaleReportController extends Controller
 
     }
 
-    public function date_wise_common_filter($query, $date_type, $from, $to)
+    public function date_wise_common_filter($query, $date_type, $from, $to,$inner="")
     {
-        return $query->when(($date_type == 'this_year'), function ($query) {
-                return $query->whereYear('updated_at', date('Y'));
+        if(empty($inner)==false)
+            $inner=$inner.".";
+        return $query->when(($date_type == 'this_year'), function ($query) use($inner) {
+                return $query->whereYear($inner.'updated_at', date('Y'));
             })
-            ->when(($date_type == 'this_month'), function ($query) {
-                return $query->whereMonth('updated_at', date('m'))
-                    ->whereYear('updated_at', date('Y'));
+            ->when(($date_type == 'this_month'), function ($query) use($inner) {
+                return $query->whereMonth($inner.'updated_at', date('m'))
+                    ->whereYear($inner.'updated_at', date('Y'));
             })
-            ->when(($date_type == 'this_week'), function ($query) {
-                return $query->whereBetween('updated_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
+            ->when(($date_type == 'this_week'), function ($query) use($inner) {
+                return $query->whereBetween($inner.'updated_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
             })
-            ->when(($date_type == 'today'), function ($query) {
-                return $query->whereBetween('updated_at', [Carbon::now()->startOfDay(), Carbon::now()->endOfDay()]);
+            ->when(($date_type == 'today'), function ($query) use($inner) {
+                return $query->whereBetween($inner.'updated_at', [Carbon::now()->startOfDay(), Carbon::now()->endOfDay()]);
             })
-            ->when(($date_type == 'custom_date' && !is_null($from) && !is_null($to)), function ($query) use ($from, $to) {
-                return $query->whereDate('updated_at', '>=', $from)
-                    ->whereDate('updated_at', '<=', $to);
+            ->when(($date_type == 'custom_date' && !is_null($from) && !is_null($to)), function ($query) use ($from, $to,$inner) {
+                return $query->whereDate($inner.'updated_at', '>=', $from)
+                    ->whereDate($inner.'updated_at', '<=', $to);
             });
     }
 

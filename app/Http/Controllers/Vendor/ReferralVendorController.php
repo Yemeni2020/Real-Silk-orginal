@@ -47,16 +47,17 @@ class ReferralVendorController extends BaseController
      * @return View|Collection|LengthAwarePaginator|callable|null
      */
     public function getView(?Request $request, string $type = null): View|Collection|LengthAwarePaginator|null|callable
-    {
-        $referral_code=$this->vendorService->generate_code(auth('seller')->id());
-        
-        $sellers=$this->vendorService->get_referral_vendor(auth('seller')->id());
-        // dump($sellers);
-        // return null;
-        
-        
-        return view(ReferralVendor::INDEX[VIEW], compact("referral_code","sellers"));
-     }
+        {
+            $referral_code = $this->vendorService->generate_code(auth('seller')->id());
+
+            // التأكد من أن `get_referral_vendor` يعيد Paginator
+            $sellers = $this->vendorService->get_referral_vendor(auth('seller')->id(), $request);
+
+            // حساب إجمالي العمولات
+            $sum_referral = $sellers->sum("referral_commission");
+
+            return view(ReferralVendor::INDEX[VIEW], compact("referral_code", "sellers", "sum_referral"));
+        }
 
     
 }

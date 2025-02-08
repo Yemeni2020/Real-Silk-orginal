@@ -137,16 +137,36 @@
                 @include('layouts.back-end._apexcharts',['title'=>'order_statistics','statisticsValue'=>$chartVal,'label'=>array_keys($chart_data['order_amount']),'statisticsTitle'=>'total_order_amount'])
             </div>
             <div class="right-content">
-                <div class="card h-100 bg-white payment-statistics-shadow">
-                    <div class="card-body d-flex flex-column justify-content-center">
-                        <div class="earning-statistics-content">
-                            <img class="mb-4" src="{{dynamicAsset(path: 'public/assets/back-end/img/earnings.svg')}}"
-                                 alt="back-end/img">
-                            <h6 class="subtitle">{{translate('total_Shop_Earnings')}}</h6>
-                            <h3 class="title">
-                                {{setCurrencySymbol(amount: usdToDefaultCurrency(amount: $total_store_earning), currencyCode: getCurrencyCode()) }}
-                            </h3>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card h-100 bg-white payment-statistics-shadow">
+                            <div class="card-body d-flex flex-column justify-content-center">
+                                <div class="earning-statistics-content">
+                                    <img class="mb-4" src="{{dynamicAsset(path: 'public/assets/back-end/img/earnings.svg')}}"
+                                        alt="back-end/img">
+                                    <h6 class="subtitle">{{translate('total_Shop_Earnings')}}</h6>
+                                    <h3 class="title">
+                                        {{setCurrencySymbol(amount: usdToDefaultCurrency(amount: $total_store_earning), currencyCode: getCurrencyCode()) }}
+                                    </h3>
 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card h-100 bg-white payment-statistics-shadow">
+                            <div class="card-body d-flex flex-column justify-content-center">
+                                <div class="earning-statistics-content">
+                                    <img class="mb-4" src="{{dynamicAsset(path: 'public/assets/back-end/img/earnings.svg')}}"
+                                        alt="back-end/img">
+                                    <h6 class="subtitle">{{translate('total_admin_commission')}}</h6>
+                                    <h3 class="title">
+                                        {{setCurrencySymbol(amount: usdToDefaultCurrency(amount: ($admin_commission)), currencyCode: getCurrencyCode()) }}
+                                    </h3>
+
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -206,6 +226,7 @@
                             <th>{{ translate('vendor-Info') }}</th>
                             <th>{{translate('total_Order')}}</th>
                             <th>{{translate('commission')}}</th>
+                            <th>{{translate('total_tax')}}</th>
                             <th class="text-center">{{translate('refund_Rate')}}</th>
                             <th class="text-center">{{translate('action')}}</th>
                         </tr>
@@ -234,6 +255,7 @@
                                 </td>
                                 <td>{{setCurrencySymbol(amount: usdToDefaultCurrency(amount: $order->total_order_amount), currencyCode: getCurrencyCode()) }}</td>
                                 <td>{{setCurrencySymbol(amount: usdToDefaultCurrency(amount: $order->total_admin_commission), currencyCode: getCurrencyCode()) }}</td>
+                                <td>{{setCurrencySymbol(amount: usdToDefaultCurrency(amount: $order->total_tax_collected), currencyCode: getCurrencyCode()) }}</td>
                                 <td class="text-center">
                                         <?php
                                         $arr = array();

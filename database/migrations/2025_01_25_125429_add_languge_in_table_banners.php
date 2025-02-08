@@ -25,10 +25,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('banners', function (Blueprint $table) {
-            //
-            $table->dropColumn('language');
+        if(!Schema::hasColumn("banners","language")){
 
-        });
+            Schema::table('banners', function (Blueprint $table) {
+                //
+                $table->dropColumn('language');
+
+            });
+        }
     }
 };

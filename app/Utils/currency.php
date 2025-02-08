@@ -194,7 +194,8 @@ if (!function_exists('getCurrencySymbol')) {
             if(isset($currencylang)){
 
                 if($curnnet_lang==$currencylang->language){
-                    $currentSymbol=$currencylang->code . "($currencylang->exchange_rate$currencylang->code = 1$currentSymbol)";
+                    $exchange_rate=round($currencylang->exchange_rate,2);
+                    $currentSymbol=$currencylang->code . "($exchange_rate$currencylang->code = 1$currentSymbol)";
                 }
             }
         }

@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Request; 
 use App\Models\Seller;
 use App\Models\ReferralVendors;
 use App\Traits\FileManagerTrait;
 use Illuminate\Support\Str;
 use App\Utils\Helpers;
+use Illuminate\Support\Facades\DB;
 
 class VendorService
 {
@@ -63,9 +65,22 @@ class VendorService
         }
     }
 
-    public function get_referral_vendor(int $officeid){
-        $seller = Seller::findOrFail($officeid);
-        return $seller->referredVendors;
+    public function get_referral_vendor(int $officeid, ?Request $request = null)
+    {
+        $query = Seller::findOrFail($officeid)
+        ->referredVendors() // استخدام العلاقة مباشرةً بدلاً من `whereHas`
+        ->leftJoin("seller_wallets", "seller_wallets.seller_id", "=", "sellers.id")
+        ->leftJoin("shops", "shops.seller_id", "=", "sellers.id")
+        ->select("sellers.*", "seller_wallets.referral_commission", "shops.name as shop_name");
+
+        // إضافة البحث إذا كان موجودًا
+        if ($request && $request->has('searchValue') && $request->searchValue != "all") {
+            $search = $request->searchValue;
+            $query->where(\DB::raw("CONCAT(sellers.f_name, ' ', sellers.l_name)"), "like", "%$search%")
+                ->orWhere("shops.name", "like", "%$search%");
+        }
+
+        return $query->paginate(getWebConfig(name: 'pagination_limit'));
     }
     public function getInitialWalletData(int $vendorId): array
     {
