@@ -8925,4 +8925,5 @@ return [
 	"count_referral" => "通过您联系的工厂数量",
 	"search_by_vendor_Name" => "按工厂名称搜索",
 	"search_by_Vendor_Name" => "按工厂名称搜索",
+	"Unactive_Products" => "Unactive Products",
 ];

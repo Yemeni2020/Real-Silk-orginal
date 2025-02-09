@@ -29,6 +29,7 @@ class Category extends Model
         'slug',
         'icon',
         'icon_storage_type',
+        'image_ad',
         'parent_id',
         'position',
         'home_status',
@@ -41,6 +42,7 @@ class Category extends Model
         'slug' => 'string',
         'icon' => 'string',
         'icon_storage_type' => 'string',
+        'image_ad' => 'string',
         'parent_id' => 'integer',
         'position' => 'integer',
         'home_status' => 'integer',
@@ -106,7 +108,12 @@ class Category extends Model
         $value = $this->icon;
         return $this->storageLink('category',$value,$this->icon_storage_type ?? 'public');
     }
-    protected $appends = ['icon_full_url'];
+    public function getAdvFullUrlAttribute():array
+    {
+        $value = $this->image_ad;
+        return $this->storageLink('category/image_ad',$value,$this->icon_storage_type ?? 'public');
+    }
+    protected $appends = ['icon_full_url','adv_full_url'];
 
     protected static function boot(): void
     {

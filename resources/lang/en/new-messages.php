@@ -8958,4 +8958,6 @@ return [
 	"search_by_vendor_Name" => "Search by vendor Name",
 	"search_by_vendor_Name_or_shop_name" => "Search by vendor Name or shop name",
 	"count_referral" => "Count referral",
+	"category_Ad" => "Category Ad",
+	"category_Adv" => "Category Adv",
 ];

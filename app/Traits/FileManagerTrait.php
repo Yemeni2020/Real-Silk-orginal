@@ -21,6 +21,7 @@ trait FileManagerTrait
         $storage = config('filesystems.disks.default') ?? 'public';
 
         if (!is_null($image)) {
+
             if (!$this->checkFileExists($dir)['status']) {
                 Storage::disk($storage)->makeDirectory($dir);
             }

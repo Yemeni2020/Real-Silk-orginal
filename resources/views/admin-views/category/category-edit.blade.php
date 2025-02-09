@@ -103,6 +103,18 @@
                                             </div>
                                         </div>
                                         <div class="from_part_2">
+                                            <label class="title-color">{{ translate('category_Adv') }}</label>
+                                            <span class="text-info">({{ translate('ratio') }} 1:2)</span>
+                                            <div class="custom-file text-left">
+                                                <input type="file" name="image-ad" id="category-image"
+                                                       class="custom-file-input image-preview-before-upload"
+                                                       data-preview="#viewer-ad"
+                                                       accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*">
+                                                <label class="custom-file-label"
+                                                       for="category-image">{{ translate('choose_File') }}</label>
+                                            </div>
+                                        </div>
+                                        <div class="from_part_2">
                                             <label class="title-color">{{ translate('Show_Menu') }}</label>
                                             <div class="custom-file text-left">
                                             <input type="checkbox" name="show_menu" id="show_menu"   data-modal-id="toggle-status-modal"
@@ -124,6 +136,14 @@
                                             <img class="upload-img-view"
                                                  id="viewer"
                                                  src="{{ getStorageImages(path: $category->icon_full_url , type: 'backend-basic') }}"
+                                                 alt=""/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="text-center mx-auto">
+                                            <img class="upload-img-view"
+                                                 id="viewer-ad"
+                                                 src="{{ getStorageImages(path: $category->adv_full_url , type: 'backend-basic') }}"
                                                  alt=""/>
                                         </div>
                                     </div>

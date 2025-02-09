@@ -18,6 +18,7 @@ class CategoryService
             'slug' => Str::slug($request['name'][array_search('en', $request['lang'])]),
             'icon' => $this->upload('category/', 'webp', $request->file('image')),
             'icon_storage_type' => $request->has('image') ? $storage : null,
+            'image_ad' => $this->upload('category/image_ad/', 'webp', $request->file('image-Ad')),
             'parent_id' => $request->get('parent_id', 0),
             'position' => $request['position'],
             'priority' => $request['priority'],
@@ -29,6 +30,7 @@ class CategoryService
     {
         $storage = config('filesystems.disks.default') ?? 'public';
         $image = $request->file('image') ? $this->update('category/', $data['image'], 'webp', $request->file('image')) : $data['icon'];
+        $image_ad = $request->file('image-ad') ? $this->update('category/image_ad/', $data['image_ad'], 'webp', $request->file('image-ad')) : $data['image_ad'];
         $cat = Category::where('id', $request['parent'])->first();
 
         return [
@@ -36,6 +38,7 @@ class CategoryService
             'slug' => Str::slug($request['name'][array_search('en', $request['lang'])]),
             'icon' => $image,
             'icon_storage_type' => $request->has('image') ? $storage : $data['icon_storage_type'],
+            'image_ad' => $image_ad,
             'priority' => $request['priority'],
             'parent_id' => $request['parent']??0,
             'position' =>  $request['parent']>0 && isset($cat)? $cat['position']+1:0,

@@ -1,5 +1,6 @@
 @php
     use App\Models\Category;
+    use Illuminate\Support\Facades\Storage;
 
     $categories_menu = Category::where('menu', 1)->get();
 
@@ -512,24 +513,45 @@
                         @foreach ($categories as $key=>$category)
                             <li>
                                 <a href="{{route('products',['category_id'=> $category['id'],'data_from'=>'category','page'=>1])}}">{{$category->name}}</a>
-                                @if ($category->childes->count() > 0)
-                                    <div class="mega_menu z-2">
-                                        @foreach ($category->childes as $sub_category)
-                                            <div class="mega_menu_inner">
-                                                <h6>
-                                                    <a href="{{route('products',['category_id'=> $sub_category['id'],'data_from'=>'category','page'=>1])}}">{{$sub_category->name}}</a>
-                                                </h6>
-                                                @if ($sub_category->childes->count() >0)
-                                                    @foreach ($sub_category->childes as $sub_sub_category)
-                                                        <div>
-                                                            <a href="{{route('products',['category_id'=> $sub_sub_category['id'],'data_from'=>'category','page'=>1])}}">{{$sub_sub_category->name}}</a>
-                                                        </div>
-                                                    @endforeach
-                                                @endif
+                                
+                                <div class="mega_menu_parent z-2">
+                                    <div class="row">
+                                        <div class="col-9">
+
+                                            @if ($category->childes->count() > 0)
+                                            <div class="mega_menu">
+                                                @foreach ($category->childes as $sub_category)
+                                                    <div class="mega_menu_inner">
+                                                        <h6>
+                                                            <a href="{{route('products',['category_id'=> $sub_category['id'],'data_from'=>'category','page'=>1])}}">{{$sub_category->name}}</a>
+                                                        </h6>
+                                                        @if ($sub_category->childes->count() >0)
+                                                            @foreach ($sub_category->childes as $sub_sub_category)
+                                                                <div>
+                                                                    <a href="{{route('products',['category_id'=> $sub_sub_category['id'],'data_from'=>'category','page'=>1])}}">{{$sub_sub_category->name}}</a>
+                                                                </div>
+                                                            @endforeach
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+
                                             </div>
-                                        @endforeach
+                                            @endif
+                                        </div>
+                                        
+                                        @if(isset($category->image_ad))
+                                        <?php
+                                            $storage = config('filesystems.default') ?? 'public';
+                                            $imagePath = 'category/image_ad/'.$category->image_ad; // استبدل هذا بالمسار الصحيح للصورة
+                                        ?>
+
+                                        <div class="col-3">
+                                            
+                                            <img src="{{ getStorageImages(path: $category->adv_full_url, type: 'category') }}" alt="Category Image">
+                                        </div>
+                                        @endif
                                     </div>
-                                @endif
+                                </div>
                             </li>
                         @endforeach
                         <li class="text-center">

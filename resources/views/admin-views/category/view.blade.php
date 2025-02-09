@@ -72,6 +72,19 @@
                                         </div>
                                     </div>
                                     <div class="from_part_2">
+                                        <label class="title-color">{{ translate('category_Ad') }}</label>
+                                        <span class="text-info"><span class="text-danger">*</span> {{ THEME_RATIO[theme_root_path()]['Category Image'] }}</span>
+                                        <div class="custom-file text-left">
+                                            <input type="file" name="image-Ad" id="category-image-Ad"
+                                                   class="custom-file-input image-preview-before-upload"
+                                                   data-preview="#viewer-Ad"
+                                                   accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*"
+                                                   required>
+                                            <label class="custom-file-label"
+                                                   for="category-image">{{ translate('choose_File') }}</label>
+                                        </div>
+                                    </div>
+                                    <div class="from_part_2">
                                         <label class="title-color">{{ translate('Show_Menu') }}</label>
                                         <div class="custom-file text-left" >
                                                 <input type="checkbox" name="show_menu" id="show_menu"   data-modal-id="toggle-status-modal"
@@ -92,6 +105,12 @@
                                     <div class="form-group">
                                         <div class="text-center mx-auto">
                                             <img class="upload-img-view" id="viewer" alt=""
+                                                 src="{{ dynamicAsset(path: 'public/assets/back-end/img/image-place-holder.png') }}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="text-center mx-auto">
+                                            <img class="upload-img-view" id="viewer-Ad" alt=""
                                                  src="{{ dynamicAsset(path: 'public/assets/back-end/img/image-place-holder.png') }}">
                                         </div>
                                     </div>

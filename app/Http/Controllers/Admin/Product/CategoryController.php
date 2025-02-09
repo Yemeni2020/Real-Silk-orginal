@@ -74,9 +74,10 @@ class CategoryController extends BaseController
         ]);
     }
 
-    public function add(CategoryAddRequest $request, CategoryService $categoryService): RedirectResponse
+    public function add(CategoryAddRequest $request, CategoryService $categoryService): RedirectResponse|null
     {
         $dataArray = $categoryService->getAddData(request:$request);
+
         $savedCategory = $this->categoryRepo->add(data:$dataArray);
         $this->translationRepo->add(request:$request, model:'App\Models\Category', id:$savedCategory->id);
         Toastr::success(translate('category_added_successfully'));

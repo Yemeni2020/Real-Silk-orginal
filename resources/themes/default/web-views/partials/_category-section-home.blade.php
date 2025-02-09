@@ -1,3 +1,4 @@
+
 @if ($categories->count() > 0 )
     <section class="pb-4 rtl">
         <div class="container">
@@ -20,7 +21,7 @@
                     </div>
                 </div> -->
 
-
+                
 
                 <div class="card __shadow h-100 max-md-shadow-0">
                     <div class="card-body">
@@ -47,6 +48,7 @@
 
                                 <!-- الشريط -->
                                 <div class="category-scroll-container d-flex align-items-center overflow-hidden" style="white-space: nowrap; overflow-x: auto; scroll-behavior: smooth;">
+                                    
                                     @foreach($categories as $key => $category)
                                         <div class="text-center d-inline-block mx-2 __cate-item" style="width: 100px;">
                                             <a href="{{route('products',['category_id'=> $category['id'],'data_from'=>'category','page'=>1])}}">
