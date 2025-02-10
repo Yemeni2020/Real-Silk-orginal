@@ -35,6 +35,7 @@ class Category extends Model
         'home_status',
         'priority',
         "menu",
+        "brands",
     ];
 
     protected $casts = [

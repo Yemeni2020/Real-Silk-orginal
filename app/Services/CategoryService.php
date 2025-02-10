@@ -23,6 +23,8 @@ class CategoryService
             'position' => $request['position'],
             'priority' => $request['priority'],
             'menu'=> isset($request['show_menu'])?true:false,
+            'brands' => json_encode($request->input('brand', [])), // تحويل المصفوفة إلى JSON
+
         ];
     }
 
@@ -43,6 +45,8 @@ class CategoryService
             'parent_id' => $request['parent']??0,
             'position' =>  $request['parent']>0 && isset($cat)? $cat['position']+1:0,
             'menu'=> isset($request['show_menu'])?true:false,
+            'brands' => json_encode($request->input('brand', [])), // تحويل المصفوفة إلى JSON
+
         ];
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Product;
 use App\Contracts\Repositories\CategoryRepositoryInterface;
 use App\Contracts\Repositories\ProductRepositoryInterface;
 use App\Contracts\Repositories\TranslationRepositoryInterface;
+use App\Contracts\Repositories\BrandRepositoryInterface;
 use App\Enums\ExportFileNames\Admin\Category as CategoryExport;
 use App\Enums\ViewPaths\Admin\Category;
 use App\Exports\CategoryListExport;
@@ -14,6 +15,7 @@ use App\Http\Requests\Admin\CategoryUpdateRequest;
 use App\Services\CategoryService;
 use App\Services\ProductService;
 use App\Traits\PaginatorTrait;
+use App\Models\Brand;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -29,6 +31,7 @@ class CategoryController extends BaseController
 
     public function __construct(
         private readonly CategoryRepositoryInterface        $categoryRepo,
+        private readonly BrandRepositoryInterface           $brandRepo,
         private readonly ProductRepositoryInterface        $productRepo,
         private readonly ProductService        $productService,
         private readonly TranslationRepositoryInterface     $translationRepo,
@@ -51,24 +54,29 @@ class CategoryController extends BaseController
     {
         $categories = $this->categoryRepo->getListWhere(orderBy: ['id'=>'desc'], searchValue: $request->get('searchValue'), filters: ['position' => 0], dataLimit: getWebConfig(name: 'pagination_limit'));
         $languages = getWebConfig(name: 'pnc_language') ?? null;
+        $brands=Brand::all();
+
         $defaultLanguage = $languages[0];
         return view(Category::LIST[VIEW], [
             'categories' => $categories,
+            'brands' => $brands,
             'languages' => $languages,
             'defaultLanguage' => $defaultLanguage,
         ]);
     }
 
-    public function getUpdateView(string|int $id): View|RedirectResponse
+    public function getUpdateView(string|int $id): View|RedirectResponse|null
     {
         $category = $this->categoryRepo->getFirstWhere(params:['id'=>$id], relations: ['translations']);
         $category_main = $this->categoryRepo->getListWhere(orderBy: ['id'=>'desc'],filters: ['position' => [0, 1]], dataLimit: 'all');
         $languages = getWebConfig(name: 'pnc_language') ?? null;
-
+        
+        $brands=Brand::all();
         $defaultLanguage = $languages[0];
         return view(Category::UPDATE[VIEW], [
             'category' => $category,
             'languages' => $languages,
+            'brands' => $brands,
             'category_main' => $category_main,
             'defaultLanguage' => $defaultLanguage,
         ]);
@@ -77,7 +85,7 @@ class CategoryController extends BaseController
     public function add(CategoryAddRequest $request, CategoryService $categoryService): RedirectResponse|null
     {
         $dataArray = $categoryService->getAddData(request:$request);
-
+        
         $savedCategory = $this->categoryRepo->add(data:$dataArray);
         $this->translationRepo->add(request:$request, model:'App\Models\Category', id:$savedCategory->id);
         Toastr::success(translate('category_added_successfully'));
@@ -88,8 +96,8 @@ class CategoryController extends BaseController
     {
         $category = $this->categoryRepo->getFirstWhere(params:['id'=>$request['id']]);
         $dataArray = $categoryService->getUpdateData(request:$request, data: $category);
-        // dump($dataArray);
-        // return null;
+
+        
         $this->categoryRepo->update(id:$request['id'], data:$dataArray);
         $this->translationRepo->update(request:$request, model:'App\Models\Category', id:$request['id']);
 

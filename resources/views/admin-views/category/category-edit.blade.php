@@ -102,6 +102,29 @@
                                                        for="category-image">{{ translate('choose_File') }}</label>
                                             </div>
                                         </div>
+                                        <div class="from_part_2" >
+   
+                                            <label
+                                               class="title-color text-capitalize">{{ translate('Brands') }}</label>
+                                            <select class="js-example-responsive form-control w-100" multiple="multiple" name="brand[]">
+                                               @php
+                                                    $brands_list = is_array($category['brands']) 
+                                                        ? $category['brands'] 
+                                                        : json_decode($category['brands'], true);
+
+                                                    $brands_list = $brands_list ?? [];
+                                                @endphp
+                                                @foreach($brands as $brand)
+                                                    <option 
+                                                        value="{{ $brand->id }}" @if((is_array($brands_list) && in_array($brand->id, $brands_list))) 
+                                                            selected 
+                                                        @endif> 
+                                                        
+                                                        {{ $brand->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                         <div class="from_part_2">
                                             <label class="title-color">{{ translate('category_Adv') }}</label>
                                             <span class="text-info">({{ translate('ratio') }} 1:2)</span>
@@ -129,6 +152,7 @@
                                                     ></label>
                                             </div>
                                         </div>
+                                        
                                 </div>
                                 <div class="col-lg-6 mt-5 mt-lg-0 from_part_2">
                                     <div class="form-group">

@@ -71,9 +71,24 @@
                                                    for="category-image">{{ translate('choose_File') }}</label>
                                         </div>
                                     </div>
+                                    <div class="from_part_2" >
+   
+                                            <label
+                                               class="title-color text-capitalize">{{ translate('Brands') }}</label>
+                                            <select class="js-example-responsive form-control w-100" multiple="multiple" name="brand[]">
+                                               
+                                                @foreach($brands as $brand)
+                                                    <option 
+                                                        value="{{ $brand->id }}" > 
+                                                        
+                                                        {{ $brand->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     <div class="from_part_2">
                                         <label class="title-color">{{ translate('category_Ad') }}</label>
-                                        <span class="text-info"><span class="text-danger">*</span> {{ THEME_RATIO[theme_root_path()]['Category Image'] }}</span>
+                                         {{ THEME_RATIO[theme_root_path()]['Category Image'] }}</span>
                                         <div class="custom-file text-left">
                                             <input type="file" name="image-Ad" id="category-image-Ad"
                                                    class="custom-file-input image-preview-before-upload"

@@ -110,7 +110,7 @@ $languages = getWebConfig(name: 'pnc_language') ?? null;
 
                                                     $bannerLanguages = $bannerLanguages ?? [];
                                                 @endphp
-                                                                                        @foreach($languages as $lang)
+                                                @foreach($languages as $lang)
                                                     <option 
                                                         value="{{ $lang }}" 
                                                         @if((is_array($bannerLanguages) && in_array($lang, $bannerLanguages))) 

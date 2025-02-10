@@ -1,6 +1,8 @@
 @php
     use App\Models\Category;
     use Illuminate\Support\Facades\Storage;
+    use App\Models\Brand;
+
 
     $categories_menu = Category::where('menu', 1)->get();
 
@@ -539,17 +541,46 @@
                                             @endif
                                         </div>
                                         
+                                       
                                         @if(isset($category->image_ad))
-                                        <?php
-                                            $storage = config('filesystems.default') ?? 'public';
-                                            $imagePath = 'category/image_ad/'.$category->image_ad; // استبدل هذا بالمسار الصحيح للصورة
-                                        ?>
-
-                                        <div class="col-3">
+                                            @if(!empty($category->image_ad))
                                             
-                                            <img src="{{ getStorageImages(path: $category->adv_full_url, type: 'category') }}" alt="Category Image">
-                                        </div>
+                                            <div class="col-3">
+                                                
+                                                <img src="{{ getStorageImages(path: $category->adv_full_url, type: 'category') }}" alt="Category Image">
+                                            </div>
+                                            @endif
                                         @endif
+                                        <?php
+                                            $brands_list = is_array($category['brands']) 
+                                                ? $category['brands'] 
+                                                : json_decode($category['brands'], true);
+
+                                            $brands_list = $brands_list ?? [];
+                                            $brands = Brand::whereIn('id', $brands_list)->get();
+                                        ?>
+                                        @if($brands->isNotEmpty())
+                                        <div class="col-12">
+
+
+                                            <div class="mt-sm-3 mb-3 brand-slider">
+                                                <div class="owl-carousel owl-theme p-2 brands-slider">
+                                                    @foreach($brands as $brand)
+                                                        <div class="text-center">
+                                                            <a href="{{route('products',['brand_id'=> $brand['id'],'data_from'=>'brand','page'=>1])}}"
+                                                            class="__brand-item">
+                                                                <img alt="{{ $brand->image_alt_text }}"
+                                                                    src="{{ getStorageImages(path: $brand->image_full_url, type: 'brand') }}">
+                                                            </a>
+                                                            <span>{{$brand->name}}</span>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+
+                                            </div>
+                                        @endif
+
                                     </div>
                                 </div>
                             </li>
