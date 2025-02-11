@@ -23,7 +23,32 @@
                 @endif
             </div>
         </div>
-        
+        @if($seller->type_account=="office")
+        <div class="card mb-3 container">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="d-flex gap-2">
+                            <label class="title-color" for="referral_code">{{translate("referral_code")}}</label>
+                        </div>
+                        <input type="text" ondblclick="navigator.clipboard.writeText(this.value);toastr.success('Copid')" readonly value="{{$seller->referral_code}}" id="referral_code" class="form-control">
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex gap-2">
+                            <label class="title-color" for="referral_url">{{translate("referral_url")}}</label>
+                        </div>
+                        <input type="text" ondblclick="navigator.clipboard.writeText(this.value);toastr.success('Copid')" readonly value="{{route('vendor.auth.registration.index').'/'.$seller->referral_code }}" id="referral_url" class="form-control">
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex gap-2">
+                            <label class="title-color" for="referral_url">{{translate("referral_url")}}</label>
+                        </div>
+                        <a type="text" href="{{route('vendor.auth.registration.index').'/'.$seller->referral_code }}" id="referral_url" class="form-control" target="tblink">{{route('vendor.auth.registration.index').'/'.$seller->referral_code }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
         @if($seller->type_account!="office")
         <div class="card mb-3 remove-card-shadow">
             <div class="card-body">
@@ -139,6 +164,7 @@
            @endif
         </div>
         @endif
+        
     </div>
     <span id="withdraw-method-url" data-url="{{ route('vendor.dashboard.method-list') }}"></span>
     <span id="order-status-url" data-url="{{ route('vendor.dashboard.order-status', ['type' => ':type']) }}"></span>
