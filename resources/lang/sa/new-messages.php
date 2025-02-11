@@ -8524,4 +8524,9 @@ return [
 	"Sellers_referral" => "مكاسب الاحالة من المصنع",
 	"search_by_vendor_Name" => "البحث باسم التاجر",
 	"search_by_Vendor_Name" => "البحث باسم التاجر",
+	"Type_account" => "نوع الحساب",
+	"Fictory" => "Fictory",
+	"Forbidden" => "Forbidden",
+	"search_by_vendor_Name_or_shop_name" => "Search by vendor Name or shop name",
+	"Shop_does_not_exist" => "Shop does not exist",
 ];

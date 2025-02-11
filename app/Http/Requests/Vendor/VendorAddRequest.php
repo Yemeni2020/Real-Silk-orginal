@@ -32,19 +32,27 @@ class VendorAddRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules=[
             'f_name' => 'required',
             'l_name' => 'required',
             'phone' => 'required|unique:sellers|max:20',
             'email' => 'required|unique:sellers',
-            'image' => 'required|mimes:jpg,jpeg,png,webp,gif,bmp,tif,tiff',
+            // 'image' => 'required|mimes:jpg,jpeg,png,webp,gif,bmp,tif,tiff',
             'password' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)(?!.*\s).{8,}$/|same:confirm_password',
             'shop_name' => 'required',
             'shop_address' => 'required',
-            'logo' => 'required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff',
-            'banner' => 'required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff',
-            'bottom_banner' => 'mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff',
+            // 'logo' => 'required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff',
+            // 'banner' => 'required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff',
+            // 'bottom_banner' => 'mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff',
         ];
+        if($this->account_type!="office"){
+            $rules["image"]="required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff";
+            $rules["logo"]="required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff";
+            $rules["banner"]="required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff";
+            $rules["bottom_banner"]="required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff";
+        }
+        return $rules;
+
     }
 
     public function messages(): array

@@ -55,7 +55,7 @@
                                href="{{route('vendor.dashboard.index')}}">
                                 <i class="tio-home-vs-1-outlined nav-icon"></i>
                                 <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
-                                    {{translate('dashboard')}}
+                                    {{translate('dashboard')}} 
                                 </span>
                             </a>
                         </li>
@@ -73,10 +73,12 @@
                             </li>
                         @endif
 
+                        @if($seller->type_account!="office")
                         <li class="nav-item">
                             <small class="nav-subtitle">{{translate('order_management')}}</small>
                             <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                         </li>
+                        
                         <li class="navbar-vertical-aside-has-menu {{Request::is('vendor/orders*')?'active':''}}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:">
                                 <i class="tio-shopping-cart nav-icon"></i>
@@ -375,6 +377,7 @@
                                     class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('coupons')}}</span>
                             </a>
                         </li>
+                        @endif
                         <li class="nav-item">
                             <small class="nav-subtitle">{{translate('help_&_support')}}</small>
                             <small class="tio-more-horizontal nav-subtitle-replacer"></small>
@@ -388,6 +391,7 @@
                                     </span>
                             </a>
                         </li>
+                        @if($seller->type_account!="office")
                         <li class="nav-item {{(Request::is('vendor/transaction/order-list')) ? 'scroll-here':''}}">
                             <small class="nav-subtitle">{{translate('reports_&_analytics')}}</small>
                             <small class="tio-more-horizontal nav-subtitle-replacer"></small>
@@ -423,21 +427,24 @@
                             </span>
                             </a>
                         </li>
+                        
                         <li class="nav-item {{( Request::is('vendor/business-settings*'))?'scroll-here':''}}">
                             <small class="nav-subtitle" title="">{{translate('business_section')}}</small>
                             <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                         </li>
-                        @php($shippingMethod = getWebConfig('shipping_method'))
-                        @if($shippingMethod=='sellerwise_shipping')
-                            <li class="navbar-vertical-aside-has-menu {{Request::is('vendor/business-settings/shipping-method*')?'active':''}}">
-                                <a class="js-navbar-vertical-aside-menu-link nav-link"
-                                   href="{{route('vendor.business-settings.shipping-method.index')}}">
-                                    <i class="tio-settings nav-icon"></i>
-                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate text-capitalize text-capitalize">
-                                        {{translate('shipping_methods')}}
-                                    </span>
-                                </a>
-                            </li>
+                        
+                            @php($shippingMethod = getWebConfig('shipping_method'))
+                            @if($shippingMethod=='sellerwise_shipping')
+                                <li class="navbar-vertical-aside-has-menu {{Request::is('vendor/business-settings/shipping-method*')?'active':''}}">
+                                    <a class="js-navbar-vertical-aside-menu-link nav-link"
+                                    href="{{route('vendor.business-settings.shipping-method.index')}}">
+                                        <i class="tio-settings nav-icon"></i>
+                                        <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate text-capitalize text-capitalize">
+                                            {{translate('shipping_methods')}}
+                                        </span>
+                                    </a>
+                                </li>
+                            @endif
                         @endif
                         <li class="navbar-vertical-aside-has-menu {{Request::is('vendor/business-settings/withdraw*')?'active':''}}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link"
@@ -463,10 +470,15 @@
                                 <i class="tio-home nav-icon"></i>
                                 <span
                                     class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate text-capitalize">
+                                    @if($seller->type_account!="office")
                                     {{translate('shop_Settings')}}
+                                    @else
+                                    {{translate('office_Settings')}}
+                                    @endif
                                 </span>
                             </a>
                         </li>
+                        
                         <li class="navbar-vertical-aside-has-menu {{Request::is('vendor/referral_vendor*')?'active':''}}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link"
                                href="{{route('vendor.referral_vendor.index')}}">

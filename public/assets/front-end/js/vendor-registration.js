@@ -1,6 +1,15 @@
 'use strict';
 $(document).ready(function() {
     $('.proceed-to-next-btn').click(function() {
+        let type_account = $("input[name='account_type']:checked").val();
+
+        if (type_account == "office") {
+            $(".upload-file-control").parent().css("display", "none");
+        }
+        else{
+            $(".upload-file-control").parent().css("display", "block");
+
+        }
         let email = $('#email').val();
         let phone = $('.phone-input-with-country-picker').val();
         let password = $('#password').val();

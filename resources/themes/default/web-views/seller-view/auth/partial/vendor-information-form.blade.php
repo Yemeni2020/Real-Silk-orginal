@@ -18,8 +18,8 @@
                                         <input class="form-control" type="text" name="l_name" placeholder="{{translate('ex').': Doe'}}" required>
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
-                                    <div class="d-flex flex-column gap-3 align-items-center">
+                                <div class="col-sm-6 ">
+                                    <div class="d-flex flex-column gap-3 align-items-center upload-file-control">
                                         <div class="upload-file">
                                             <input type="file" class="upload-file__input" name="image" accept="image/*" required>
                                             <div class="upload-file__img">
@@ -54,8 +54,8 @@
                                 <textarea class="form-control" name="shop_address" id="shop_address" rows="4" placeholder="{{translate('shop_address')}}" required></textarea>
                             </div>
 
-                            <div class="border p-3 p-xl-4 rounded mb-4">
-                                <div class="d-flex flex-column gap-3 align-items-center">
+                            <div class="border p-3 p-xl-4 rounded mb-4 ">
+                                <div class="d-flex flex-column gap-3 align-items-center upload-file-control">
                                     <div class="upload-file">
                                         <input type="file" class="upload-file__input" name="logo" accept="image/*" required>
                                         <div class="upload-file__img">
@@ -77,8 +77,8 @@
                                 </div>
                             </div>
 
-                            <div class="border p-3 p-xl-4 rounded">
-                                <div class="d-flex flex-column gap-3 align-items-center">
+                            <div class="border p-3 p-xl-4 rounded ">
+                                <div class="d-flex flex-column gap-3 align-items-center upload-file-control">
                                     <div class="upload-file">
                                         <input type="file" class="upload-file__input" name="banner" accept="image/*" required>
                                         <div class="upload-file__img style--two">

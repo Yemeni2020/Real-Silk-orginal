@@ -78,6 +78,7 @@ class Kernel extends HttpKernel
         'seller' => SellerMiddleware::class,
         'customer' => CustomerMiddleware::class,
         'module' => ModulePermissionMiddleware::class,
+        'office' => \App\Http\Middleware\PreventOfficeAccess::class,
         'installation-check' => InstallationMiddleware::class,
         'actch' => ActivationCheckMiddleware::class,
         'api_lang' => APILocalizationMiddleware::class,

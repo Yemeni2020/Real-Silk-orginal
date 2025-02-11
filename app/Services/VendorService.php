@@ -175,6 +175,7 @@ class VendorService
             'password' => bcrypt($request['password']),
             'referral_code' => Helpers::generate_referer_code("seller"),
             'status' => $request['status'] == 'approved' ? 'approved' : 'pending',
+            'type_account' => $request['account_type'] == 'fictory' ? 'fictory' : 'office',
         ];
     }
 }

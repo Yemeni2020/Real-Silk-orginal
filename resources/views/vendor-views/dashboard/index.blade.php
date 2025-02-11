@@ -5,6 +5,7 @@
 @endpush
 
 @section('content')
+@php($seller = auth('seller')->user())
     <div class="content container-fluid">
         <div class="page-header pb-0 border-0 mb-3">
             <div class="flex-between row align-items-center mx-1">
@@ -13,13 +14,17 @@
                     <p>{{ translate('monitor_your_business_analytics_and_statistics').'.'}}</p>
                 </div>
 
+                @if($seller->type_account!="office")
                 <div>
                     <a class="btn btn--primary" href="{{route('vendor.products.list',['type'=>'all'])}}">
                         <i class="tio-premium-outlined mr-1"></i> {{translate('products')}}
                     </a>
                 </div>
+                @endif
             </div>
         </div>
+        
+        @if($seller->type_account!="office")
         <div class="card mb-3 remove-card-shadow">
             <div class="card-body">
                 <div class="row justify-content-between align-items-center g-2 mb-3">
@@ -43,11 +48,14 @@
                         </select>
                     </div>
                 </div>
+                
                 <div class="row g-2" id="order_stats">
                     @include('vendor-views.partials._dashboard-order-status',['orderStatus'=>$dashboardData['orderStatus']])
                 </div>
+                
             </div>
         </div>
+        @endif
         <div class="card mb-3 remove-card-shadow">
             <div class="card-body">
                 <div class="row justify-content-between align-items-center g-2 mb-3">
@@ -106,6 +114,7 @@
                 </div>
             </div>
         </div>
+        @if($seller->type_account!="office")
         <div class="row g-2">
             @php( $shippingMethod = getWebConfig('shipping_method'))
             <div class="col-12" id="earn-statistics-div">
@@ -129,6 +138,7 @@
                 </div>
            @endif
         </div>
+        @endif
     </div>
     <span id="withdraw-method-url" data-url="{{ route('vendor.dashboard.method-list') }}"></span>
     <span id="order-status-url" data-url="{{ route('vendor.dashboard.order-status', ['type' => ':type']) }}"></span>

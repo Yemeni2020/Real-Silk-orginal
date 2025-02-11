@@ -51,6 +51,7 @@ class Seller extends Authenticatable
         'image',
         'password',
         'status',
+        'type_account',
         'bank_name',
         'branch',
         'account_no',
@@ -74,7 +75,8 @@ class Seller extends Authenticatable
         'country_code' => 'string',
         'orders_count' => 'integer',
         'product_count' => 'integer',
-        'pos_status' => 'integer'
+        'pos_status' => 'integer',
+        'type_account' => 'string'
     ];
 
     public function scopeApproved($query)

@@ -71,7 +71,7 @@ class RegisterController extends BaseController
     public function add(VendorAddRequest $request): JsonResponse|null
     {
         
-        
+        // return null;
         $vendor = $this->vendorRepo->add(data: $this->vendorService->getAddData($request));
         if(!empty($request->referral_code))
             $this->vendorService->create_referral_vendor($vendor->id,$request->referral_code);

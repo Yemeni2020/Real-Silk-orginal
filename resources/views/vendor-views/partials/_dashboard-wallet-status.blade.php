@@ -30,6 +30,7 @@
                     </div>
                 </div>
             </div>
+            @if($seller->type_account!="office")
             <div class="col-md-6">
                 <div class="card card-body h-100 justify-content-center">
                     <div class="d-flex gap-2 justify-content-between align-items-center">
@@ -43,6 +44,7 @@
                     </div>
                 </div>
             </div>
+            @endif
             <div class="col-md-6">
                 <div class="card card-body h-100 justify-content-center">
                     <div class="d-flex gap-2 justify-content-between align-items-center">
@@ -69,6 +71,7 @@
                     </div>
                 </div>
             </div>
+            @if($seller->type_account!="office")
             <div class="col-md-6">
                 <div class="card card-body h-100 justify-content-center">
                     <div class="d-flex gap-2 justify-content-between align-items-center">
@@ -95,6 +98,7 @@
                     </div>
                 </div>
             </div>
+            
             <div class="col-md-6">
                 <div class="card card-body h-100 justify-content-center">
                     <div class="d-flex gap-2 justify-content-between align-items-center">
@@ -108,6 +112,7 @@
                     </div>
                 </div>
             </div>
+            @endif
             <div class="col-md-6">
                 <div class="card card-body h-100 justify-content-center">
                     <div class="d-flex gap-2 justify-content-between align-items-center">
