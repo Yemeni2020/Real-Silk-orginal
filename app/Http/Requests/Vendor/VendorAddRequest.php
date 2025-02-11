@@ -49,7 +49,6 @@ class VendorAddRequest extends FormRequest
             $rules["image"]="required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff";
             $rules["logo"]="required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff";
             $rules["banner"]="required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff";
-            $rules["bottom_banner"]="required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff";
         }
         return $rules;
 
