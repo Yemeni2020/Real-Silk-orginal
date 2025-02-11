@@ -31,6 +31,8 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use App\Mail\SubmitServicetedMail; // تأكد من إنشاء هذا الملف
+use Illuminate\Support\Facades\Mail;
 
 class ProductDetailsController extends Controller
 {
@@ -69,21 +71,33 @@ class ProductDetailsController extends Controller
 
     public function submit_service(Request $request)
     {
+
+
+        $customer=Auth::guard('customer')->user();
+
+        $product=Product::findOrFail($request->Product);
+        $name_product=$product->name;
+
+
         if (!Auth::guard('customer')->check()){
             Toastr::error(translate('Login For Submit In This Service'));
 
             return back();
         }
+        $allowedTypes = ['text', 'date', 'email', 'select', 'number', 'radios', 'checkbox'];
 
         $Failds = FormItem::where("item", $request->Product)->get();
         
         // التحقق من الحقول المطلوبة
         foreach ($Failds as $Faild) {
+            if (in_array($Faild->item_type, $allowedTypes)) {
 
-            if (!isset($request["faild$Faild->id"]) && $Faild->is_required) {
-                Toastr::error(translate('Error: Field '.$Faild->item_name.' is required'));
-                return back();
+                if (!isset($request["faild$Faild->id"]) && $Faild->is_required) {
+                    Toastr::error(translate('Error: Field '.$Faild->item_name.' is required'));
+                    return back();
+                }
             }
+
         }
     
         
@@ -93,22 +107,38 @@ class ProductDetailsController extends Controller
             'item' => $request->Product, // قيمة الـ item من جدول `products`
             'customer' => Auth::guard('customer')->user()->id, // قيمة الـ item من جدول `products`
         ]);
+        
     
         $detailsText = ""; // نص تفاصيل الطلب لإرساله عبر WhatsApp
-        foreach ($Failds as $Faild) {
-            $value = is_array($request["faild$Faild->id"])?implode(',', $request["faild$Faild->id"]):$request["faild$Faild->id"] ;
+        $orderDetails = [];// To Send To Email
 
-            
-            // إضافة التفاصيل إلى قاعدة البيانات
-            $order->details()->create([
-                'faild_id' => $Faild->id,
-                'name_faild' => $Faild->item_name,
-                'type_faild' => $Faild->item_type,
-                'value' => $value ,
-            ]);
-    
-            // إضافة التفاصيل إلى نص الرسالة
-            $detailsText .= "{$Faild->item_name}: {$value}\n";
+        foreach ($Failds as $Faild) {
+            if (in_array($Faild->item_type, $allowedTypes)) {
+
+                $value = is_array($request["faild$Faild->id"])?implode(',', $request["faild$Faild->id"]):$request["faild$Faild->id"] ;
+
+                // dump($value);
+                // return null;
+                
+                // إضافة التفاصيل إلى قاعدة البيانات
+                $order->details()->create([
+                    'faild_id' => $Faild->id,
+                    'name_faild' => $Faild->item_name,
+                    'type_faild' => $Faild->item_type,
+                    'value' => $value??null ,
+                ]);
+        
+                // إضافة التفاصيل إلى نص الرسالة
+                $detailsText .= "{$Faild->item_name}: {$value}\n";
+                $orderDetails[] = ['field' => $Faild->item_name, 'value' => $value];
+            }
+        }
+        // 📌 إرسال بريد إلكتروني للمسؤول 
+        try {
+            $adminEmail = "service@realsilk.sa"; // ضع بريد المسؤول هنا أو اجلبه من config
+            Mail::to($adminEmail)->send(new SubmitServicetedMail($order, $orderDetails,$customer,$name_product));
+        } catch (\Exception $e) {
+            \Log::error("Failed to send order email: " . $e->getMessage());
         }
     
         $whatsapp = getWebConfig(name: 'whatsapp');
@@ -116,7 +146,7 @@ class ProductDetailsController extends Controller
         {
             // $whatsappNumber = '+966536140455'; 
             $whatsappNumber = $whatsapp['phone']; 
-            $productName    = Product::find($request->Product)->name ?? "Unknown Product"; // اسم المنتج
+            $productName    =$name_product ?? "Unknown Product"; // اسم المنتج
             $whatsappMessage= "New Order Received:\nProduct: {$productName}\nDetails:\n{$detailsText}";
             $encodedMessage = urlencode($whatsappMessage);
             $whatsappUrl    = "https://wa.me/{$whatsappNumber}?text={$encodedMessage}";
