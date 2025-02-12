@@ -266,7 +266,7 @@
                                                         </div>
                                                     @else
                                                         <h6>{{$item_name}}</h6>
-                                                        <input class="form-control" {{$Faild->is_required ? "required" : ""}} type="{{$Faild->item_type}}" name="faild{{$Faild->id}}" value="{{$Faild->default_value}}" max="{{$Faild->item_length}}">
+                                                        <input class="form-control" {{$Faild->is_required ? "required" : ""}} type="{{$Faild->item_type}}" name="faild{{$Faild->id}}" value="{{$Faild->default_value}}" @if($Faild->item_type!="number") max="{{$Faild->item_length}}" @endif>
                                                     @endif
                                                 <?php
                                                 else:
