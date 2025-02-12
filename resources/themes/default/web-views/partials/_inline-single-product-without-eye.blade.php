@@ -20,13 +20,33 @@
                     <span class="for-discount-value-null"></span>
                 </div>
             @endif
+            @if( $product->product_type == "Service")
+                <span class="for-discount-value p-1 pl-2 pr-2 font-bold fs-13" style="transform:rotate(10deg);">
+                    <span class="direction-ltr d-block">
+                        {{translate('service')}}
+                    </span>
+                </span>
+            @endif
             <div class="p-10px pb-0">
                 <a href="{{route('product',$product->slug)}}" class="w-100">
                     <img alt=""
                          src="{{ getStorageImages(path: $product->thumbnail_full_url, type: 'product') }}">
                 </a>
             </div>
+            @if( $product->product_type == "Service")
 
+            <div class="quick-view">
+                <a class="btn-circle stopPropagation " href="{{route('product',$product->slug)}}">
+                    <i class="czi-eye align-middle"></i>
+                </a>
+            </div>
+            @else
+            <div class="quick-view">
+                <a class="btn-circle stopPropagation action-product-quick-view" href="javascript:" data-product-id="{{ $product->id }}">
+                    <i class="czi-eye align-middle"></i>
+                </a>
+            </div>
+            @endif
             @if($product->product_type == 'physical' && $product->current_stock <= 0)
                 <span class="out_fo_stock">{{translate('out_of_stock')}}</span>
             @endif
@@ -55,16 +75,19 @@
             </div>
             <div class="justify-content-between text-center">
                 <div class="product-price text-center d-flex flex-wrap justify-content-center align-items-center gap-8">
+                @if( $product->product_type != "Service")
                     @if($product->discount > 0)
                         <del class="category-single-product-price">
                             {{ webCurrencyConverter(amount: $product->unit_price) }}
                         </del>
                     @endif
+                    
                     <span class="text-accent text-dark">
                         {{ webCurrencyConverter(amount:
                             $product->unit_price-(getProductDiscount(product: $product, price: $product->unit_price))
                         ) }}
                     </span>
+                @endif
                 </div>
             </div>
         </div>

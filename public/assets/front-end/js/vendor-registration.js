@@ -100,16 +100,19 @@ function submitRegistration(){
                                 ProgressBar: true
                             });
                         }
+                        $('.tio-refresh').click();
                     } else if(data.error){
                         toastr.error(data.error, {
                             CloseButton: true,
                             ProgressBar: true
                         });
+                        $('.tio-refresh').click();
                     }else {
                         $('.registration-success-modal').modal('show');
                         setTimeout(function () {
                             location.href = data.redirectRoute;
                         }, 4000);
+                        $('.tio-refresh').click();
                     }
                 },complete: function () {
                     $("#loading").removeClass("d-grid");

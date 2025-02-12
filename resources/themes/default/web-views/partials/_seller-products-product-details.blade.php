@@ -15,6 +15,15 @@
         </span>
     </div>
     @endif
+    @if( $product->product_type == "Service")
+    <div class="d-flex position-absolute z-2">
+        <span class="for-discount-value p-1 pl-2 pr-2 font-bold fs-13" style="transform:rotate(10deg);">
+            <span class="direction-ltr d-block">
+                {{translate('service')}}
+            </span>
+        </span>
+    </div>
+    @endif
     <div class="d-flex">
         <div class="d-flex align-items-center justify-content-center p-3">
             <div class="flash-deals-background-image image-default-bg-color">
@@ -45,6 +54,7 @@
                 </div>
                 @endif
                 <div class="d-flex flex-wrap gap-8 align-items-center row-gap-0">
+                @if( $product->product_type != "Service")
                     @if($product->discount > 0)
                     <del class="category-single-product-price">
                         {{ webCurrencyConverter(amount: $product->unit_price) }}
@@ -53,6 +63,7 @@
                     <span class="flash-product-price fw-semibold text-dark">
                         {{ webCurrencyConverter(amount: $product->unit_price-getProductDiscount(product: $product, price: $product->unit_price)) }}
                     </span>
+                @endif
                 </div>
 
             </div>

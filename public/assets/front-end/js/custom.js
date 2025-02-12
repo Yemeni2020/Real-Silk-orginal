@@ -2322,6 +2322,7 @@ function responseManager(response) {
         if (response.message) {
             toastr.error(response.message);
         }
+        $('.tio-refresh').click();
     }
 
     if (response.errors) {
@@ -2335,11 +2336,13 @@ function responseManager(response) {
                 ProgressBar: true,
             });
         }
+        $('.tio-refresh').click();
     } else if (response.error) {
         toastr.error(response.error, {
             CloseButton: true,
             ProgressBar: true,
         });
+        $('.tio-refresh').click();
     }
 
     if (response?.reload) {

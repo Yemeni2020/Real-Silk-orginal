@@ -39,13 +39,16 @@ $('.submit-login-form').on('click',function (){
                             ProgressBar: true
                         });
                     }
+                    $('.tio-refresh').click();
                 } else if(data.error){
                     toastr.error(data.error, {
                         CloseButton: true,
                         ProgressBar: true
                     });
+                    $('.tio-refresh').click();
                 }else if(data.status){
-                    $('.'+data.status+'-message').removeClass('d-none')
+                    $('.'+data.status+'-message').removeClass('d-none');
+                    $('.tio-refresh').click();
                 }else {
                     location.href = data.redirectRoute;
                     toastr.success(data.success)
