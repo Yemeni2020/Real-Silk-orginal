@@ -6600,7 +6600,7 @@
 'offer_banner_maximum_size_' => 'الحد الأقصى لحجم بانر العرض ',
 'Shop_updated_successfully' => 'تم تحديث المتجر بنجاح',
 'Upload_Icon' => 'تحميل الأيقونة',
-'all_Stores' => 'جميع المتاجر',
+'all_Stores' => 'جميع المصانع',
 'Find your desired stores and shop your favourite products' => 'ابحث عن المصانع التي ترغب بها واشترِ منتجاتك المفضلة',
 'product_details_not_found' => 'لم يتم العثور على تفاصيل المنتج',
 'No_review_given_yet' => 'لم يتم تقديم تقييم بعد',
