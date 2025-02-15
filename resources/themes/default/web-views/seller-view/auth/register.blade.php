@@ -85,7 +85,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-12" id="_referral_code">
                                                 <div class="mb-4">
                                                     <label for="referral_code" class="text-capitalize">
                                                         {{translate('referral_code')}}
@@ -179,6 +179,12 @@
         document.getElementById('fictory').checked = (type === 'fictory');
         document.getElementById('office').checked = (type === 'office');
 
+        if(type=="office"){
+            $("#_referral_code").hide();
+            $("#referral_code").val("");
+        }else{
+            $("#_referral_code").show();
+        }
         // تحديث تنسيق الزر ليعكس التحديد
         document.querySelector('label[for="fictory"]').classList.toggle('btn--primary', type === 'fictory');
         document.querySelector('label[for="fictory"]').classList.toggle('btn-outline-primary', type !== 'fictory');
