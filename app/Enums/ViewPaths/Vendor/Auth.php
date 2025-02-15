@@ -20,6 +20,9 @@ enum Auth
         URI => 'index',
         VIEW => 'seller_registration'
     ];
+    const VENDOR_STEP1 = [
+        URI => 'step1',
+    ];
 
 
 }

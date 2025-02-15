@@ -8962,7 +8962,6 @@ return [
 	"category_Adv" => "Category Adv",
 	"Type_account" => "Type account",
 	"Factory" => "Factory",
-	"Factory" => "Factory",
 	"The password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit , one special character, and no spaces." => "The password must be at least 8 characters long and contain at least one uppercase letter  one lowercase letter  one digit   one special character  and no spaces.",
 	"The shop name field is required" => "The shop name field is required",
 	"The bottom banner field is required." => "The bottom banner field is required.",
@@ -8979,4 +8978,7 @@ return [
 	"Size (CM)" => "Size (CM)",
 	"The logo field is required." => "The logo field is required.",
 	"The password must be at least 8 characters" => "The password must be at least 8 characters",
+	"The image field is required." => "The image field is required.",
+	"The phone number must be at least 4 characters" => "The phone number must be at least 4 characters",
+	"The_phone_number_has_already_been_taken5545455" => "The phone number has already been taken5545455",
 ];

@@ -84,6 +84,7 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
             Route::group(['prefix' => 'registration', 'as' => 'registration.'], function () {
                 Route::controller(RegisterController::class)->group(function () {
                     Route::get(Auth::VENDOR_REGISTRATION[URI], 'index')->name('index');
+                    Route::post(Auth::VENDOR_STEP1[URI], 'checkEmailPhone')->name('check');
                     Route::get(Auth::VENDOR_REGISTRATION[URI]."/{referral_code}", 'index');
                     Route::post(Auth::VENDOR_REGISTRATION[URI], 'add');
                 });

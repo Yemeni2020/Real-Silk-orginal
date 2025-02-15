@@ -8927,4 +8927,5 @@ return [
 	"search_by_Vendor_Name" => "按工厂名称搜索",
 	"Unactive_Products" => "Unactive Products",
 	"Type_account" => "类型帐户",
+	"该电话号码已被占用" => "该电话号码已被占用",
 ];

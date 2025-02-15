@@ -12,6 +12,7 @@ use App\Enums\ViewPaths\Vendor\Auth;
 use App\Events\VendorRegistrationEvent;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Vendor\VendorAddRequest;
+use App\Http\Requests\Vendor\VendorCheckRequest;
 use App\Repositories\VendorRegistrationReasonRepository;
 use App\Services\ShopService;
 use App\Services\VendorService;
@@ -91,5 +92,20 @@ class RegisterController extends BaseController
                 'redirectRoute' => route('vendor.auth.login')
             ]
         );
+    }
+    public function checkEmailPhone(VendorCheckRequest $request){
+        // $request->validate(
+        //     ['email'=>'required|unique:sellers',
+        //     'phone'=>'required|unique:sellers|max:20',]
+        // ,['email.required' => translate('The_email_field_is_required'),
+        //     'email.unique' => translate('The_email_has_already_been_taken'),
+        //     'phone.required' => translate('The_phone_field_is_required'),
+        //     'phone.unique' => translate('The_phone_number_has_already_been_taken'),
+        // ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'البريد الإلكتروني ورقم الهاتف متاحان للتسجيل.'
+        ], 200);
     }
 }

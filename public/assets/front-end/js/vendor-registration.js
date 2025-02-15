@@ -12,6 +12,7 @@ $(document).ready(function() {
         }
         let email = $('#email').val();
         let phone = $('.phone-input-with-country-picker').val();
+        let Fullphone = $('#phone').val();
         let password = $('#password').val();
         let confirmPassword = $('#confirm_password').val();
         let referral_code = $('#referral_code').val();
@@ -53,8 +54,94 @@ $(document).ready(function() {
         } else {
             $('.confirm-password-error').html('');
         }
-        $('.first-el').fadeOut(300);
-        $('.second-el').fadeIn(300);
+        
+        const getFormId =  'seller-registration-step1';
+        
+        // let formData = new FormData(document.getElementById(getFormId));
+        let formData = new FormData();
+        formData.append("email", email);
+        formData.append("phone", Fullphone);
+        formData.append("password", password);
+        formData.append("confirm_password", confirmPassword);
+        formData.append("_token", $('meta[name="csrf-token"]').attr('content'));
+
+        let url = $('#seller-registration-step1').attr('action');
+            $.ajaxSetup({
+                headers: {
+                    'X-XSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.post({
+                url: $('#'+getFormId).attr('action'),
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                    $("#loading").removeClass("d--none");
+                    $("#loading").addClass("d-grid");
+                },
+                success: function (data) {
+                    if (data.errors) {
+                        for (let index = 0; index < data.errors.length; index++) {
+                            if(data.errors[index].error_code=="email")
+                                $('.mail-error').html(data.errors[index].message);
+                            if(data.errors[index].error_code=="phone")
+                                $('.phone-error').html(data.errors[index].message);
+                            toastr.error(data.errors[index].message, {
+                                CloseButton: true,
+                                ProgressBar: true
+                            });
+                        }
+                        $('.tio-refresh').click();
+                    } else if(data.error){
+                        toastr.error(data.error, {
+                            CloseButton: true,
+                            ProgressBar: true
+                        });
+                        $('.tio-refresh').click();
+                    }else {
+                        $('.first-el').fadeOut(300);
+                        $('.second-el').fadeIn(300);
+                        $('.tio-refresh').click();
+                    }
+                },error:function (xhr) {
+                    // $("#loading").removeClass("d-grid");
+                    // $("#loading").addClass("d--none");
+                if (xhr.status === 422) { // خطأ التحقق من البيانات
+                    let errors = xhr.responseJSON.errors;
+                    let msg="";
+                    if (errors.email) {
+                        msg=errors.email[0];
+                        $('.mail-error').html(msg); // عرض خطأ البريد
+                    } else {
+                        $('.mail-error').html('');
+                    }
+
+                    if (errors.phone) {
+                        msg=errors.phone[0];
+                        $('.phone-error').html(msg); // عرض خطأ الهاتف
+                    } else {
+                        $('.phone-error').html('');
+                    }
+
+                    toastr.error(msg, {
+                        CloseButton: true,
+                        ProgressBar: true
+                    });
+
+                } else {
+                    toastr.error(msg, {
+                        CloseButton: true,
+                        ProgressBar: true
+                    });
+                }
+                },complete: function () {
+                    $("#loading").removeClass("d-grid");
+                    $("#loading").addClass("d--none");
+
+                },
+            })
+        
     });
 });
 $('.back-to-main-page').on('click',function (){
@@ -93,8 +180,21 @@ function submitRegistration(){
                     $("#loading").addClass("d-grid");
                 },
                 success: function (data) {
+                    $('span[error="f_name"]').html("");
+                    $('span[error="l_name"]').html("");
+                    $('span[error="shop_name"]').html("");
+                    $('span[error="shop_address"]').html("");
+                    $('span[error="image"]').html("");
+                    $('span[error="logo"]').html("");
+                    $('span[error="g-recaptcha-response"]').html("");
                     if (data.errors) {
                         for (let index = 0; index < data.errors.length; index++) {
+                            let error_code=data.errors[index].error_code;
+                            $('span[error="'+error_code+'"]').html(data.errors[index].message);
+                            // if(data.errors[index].error_code=="f_name")
+                            //     $('span[error="f_name"]').html(data.errors[index].message);
+                            // if(data.errors[index].error_code=="l_name")
+                            //     $('span[error="l_name"]').html(data.errors[index].message);
                             toastr.error(data.errors[index].message, {
                                 CloseButton: true,
                                 ProgressBar: true

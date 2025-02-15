@@ -11,6 +11,7 @@
 
 
 @section('content')
+    <div id="seller-registration-step1" class="d-none" action="{{route('vendor.auth.registration.check')}}"></div>
     <form id="seller-registration" action="{{route('vendor.auth.registration.index')}}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="py-5">
@@ -46,7 +47,7 @@
                                                         <input class="form-control form-control-user phone-input-with-country-picker"
                                                                 type="tel"
                                                                 placeholder="{{ translate('enter_phone_number') }}" required>
-                                                        <input type="hidden" class="country-picker-phone-number w-50" name="phone" readonly>
+                                                        <input type="hidden" id="phone" class="country-picker-phone-number w-50" name="phone" readonly>
                                                     </div>
                                                 </div>
                                             </div>

@@ -12,10 +12,12 @@
                                     <div class="form-group mb-4">
                                         <label  for="f_name">{{translate('first_name')}} <span class="text-danger">*</span></label>
                                         <input class="form-control" type="text" name="f_name" placeholder="{{translate('ex').': John'}}" required>
+                                        <span error="f_name" class="text-danger fs-12"></span>
                                     </div>
                                     <div class="form-group mb-4">
                                         <label  for="l_name">{{translate('last_name')}} <span class="text-danger">*</span></label>
                                         <input class="form-control" type="text" name="l_name" placeholder="{{translate('ex').': Doe'}}" required>
+                                        <span error="l_name" class="text-danger fs-12"></span>
                                     </div>
                                 </div>
                                 <div class="col-sm-6 ">
@@ -31,11 +33,14 @@
                                                 </div>
                                                 <img src="#" class="dark-support img-fit-contain border" alt="" hidden>
                                             </div>
+
                                         </div>
 
                                         <div class="d-flex flex-column gap-1 upload-img-content text-center">
                                             <h6 class="text-uppercase mb-1 fs-14">{{translate('vendor_image')}}</h6>
                                             <div class="text-muted text-capitalize fs-12">{{translate('image_ratio').' '.'1:1'}}</div>
+                                            <span error="image" class="text-danger fs-12"></span>
+
                                         </div>
                                     </div>
                                 </div>
@@ -48,10 +53,14 @@
                             <div class="form-group mb-4">
                                 <label for="store_name" class="text-capitalize">{{translate('shop_Name')}} <span class="text-danger">*</span></label>
                                 <input class="form-control" type="text" id="shop_name"  name="shop_name" placeholder="{{translate('Ex: XYZ store')}}" required>
+                                <span error="shop_name" class="text-danger fs-12"></span>
+
                             </div>
                             <div class="form-group mb-4">
                                 <label for="store_address" class="text-capitalize">{{translate('shop_address')}} <span class="text-danger">*</span></label>
                                 <textarea class="form-control" name="shop_address" id="shop_address" rows="4" placeholder="{{translate('shop_address')}}" required></textarea>
+                                <span error="shop_address" class="text-danger fs-12"></span>
+
                             </div>
 
                             <div class="border p-3 p-xl-4 rounded mb-4 ">
@@ -67,12 +76,15 @@
                                             </div>
                                             <img src="#" class="dark-support img-fit-contain border" alt="" hidden>
                                         </div>
+
                                     </div>
 
                                     <div class="d-flex flex-column gap-1 upload-img-content text-center">
                                         <h6 class="text-uppercase mb-1 fs-14">{{translate('upload_logo')}}</h6>
                                         <div class="text-muted text-capitalize fs-12">{{translate('image_ratio').' '.'1:1'}}</div>
                                         <div class="text-muted text-capitalize fs-12">{{translate('Image Size : Max 2 MB')}}</div>
+                                        <span error="logo" class="text-danger fs-12"></span>
+
                                     </div>
                                 </div>
                             </div>
@@ -120,6 +132,8 @@
                                 </div>
                             </div>
                         @endif
+                        <span error="g-recaptcha-response" class="text-danger fs-12"></span>
+
                         <div class="d-flex justify-content-start mt-2">
                             <label class="custom-checkbox align-items-center">
                                 <input type="checkbox" class="" id="terms-checkbox" >
