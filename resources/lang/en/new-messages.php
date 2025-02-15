@@ -8981,4 +8981,9 @@ return [
 	"The image field is required." => "The image field is required.",
 	"The phone number must be at least 4 characters" => "The phone number must be at least 4 characters",
 	"The_phone_number_has_already_been_taken5545455" => "The phone number has already been taken5545455",
+	"no_such_user_found" => "No such user found",
+	"forget_your_password" => "Forget your password",
+	"follow_steps_secure" => "Follow steps secure",
+	"no_such_user_found22" => "No such user found22",
+	"password_reset_otp_sent" => "Password reset otp sent",
 ];

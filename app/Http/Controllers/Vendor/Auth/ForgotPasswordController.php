@@ -67,7 +67,8 @@ class ForgotPasswordController extends BaseController
     public function getPasswordResetRequest(PasswordResetRequest $request):JsonResponse
     {
         session()->put(SessionKey::FORGOT_PASSWORD_IDENTIFY, $request['identity']);
-        $verificationBy = getWebConfig('forgot_password_verification');
+        $verificationBy = $request['verificationBy'];//getWebConfig('forgot_password_verification');
+
         if($verificationBy == 'email')
         {
             $vendor = $this->vendorRepo->getFirstWhere(['identity' => $request['identity']]);
@@ -94,11 +95,14 @@ class ForgotPasswordController extends BaseController
                 ]);
             }
         }elseif ($verificationBy == 'phone') {
+            $request['identity']="+".$request['identity'];
             $vendor = $this->vendorRepo->getFirstWhere(['identity'=>$request['identity']]);
+            
             if (isset($vendor)) {
                 $token = rand(1000, 9999);
                 $this->passwordResetRepo->add($this->passwordResetService->getAddData(identity:$request['identity'],token: $token,userType:'seller'));
                 $publishedStatus = 0;
+                
                 $paymentPublishedStatus = config('get_payment_publish_status');
                 if (isset($payment_published_status[0]['is_published'])) {
                     $publishedStatus = $paymentPublishedStatus[0]['is_published'];
@@ -122,7 +126,7 @@ class ForgotPasswordController extends BaseController
             }
         }
         return response()->json([
-            'error'=>translate('no_such_user_found').'!!',
+            'error'=>translate('no_such_user_found').'!! '.$verificationBy,
         ]);
     }
 
@@ -140,7 +144,7 @@ class ForgotPasswordController extends BaseController
      */
     public function submitOTPVerificationCode(Request $request):RedirectResponse
     {
-        $id = session(SessionKey::FORGOT_PASSWORD_IDENTIFY);
+        $id = "+".session(SessionKey::FORGOT_PASSWORD_IDENTIFY);
         $passwordResetData = $this->passwordResetRepo->getFirstWhere(params: ['user_type' => 'seller', 'token' => $request['otp'], 'identity' => $id]);
         if (isset($passwordResetData)) {
             $token = $request['otp'];

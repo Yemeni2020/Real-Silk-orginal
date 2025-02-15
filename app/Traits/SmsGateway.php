@@ -16,7 +16,10 @@ trait  SmsGateway
         if (isset($config) && $config['status'] == 1) {
             return self::twilio($receiver, $otp);
         }
-
+        $config = self::get_settings('mseget');
+        if (isset($config) && $config['status'] == 1) {
+            return self::mseget($receiver, $otp);
+        }
         $config = self::get_settings('nexmo');
         if (isset($config) && $config['status'] == 1) {
             return self::nexmo($receiver, $otp);
@@ -143,6 +146,33 @@ trait  SmsGateway
         return $response;
     }
 
+    public static function mseget($number, $message)
+    {
+        $config = self::get_settings('mseget');
+        $baseUrl = $config['baseUrl'];
+        $username = $config['MSEGAT_USERNAME'];
+        $apiKey = $config['MSEGAT_API_KEY'];
+        $userSender = $config['MSEGAT_USER_SENDER'];
+        // echo  $number."<br>";
+        try {
+        $response = Http::post($baseUrl, [
+            'userName' => $username,
+            'apiKey' => $apiKey,
+            'numbers' => $number,
+            'userSender' => $userSender,
+            'msg' => $message,
+            'msgEncoding' => 'UTF8'
+        ]);
+            if($response["code"]=="1")
+                $response = 'success';
+            else
+                $response = 'error';
+        } catch (\Exception $exception) {
+            $response = 'error';
+        }
+        return $response;
+    }
+    
     public static function two_factor($receiver, $otp): string
     {
         $config = self::get_settings('2factor');

@@ -60,12 +60,19 @@
                             <div class="form-group">
                                 <label for="recover-email">{{translate('enter_your_email_address')}}</label>
                                 <input class="form-control" type="email" name="identity" id="recover-email" required>
+                                
+                                
+
+
                                 <div class="invalid-feedback">{{translate('please_provide_valid_email_address.')}}</div>
                             </div>
+                            <!-- My Code -->
+                            <input type="hidden" name="verificationBy" value="email">
+                            <!-- End My Code -->
                             <button class="btn btn-primary forget-password-form" type="button">{{translate('get_new_password')}}</button>
                         </form>
                     </div>
-                @else
+                @elseif($verificationBy=='phone')
                     <div class="card py-2 mt-4">
                         <form class="card-body needs-validation" action="{{route('vendor.auth.forgot-password.index')}}"
                               method="post">
@@ -79,6 +86,67 @@
                                            placeholder="{{ translate('enter_phone_number') }}" required>
                                 </div>
                             </div>
+
+                            <button class="btn btn--primary forget-password-form" type="button">{{translate('get_new password')}}</button>
+                        </form>
+                    </div>
+                @else
+
+                    <div class="form-group">
+                        <div>
+                            <label for="phoneLabel"
+                                    class="col-form-label">{{translate('phone')}} </label>
+                            <input name="identity"
+                                        type="radio" value="phone"  onchange="verificationBy(this)" >
+
+                            
+                        </div>
+                        <div>
+                        <label for="phoneLabel"
+                                class="col-form-label">{{translate('email')}} </label>
+                            <input  onchange="verificationBy(this)" checked value="email" name="identity"
+                                    type="radio" >
+                        </div>
+                    </div>
+                       
+                    <!-- My Code -->
+                    <div class="card py-2 mt-4" id="c-email" >
+                        <form class="card-body needs-validation" action="{{route('vendor.auth.forgot-password.index')}}"
+                              method="post">
+                            @csrf
+                            <div class="form-group">
+                                <label for="recover-email">{{translate('enter_your_email_address')}}</label>
+                                <input class="form-control" type="email" name="identity" id="recover-email" required>
+                                
+                                
+
+
+                                <div class="invalid-feedback">{{translate('please_provide_valid_email_address.')}}</div>
+                            </div>
+                            <!-- My Code -->
+                            <input type="hidden" name="verificationBy" value="email">
+                            <!-- End My Code -->
+                            <button class="btn btn-primary forget-password-form" type="button">{{translate('get_new_password')}}</button>
+                        </form>
+                    </div>
+                    <!-- End My Code -->
+
+                    <div class="card py-2 mt-4" id="c-phone" style="display: none;">
+                        <form class="card-body needs-validation" action="{{route('vendor.auth.forgot-password.index')}}"
+                              method="post">
+                            @csrf
+                            <div class="form-group">
+                                <label for="phoneLabel"
+                                       class="col-form-label input-label">{{translate('phone')}} </label>
+                                <div class=" mb-3">
+                                    <input class="form-control form-control-user" name="identity"
+                                           type="number" id="exampleInputPhone" value="{{old('phone')}}"
+                                           placeholder="{{ translate('enter_phone_number') }}" required>
+                                </div>
+                            </div>
+                            <!-- My Code -->
+                            <input type="hidden" name="verificationBy" value="phone">
+                            <!-- End My Code -->
                             <button class="btn btn--primary forget-password-form" type="button">{{translate('get_new password')}}</button>
                         </form>
                     </div>
@@ -109,7 +177,15 @@
 <script src="{{dynamicAsset(path: 'public/assets/back-end/js/toastr.js')}}"></script>
 <script src="{{dynamicAsset(path: 'public/assets/back-end/js/app-script.js')}}"></script>
 <script src="{{dynamicAsset(path: 'public/assets/back-end/js/vendor/forgot-password.js')}}"></script>
+<script>
+    function verificationBy(select){
 
+        var sel=select.value;
+        // alert(sel);
+        $("#c-email").toggle();
+        $("#c-phone").toggle();
+    }
+</script>
 {!! Toastr::message() !!}
 @if ($errors->any())
     <script>
