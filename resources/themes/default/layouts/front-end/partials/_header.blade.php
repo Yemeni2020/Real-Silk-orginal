@@ -80,19 +80,7 @@
                         @endforeach
                     </ul>
                 </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn--primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {{translate("office_zone")}}
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="{{route('vendor.auth.registration.index',['office'=>'office'])}}">
-                            <span class="text-capitalize"> {{translate("office_register")}}</span>
-                        </a>
-                        <a class="dropdown-item" href="{{route('vendor.auth.login')}}">
-                            <span class="text-capitalize"> {{translate("office_login")}}</span>
-                        </a>
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>
@@ -230,7 +218,11 @@
             </div>
         </div>
         <div class="navbar navbar-expand-md navbar-stuck-menu">
-            <div class="container px-10px">
+            <!-- <div class="container px-10px">Code Old -->
+            <div class=" px-10px" style="
+    margin: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;">
                 <div class="collapse navbar-collapse text-align-direction" id="navbarCollapse">
                     <div class="w-100 d-md-none text-align-direction">
                         <button class="navbar-toggler p-0" type="button" data-toggle="collapse"
@@ -487,6 +479,25 @@
 
                         @if ($businessMode == 'multi')
                             @if(getWebConfig(name: 'seller_registration'))
+                                <li class="nav-item">
+                                    <div class="dropdown">
+                                        <button class="btn dropdown-toggle text-white text-max-md-dark text-capitalize ps-2"
+                                                type="button" id="dropdownMenuButton"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            {{ translate('office_zone')}}
+                                        </button>
+                                        <div class="dropdown-menu __dropdown-menu-3 __min-w-165px text-align-direction"
+                                             aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item text-nowrap text-capitalize" href="{{route('vendor.auth.registration.index',['office'=>'office'])}}">
+                                                {{ translate('office_register')}}
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item text-nowrap" href="{{route('vendor.auth.login')}}">
+                                                {{ translate('office_login')}}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
                                 <li class="nav-item">
                                     <div class="dropdown">
                                         <button class="btn dropdown-toggle text-white text-max-md-dark text-capitalize ps-2"
