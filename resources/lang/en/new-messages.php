@@ -6964,7 +6964,7 @@ return [
 	"contact_with_vendor" => "Contact with Factory",
 	"Chat_with_vendor" => "Chat with Factory",
 	"all_Brands_Page" => "All Brands Page",
-	"vendor_registration" => "Factory/office registration",
+	"vendor_registration" => "Factory registration",
 	"vendor_image" => "Factory image",
 	"loader" => "Loader",
 	"vendor_reg" => "Factory reg",
