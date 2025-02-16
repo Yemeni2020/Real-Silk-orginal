@@ -68,7 +68,7 @@ class ProductListController extends Controller
         }
 
         $productListData = ProductManager::getProductListData(request: $request);
-        $products = $productListData->paginate(20)->appends($data);
+        $products = $productListData->where("status","=",1)->paginate(20)->appends($data);
 
         if ($request->ajax()) {
             return response()->json([
