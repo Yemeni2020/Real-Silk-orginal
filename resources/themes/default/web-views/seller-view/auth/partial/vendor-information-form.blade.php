@@ -6,7 +6,11 @@
                     <div class="card-body">
                         <h3 class="mb-4">{{translate('create_an_account')}}</h3>
                         <div class="border p-3 p-xl-4 rounded">
-                            <h4 class="mb-3">{{translate('vendor_information')}}</h4>
+                        @if($isoffice)
+                        <h4 class="mb-3">{{translate('office_information')}}</h4>
+                        @else
+                        <h4 class="mb-3">{{translate('vendor_information')}}</h4>
+                        @endif
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group mb-4">
@@ -48,17 +52,20 @@
                         </div>
 
                         <div class="border p-3 p-xl-4 rounded mt-4">
-                            <h4 class="mb-3 text-capitalize">{{translate('shop_information')}}</h4>
-
+                        @if($isoffice)
+                        <h4 class="mb-3 text-capitalize">{{translate('office_details')}}</h4>
+                        @else
+                        <h4 class="mb-3 text-capitalize">{{translate('shop_information')}}</h4>
+                        @endif
                             <div class="form-group mb-4">
-                                <label for="store_name" class="text-capitalize">{{translate('shop_Name')}} <span class="text-danger">*</span></label>
-                                <input class="form-control" type="text" id="shop_name"  name="shop_name" placeholder="{{translate('Ex: XYZ store')}}" required>
+                                <label for="store_name" class="text-capitalize">{{$isoffice?translate('office_name'):translate('shop_Name')}} <span class="text-danger">*</span></label>
+                                <input class="form-control" type="text" id="shop_name"  name="shop_name" placeholder="{{$isoffice?translate('office_name'):translate('Ex: XYZ store')}}" required>
                                 <span error="shop_name" class="text-danger fs-12"></span>
 
                             </div>
                             <div class="form-group mb-4">
-                                <label for="store_address" class="text-capitalize">{{translate('shop_address')}} <span class="text-danger">*</span></label>
-                                <textarea class="form-control" name="shop_address" id="shop_address" rows="4" placeholder="{{translate('shop_address')}}" required></textarea>
+                                <label for="store_address" class="text-capitalize">{{$isoffice?translate('office_address'):translate('shop_address')}} <span class="text-danger">*</span></label>
+                                <textarea class="form-control" name="shop_address" id="shop_address" rows="4" placeholder="{{$isoffice?translate('office_address'):translate('shop_address')}}" required></textarea>
                                 <span error="shop_address" class="text-danger fs-12"></span>
 
                             </div>

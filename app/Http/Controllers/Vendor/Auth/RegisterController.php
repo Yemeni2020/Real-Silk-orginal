@@ -43,12 +43,18 @@ class RegisterController extends BaseController
     {
     }
 
-    public function index(?Request $request,$referral_code=null, string $type = null): View|Collection|LengthAwarePaginator|null|callable|RedirectResponse
+    public function index(?Request $request,$referral_code=null, string $type = null): View|Collection|LengthAwarePaginator|callable|RedirectResponse
     {
         return $this->getView($referral_code);
     }
     public function getView($referral_code=null):View|RedirectResponse
     {
+        $isoffice=false;
+        if(isset($_GET["office"]))
+            $isoffice=true;
+        
+        // dump($isoffice);
+        // return null;
         $businessMode = getWebConfig(name:'business_mode');
         $vendorRegistration = getWebConfig(name:'seller_registration');
         if((isset($businessMode) && $businessMode=='single') || (isset($vendorRegistration) && $vendorRegistration==0))
@@ -66,13 +72,12 @@ class RegisterController extends BaseController
             orderBy: ['id' => 'desc'],
             filters: ['type' => 'vendor_registration', 'status' => '1'],
             dataLimit: 'all');
-        return view(VIEW_FILE_NAMES[Auth::VENDOR_REGISTRATION[VIEW]],compact('vendorRegistrationHeader','vendorRegistrationReasons','sellWithUs','downloadVendorApp','helpTopics','businessProcess','businessProcessStep',"referral_code"));
+        return view(VIEW_FILE_NAMES[Auth::VENDOR_REGISTRATION[VIEW]],compact('vendorRegistrationHeader','vendorRegistrationReasons','sellWithUs','downloadVendorApp','helpTopics','businessProcess','businessProcessStep',"referral_code","isoffice"));
     }
 
-    public function add(VendorAddRequest $request): JsonResponse|null
+    public function add(VendorAddRequest $request): JsonResponse
     {
         
-        // return null;
         $vendor = $this->vendorRepo->add(data: $this->vendorService->getAddData($request));
         if(!empty($request->referral_code))
             $this->vendorService->create_referral_vendor($vendor->id,$request->referral_code);

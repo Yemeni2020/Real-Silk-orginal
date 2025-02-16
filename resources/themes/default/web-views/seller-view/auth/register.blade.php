@@ -85,6 +85,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            @if(!$isoffice)
                                             <div class="col-sm-12" id="_referral_code">
                                                 <div class="mb-4">
                                                     <label for="referral_code" class="text-capitalize">
@@ -98,29 +99,34 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            @endif
+                                            @if($isoffice)
+                                            <input type="radio" id="office" name="account_type" value="office" class="d-none" checked>
+                                            @else
+                                            <input type="radio" id="fictory" name="account_type" value="fictory" class="d-none" checked>
 
-                                            <div class="col-sm-12">
+
+                                            <!-- <div class="col-sm-12">
                                                 <div class="mb-4">
                                                     <label class="text-capitalize">
                                                         {{translate('Type_account')}}
                                                         <span class="text-danger fs-12 confirm-referral_code-error"></span>
                                                     </label>
+
                                                     <div class="d-flex gap-3">
-                                                        <!-- زر Fictory (محدد تلقائيًا) -->
                                                         <input type="radio" id="fictory" name="account_type" value="fictory" class="d-none" checked>
                                                         <label for="fictory" class="btn btn--primary w-100" onclick="selectAccountType('fictory')">
                                                             {{translate("vendor")}}
                                                         </label>
 
-                                                        <!-- زر Office -->
                                                         <input type="radio" id="office" name="account_type" value="office" class="d-none">
                                                         <label for="office" class="btn btn-outline-primary w-100" onclick="selectAccountType('office')">
                                                             {{translate("Office")}}
                                                         </label>
                                                     </div>
                                                 </div>
-                                            </div>
-
+                                            </div> -->
+                                            @endif
                                             <div class="col-12">
                                                 <div class="d-flex justify-content-end">
                                                     <button type="button" class="btn btn--primary proceed-to-next-btn text-capitalize" >{{translate('proceed_to_next')}}</button>

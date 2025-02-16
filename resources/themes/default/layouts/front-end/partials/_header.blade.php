@@ -80,6 +80,19 @@
                         @endforeach
                     </ul>
                 </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn--primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{translate("office_zone")}}
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{{route('vendor.auth.registration.index',['office'=>'office'])}}">
+                            <span class="text-capitalize"> {{translate("office_register")}}</span>
+                        </a>
+                        <a class="dropdown-item" href="{{route('vendor.auth.login')}}">
+                            <span class="text-capitalize"> {{translate("office_login")}}</span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
