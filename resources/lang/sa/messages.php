@@ -8199,4 +8199,5 @@
 "Unactive_Products"=>"منتجات غير نشطة",
 "referral_code"=>"كود الاحالة",
 "referredBy"=>"تمت الإشارة إليه بواسطة",
+"Your data is incomplete. Please complete the data in your profile."=>"بياناتك غير كاملة الرجاء اكمال البيانات في ملفك الشخصي",
 );

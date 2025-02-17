@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Payment_Methods\MyFatoorah;
 
 use Exception;
+use Brian2694\Toastr\Facades\Toastr;
 
 /**
  * MyFatoorah is responsible for handling calling MyFatoorah API endpoints.
@@ -230,7 +231,11 @@ class MyFatoorah extends MyFatoorahHelper
         $error = self::getAPIError($json, (string) $res);
         if ($error) {
             $this->log("$msgLog - Error: $error");
-            throw new Exception($error);
+            Toastr::error(translate("Invalid phone number. Please update your profile."));
+            $err = json_decode(json_encode(["Error" => "error"]));
+
+            return $err;
+            // throw new Exception($error);
         }
 
         //***************************************

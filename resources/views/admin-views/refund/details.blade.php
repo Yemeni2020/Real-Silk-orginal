@@ -403,10 +403,11 @@
                                 </span>
                             </label>
                             <input type="text" class="form-control" name="payment_info" placeholder="{{translate('ex').' : '.'Paypal'}}">
+                            <input type="hidden" name="id_order" value="{{$order->id}}">
                         </div>
                         <div class="d-flex flex-wrap justify-content-end gap-3 mt-3">
                             <button type="button" class="btn btn-secondary px-3" data-dismiss="modal">{{ translate('close') }}</button>
-                            <button type="button" class="btn btn--primary form-submit" data-form-id="submit-refund-form" data-message="{{translate('want_to_refund_this_refund_request').'?'}}" data-redirect-route="{{route('admin.refund-section.refund.list',['status'=>$refund['status']])}}">{{ translate('submit') }}</button>
+                            <button type="submit" class="btn btn--primary form-submit" data-form-id="submit-refund-form" data-message="{{translate('want_to_refund_this_refund_request').'?'}}" data-redirect-route="{{route('admin.refund-section.refund.list',['status'=>$refund['status']])}}">{{ translate('submit') }}</button>
                         </div>
                     </div>
                 </form>

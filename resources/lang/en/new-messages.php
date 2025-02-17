@@ -9000,4 +9000,7 @@ return [
 	"best_delivery_service,_highly_recommended" => "Best delivery service  highly recommended",
 	"offline_Payment_allows_customers_to_use_external_payment_methods._They_must_share_payment_details_with_the_vendor_afterward._Admin_can_set_whether_customers_can_make_offline_payments_by_enabling/disabling_this_button.
                                             " => "Offline Payment allows customers to use external payment methods. They must share payment details with the vendor afterward. Admin can set whether customers can make offline payments by enabling/disabling this button. ",
+	"total_refunded_amount" => "Total refunded amount",
+	"Invalid phone number. Please update your profile." => "Invalid phone number. Please update your profile.",
+	"Your data is incomplete. Please complete the data in your profile." => "Your data is incomplete. Please complete the data in your profile.",
 ];

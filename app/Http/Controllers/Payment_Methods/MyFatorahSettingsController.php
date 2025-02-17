@@ -253,7 +253,14 @@ class MyFatorahSettingsController extends Controller
             Toastr::error(translate("this_method_payment_don't_support_this_currency (".session('currency_code').")"));
             return back();
         }
+        // ✅ التحقق من صحة رقم الهاتف
+        $mobileCountryCode = strlen($customer->phone) > 9 ? substr($customer->phone, 0, strlen($customer->phone) - 9) : "+966";
+        $customerMobile = strlen($customer->phone) > 9 ? substr($customer->phone, (strlen($customer->phone) - 9)) : $customer->phone;
 
+        if (!is_numeric($customerMobile) || strlen($customerMobile) < 4) {
+            Toastr::error(translate("Invalid phone number. Please update your profile."));
+            return back();
+        }
         $IsTest = $this->config_values->mode=="test"?true:false;//$tapSettings["key"]=="test_socket"?true:false;
         
 
@@ -279,18 +286,29 @@ class MyFatorahSettingsController extends Controller
         try {
             $mfObj = new MyFatoorahPayment($config);
             $data  = $mfObj->getInvoiceURL($postFields, $paymentMethodId);
-            // echo $data->invoiceId;
-            // dump($data);
-            $invoiceId   = $data["invoiceId"];
-            $paymentLink = $data["invoiceURL"];
-            // echo $paymentLink;
-            // $statusLink = MyFatoorahPayment::getPaymentStatusLink($paymentLink, $invoiceId);
-            // dump($postFields);
-            // return null;
 
-            echo "Click on <a href='$paymentLink' target='_blank'>$paymentLink</a> to pay with invoiceID $invoiceId.";
-            return redirect($data["invoiceURL"]);
+            // return null;
+            if(property_exists($data, 'Error')){
+                Toastr::error(translate("Your data is incomplete. Please complete the data in your profile."));
+                return back();
+            }else{
+                // echo $data->invoiceId;
+                // dump($data);
+                $invoiceId   = $data["invoiceId"];
+                $paymentLink = $data["invoiceURL"];
+                // echo $paymentLink;
+                // $statusLink = MyFatoorahPayment::getPaymentStatusLink($paymentLink, $invoiceId);
+                // dump($postFields);
+                // return null;
+    
+                
+                echo "Click on <a href='$paymentLink' target='_blank'>$paymentLink</a> to pay with invoiceID $invoiceId.";
+                return redirect($data["invoiceURL"]);
+
+            }
         } catch (Exception $ex) {
+            Toastr::error(translate("Your data is incomplete. Please complete the data in your profile."));
+            return back();
             echo $ex->getMessage();
         }
            
@@ -372,7 +390,7 @@ class MyFatorahSettingsController extends Controller
         // التحقق من حالة الاستجابة
         if ($response->successful()) {
             $data = $response->json();
-            return null;
+            // return null;
             if (isset($data['Data']['InvoiceStatus']) && $data['Data']['InvoiceStatus'] === 'Paid') {
                 $transactionId = $data['Data']['TransactionId'];
                 return response()->json(['success' => true, 'transaction_id' => $transactionId, 'message' => 'تمت عملية الدفع بنجاح']);

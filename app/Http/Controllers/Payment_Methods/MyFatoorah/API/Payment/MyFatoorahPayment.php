@@ -198,6 +198,10 @@ class MyFatoorahPayment extends MyFatoorah
             }
 
             $data = $this->sendPayment($curlData);
+
+            if(property_exists($data, 'Error'))
+            return $data;
+            else
             return ['invoiceURL' => $data->InvoiceURL, 'invoiceId' => $data->InvoiceId];
         } else {
             $curlData['PaymentMethodId'] = $gatewayId;
@@ -222,7 +226,13 @@ class MyFatoorahPayment extends MyFatoorah
         $this->preparePayment($curlData);
 
         $json = $this->callAPI("$this->apiURL/v2/SendPayment", $curlData, $curlData['CustomerReference'], 'Send Payment');
-        return $json->Data;
+        if (is_object($json) && property_exists($json, 'Data')) {
+            return $json->Data;
+        }
+    
+        // ✅ إذا لم يكن كائنًا، إرجاع خطأ واضح
+        $err = json_decode(json_encode(["InvoiceURL" => "error","InvoiceId"=>"error"]));
+        return $json;
     }
 
     //-----------------------------------------------------------------------------------------------------------------------------------------
