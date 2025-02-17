@@ -4,22 +4,46 @@ namespace App\Services;
 
 class RefundTransactionService
 {
-    public function getData(object $request, object $refund, object $order): array
+    public function getData(object $request, object $refund, object $order,object $orderTransaction=null): array
     {
-        return [
-            'order_id'=>  $refund['order_id'],
-            'payment_for'=>  'Refund Request',
-            'payer_id'=>  $order['seller_id'],
-            'payment_receiver_id'=>  $refund['customer_id'],
-            'paid_by'=>  $order['seller_is'],
-            'paid_to'=>  'customer',
-            'payment_method'=>  $request['payment_method'],
-            'payment_status'=>  $request['payment_method'] != null ? 'paid' : 'unpaid',
-            'amount'=>  $refund['amount'],
-            'transaction_type'=>  'Refund',
-            'order_details_id'=>  $refund['order_details_id'],
-            'refund_id'=>  $refund['id'],
-        ];
+        if($orderTransaction!=null){
+            return [
+                'order_id'=>  $refund['order_id'],
+                'payment_for'=>  'Refund Request',
+                'payer_id'=>  $order['seller_id'],
+                'payment_receiver_id'=>  $refund['customer_id'],
+                'paid_by'=>  $order['seller_is'],
+                'paid_to'=>  'customer',
+                'payment_method'=>  $request['payment_method'],
+                'payment_status'=>  $request['payment_method'] != null ? 'paid' : 'unpaid',
+                'amount'=>  $refund['amount'],
+                'seller_amount'=>  $orderTransaction['seller_amount'],
+                'admin_commission'=>  $orderTransaction['admin_commission'],
+                'referral_commission'=>  $orderTransaction['referral_commission'],
+                'referral'=>  $orderTransaction['received_by']??0,
+                'tax'=>  $orderTransaction['tax'],
+                'transaction_type'=>  'Refund',
+                'order_details_id'=>  $refund['order_details_id'],
+                'refund_id'=>  $refund['id'],
+            ];
+
+        }else{
+
+            return [
+                'order_id'=>  $refund['order_id'],
+                'payment_for'=>  'Refund Request',
+                'payer_id'=>  $order['seller_id'],
+                'payment_receiver_id'=>  $refund['customer_id'],
+                'paid_by'=>  $order['seller_is'],
+                'paid_to'=>  'customer',
+                'payment_method'=>  $request['payment_method'],
+                'payment_status'=>  $request['payment_method'] != null ? 'paid' : 'unpaid',
+                'amount'=>  $refund['amount'],
+                'transaction_type'=>  'Refund',
+                'order_details_id'=>  $refund['order_details_id'],
+                'refund_id'=>  $refund['id'],
+            ];
+        }
     }
     public function getPDFData(string $companyPhone,string $companyEmail,string $companyName,string $companyWebLogo,object $refundTransactions,):array
     {

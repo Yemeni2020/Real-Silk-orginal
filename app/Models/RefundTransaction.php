@@ -36,6 +36,10 @@ class RefundTransaction extends Model
         'payment_method',
         'payment_status',
         'amount',
+        'seller_amount',
+        'admin_commission',
+        'referral_commission',
+        'tax',
         'transaction_type',
         'order_details_id',
         'created_at',
@@ -54,6 +58,10 @@ class RefundTransaction extends Model
         'payment_status' => 'string',
         'order_details_id' => 'integer',
         'amount' => 'float',
+        'seller_amount'=> 'float',
+        'admin_commission'=> 'float',
+        'referral_commission'=> 'float',
+        'tax'=> 'float',
         'transaction_type' => 'string',
         'refund_id' => 'string'
     ];

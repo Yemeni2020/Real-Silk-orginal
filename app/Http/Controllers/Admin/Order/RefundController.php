@@ -10,6 +10,7 @@ use App\Contracts\Repositories\OrderRepositoryInterface;
 use App\Contracts\Repositories\RefundRequestRepositoryInterface;
 use App\Contracts\Repositories\RefundStatusRepositoryInterface;
 use App\Contracts\Repositories\RefundTransactionRepositoryInterface;
+use App\Contracts\Repositories\OrderTransactionRepositoryInterface;
 use App\Contracts\Repositories\VendorWalletRepositoryInterface;
 use App\Enums\ViewPaths\Admin\RefundRequest;
 use App\Enums\ExportFileNames\Admin\RefundRequest as RefundRequestExportFile;
@@ -44,6 +45,7 @@ class RefundController extends BaseController
         private readonly VendorWalletRepositoryInterface            $vendorWalletRepo,
         private readonly RefundStatusRepositoryInterface            $refundStatusRepos,
         private readonly RefundTransactionRepositoryInterface       $refundTransactionRepo,
+        private readonly OrderTransactionRepositoryInterface        $orderTransactionRepo,
         private readonly LoyaltyPointTransactionRepositoryInterface $loyaltyPointTransactionRepo
     )
     {
@@ -95,9 +97,13 @@ class RefundController extends BaseController
             ));
     }
 
-    public function updateRefundStatus(RefundStatusRequest $request, RefundStatusService $refundStatusService, RefundTransactionService $refundTransactionService): JsonResponse
+    public function updateRefundStatus(RefundStatusRequest $request, RefundStatusService $refundStatusService, RefundTransactionService $refundTransactionService): JsonResponse|null
     {
         $refund = $this->refundRequestRepo->getFirstWhere(params: ['id' => $request['id']]);
+        $orderTransaction = $this->orderTransactionRepo->getFirstWhere(params: ['order_id' => $refund['order_id']]);
+
+        // dump($orderTransaction);
+        // return null;
         if($refund['status'] == 'refunded'){
             return response()->json(['error'=>translate('when_refund_status_refunded').','.translate('then_you_can`t_change_refund_status').'.']);
         }
@@ -124,10 +130,24 @@ class RefundController extends BaseController
                 $adminWallet = $this->adminWalletRepo->getFirstWhere(params: ['admin_id' => $order['seller_id']]);
                 $this->adminWalletRepo->updateWhere(params: ['admin_id' => $order['seller_id']], data: ['inhouse_earning' => $adminWallet['inhouse_earning'] - $refund['amount']]);
             } else {
+                $adminWallet = $this->adminWalletRepo->getFirstWhere(params: ['admin_id' => 1]);
+                $this->adminWalletRepo->updateWhere(params: ['admin_id' => 1], data: ['commission_earned' => $adminWallet['commission_earned'] - $orderTransaction['admin_commission']]);
+                
+                
+                $amount_seller=$orderTransaction['order_amount']-($orderTransaction['referral_commission']+$orderTransaction['admin_commission']);
+
                 $sellerWallet = $this->vendorWalletRepo->getFirstWhere(params: ['seller_id' => $order['seller_id']]);
-                $this->vendorWalletRepo->updateWhere(params: ['seller_id' => $order['seller_id']], data: ['total_earning' => $sellerWallet['total_earning'] - $refund['amount']]);
+                $this->vendorWalletRepo->updateWhere(params: ['seller_id' => $order['seller_id']], data: ['total_earning' => $sellerWallet['total_earning'] - $amount_seller,'referral_commission' =>$sellerWallet['referral_commission'] - $orderTransaction['referral_commission'],'commission_given' =>$sellerWallet['commission_given'] - $orderTransaction['admin_commission']]);
+                
+                
+                $received_byWallet = $this->vendorWalletRepo->getFirstWhere(params: ['seller_id' => $orderTransaction['received_by']]);
+
+                if(isset($received_byWallet)){
+                    if($received_byWallet->count()>0)
+                    $this->vendorWalletRepo->updateWhere(params: ['seller_id' => $orderTransaction['received_by']], data: ['total_earning' => $received_byWallet['total_earning'] - $orderTransaction['seller_amount']]);
+                }
             }
-            $this->refundTransactionRepo->add(data: $refundTransactionService->getData(request: $request, refund: $refund, order: $order));
+            $this->refundTransactionRepo->add(data: $refundTransactionService->getData(request: $request, refund: $refund, order: $order,orderTransaction:$orderTransaction));
         }
 
         if ($refund['status'] != 'refunded') {
