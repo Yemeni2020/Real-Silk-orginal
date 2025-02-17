@@ -288,7 +288,7 @@ class MyFatorahSettingsController extends Controller
             $data  = $mfObj->getInvoiceURL($postFields, $paymentMethodId);
 
             // return null;
-            if(property_exists($data, 'Error')){
+            if(isset($data['Error'])){
                 Toastr::error(translate("Your data is incomplete. Please complete the data in your profile."));
                 return back();
             }else{

@@ -200,7 +200,7 @@ class MyFatoorahPayment extends MyFatoorah
             $data = $this->sendPayment($curlData);
 
             if(property_exists($data, 'Error'))
-            return $data;
+            return ['Error' => "error"];
             else
             return ['invoiceURL' => $data->InvoiceURL, 'invoiceId' => $data->InvoiceId];
         } else {
