@@ -72,6 +72,22 @@
                                                 @endforeach
                                             </select>
                                         </div>
+
+                                        <div class="col-sm-6 col-lg-4 col-xl-3">
+                                            <div class="form-group">
+                                                <div class="d-flex align-items-center gap-2 mb-2">
+                                                    <label for="exchange_rate"
+                                                        class="title-color mb-0">{{translate('type_change_value')}}</label>
+                                                    <i class="tio-info-outined" data-toggle="tooltip"
+                                                    title="{{translate('based_on_your_region_set_the_exchange_rate_of_the_currency_you_want_to_add')}}"></i>
+                                                </div>
+                                                <select class="select2-selection custom-select" name="auto_change" >
+                                                    <option value="0" @if(!$currency['auto_change']) selected @endif>{{translate('static_Value')}}</option>
+                                                    <option value="1" @if($currency['auto_change']) selected @endif>{{translate('dynamic_Value')}}</option>
+                                                    
+                                                </select>
+                                            </div>
+                                        </div>
                                     @endif
                                 </div>
                             </div>

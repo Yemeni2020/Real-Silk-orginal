@@ -28,6 +28,7 @@ class Currency extends Model
     protected $casts = [
         'id' => 'integer',
         'status' => 'boolean',
+        'auto_change' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -37,6 +38,7 @@ class Currency extends Model
         'symbol',
         'code',
         'exchange_rate',
+        'auto_change',
         'status',
     ];
 

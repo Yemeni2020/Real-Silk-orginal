@@ -106,17 +106,58 @@ class CurrencyController extends BaseController
         ];
     }
 
-    public function add(Request $request): RedirectResponse
+    public function add(Request $request): RedirectResponse|null
     {
         $currencyExist = $this->currencyRepo->getFirstWhere(params: ['code' => $request['code']]);
         if ($currencyExist) {
             Toastr::warning(translate('Currency_already_exist'));
             return redirect()->back();
         }
+
+        if($request['auto_change']==1){
+            $exchange=getWebConfig(name: 'Currency_exchangerate');
+
+            
+            if(empty($exchange) || $exchange == null){
+                Toastr::warning(translate('You_Cannot_Select_auto_change_currency_if_Setting_auto_exchange_rate_api_not_found'));
+                return redirect()->back();
+            }
+            $req_url = "https://v6.exchangerate-api.com/v6/$exchange/latest/USD";
+
+            $response_json = @file_get_contents($req_url);
+
+            // التحقق مما إذا كان `file_get_contents` قد فشل في جلب البيانات
+            if (!$response_json) {
+                Toastr::error(translate('Failed to connect to the API. Please check your credentials.'));
+                return back();
+            }
+
+            // تحويل البيانات إلى JSON
+            $response_data = json_decode($response_json, true);
+
+            // التحقق مما إذا كانت الاستجابة تحتوي على خطأ
+            if (!isset($response_data['result']) || $response_data['result'] !== "success") {
+                Toastr::error(translate('Invalid API Key. Please enter a valid key.'));
+                return back();
+            }
+
+
+            if(!isset($response_data["conversion_rates"][$request['code']])){
+                Toastr::error(translate('Currency Code Is Error.'));
+                return back();
+            }
+            if(!isset($response_data["conversion_rates"][getCurrencyCode()])){
+                Toastr::error(translate('default Currency Code Is Error.'));
+                return back();
+            }
+
+        }
+
         $this->currencyRepo->add([
             'name' => $request['name'],
             'symbol' => $request['symbol'],
             'code' => $request['code'],
+            'auto_change' => $request['auto_change'],
             'exchange_rate' => $request->has('exchange_rate') ? $request['exchange_rate'] : 1,
             'language' => $request->has('lang') ? $request['lang'] : "",
         ]);
@@ -160,10 +201,53 @@ class CurrencyController extends BaseController
             }
         }
 
+
+
+        if($request['auto_change']==1){
+            $exchange=getWebConfig(name: 'Currency_exchangerate');
+
+            
+            if(empty($exchange) || $exchange == null){
+                Toastr::warning(translate('You_Cannot_Select_auto_change_currency_if_Setting_auto_exchange_rate_api_not_found'));
+                return redirect()->back();
+            }
+            $req_url = "https://v6.exchangerate-api.com/v6/$exchange/latest/USD";
+
+            $response_json = @file_get_contents($req_url);
+
+            // التحقق مما إذا كان `file_get_contents` قد فشل في جلب البيانات
+            if (!$response_json) {
+                Toastr::error(translate('Failed to connect to the API. Please check your credentials.'));
+                return back();
+            }
+
+            // تحويل البيانات إلى JSON
+            $response_data = json_decode($response_json, true);
+
+            // التحقق مما إذا كانت الاستجابة تحتوي على خطأ
+            if (!isset($response_data['result']) || $response_data['result'] !== "success") {
+                Toastr::error(translate('Invalid API Key. Please enter a valid key.'));
+                return back();
+            }
+
+
+            if(!isset($response_data["conversion_rates"][$request['code']])){
+                Toastr::error(translate('Currency Code Is Error.'));
+                return back();
+            }
+            if(!isset($response_data["conversion_rates"][getCurrencyCode()])){
+                Toastr::error(translate('default Currency Code Is Error.'));
+                return back();
+            }
+
+        }
+
+        
         $dataArray = [
             'name' => $request['name'],
             'symbol' => $request['symbol'],
             'code' => $request['code'],
+            'auto_change' => $request['auto_change'],
             'exchange_rate' => $request->has('exchange_rate') ? $request['exchange_rate'] : 1,
             'language' => $request->has('lang') ? $request['lang'] :"",
         ];

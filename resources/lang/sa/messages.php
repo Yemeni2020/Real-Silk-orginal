@@ -8199,5 +8199,8 @@
 "Unactive_Products"=>"منتجات غير نشطة",
 "referral_code"=>"كود الاحالة",
 "referredBy"=>"تمت الإشارة إليه بواسطة",
+"dynamic_Value"=>"قيمة متغير",
+"static_Value"=>"قيمة ثابتة",
+"type_change_value"=>"نوع تغيير قيمة السلعة",
 "Your data is incomplete. Please complete the data in your profile."=>"بياناتك غير كاملة الرجاء اكمال البيانات في ملفك الشخصي",
 );

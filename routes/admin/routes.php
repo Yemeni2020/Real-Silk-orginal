@@ -78,6 +78,7 @@ use App\Enums\ViewPaths\Admin\DeliverymanWithdraw;
 use App\Enums\ViewPaths\Admin\DeliveryRestriction;
 use App\Enums\ViewPaths\Admin\EnvironmentSettings;
 use App\Enums\ViewPaths\Admin\SocialLoginSettings;
+use App\Enums\ViewPaths\Admin\CurrencyConfig;
 use App\Http\Controllers\Admin\ChattingController;
 use App\Http\Controllers\Admin\POS\CartController;
 use App\Enums\ViewPaths\Admin\OfflinePaymentMethod;
@@ -162,6 +163,7 @@ use App\Http\Controllers\Admin\Settings\SocialMediaSettingsController;
 use App\Http\Controllers\Admin\SystemSetup\SystemLoginSetupController;
 use App\Http\Controllers\Admin\Notification\NotificationSetupController;
 use App\Http\Controllers\Admin\ThirdParty\SocialLoginSettingsController;
+use App\Http\Controllers\Admin\ThirdParty\CurrencyConfigController;
 use App\Http\Controllers\Admin\Deliveryman\DeliverymanWithdrawController;
 use App\Http\Controllers\Admin\Settings\VendorRegistrationReasonController;
 use App\Http\Controllers\Admin\Deliveryman\DeliveryManCashCollectController;
@@ -1054,6 +1056,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
             Route::get(SocialLoginSettings::VIEW[URI], 'index')->name('view');
             Route::post(SocialLoginSettings::UPDATE[URI] . '/{service}', 'update')->name('update');
             Route::post(SocialLoginSettings::APPLE_UPDATE[URI] . '/{service}', 'updateAppleLogin')->name('update-apple');
+        });
+    });
+    Route::group(['prefix' => 'currency-config', 'as' => 'currency-config.', 'middleware' => ['module:system_settings']], function () {
+        Route::controller(CurrencyConfigController::class)->group(function () {
+            Route::get(CurrencyConfig::VIEW[URI], 'index')->name('view');
+            Route::post(CurrencyConfig::UPDATE[URI] , 'update')->name('update');
         });
     });
 

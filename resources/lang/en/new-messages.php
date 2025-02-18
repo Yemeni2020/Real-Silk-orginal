@@ -9003,4 +9003,16 @@ return [
 	"total_refunded_amount" => "Total refunded amount",
 	"Invalid phone number. Please update your profile." => "Invalid phone number. Please update your profile.",
 	"Your data is incomplete. Please complete the data in your profile." => "Your data is incomplete. Please complete the data in your profile.",
+	"For configuring OTP in the Firebase, you must create a Firebase project first.
+                        If you haven’t created any project for your application yet, please create a project first." => "For configuring OTP in the Firebase  you must create a Firebase project first. If you haven’t created any project for your application yet  please create a project first.",
+	"currency_config" => "Currency config",
+	"Currency exchangerate credentials updated successfully." => "Currency exchangerate credentials updated successfully.",
+	"Failed to connect to the API. Please check your credentials." => "Failed to connect to the API. Please check your credentials.",
+	"Auto_Change" => "Auto Change",
+	"auto_change_value" => "Auto change value",
+	"static_Value" => "Static Value",
+	"dynamic_Value" => "Dynamic Value",
+	"type_change_value" => "Type change value",
+	"Currency Code Is Error." => "Currency Code Is Error.",
+	"default Currency Code Is Error." => "Default Currency Code Is Error.",
 ];
