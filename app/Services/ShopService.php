@@ -84,11 +84,11 @@ class ShopService
             'slug' => Str::slug($request['shop_name'], '-') . '-' . Str::random(6),
             'address'=>$request['shop_address'],
             'contact' => $request['phone'],
-            'image' => $this->upload(dir: 'shop/', format: 'webp', image: $request->file('logo')),
+            'image' =>$request->has('logo')? $this->upload(dir: 'shop/', format: 'webp', image: $request->file('logo')):"",
             'image_storage_type' => $request->has('logo') ? $storage : null,
-            'banner' => $this->upload(dir: 'shop/banner/', format: 'webp', image: $request->file('banner')),
+            'banner' =>$request->has('banner')? $this->upload(dir: 'shop/banner/', format: 'webp', image: $request->file('banner')):"",
             'banner_storage_type' =>$request->has('banner') ? $storage : null,
-            'bottom_banner' => $this->upload(dir: 'shop/banner/', format: 'webp', image: $request->file('bottom_banner')),
+            'bottom_banner' =>$request->has('bottom_banner') ? $this->upload(dir: 'shop/banner/', format: 'webp', image: $request->file('bottom_banner')):"",
             'bottom_banner_storage_type' =>$request->has('banner') ? $storage : null,
         ];
     }

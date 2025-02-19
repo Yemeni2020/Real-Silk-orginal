@@ -11,6 +11,7 @@ use App\Enums\ViewPaths\Admin\Banner;
 use App\Enums\ViewPaths\Admin\Coupon;
 use App\Enums\ViewPaths\Admin\Review;
 use App\Enums\ViewPaths\Admin\Vendor;
+use App\Enums\ViewPaths\Admin\Office;
 use App\Http\Controllers\Admin\Settings\FirebaseOTPVerificationController;
 use Illuminate\Support\Facades\Route;
 use App\Enums\ViewPaths\Admin\Contact;
@@ -92,6 +93,7 @@ use App\Enums\ViewPaths\Admin\VendorRegistrationReason;
 use App\Http\Controllers\Admin\Product\BrandController;
 use App\Http\Controllers\Admin\ProductReportController;
 use App\Http\Controllers\Admin\Vendor\VendorController;
+use App\Http\Controllers\Admin\Office\OfficeController;
 use App\Enums\ViewPaths\Admin\StorageConnectionSettings;
 use App\Enums\ViewPaths\Admin\VendorRegistrationSetting;
 use App\Http\Controllers\Admin\EmailTemplatesController;
@@ -449,6 +451,53 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
             Route::get(Vendor::WITHDRAW_VIEW[URI] . '/{withdrawId}/{vendorId}', 'getWithdrawView')->name('withdraw_view');
             Route::post(Vendor::WITHDRAW_STATUS[URI] . '/{id}', 'withdrawStatus')->name('withdraw_status');
         });
+
+
+
+        Route::group(['prefix' => 'withdraw-method', 'as' => 'withdraw-method.'], function () {
+            Route::controller(WithdrawalMethodController::class)->group(function () {
+                Route::get(WithdrawalMethod::LIST[URI], 'index')->name('list');
+                Route::get(WithdrawalMethod::ADD[URI], 'getAddView')->name('add');
+                Route::post(WithdrawalMethod::ADD[URI], 'add');
+                Route::delete(WithdrawalMethod::DELETE[URI] . '/{id}', 'delete')->name('delete');
+                Route::post(WithdrawalMethod::DEFAULT_STATUS[URI], 'updateDefaultStatus')->name('default-status');
+                Route::post(WithdrawalMethod::STATUS[URI], 'updateStatus')->name('status-update');
+                Route::get(WithdrawalMethod::UPDATE[URI] . '/{id}', 'getUpdateView')->name('edit');
+                Route::post(WithdrawalMethod::UPDATE[URI], 'update')->name('update');
+            });
+        });
+    });
+
+
+    // My Code For Office In Admin Panel
+
+    Route::group(['prefix' => 'offices', 'as' => 'offices.', 'middleware' => ['module:user_section']], function () {
+        Route::controller(OfficeController::class)->group(function () {
+            Route::get(Office::LIST[URI], 'index')->name('vendor-list');
+            Route::get(Office::ADD[URI], 'getAddView')->name('add');
+            Route::POST(Office::ADD[URI], 'add');
+            Route::get(Office::ORDER_LIST[URI] . '/{vendor_id}', 'getOrderListView')->name('order-list');
+            Route::get(Office::ORDER_LIST_EXPORT[URI] . '/{vendor_id}', 'exportOrderList')->name('order-list-export');
+            Route::post(Office::STATUS[URI], 'updateStatus')->name('updateStatus');
+            Route::get(Office::EXPORT[URI], 'exportList')->name('export');
+            Route::get(Office::PRODUCT_LIST[URI] . '/{vendor_id}', 'getProductListView')->name('product-list');
+
+            Route::post(Office::SALES_COMMISSION_UPDATE[URI] . '/{id}', 'updateSalesCommission')->name('sales-commission-update');
+            Route::get(Office::ORDER_DETAILS[URI] . '/{order_id}/{vendor_id}', 'getOrderDetailsView')->name('order-details');
+            Route::get(Office::VIEW[URI] . '/{id}/{tab?}', 'getView')->name('view');
+            Route::post(Office::UPDATE_SETTING[URI] . '/{id}', 'updateSetting')->name('update-setting');
+
+            Route::get(Office::VIEW[URI] . '-referral/{id}/{tab?}', 'getReferral')->name('referral');
+            Route::post(Office::VIEW[URI] . '-referral/{id}/{tab?}', 'AddReferral');
+            Route::put(Office::VIEW[URI] . '-referral/{id}/{tab?}', 'DeleteReferral');
+
+            Route::get(Office::WITHDRAW_LIST[URI], 'getWithdrawListView')->name('withdraw_list');
+            Route::get(Office::WITHDRAW_LIST_EXPORT[URI], 'exportWithdrawList')->name('withdraw-list-export-excel');
+            Route::get(Office::WITHDRAW_VIEW[URI] . '/{withdrawId}/{vendorId}', 'getWithdrawView')->name('withdraw_view');
+            Route::post(Office::WITHDRAW_STATUS[URI] . '/{id}', 'withdrawStatus')->name('withdraw_status');
+        });
+
+        
 
         Route::group(['prefix' => 'withdraw-method', 'as' => 'withdraw-method.'], function () {
             Route::controller(WithdrawalMethodController::class)->group(function () {

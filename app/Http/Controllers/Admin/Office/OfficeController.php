@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Vendor;
+namespace App\Http\Controllers\Admin\Office;
 
 use App\Contracts\Repositories\DeliveryManRepositoryInterface;
 use App\Contracts\Repositories\DeliveryZipCodeRepositoryInterface;
@@ -15,6 +15,7 @@ use App\Contracts\Repositories\VendorWalletRepositoryInterface;
 use App\Contracts\Repositories\WithdrawRequestRepositoryInterface;
 use App\Enums\ExportFileNames\Admin\Vendor as VendorExport;
 use App\Enums\ViewPaths\Admin\Vendor;
+use App\Enums\ViewPaths\Admin\Office;
 use App\Enums\WebConfigKey;
 use App\Events\VendorRegistrationEvent;
 use App\Events\WithdrawStatusUpdateEvent;
@@ -22,7 +23,7 @@ use App\Exports\VendorListExport;
 use App\Exports\VendorWithdrawRequest;
 use App\Exports\VendorOrderListExport;
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\Admin\VendorAddRequest;
+use App\Http\Requests\Admin\OfficeAddRequest;
 use App\Models\Seller;
 use App\Services\ShopService;
 use App\Services\VendorService;
@@ -40,7 +41,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Illuminate\Support\Facades\DB;
 
-class VendorController extends BaseController
+class OfficeController extends BaseController
 {
     use PaginatorTrait;
     use CommonTrait;
@@ -82,19 +83,19 @@ class VendorController extends BaseController
         $vendors = $this->vendorRepo->getListWhere(
             orderBy: ['id' => 'desc'],
             searchValue: $request['searchValue'],
-            filters:["type_account"=>"fictory"],
+            filters:["type_account"=>"office"],
             relations: ['orders', 'product'],
             dataLimit: getWebConfig(name: WebConfigKey::PAGINATION_LIMIT)
         );
-        return view(Vendor::LIST[VIEW], compact('vendors', 'current_date'));
+        return view(Office::LIST[VIEW], compact('vendors', 'current_date'));
     }
 
     public function getAddView(Request $request): View
     {
-        return view(Vendor::ADD[VIEW]);
+        return view(Office::ADD[VIEW]);
     }
 
-    public function add(VendorAddRequest $request): JsonResponse
+    public function add(OfficeAddRequest $request): JsonResponse
     {
         $vendor = $this->vendorRepo->add(data: $this->vendorService->getAddData($request));
         $this->shopRepo->add($this->shopService->getAddShopDataForRegistration(request: $request, vendorId: $vendor['id']));
@@ -197,7 +198,7 @@ class VendorController extends BaseController
             dataLimit: getWebConfig(name: WebConfigKey::PAGINATION_LIMIT),
         );
         $seller = $this->vendorRepo->getFirstWhere(params: ['id' => $seller_id]);
-        return view(Vendor::ORDER_LIST[VIEW], compact('orders', 'seller'));
+        return view(Office::ORDER_LIST[VIEW], compact('orders', 'seller'));
     }
 
     public function exportOrderList(Request $request, $vendorId): BinaryFileResponse
@@ -238,7 +239,7 @@ class VendorController extends BaseController
             dataLimit: getWebConfig(name: WebConfigKey::PAGINATION_LIMIT)
         );
         $seller = $this->vendorRepo->getFirstWhere(params: ['id' => $seller_id]);
-        return view(Vendor::PRODUCT_LIST[VIEW], compact('products', 'seller'));
+        return view(Office::PRODUCT_LIST[VIEW], compact('products', 'seller'));
     }
 
     public function updateSalesCommission(Request $request, $id): RedirectResponse
@@ -295,7 +296,7 @@ class VendorController extends BaseController
         } else {
             $orderCount = $this->orderRepo->getListWhereCount(filters: ['customer_id' => $order['customer_id'], 'order_type' => 'POS']);
         }
-        return view(Vendor::ORDER_DETAILS[VIEW], compact('order', 'seller_id', 'delivery_men', 'linked_orders', 'physical_product',
+        return view(Office::ORDER_DETAILS[VIEW], compact('order', 'seller_id', 'delivery_men', 'linked_orders', 'physical_product',
             'shipping_address', 'total_delivered', 'countries', 'zip_codes', 'zip_restrict_status', 'country_restrict_status', 'orderCount'));
     }
 
@@ -359,7 +360,7 @@ class VendorController extends BaseController
             return $this->getReviewListTabView(request: $request, seller: $seller);
         }
 
-        return view(Vendor::VIEW[VIEW], [
+        return view(Office::VIEW[VIEW], [
             'seller' => $seller,
             'current_date' => date('Y-m-d'),
         ]);
@@ -386,7 +387,7 @@ class VendorController extends BaseController
             dataLimit: 'all',
         )->count();
 
-        return view(Vendor::VIEW_ORDER[VIEW], compact('seller', 'orders', 'pendingOrder', 'deliveredOrder'));
+        return view(Office::VIEW_ORDER[VIEW], compact('seller', 'orders', 'pendingOrder', 'deliveredOrder'));
     }
 
     public function getProductListTabView(Request $request, $seller): View
@@ -398,12 +399,12 @@ class VendorController extends BaseController
             relations: ['translations'],
             dataLimit: getWebConfig(name: WebConfigKey::PAGINATION_LIMIT)
         );
-        return view(Vendor::VIEW_PRODUCT[VIEW], compact('seller', 'products'));
+        return view(Office::VIEW_PRODUCT[VIEW], compact('seller', 'products'));
     }
 
     public function getSettingListTabView(Request $request, $seller, $id): View
     {
-        return view(Vendor::VIEW_SETTING[VIEW], compact('seller'));
+        return view(Office::VIEW_SETTING[VIEW], compact('seller'));
     }
 
     public function updateSetting(Request $request, $id): RedirectResponse
@@ -453,7 +454,7 @@ class VendorController extends BaseController
             relations: ['order.customer'],
             dataLimit: getWebConfig(name: WebConfigKey::PAGINATION_LIMIT),
         );
-        return view(Vendor::VIEW_TRANSACTION[VIEW], compact('seller', 'transactions'));
+        return view(Office::VIEW_TRANSACTION[VIEW], compact('seller', 'transactions'));
     }
 
     public function getReviewListTabView(Request $request, $seller): View
@@ -480,7 +481,7 @@ class VendorController extends BaseController
                 relations: ['product', 'customer'],
                 dataLimit: getWebConfig(name: 'pagination_limit'));
         }
-        return view(Vendor::VIEW_REVIEW[VIEW], [
+        return view(Office::VIEW_REVIEW[VIEW], [
             'seller' => $seller,
             'reviews' => $reviews,
         ]);
@@ -492,7 +493,7 @@ class VendorController extends BaseController
         if ($withdrawRequest) {
             $withdrawalMethod = is_array($withdrawRequest['withdrawal_method_fields']) ? $withdrawRequest['withdrawal_method_fields'] : json_decode($withdrawRequest['withdrawal_method_fields']);
             $direction = session('direction');
-            return view(Vendor::WITHDRAW_VIEW[VIEW], compact('withdrawRequest', 'withdrawalMethod', 'direction'));
+            return view(Office::WITHDRAW_VIEW[VIEW], compact('withdrawRequest', 'withdrawalMethod', 'direction',"vendorId"));
         }
         Toastr::error(translate('withdraw_request_not_found'));
         return back();
@@ -508,7 +509,7 @@ class VendorController extends BaseController
             relations: ['seller'],
             dataLimit: getWebConfig(name: 'pagination_limit')
         );
-        return view(Vendor::WITHDRAW_LIST[VIEW], compact('withdrawRequests'));
+        return view(Office::WITHDRAW_LIST[VIEW], compact('withdrawRequests'));
     }
 
     public function exportWithdrawList(Request $request): BinaryFileResponse
@@ -589,7 +590,7 @@ class VendorController extends BaseController
         $office=Seller::findOrFail($id)->referredBy;
         $seller     =Seller::findOrFail($id);
         $sellers    =Seller::all();
-        return view(Vendor::VIEW_REFERRAL[VIEW], compact("referredVendors","seller","sellers","office"));
+        return view(Office::VIEW_REFERRAL[VIEW], compact("referredVendors","seller","sellers","office"));
 
     }
     public function AddReferral(Request $request,$id){

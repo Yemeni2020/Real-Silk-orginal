@@ -16,6 +16,7 @@
     use App\Enums\ViewPaths\Admin\ThemeSetup;
     use App\Enums\ViewPaths\Admin\FirebaseOTPVerification;
     use App\Enums\ViewPaths\Admin\Vendor;
+    use App\Enums\ViewPaths\Admin\Office;
     use App\Enums\ViewPaths\Admin\InhouseShop;
     use App\Enums\ViewPaths\Admin\SocialMediaChat;
     use App\Enums\ViewPaths\Admin\ShippingMethod;
@@ -872,6 +873,52 @@
                                 </ul>
                             </li>
 
+                            <!-- My Code For Office -->
+
+                            <li class="navbar-vertical-aside-has-menu {{ Request::is('admin/offices*') || Request::is('admin/offices/withdraw-method/*') || (Request::is('admin/orders/details/*') && request()->has('vendor-order-list')) ? 'active' : '' }}">
+                                <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
+                                   href="javascript:" title="{{translate('offices')}}">
+                                    <i class="tio-users-switch nav-icon"></i>
+                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('offices')}}</span>
+                                </a>
+                                <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
+                                    style="display: {{Request::is('admin/offices*') || (Request::is('admin/orders/details/*') && request()->has('vendor-order-list'))?'block':'none'}}">
+                                    <li class="nav-item {{Request::is('admin/offices/'.Office::ADD[URI])?'active':''}}">
+                                        <a class="nav-link" title="{{translate('add_New_Vendor')}}"
+                                           href="{{route('admin.offices.add')}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">
+                                        {{translate('add_New_office')}}
+                                    </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item {{Request::is('admin/offices/'.Office::LIST[URI]) ||Request::is('admin/offices/'.Office::VIEW[URI].'*') ?'active':''}}">
+                                        <a class="nav-link" title="{{translate('vendor_List')}}"
+                                           href="{{route('admin.offices.vendor-list')}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">
+                                        {{translate('office_List')}}
+                                    </span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item {{Request::is('admin/offices/'.Office::WITHDRAW_LIST[URI])|| Request::is('admin/offices/'.Office::WITHDRAW_VIEW[URI].'/*') ?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.offices.withdraw_list')}}"
+                                           title="{{translate('withdraws')}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">{{translate('withdraws')}}</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item {{(Request::is('admin/offices/withdraw-method/*'))?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.offices.withdraw-method.list')}}"
+                                           title="{{translate('withdrawal_Methods')}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">{{translate('withdrawal_Methods')}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            
                             <li class="navbar-vertical-aside-has-menu {{Request::is('admin/delivery-man*')?'active':''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle text-capitalize"
                                    href="javascript:" title="{{translate('delivery_men')}}">

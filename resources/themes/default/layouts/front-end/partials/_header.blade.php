@@ -93,16 +93,16 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <a class="navbar-brand d-none d-sm-block mr-3 flex-shrink-0 __min-w-7rem"
-                   href="{{route('home')}}">
+                   href="{{route('home')}}" style="padding: 0;">
                     <img class="__inline-11"
                          src="{{ getStorageImages(path: $web_config['web_logo'], type: 'logo') }}"
-                         alt="{{$web_config['name']->value}}" style="width:130px !important;height:auto !important;">
+                         alt="{{$web_config['name']->value}}" style="width:200px !important;height:auto !important;">
                 </a>
                 <a class="navbar-brand d-sm-none"
-                   href="{{route('home')}}">
+                   href="{{route('home')}}" style="padding: 0;">
                     <img class="mobile-logo-img __inline-12"
                          src="{{ getStorageImages(path: $web_config['mob_logo'], type: 'logo') }}"
-                         style="width:130px !important;height:auto !important;" alt="{{$web_config['name']->value}}"/>
+                         style="width:200px !important;height:auto !important;" alt="{{$web_config['name']->value}}"/>
                 </a>
 
                 <div class="input-group-overlay mx-lg-4 search-form-mobile text-align-direction">
@@ -221,8 +221,8 @@
             <!-- <div class="container px-10px">Code Old -->
             <div class=" px-10px" style="
     margin: auto;
-    padding-top: 10px;
-    padding-bottom: 10px;">
+    padding-top: 0px;
+    padding-bottom: 0px;">
                 <div class="collapse navbar-collapse text-align-direction" id="navbarCollapse">
                     <div class="w-100 d-md-none text-align-direction">
                         <button class="navbar-toggler p-0" type="button" data-toggle="collapse"
@@ -239,7 +239,7 @@
 
                     @php($categories = \App\Utils\CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(dataLimit: 11))
 
-                    <ul class="navbar-nav mega-nav pr-lg-2 pl-lg-2 mr-2 d-none d-md-block __mega-nav">
+                    <ul class="navbar-nav mega-nav pr-lg-2 pl-lg-2 mr-2 d-none d-md-block __mega-nav" style="margin-top: 5px !important;margin-bottom:5px !important;">
                         <li class="nav-item {{!request()->is('/')?'dropdown':''}}">
 
                             <a class="nav-link dropdown-toggle category-menu-toggle-btn ps-0"
