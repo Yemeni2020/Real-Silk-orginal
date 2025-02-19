@@ -9,7 +9,12 @@
                     <img width="20" src="{{dynamicAsset(path: 'public/assets/back-end/img/withdraw-icon.png')}}" alt="">
                     {{translate('withdraw_method_list')}}
                 </h2>
+                @if((Request::is('admin/offices/withdraw-method/*'))?'active':'')
+                <a href="{{route('admin.offices.withdraw-method.add')}}" class="btn btn--primary">+ {{translate('add_method')}}</a>
+                @else
                 <a href="{{route('admin.vendors.withdraw-method.add')}}" class="btn btn--primary">+ {{translate('add_method')}}</a>
+
+                @endif
             </div>
         </div>
         <div class="row">

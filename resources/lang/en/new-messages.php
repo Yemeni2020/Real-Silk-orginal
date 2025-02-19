@@ -9032,4 +9032,5 @@ return [
 	"want_to_suspend_this_office" => "Want to suspend this office",
 	"suspend_this_office" => "Suspend this office",
 	"office_Wallet" => "Office Wallet",
+	"office_overview" => "Office overview",
 ];

@@ -85,6 +85,10 @@ class WithdrawRequestRepository implements WithdrawRequestRepositoryInterface
             ->when($searchValue == 'delivery_withdraw_status_filter' ,function ($query){
                 $query->whereNotNull('delivery_man_id');
             })
+            ->when(isset($filters) && isset($filters['type_account']) , function ($query)  use($filters){
+                return $query->join('sellers', 'sellers.id', '=', 'withdraw_requests.seller_id')
+                ->where('sellers.type_account', $filters['type_account']);
+            })
             ->when(isset($filters) && $filters['approved'] == 'approved', function ($query) {
                 return $query->where('approved', 1);
             })

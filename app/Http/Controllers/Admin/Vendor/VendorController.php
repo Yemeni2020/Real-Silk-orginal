@@ -82,7 +82,7 @@ class VendorController extends BaseController
         $vendors = $this->vendorRepo->getListWhere(
             orderBy: ['id' => 'desc'],
             searchValue: $request['searchValue'],
-            filters:["type_account"=>"fictory"],
+            filters:["type_account"=>"fictory",'type_account'=>"fictory"],
             relations: ['orders', 'product'],
             dataLimit: getWebConfig(name: WebConfigKey::PAGINATION_LIMIT)
         );

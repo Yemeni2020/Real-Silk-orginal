@@ -504,7 +504,7 @@ class OfficeController extends BaseController
         $withdrawRequests = $this->withdrawRequestRepo->getListWhereNull(
             orderBy: ['id' => 'desc'],
             searchValue: $request['searchValue'],
-            filters: ['approved' => $request['approved']],
+            filters: ['approved' => $request['approved'],'type_account'=>"office"],
             nullFilters: ['delivery_man_id'],
             relations: ['seller'],
             dataLimit: getWebConfig(name: 'pagination_limit')
