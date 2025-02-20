@@ -21,7 +21,52 @@
                 <div class="card-header">
                     <h5 class="mb-0">{{translate('about_us')}}</h5>
                 </div>
-                <form action="{{route('admin.business-settings.about-update')}}" method="post">
+
+                <div class="px-4 pt-3">
+                    <ul class="nav nav-tabs w-fit-content mb-4">
+                        @foreach($languages as $language)
+                            <li class="nav-item text-capitalize">
+                                <a class="nav-link form-system-language-tab  {{ $language == $curnnet_lang? 'active':''}}" href="#"
+                                id="{{ $language}}-link">{{getLanguageName($language).'('.strtoupper($language).')'}}</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+
+                <div class="card-body">
+                    <form action="{{route('admin.business-settings.about-update')}}" method="post">
+                        @csrf
+
+                        @foreach($languages as $language)
+                                <?php
+                                if (count($pageData['translations'])) {
+                                    $translate = [];
+                                    foreach ($pageData['translations'] as $translation) {
+                                        if ($translation->locale == $language && $translation->key == "value") {
+                                            $translate[$language]['value'] = $translation->value;
+                                        }
+                                        
+                                    }
+                                }
+                                ?>
+                            <div class="{{ $language != $curnnet_lang? 'd-none':''}} form-system-language-form" id="{{ $language}}-form">
+                                <div class="form-group">
+                                    <textarea class="form-control summernote {{ $language == $curnnet_lang ? 'product-description-default-language' : '' }}" id="editor"
+                                        name="value[]">{!! $translate[$language]['value']??$pageData['value'] !!}</textarea>
+                                </div>
+
+                                <input type="hidden" name="lang[]" value="{{ $language}}">
+
+                                
+                            </div>
+                        @endforeach
+                        <div class="form-group">
+                                <input class="form-control btn--primary" type="submit" value="{{translate('submit')}}" name="btn">
+                        </div>
+                    </form>
+                </div>
+
+                <!-- <form action="{{route('admin.business-settings.about-update')}}" method="post">
                     @csrf
                     <div class="card-body">
                         <div class="form-group">
@@ -31,7 +76,7 @@
                             <input class="btn btn--primary btn-block" type="submit" name="btn" value="{{ translate('submit') }}">
                         </div>
                     </div>
-                </form>
+                </form> -->
             </div>
         </div>
     </div>

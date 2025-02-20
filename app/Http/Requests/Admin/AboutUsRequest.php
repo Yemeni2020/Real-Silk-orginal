@@ -19,14 +19,14 @@ class AboutUsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'about_us' => 'required',
+            'value' => 'required',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'about_us.required' => translate('the_value_field_is_required'),
+            'value.required' => translate('the_value_field_is_required'),
         ];
     }
 

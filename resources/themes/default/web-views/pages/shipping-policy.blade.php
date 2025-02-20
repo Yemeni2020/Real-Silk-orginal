@@ -7,7 +7,7 @@
         <h2 class="text-center mb-3 headerTitle">{{ translate('shipping_policy') }}</h2>
         <div class="card __card">
             <div class="card-body text-justify">
-                {!! $shippingPolicy['content'] !!}
+                {!! $shippingPolicy !!}
             </div>
         </div>
     </div>

@@ -166,7 +166,7 @@
         </div>
     </div>
     <span id="get-confirm-and-cancel-button-text" data-sure ="{{translate('are_you_sure').'?'}}"
-      data-message="{{translate('want_to_apply_as_a_vendor').'?'}}"
+      data-message="{{!$isoffice?translate('want_to_apply_as_a_vendor'):translate('want_to_apply_as_a_office').'?'}}"
       data-confirm="{{translate('yes')}}" data-cancel="{{translate('no')}}"></span>
     <span id="proceed-to-next-validation-message"
           data-mail-error="{{translate('please_enter_your_email').'.'}}"

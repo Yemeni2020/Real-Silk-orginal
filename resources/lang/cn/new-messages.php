@@ -8939,4 +8939,7 @@ return [
 	"office_name" => "办公室名称",
 	"office_address" => "办公室地址",
 	"电子邮件已被占用" => "电子邮件已被占用",
+	"offices" => "Offices",
+	"add_New_office" => "Add New office",
+	"office_List" => "Office List",
 ];

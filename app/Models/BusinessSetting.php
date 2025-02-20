@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Scopes\RememberScope;
 use Illuminate\Database\Eloquent\Model;
 use Watson\Rememberable\Rememberable;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class BusinessSetting extends Model
 {
@@ -18,6 +19,10 @@ class BusinessSetting extends Model
         'updated_at' => 'datetime',
     ];
 
+    public function translations(): MorphMany
+    {
+        return $this->morphMany('App\Models\Translation', 'translationable');
+    }
     protected static function boot(): void
     {
         parent::boot();

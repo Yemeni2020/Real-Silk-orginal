@@ -41,7 +41,50 @@
                                 <span class="switcher_control" data-ontitle="{{ translate('on') }}" data-offtitle="{{ translate('off') }}"></span>
                             </label>
                         </div>
+                        <div class="px-4 pt-3">
+                            <ul class="nav nav-tabs w-fit-content mb-4">
+                                @foreach($languages as $language)
+                                    <li class="nav-item text-capitalize">
+                                        <a class="nav-link form-system-language-tab  {{ $language == $curnnet_lang? 'active':''}}" href="#"
+                                        id="{{ $language}}-link">{{getLanguageName($language).'('.strtoupper($language).')'}}</a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+
+
                         <div class="card-body">
+
+                            @foreach($languages as $language)
+                                    <?php
+                                    if (count($data['translations'])) {
+                                        $translate = [];
+                                        foreach ($data['translations'] as $translation) {
+                                            if ($translation->locale == $language && $translation->key == "value") {
+                                                $translate[$language]['value'] = $translation->value;
+                                            }
+                                            
+                                        }
+                                    }
+                                    ?>
+                                <div class="{{ $language != $curnnet_lang? 'd-none':''}} form-system-language-form" id="{{ $language}}-form">
+                                    <div class="form-group">
+                                        <textarea class="form-control summernote {{ $language == $curnnet_lang ? 'product-description-default-language' : '' }}" id="editor"
+                                            name="value[]">{!! $translate[$language]['value']??$page_data['content'] !!}</textarea>
+                                    </div>
+
+                                    <input type="hidden" name="lang[]" value="{{ $language}}">
+
+                                    
+                                </div>
+                            @endforeach
+                            <div class="form-group">
+                                    <input class="form-control btn--primary" type="submit" value="{{translate('submit')}}" name="btn">
+                            </div>
+                        </div>
+
+
+                        <!-- <div class="card-body">
                             <div class="form-group">
                                 <textarea class="form-control summernote" id="editor"
                                     name="value">{{ $page_data['content'] }}</textarea>
@@ -49,7 +92,7 @@
                             <div class="form-group">
                                 <input class="form-control btn--primary" type="submit" value="{{translate('submit')}}" name="btn">
                             </div>
-                        </div>
+                        </div> -->
                     </form>
                 </div>
             </div>

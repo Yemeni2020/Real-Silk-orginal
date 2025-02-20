@@ -8547,4 +8547,10 @@ return [
 	"The_password_must_be_at_least_8_characters_long_and_contain_at_least_one_uppercase_letter" => "The password must be at least 8 characters long and contain at least one uppercase letter",
 	"البريد الإلكتروني مسجل مسبقًا" => "البريد الإلكتروني مسجل مسبقًا",
 	"رقم الهاتف هذا بالفعل موجود قم بتغييره" => "رقم الهاتف هذا بالفعل موجود قم بتغييره",
+	"shipping_Policy" => "Shipping Policy",
+	"want_to_apply_as_a_office" => "Want to apply as a office",
+	"shipping_policy" => "Shipping policy",
+	"shipping policy" => "Shipping policy",
+	"if_you_enable_this_option_shipping_policy_page_will_be_shown_in_the_user_app_and_website" => "If you enable this option shipping policy page will be shown in the user app and website",
+	"if_you_disable_this_option_shipping_policy_page_will_not_be_shown_in_the_user_app_and_website" => "If you disable this option shipping policy page will not be shown in the user app and website",
 ];
