@@ -22,6 +22,7 @@
 
 <body>
 <main id="content" role="main" class="main">
+    
     <div class="row">
         <div class="col-12 position-fixed z-9999 mt-10rem">
             <div id="loading" class="d--none">
@@ -36,6 +37,7 @@
             </svg>
         </figure>
     </div>
+
     <div class="container py-5 py-sm-7">
         @php($companyWebLogo = getWebConfig(name: 'company_web_logo'))
         <a class="d-flex justify-content-center mb-5" href="{{ route('home') }}">
@@ -47,6 +49,37 @@
             <div class="col-md-7 col-lg-5">
                 <div class="card card-lg mb-5">
                     <div class="card-body">
+                        
+                        <!-- My Code For Add Language -->
+                        <div class="topbar-text dropdown disable-autohide  __language-bar text-capitalize">
+                            <a class="topbar-link dropdown-toggle" href="#" data-toggle="dropdown">
+                                @foreach(json_decode($language['value'],true) as $data)
+                                    @if($data['code'] == getDefaultLanguage())
+                                        <img class="mr-2" width="20"
+                                                src="{{theme_asset(path: 'public/assets/front-end/img/flags/'.$data['code'].'.png')}}"
+                                                alt="{{$data['name']}}">
+                                        {{$data['name']}}
+                                    @endif
+                                @endforeach
+                            </a>
+                            <ul class="text-align-direction dropdown-menu dropdown-menu-{{Session::get('direction') === "rtl" ? 'right' : 'left'}}">
+                                @foreach(json_decode($language['value'],true) as $key =>$data)
+                                    @if($data['status']==1)
+                                        <li class="change-language" data-action="{{route('change-language')}}" data-language-code="{{$data['code']}}">
+                                            <a class="dropdown-item pb-1" href="javascript:">
+                                                <img class="mr-2"
+                                                        width="20"
+                                                        src="{{theme_asset(path: 'public/assets/front-end/img/flags/'.$data['code'].'.png')}}"
+                                                        alt="{{$data['name']}}"/>
+                                                <span class="text-capitalize">{{$data['name']}}</span>
+                                            </a>
+                                        </li>
+                                    @endif
+                                @endforeach
+                            </ul>
+                        </div>
+                        <!-- End My Code For Add Language -->
+
                         <form action="{{route('vendor.auth.login')}}" method="post" id="vendor-login-form">
                             @csrf
                             <div class="text-center">
@@ -182,6 +215,8 @@
 <script src="{{dynamicAsset(path: 'public/assets/back-end/js/theme.min.js')}}"></script>
 <script src="{{dynamicAsset(path: 'public/assets/back-end/js/toastr.js')}}"></script>
 <script src="{{dynamicAsset(path: 'public/assets/back-end/js/vendor/login.js')}}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/js/custom.js') }}"></script>
+
 {!! Toastr::message() !!}
 @if(isset($recaptcha) && $recaptcha['status'] == 1)
     <script type="text/javascript">
@@ -194,6 +229,7 @@
     </script>
     <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
 @endif
+
 </body>
 </html>
 
