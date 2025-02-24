@@ -495,7 +495,7 @@ class OrderRepository implements OrderRepositoryInterface
                 'seller_id' => $order['seller_id'],
                 'referral_seller' => $referral_seller,
                 'seller_is' => $order['seller_is'],
-                'order_id' => $order['id'],
+                // 'order_id' => $order['id'],
                 'order_amount' => $orderAmount,
                 'seller_amount' => $orderAmount - $commission,
                 'admin_commission' => $commission - $referral_commission,
@@ -509,7 +509,7 @@ class OrderRepository implements OrderRepositoryInterface
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
-            $this->orderTransaction->create($transaction);
+            $this->orderTransaction->updateOrCreate(['order_id' => $order['id']],$transaction);
 
             $wallet = $this->adminWallet->where('admin_id', 1)->first();
             $wallet->commission_earned += $commission - $referral_commission;
