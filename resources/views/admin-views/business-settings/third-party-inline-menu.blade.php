@@ -5,6 +5,7 @@
     use App\Enums\ViewPaths\Admin\SocialMediaChat;
     use App\Enums\ViewPaths\Admin\SocialLoginSettings;
     use App\Enums\ViewPaths\Admin\CurrencyConfig;
+    use App\Enums\ViewPaths\Admin\AIConfig;
     use App\Enums\ViewPaths\Admin\BusinessSettings;
     use App\Enums\ViewPaths\Admin\StorageConnectionSettings;
 @endphp
@@ -18,6 +19,9 @@
                 href="{{route('admin.social-login.view')}}">{{translate('social_media_login')}}</a></li>
         <li class="{{ Request::is('admin/currency-config/'.CurrencyConfig::VIEW[URI]) ?'active':'' }}"><a class="text-capitalize"
                                                                                       href="{{route('admin.currency-config.view')}}">{{translate('currency_config')}}</a>
+        </li>
+        <li class="{{ Request::is('admin/currency-config/'.AIConfig::VIEW[URI]) ?'active':'' }}"><a class="text-capitalize"
+                                                                                      href="{{route('admin.ai-config.view')}}">{{translate('AI_config')}}</a>
         </li>
         <li class="{{ Request::is('admin/business-settings/mail') ?'active':'' }}"><a class="text-capitalize"
                                                                                       href="{{route('admin.business-settings.mail.index')}}">{{translate('mail_config')}}</a>

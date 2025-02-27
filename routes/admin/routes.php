@@ -79,6 +79,7 @@ use App\Enums\ViewPaths\Admin\DeliverymanWithdraw;
 use App\Enums\ViewPaths\Admin\DeliveryRestriction;
 use App\Enums\ViewPaths\Admin\EnvironmentSettings;
 use App\Enums\ViewPaths\Admin\SocialLoginSettings;
+use App\Enums\ViewPaths\Admin\AiConfig;
 use App\Enums\ViewPaths\Admin\CurrencyConfig;
 use App\Http\Controllers\Admin\ChattingController;
 use App\Http\Controllers\Admin\POS\CartController;
@@ -166,6 +167,7 @@ use App\Http\Controllers\Admin\SystemSetup\SystemLoginSetupController;
 use App\Http\Controllers\Admin\Notification\NotificationSetupController;
 use App\Http\Controllers\Admin\ThirdParty\SocialLoginSettingsController;
 use App\Http\Controllers\Admin\ThirdParty\CurrencyConfigController;
+use App\Http\Controllers\Admin\ThirdParty\AIConfigController;
 use App\Http\Controllers\Admin\Deliveryman\DeliverymanWithdrawController;
 use App\Http\Controllers\Admin\Settings\VendorRegistrationReasonController;
 use App\Http\Controllers\Admin\Deliveryman\DeliveryManCashCollectController;
@@ -244,6 +246,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
         Route::controller(ProductController::class)->group(function () {
             Route::get(Product::LIST[URI] . '/{type}', 'index')->name('list');
             Route::get(Product::ADD[URI], 'getAddView')->name('add');
+            Route::post(Product::TRANSLATE_AI[URI], 'translate_ai')->name('translate-ai');
             Route::post(Product::ADD[URI], 'add')->name('store');
             Route::get(Product::VIEW[URI] . '/{addedBy}/{id}', 'getView')->name('view');
             Route::post(Product::SKU_COMBINATION[URI], 'getSkuCombinationView')->name('sku-combination');
@@ -1111,6 +1114,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
         Route::controller(CurrencyConfigController::class)->group(function () {
             Route::get(CurrencyConfig::VIEW[URI], 'index')->name('view');
             Route::post(CurrencyConfig::UPDATE[URI] , 'update')->name('update');
+        });
+    });
+
+    Route::group(['prefix' => 'ai-config', 'as' => 'ai-config.', 'middleware' => ['module:system_settings']], function () {
+        Route::controller(AIConfigController::class)->group(function () {
+            Route::get(AiConfig::VIEW[URI], 'index')->name('view');
+            Route::post(AiConfig::UPDATE[URI] , 'update')->name('update');
+            Route::post(AiConfig::UPDATE_SETTING_Translate[URI] , 'updateSettingTranslate')->name('update-setting-translate');
+            Route::post(AiConfig::UPDATE_SETTING_GENERATE[URI] , 'updateSettingGenerate')->name('update-setting-generate');
         });
     });
 

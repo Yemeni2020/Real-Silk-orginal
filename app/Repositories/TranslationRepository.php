@@ -4,11 +4,13 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\TranslationRepositoryInterface;
 use App\Models\Translation;
+use App\Services\ProductService;
 
 class TranslationRepository implements TranslationRepositoryInterface
 {
     public function __construct(
-       private readonly Translation $translation
+       private readonly Translation $translation,
+       private readonly ProductService $ProductService,
     )
     {
     }
@@ -18,13 +20,36 @@ class TranslationRepository implements TranslationRepositoryInterface
         foreach ($request->lang as $index => $key) {
             foreach (['name','description','title','value'] as $type){
                 if (isset($request[$type][$index]) && $key != 'en') {
+                    
+                    $value=$request[$type][$index];
+
                     $this->translation->insert(
                         [
                             'translationable_type' => $model,
                             'translationable_id' => $id,
                             'locale' => $key,
                             'key' => $type,
-                            'value' => $request[$type][$index]
+                            'value' => $value
+                        ]
+                    );
+                }elseif(isset($request[$type]) && $key != 'en' ){
+                    $auto_translate = getWebConfig("auto_translate");
+                    $curnnet_lang = session()->get("local");
+
+                    $value=$request[$type][array_search($curnnet_lang, $request['lang'])];
+                    if ($auto_translate == 1) {
+                        $name=$request[$type][array_search($curnnet_lang, $request['lang'])];
+                        // التحقق من وجود اللغات داخل الطلب
+                        $value = $this->ProductService->translate($request["translate_ai"], $name, $key);
+
+                    }
+                    $this->translation->insert(
+                        [
+                            'translationable_type' => $model,
+                            'translationable_id' => $id,
+                            'locale' => $key,
+                            'key' => $type,
+                            'value' => $value
                         ]
                     );
                 }
@@ -37,6 +62,22 @@ class TranslationRepository implements TranslationRepositoryInterface
         foreach ($request->lang as $index => $key) {
             foreach (['name','description','title','value'] as $type){
                 if (isset($request[$type][$index]) && $key != 'en') {
+                    $value=$request[$type][$index];
+                    if(empty(trim($value))){
+                        $auto_translate = getWebConfig("auto_translate");
+                        $curnnet_lang = session()->get("local");
+    
+                        $value=$request[$type][array_search($curnnet_lang, $request['lang'])];
+                        if ($auto_translate == 1) {
+                            $name=$request[$type][array_search($curnnet_lang, $request['lang'])];
+                            // التحقق من وجود اللغات داخل الطلب
+                            $value = $this->ProductService->translate($request["translate_ai"], $name, $key);
+    
+                        }
+                    }
+                    if(isset($value["error"])){
+                        $value=$request[$type][$index];
+                    }
                     $this->translation->updateOrCreate(
                         [
                             'translationable_type' => $model,
@@ -45,9 +86,33 @@ class TranslationRepository implements TranslationRepositoryInterface
                             'key' => $type,
                         ],
                         [
-                            'value' => $request[$type][$index], // القيمة الجديدة
+                            'value' => $value, // القيمة الجديدة
                         ]
                     );
+                }elseif(isset($request[$type]) && $key != 'en' ){
+                    $auto_translate = getWebConfig("auto_translate");
+                    $curnnet_lang = session()->get("local");
+
+                    $value=$request[$type][array_search($curnnet_lang, $request['lang'])];
+                    if ($auto_translate == 1) {
+                        $name=$request[$type][array_search($curnnet_lang, $request['lang'])];
+                        // التحقق من وجود اللغات داخل الطلب
+                        $value = $this->ProductService->translate($request["translate_ai"], $name, $key);
+
+                    }
+                    if(!isset($value["error"])){
+                        $this->translation->updateOrCreate(
+                            [
+                                'translationable_type' => $model,
+                                'translationable_id' => $id,
+                                'locale' => $key,
+                                'key' => $type,
+                            ],
+                            [
+                                'value' => $value, // القيمة الجديدة
+                            ]
+                        );
+                    }
                 }
             }
         }
@@ -59,6 +124,23 @@ class TranslationRepository implements TranslationRepositoryInterface
         foreach ($request->lang as $index => $key) {
             foreach (['name','description','title'] as $type){
                 if (isset($request[$type][$index]) && $key != 'en') {
+                    $value=$request[$type][$index];
+                    if(empty(trim($value))){
+                        $auto_translate = getWebConfig("auto_translate");
+                        $curnnet_lang = session()->get("local");
+    
+                        $value=$request[$type][array_search($curnnet_lang, $request['lang'])];
+                        if ($auto_translate == 1) {
+                            $name=$request[$type][array_search($curnnet_lang, $request['lang'])];
+                            // التحقق من وجود اللغات داخل الطلب
+                            $value = $this->ProductService->translate($request["translate_ai"], $name, $key);
+    
+                        }
+                    }
+                    if(isset($value["error"])){
+                        $value=$request[$type][$index];
+                    }
+
                     $this->translation->updateOrInsert(
                         [
                             'translationable_type' => $model,
@@ -67,9 +149,36 @@ class TranslationRepository implements TranslationRepositoryInterface
                             'key' => $type
                         ],
                         [
-                            'value' => $request[$type][$index]
+                            'value' => $value
                         ]
                     );
+                    
+                }elseif(isset($request[$type]) && $key != 'en' ){
+                    $auto_translate = getWebConfig("auto_translate");
+                    $curnnet_lang = session()->get("local");
+
+                    $value=$request[$type][array_search($curnnet_lang, $request['lang'])];
+                    if ($auto_translate == 1) {
+                        $name=$request[$type][array_search($curnnet_lang, $request['lang'])];
+                        // التحقق من وجود اللغات داخل الطلب
+                        $value = $this->ProductService->translate($request["translate_ai"], $name, $key);
+
+                    }
+
+                    if(isset($value["error"])==false){
+
+                        $this->translation->updateOrInsert(
+                            [
+                                'translationable_type' => $model,
+                                'translationable_id' => $id,
+                                'locale' => $key,
+                                'key' => $type
+                            ],
+                            [
+                                'value' => $value
+                            ]
+                        );
+                    }
                 }
             }
         }

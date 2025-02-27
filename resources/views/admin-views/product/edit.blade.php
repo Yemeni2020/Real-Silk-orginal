@@ -1,6 +1,11 @@
 @php
 
 $curnnet_lang = session()->get("local");
+$OpenAi=getWebConfig("OpenAi_translate");
+$DeepSeekAI=getWebConfig("DeepSeekAI_translate");
+$deepl=getWebConfig("deepl_translate");
+$defulte_translate=getWebConfig("defulte_translate");
+$auto_translate=getWebConfig("auto_translate");
 
 @endphp
 @extends('layouts.back-end.app')
@@ -62,6 +67,9 @@ $curnnet_lang = session()->get("local");
                                         <span class="input-required-icon">*</span>
                                     @endif
                                 </label>
+                                @if($language != $curnnet_lang)
+                                        <button class="btn btn-primary translate_ai" type="button" data-lang="{{$language}}"  >{{translate('translate_ai')}}</button>
+                                @endif
                                 <input type="text" {{ $language == $curnnet_lang? 'required':''}} name="name[]"
                                        id="{{ $language}}_name"
                                        value="{{ $translate[$language]['name']??$product['name']}}"
@@ -75,11 +83,31 @@ $curnnet_lang = session()->get("local");
                                         <span class="input-required-icon">*</span>
                                     @endif
                                 </label>
-                                <textarea name="description[]" class="summernote {{ $language == $curnnet_lang ? 'product-description-default-language' : '' }}"
+                                <textarea id="{{ $language }}_description" name="description[]" class="summernote {{ $language == $curnnet_lang ? 'product-description-default-language' : '' }}"
                                 >{!! $translate[$language]['description']??$product['details'] !!}</textarea>
                             </div>
                         </div>
                     @endforeach
+
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="title-color"
+                                    >{{ translate('Translate_using') }}
+                                
+                            </label>
+                            <select name="translate_ai" class="form-control" style="display: inline-block;width:auto;" id="translate_ai">
+                                @if(!empty($deepl) && isset($deepl['kay']) && (!empty($deepl['status']) && $deepl['status'] == 1))
+                                    <option {{isset($defulte_translate) && $defulte_translate=="deepl" ? "selected" : "" }} value="deepl"><?php echo translate('deepl') ?></option>
+                                @endif
+                                @if(!empty($OpenAi) && isset($OpenAi['kay']) && (!empty($OpenAi['status']) && $OpenAi['status'] == 1))
+                                    <option {{isset($defulte_translate) && $defulte_translate=="OpenAi" ? "selected" : "" }} value="OpenAi"><?php echo translate('OpenAI') ?></option>
+                                @endif
+                                @if(!empty($DeepSeekAI) && isset($DeepSeekAI['kay']) && (!empty($DeepSeekAI['status']) && $DeepSeekAI['status'] == 1))
+                                    <option {{isset($defulte_translate) && $defulte_translate=="DeepSeekAI" ? "selected" : "" }} value="DeepSeekAI">{{ translate('DeepSeekAI') }}</option>
+                                @endif
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1253,6 +1281,8 @@ $curnnet_lang = session()->get("local");
     <span id="route-admin-products-digital-variation-file-delete" data-url="{{ route('admin.products.digital-variation-file-delete') }}"></span>
     <span id="image-path-of-product-upload-icon" data-path="{{ dynamicAsset(path: 'public/assets/back-end/img/icons/product-upload-icon.svg') }}"></span>
     <span id="image-path-of-product-upload-icon-two" data-path="{{ dynamicAsset(path: 'public/assets/back-end/img/400x400/img2.jpg') }}"></span>
+    <span id="route-admin-products-sku-translate-ai" data-url="{{ route('admin.products.translate-ai') }}"></span>
+
     <span id="message-enter-choice-values" data-text="{{ translate('enter_choice_values') }}"></span>
     <span id="message-upload-image" data-text="{{ translate('upload_Image') }}"></span>
     <span id="message-are-you-sure" data-text="{{ translate('are_you_sure') }}"></span>

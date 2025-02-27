@@ -44,6 +44,16 @@ enum Product
         VIEW => ''
     ];
 
+    const GENERATE_AI = [
+        URI => 'genrate-ai',
+        VIEW => ''
+    ];
+    
+    const TRANSLATE_AI = [
+        URI => 'translate-ai',
+        VIEW => ''
+    ];
+
     const FEATURED_STATUS = [
         URI => 'featured-status',
         VIEW => ''

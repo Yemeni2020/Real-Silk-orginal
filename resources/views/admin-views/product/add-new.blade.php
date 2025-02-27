@@ -1,6 +1,11 @@
 @php
 
 $curnnet_lang = session()->get("local");
+$OpenAi=getWebConfig("OpenAi_translate");
+$DeepSeekAI=getWebConfig("DeepSeekAI_translate");
+$deepl=getWebConfig("deepl_translate");
+$defulte_translate=getWebConfig("defulte_translate");
+$auto_translate=getWebConfig("auto_translate");
 
 @endphp
 @extends('layouts.back-end.app')
@@ -26,6 +31,7 @@ $curnnet_lang = session()->get("local");
               enctype="multipart/form-data" id="product_form">
             @csrf
             <div class="card">
+                
                 <div class="px-4 pt-3 d-flex justify-content-between">
                     <ul class="nav nav-tabs w-fit-content mb-4">
                         @foreach ($languages as $lang)
@@ -41,6 +47,8 @@ $curnnet_lang = session()->get("local");
                 </div>
 
                 <div class="card-body">
+                    
+
                     @foreach ($languages as $lang)
                         <div class="{{ $lang != $curnnet_lang ? 'd-none' : '' }} form-system-language-form"
                              id="{{ $lang }}-form">
@@ -52,8 +60,13 @@ $curnnet_lang = session()->get("local");
                                         <span class="input-required-icon">*</span>
                                     @endif
                                 </label>
-                                <input type="text" {{ $lang == $curnnet_lang ? 'required' : '' }} name="name[]"
-                                       id="{{ $lang }}_name" class="form-control {{ $lang == $curnnet_lang ? 'product-title-default-language' : '' }}" placeholder="{{ translate('new_Product') }}">
+                                @if($lang != $curnnet_lang)
+                                        
+                                        <button class="btn btn-primary translate_ai" type="button" data-lang="{{$lang}}"  >{{translate('translate_ai')}}</button>
+                                @endif
+                                
+                                <input type="text"  {{ $lang == $curnnet_lang ? 'required' : '' }} name="name[]"
+                                       id="{{ $lang }}_name" class="form-control  {{ $lang == $curnnet_lang ? 'product-title-default-language' : '' }} " placeholder="{{ translate('new_Product') }}">
                             </div>
                             <input type="hidden" name="lang[]" value="{{ $lang }}">
                             <div class="form-group pt-2">
@@ -63,10 +76,29 @@ $curnnet_lang = session()->get("local");
                                         <span class="input-required-icon">*</span>
                                     @endif
                                 </label>
-                                <textarea class="summernote {{ $lang == $curnnet_lang ? 'product-description-default-language' : '' }}" name="description[]">{{ old('details') }}</textarea>
+                                <textarea id="{{ $lang }}_description" class="summernote {{ $lang == $curnnet_lang ? 'product-description-default-language' : '' }}" name="description[]">{{ old('details') }}</textarea>
                             </div>
                         </div>
                     @endforeach
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="title-color"
+                                    >{{ translate('Translate_using') }}
+                                
+                            </label>
+                            <select name="translate_ai" class="form-control" style="display: inline-block;width:auto;" id="translate_ai">
+                                @if(!empty($deepl) && isset($deepl['kay']) && (!empty($deepl['status']) && $deepl['status'] == 1))
+                                    <option {{isset($defulte_translate) && $defulte_translate=="deepl" ? "selected" : "" }} value="deepl"><?php echo translate('deepl') ?></option>
+                                @endif
+                                @if(!empty($OpenAi) && isset($OpenAi['kay']) && (!empty($OpenAi['status']) && $OpenAi['status'] == 1))
+                                    <option {{isset($defulte_translate) && $defulte_translate=="OpenAi" ? "selected" : "" }} value="OpenAi"><?php echo translate('OpenAI') ?></option>
+                                @endif
+                                @if(!empty($DeepSeekAI) && isset($DeepSeekAI['kay']) && (!empty($DeepSeekAI['status']) && $DeepSeekAI['status'] == 1))
+                                    <option {{isset($defulte_translate) && $defulte_translate=="DeepSeekAI" ? "selected" : "" }} value="DeepSeekAI">{{ translate('DeepSeekAI') }}</option>
+                                @endif
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -934,6 +966,7 @@ $curnnet_lang = session()->get("local");
     @include('admin-views.product.partials.FormServiceModel')
 
     <span id="route-admin-products-sku-combination" data-url="{{ route('admin.products.sku-combination') }}"></span>
+    <span id="route-admin-products-sku-translate-ai" data-url="{{ route('admin.products.translate-ai') }}"></span>
     <span id="route-admin-products-digital-variation-combination" data-url="{{ route('admin.products.digital-variation-combination') }}"></span>
     <span id="image-path-of-product-upload-icon" data-path="{{ dynamicAsset(path: 'public/assets/back-end/img/icons/product-upload-icon.svg') }}"></span>
     <span id="image-path-of-product-upload-icon-two" data-path="{{ dynamicAsset(path: 'public/assets/back-end/img/400x400/img2.jpg') }}"></span>

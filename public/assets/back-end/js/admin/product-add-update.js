@@ -107,6 +107,9 @@ $(document).on("ready", function () {
             state.text
         );
     }
+
+
+
 });
 
 function getProductTypeFunctionality() {
@@ -295,6 +298,75 @@ function getUpdateSKUFunctionality() {
         },
     });
 }
+$(".translate_ai").on("click", function () {
+    // جلب اسم المنتج واللغة الهدف من النموذج
+    const productName = $(".product-title-default-language").val();
+    const description = $(".product-description-default-language").val();
+    const target_language = $(this).data("lang");
+    const translate_ai = $("#translate_ai").val();
+
+    // alert(translate_ai);
+    // إعداد CSRF Token
+    $.ajaxSetup({
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
+    });
+
+    // إرسال الطلب Ajax
+    $.ajax({
+        type: "POST",
+        url: $("#route-admin-products-sku-translate-ai").data("url"), // الرابط المحدد
+        contentType: "application/json", // تحديد نوع المحتوى كـ JSON
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // تضمين التوكن
+        },
+        data: JSON.stringify({
+            product_name: productName,
+            description: description,
+            translate_ai: translate_ai,
+            target_language: target_language
+        }),
+        success: function (data) {
+            // معالجة الرد الناجح
+            console.log("Success:", data);
+
+            // تعيين القيمة المترجمة في الحقل المناسب
+            if (data.productName) {
+                // alert("#" + target_language + "_name");
+                $("#" + target_language + "_name").val(data.productName);
+
+            } else {
+                // toastr.error("product Name not found in response");
+            }
+            if (data.description) {
+                // alert("#" + target_language + "_name");
+                $("#" + target_language + "_description").summernote("code", data.description);
+            } else {
+                // toastr.error("description not found in response");
+            }
+        },
+        error: function (xhr, status, error) {
+            // معالجة الأخطاء
+            console.error("Error Response:", xhr.responseText);
+
+            try {
+                // محاولة تحويل الاستجابة إلى JSON
+                let response = JSON.parse(xhr.responseText);
+
+                if (response.msg) {
+                    toastr.error(response.msg);
+                } else {
+                    toastr.error("An unknown error occurred.");
+                }
+            } catch (e) {
+                // إذا لم تكن الاستجابة بتنسيق JSON، عرض الخطأ الخام
+                toastr.error(xhr.responseText);
+            }
+
+        }
+    });
+});
 
 $("#discount_type").on("change", function () {
     if ($(this).val().toString() === "flat") {

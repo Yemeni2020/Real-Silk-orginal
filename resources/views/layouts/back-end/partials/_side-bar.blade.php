@@ -1174,6 +1174,7 @@
                                             </span>
                                         </a>
                                     </li>
+                                    @if(1==2)
                                     <li class="nav-item {{
                                         Request::is('admin/addon') ||
                                         Request::is('admin/business-settings/web-config/theme/'.ThemeSetup::VIEW[URI]) ? 'active' : ''}}"
@@ -1186,6 +1187,7 @@
                                             </span>
                                         </a>
                                     </li>
+                                    @endif
                                     <li class="nav-item {{Request::is('admin/business-settings/email-templates/*') ? 'active' : ''}}">
                                         <a class="nav-link" href="{{route('admin.business-settings.email-templates.view',['admin',EmailTemplateKey::ADMIN_EMAIL_LIST[0]])}}"
                                            title="{{translate('in-house_Shop')}}">
