@@ -40,8 +40,10 @@ class AIConfigController extends BaseController
         $deepl  =   $this->businessSettingRepo->getFirstWhere(params: ['type' => 'deepl_translate']);
         $deepl  =   isset($deepl["value"])?json_decode($deepl["value"],true):[];
 
-        $defulte_translate  =   $this->businessSettingRepo->getFirstWhere(params: ['type' => 'defulte_translate'])->value;
+        $defulte_translate  =   $this->businessSettingRepo->getFirstWhere(params: ['type' => 'defulte_translate']);
+        $defulte_translate  =   isset($defulte_translate["value"])?json_decode($defulte_translate["value"],true):[];
         $auto_translate  =   $this->businessSettingRepo->getFirstWhere(params: ['type' => 'auto_translate'])->value;
+        $auto_translate  =   isset($auto_translate["value"])?json_decode($auto_translate["value"],true):[];
 
         $generate_ai_setting  =   $this->businessSettingRepo->getFirstWhere(params: ['type' => 'generate_ai_setting']);
         $generate_ai_setting  =isset($generate_ai_setting["value"])?json_decode($generate_ai_setting["value"],true):[];
