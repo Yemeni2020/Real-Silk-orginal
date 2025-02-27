@@ -87,7 +87,7 @@ class AIConfigController extends BaseController
         
         if($request->has("default") || $request->has("auto_translate")){
             $default = $request->default;
-            $auto = $request->auto_translate;
+            $auto = $request->auto_translate??false;
             
             $this->businessSettingRepo->updateOrInsert(type:'defulte_translate', value:$default);
             $this->businessSettingRepo->updateOrInsert(type:'auto_translate', value:$auto);
