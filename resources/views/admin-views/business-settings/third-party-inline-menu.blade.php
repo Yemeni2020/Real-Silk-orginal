@@ -20,7 +20,7 @@
         <li class="{{ Request::is('admin/currency-config/'.CurrencyConfig::VIEW[URI]) ?'active':'' }}"><a class="text-capitalize"
                                                                                       href="{{route('admin.currency-config.view')}}">{{translate('currency_config')}}</a>
         </li>
-        <li class="{{ Request::is('admin/currency-config/'.AIConfig::VIEW[URI]) ?'active':'' }}"><a class="text-capitalize"
+        <li class="{{ Request::is('admin/ai-config/'.AIConfig::VIEW[URI]) ?'active':'' }}"><a class="text-capitalize"
                                                                                       href="{{route('admin.ai-config.view')}}">{{translate('AI_config')}}</a>
         </li>
         <li class="{{ Request::is('admin/business-settings/mail') ?'active':'' }}"><a class="text-capitalize"

@@ -8974,6 +8974,7 @@
 "Translate_using" => "使用翻译",
 "deepl" => "Deepl",
 "OpenAI" => "OpenAI",
+"Ai setting translate updated successfully." => "AI 设置翻译更新成功。",
 
 );
 ?>

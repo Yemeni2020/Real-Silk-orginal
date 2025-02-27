@@ -55,6 +55,7 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapBetaAdminRoutes();
         $this->mapBetaVendorRoutes();
+        $this->mapBetaOfficeRoutes();
         $this->mapBetaWebRoutes();
     }
 
@@ -130,6 +131,12 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware('web')
             ->namespace($this->namespace)
             ->group(base_path('routes/vendor/routes.php'));
+    }
+    protected function mapBetaOfficeRoutes(): void
+    {
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/office/routes.php'));
     }
     protected function mapBetaWebRoutes(): void
     {

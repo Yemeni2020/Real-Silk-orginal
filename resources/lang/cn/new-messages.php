@@ -8974,4 +8974,5 @@ return [
 	"Translate_using" => "Translate using",
 	"deepl" => "Deepl",
 	"OpenAI" => "OpenAI",
+	"Ai setting translate updated successfully." => "Ai setting translate updated successfully.",
 ];

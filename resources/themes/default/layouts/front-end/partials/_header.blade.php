@@ -492,7 +492,7 @@
                                                 {{ translate('office_register')}}
                                             </a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item text-nowrap" href="{{route('vendor.auth.login')}}">
+                                            <a class="dropdown-item text-nowrap" href="{{route('office.auth.login')}}">
                                                 {{ translate('office_login')}}
                                             </a>
                                         </div>
