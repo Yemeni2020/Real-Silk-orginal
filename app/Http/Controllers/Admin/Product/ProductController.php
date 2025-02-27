@@ -874,17 +874,17 @@ class ProductController extends BaseController
         // $translatedName = $this->OpenAIService->translateText($productName, $targetLanguage,"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");
         // $translatedName=$this->translateText($productName, $targetLanguage);
         if($request->has("description")){
-            $translatedDescription=$this->translate($translate_ai,$request->input('description'), $targetLanguage);
+            $translatedDescription=$this->productService->translate($translate_ai,$request->input('description'), $targetLanguage);
 
         }else{
-            $translatedDescription=$request->input('description');
+            $translatedDescription='';
         }
 
         if(isset($productName)){
-            $translatedName=$this->translate($translate_ai,$productName, $targetLanguage);
+            $translatedName=$this->productService->translate($translate_ai,$productName, $targetLanguage);
 
         }else{
-            $translatedName=$productName;
+            $translatedName='';
         }
         // 2. إنشاء وصف للمنتج
         // $description = $this->OpenAIService->generateDescription($translatedName, "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");
@@ -904,65 +904,65 @@ class ProductController extends BaseController
     }
 
 
-    private function translate($translate_ai,$text, $targetLanguage){
-        if($translate_ai=="deepl"){
+    // private function translate($translate_ai,$text, $targetLanguage){
+    //     if($translate_ai=="deepl"){
 
-            return $this->translateText($text, $targetLanguage);
-        }
-        elseif($translate_ai=="OpenAi"){
-            $OpenAi=getWebConfig("OpenAi_translate");
-            $apiKey=isset($OpenAi['kay'])?$OpenAi['kay']:'';
-            // $apiKey = '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';
+    //         return $this->translateText($text, $targetLanguage);
+    //     }
+    //     elseif($translate_ai=="OpenAi"){
+    //         $OpenAi=getWebConfig("OpenAi_translate");
+    //         $apiKey=isset($OpenAi['kay'])?$OpenAi['kay']:'';
+    //         // $apiKey = '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';
 
-            return $this->OpenAIService->translateText($text, $targetLanguage,$apiKey);
-        }else{
-            $DeepSeekAI=getWebConfig("DeepSeekAI_translate");
-            $apiKey=isset($DeepSeekAI['kay'])?$DeepSeekAI['kay']:'';
+    //         return $this->OpenAIService->translateText($text, $targetLanguage,$apiKey);
+    //     }else{
+    //         $DeepSeekAI=getWebConfig("DeepSeekAI_translate");
+    //         $apiKey=isset($DeepSeekAI['kay'])?$DeepSeekAI['kay']:'';
 
-            // $apiKey = 'sk-5cfe868f367b47ae8c732cddb3a7d497';
+    //         // $apiKey = 'sk-5cfe868f367b47ae8c732cddb3a7d497';
 
-            return $this->DeepSeekAIService->translateText($text, $targetLanguage,$apiKey);
+    //         return $this->DeepSeekAIService->translateText($text, $targetLanguage,$apiKey);
 
-        }
-    }
+    //     }
+    // }
 
 
-    public function translateText($text, $targetLanguage)
-    {
-        // مفتاح API الخاص بك (يجب إدارته عبر .env)
-        // $apiKey = "1fbe016e-bdfb-49c7-af13-c4d7f2cc8354:fx"; // استخدم متغير البيئة
-        $deepl=getWebConfig("deepl_translate");
+    // public function translateText($text, $targetLanguage)
+    // {
+    //     // مفتاح API الخاص بك (يجب إدارته عبر .env)
+    //     // $apiKey = "1fbe016e-bdfb-49c7-af13-c4d7f2cc8354:fx"; // استخدم متغير البيئة
+    //     $deepl=getWebConfig("deepl_translate");
 
-        $apiKey=isset($deepl['kay'])?$deepl['kay']:'';
+    //     $apiKey=isset($deepl['kay'])?$deepl['kay']:'';
 
-        // رابط DeepL API
-        $apiUrl = 'https://api-free.deepl.com/v2/translate';
+    //     // رابط DeepL API
+    //     $apiUrl = 'https://api-free.deepl.com/v2/translate';
 
-        try {
-            // إرسال الطلب إلى DeepL API
-            $response = Http::withHeaders([
-                'Authorization' => 'DeepL-Auth-Key ' . $apiKey,
-                'Content-Type' => 'application/json',
-            ])->post($apiUrl, [
-                'text' => [$text],
-                'target_lang' => strtoupper($targetLanguage)
-            ]);
+    //     try {
+    //         // إرسال الطلب إلى DeepL API
+    //         $response = Http::withHeaders([
+    //             'Authorization' => 'DeepL-Auth-Key ' . $apiKey,
+    //             'Content-Type' => 'application/json',
+    //         ])->post($apiUrl, [
+    //             'text' => [$text],
+    //             'target_lang' => strtoupper($targetLanguage)
+    //         ]);
 
-            // التحقق من نجاح الطلب
-            if ($response->successful()) {
-                // استخراج النص المترجم
-                return $response->json()['translations'][0]['text']??$text;
-            } else {
-                // معالجة الأخطاء
-                \Log::error('Translation failed: ' . $response->body());
-                return ["error"=>$response->body()."1"];
-            }
-        } catch (\Exception $e) {
-            // معالجة الاستثناءات
-            \Log::error('Translation error: ' . $e->getMessage());
-            return ["error"=>$text."2"];
-        }
-    }
+    //         // التحقق من نجاح الطلب
+    //         if ($response->successful()) {
+    //             // استخراج النص المترجم
+    //             return $response->json()['translations'][0]['text']??$text;
+    //         } else {
+    //             // معالجة الأخطاء
+    //             \Log::error('Translation failed: ' . $response->body());
+    //             return ["error"=>$response->body()."1"];
+    //         }
+    //     } catch (\Exception $e) {
+    //         // معالجة الاستثناءات
+    //         \Log::error('Translation error: ' . $e->getMessage());
+    //         return ["error"=>$text."2"];
+    //     }
+    // }
 
     
     

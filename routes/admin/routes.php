@@ -79,7 +79,7 @@ use App\Enums\ViewPaths\Admin\DeliverymanWithdraw;
 use App\Enums\ViewPaths\Admin\DeliveryRestriction;
 use App\Enums\ViewPaths\Admin\EnvironmentSettings;
 use App\Enums\ViewPaths\Admin\SocialLoginSettings;
-use App\Enums\ViewPaths\Admin\AiConfig;
+use App\Enums\ViewPaths\Admin\AIConfig;
 use App\Enums\ViewPaths\Admin\CurrencyConfig;
 use App\Http\Controllers\Admin\ChattingController;
 use App\Http\Controllers\Admin\POS\CartController;
@@ -1119,10 +1119,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
 
     Route::group(['prefix' => 'ai-config', 'as' => 'ai-config.', 'middleware' => ['module:system_settings']], function () {
         Route::controller(AIConfigController::class)->group(function () {
-            Route::get(AiConfig::VIEW[URI], 'index')->name('view');
-            Route::post(AiConfig::UPDATE[URI] , 'update')->name('update');
-            Route::post(AiConfig::UPDATE_SETTING_Translate[URI] , 'updateSettingTranslate')->name('update-setting-translate');
-            Route::post(AiConfig::UPDATE_SETTING_GENERATE[URI] , 'updateSettingGenerate')->name('update-setting-generate');
+            Route::get(AIConfig::VIEW[URI], 'index')->name('view');
+            Route::post(AIConfig::UPDATE[URI] , 'update')->name('update');
+            Route::post(AIConfig::UPDATE_SETTING_Translate[URI] , 'updateSettingTranslate')->name('update-setting-translate');
+            Route::post(AIConfig::UPDATE_SETTING_GENERATE[URI] , 'updateSettingGenerate')->name('update-setting-generate');
         });
     });
 
