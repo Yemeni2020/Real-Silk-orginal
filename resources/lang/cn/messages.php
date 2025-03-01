@@ -7159,7 +7159,7 @@
 'add_color_wise_product_images_here' => '在此添加按颜色分类的产品图片',
 'must_upload_colour_wise_images_first' => '必须先上传按颜色分类的图片',
 'colour_is_shown_in_the_image_section_top_right.' => '颜色显示在图片部分的右上角。',
-'welcome_back_to_vendor_login' => '欢迎来到工厂和办公室登录',
+'welcome_back_to_vendor_login' => '欢迎来到工厂登录页面',
 'rejected_refund_Requests' => '拒绝的退款请求',
 'vendor_Requests' => '供应商请求',
 'do_you_want_to_sign_out' => '您想要退出吗',

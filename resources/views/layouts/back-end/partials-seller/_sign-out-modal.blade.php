@@ -1,3 +1,7 @@
+<?php
+                        use App\Models\Seller;
+
+?>
 <div class="modal fade" id="sign-out-modal" tabindex="-1" aria-labelledby="toggle-modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content shadow-lg">
@@ -12,8 +16,18 @@
                     <h5 class="modal-title mb-2">{{translate('do_you_want_to_logout').'?'}} </h5>
                 </div>
                 <div class="d-flex justify-content-center gap-3">
+                    <?php
+
+                    $Seller=Seller::find(auth('seller')->id());
+                    ?>
+                    @if($Seller->type_account=='office')
+                    <a href="{{route('office.auth.logout')}}" class="btn btn--primary min-w-120">{{translate('yes')}}</a>
+                    <button type="button" class="btn btn-danger-light min-w-120" data-dismiss="modal">{{ translate('cancel') }}</button>
+                    @else
                     <a href="{{route('vendor.auth.logout')}}" class="btn btn--primary min-w-120">{{translate('yes')}}</a>
                     <button type="button" class="btn btn-danger-light min-w-120" data-dismiss="modal">{{ translate('cancel') }}</button>
+                    @endif
+                    
                 </div>
             </div>
         </div>

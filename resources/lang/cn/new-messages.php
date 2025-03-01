@@ -8975,4 +8975,6 @@ return [
 	"deepl" => "Deepl",
 	"OpenAI" => "OpenAI",
 	"Ai setting translate updated successfully." => "Ai setting translate updated successfully.",
+	"office_Login" => "Office Login",
+	"welcome_back_to_office_login" => "Welcome back to office login",
 ];

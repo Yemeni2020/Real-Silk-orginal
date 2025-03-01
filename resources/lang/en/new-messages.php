@@ -7101,7 +7101,7 @@ return [
 	"push_a_description_and_also_identifier_and_continue" => "Push a description and also identifier and continue",
 	"You_need_to_Sign_in_to_view_this_feature" => "You need to Sign in to view this feature",
 	"Please_Sign_in" => "Please Sign in",
-	"vendor_Login" => "Factory or office Login",
+	"vendor_Login" => "Factory Login",
 	"best_delivery_service_highly_recommended" => "Best delivery service highly recommended",
 	"collect_cash" => "Collect cash",
 	"delivery_man_account" => "Delivery man account",

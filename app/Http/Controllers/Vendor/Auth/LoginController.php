@@ -75,7 +75,7 @@ class LoginController extends Controller
                 return response()->json(['error'=>translate('captcha_failed').'!']);
             }
         }
-        $vendor = $this->vendorRepo->getFirstWhere(['identity' => $request['email']]);
+        $vendor = $this->vendorRepo->getFirstWhere(['identity' => $request['email'],'type_account'=>'fictory']);
         if (!$vendor){
             return response()->json(['error'=>translate('credentials_doesnt_match').'!']);
         }

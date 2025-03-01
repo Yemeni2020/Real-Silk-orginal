@@ -31,6 +31,10 @@ class VendorRepository implements VendorRepositoryInterface
     public function getFirstWhere(array $params, array $relations = []): ?Model
     {
         return $this->vendor->with($relations)
+            ->when(isset($params['identity']) && isset($params['type_account']),function ($query) use ($params){
+                return $query->where(['email' => $params['identity']])->where(['type_account'=>$params['type_account']])
+                    ->orWhere(['phone' => $params['identity']]);
+            })
             ->when(isset($params['identity']),function ($query) use ($params){
                 return $query->where(['email' => $params['identity']])
                     ->orWhere(['phone' => $params['identity']]);
