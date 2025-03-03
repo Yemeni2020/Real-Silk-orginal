@@ -140,7 +140,10 @@ class ChattingController extends BaseController
             $relation = ['admin'];
             $type = 'admin';
         } else {
-            $vendorData = $this->vendorRepo->getFirstWhere(params: ['id' => $request['vendor_id']], relations: ['shop']);
+            $vendorData = $this->vendorRepo->getFirstWhere(params: ['shop_id' => $request['vendor_id']], relations: ['shop']);
+
+            // dump($vendorData); 
+            // return response()->json($vendorData['id']);
 
             $this->chattingRepo->add(
                 data: $this->chattingService->addChattingDataForWeb(

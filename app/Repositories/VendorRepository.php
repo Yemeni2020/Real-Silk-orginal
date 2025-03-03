@@ -30,6 +30,7 @@ class VendorRepository implements VendorRepositoryInterface
 
     public function getFirstWhere(array $params, array $relations = []): ?Model
     {
+        
         return $this->vendor->with($relations)
             ->when(isset($params['identity']) && isset($params['type_account']),function ($query) use ($params){
                 return $query->where(['email' => $params['identity']])->where(['type_account'=>$params['type_account']])
@@ -44,6 +45,10 @@ class VendorRepository implements VendorRepositoryInterface
             })
             ->when(isset($params['withCount']),function ($query)use($params){
                 return $query->withCount($params['withCount']);
+            })->when(in_array('shop', $relations) && isset($params['shop_id']), function ($query) use ($params) {
+                return $query->whereHas('shop', function ($shopQuery) use ($params) {
+                    $shopQuery->where('id', $params['shop_id']);
+                });
             })
             ->first();
     }

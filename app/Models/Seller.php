@@ -93,7 +93,22 @@ class Seller extends Authenticatable
     {
         return $this->hasMany(Shop::class, 'seller_id');
     }
-
+    
+    public function referredFactoriesWithLastMessage()
+    {
+    // جلب آخر رسالة لكل مصنع محال باستخدام LEFT JOIN بدلاً من whereColumn
+    return $this->referredVendors()
+        ->leftJoin('chattings as last_chat', function ($join) {
+            $join->on('sellers.id', '=', 'last_chat.seller_id')
+                 ->whereRaw('last_chat.created_at = (
+                     SELECT MAX(created_at) 
+                     FROM chattings 
+                     WHERE chattings.office_id = sellers.id
+                 )');
+        })
+        ->select('sellers.*', 'last_chat.message', 'last_chat.seen_by_seller', 'last_chat.seen_by_admin', 'last_chat.created_at');
+    }
+    
     // التجار الذين قام هذا التاجر بإحالتهم (التجار الذين قام هذا التاجر بجلبهم)
     public function referredVendors(): BelongsToMany
     {

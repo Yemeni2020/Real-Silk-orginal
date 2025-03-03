@@ -76,6 +76,8 @@ class LoginController extends Controller
             }
         }
         $vendor = $this->vendorRepo->getFirstWhere(['identity' => $request['email'],'type_account'=>'office']);
+       
+
         if (!$vendor){
             return response()->json(['error'=>translate('credentials_doesnt_match').'!']);
         }
@@ -102,6 +104,6 @@ class LoginController extends Controller
     {
         $this->vendorService->logout();
         Toastr::success(translate('logged_out_successfully').'.');
-        return redirect()->route('vendor.auth.login');
+        return redirect()->route('office.auth.login');
     }
 }

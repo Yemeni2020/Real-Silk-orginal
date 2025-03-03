@@ -3,7 +3,9 @@
 use App\Enums\ViewPaths\Office\Auth;
 use App\Enums\ViewPaths\Vendor\ForgotPassword;
 use App\Enums\ViewPaths\Office\Product;
+use App\Enums\ViewPaths\Office\Chatting;
 use App\Http\Controllers\Vendor\Auth\ForgotPasswordController;
+use App\Http\Controllers\Office\ChattingController;
 use App\Http\Controllers\Office\Auth\LoginController;
 use App\Http\Controllers\Office\Product\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -61,6 +63,15 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
                     Route::get(Product::PRODUCT_GALLERY[URI], 'getProductGalleryView')->name('product-gallery');
                     Route::get(Product::STOCK_LIMIT_STATUS[URI], 'getStockLimitStatus')->name('stock-limit-status');
                     Route::post(Product::DELETE_PREVIEW_FILE[URI], 'deletePreviewFile')->name('delete-preview-file');
+                });
+            });
+
+            Route::group(['prefix' => 'messages', 'as' => 'messages.'], function () {
+                Route::controller(ChattingController::class)->group(function () {
+                    Route::get(Chatting::INDEX[URI] . '/{type}', 'index')->name('index');
+                    Route::get(Chatting::MESSAGE[URI], 'getMessageByUser')->name('message');
+                    Route::post(Chatting::MESSAGE[URI], 'addVendorMessage');
+                    Route::get(Chatting::NEW_NOTIFICATION[URI], 'getNewNotification')->name('new-notification');
                 });
             });
         });

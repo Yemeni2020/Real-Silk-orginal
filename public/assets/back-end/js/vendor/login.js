@@ -39,15 +39,20 @@ $('.submit-login-form').on('click',function (){
                             ProgressBar: true
                         });
                     }
+                    $('#loading').fadeOut();
                     $('.tio-refresh').click();
+
                 } else if(data.error){
                     toastr.error(data.error, {
                         CloseButton: true,
                         ProgressBar: true
                     });
+                    $('#loading').fadeOut();
                     $('.tio-refresh').click();
+
                 }else if(data.status){
                     $('.'+data.status+'-message').removeClass('d-none');
+                    $('#loading').fadeOut();
                     $('.tio-refresh').click();
                 }else {
                     location.href = data.redirectRoute;

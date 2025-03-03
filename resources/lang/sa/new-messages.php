@@ -8612,4 +8612,7 @@ return [
 	"service_Add" => "Service Add",
 	"add_New_Service" => "Add New Service",
 	"new_service" => "New service",
+	"factory" => "Factory",
+	"factories" => "Factories",
+	"يجب أن تكون كلمة المرور مكونة من 8 أحرف على الأقل." => "يجب أن تكون كلمة المرور مكونة من 8 أحرف على الأقل.",
 ];

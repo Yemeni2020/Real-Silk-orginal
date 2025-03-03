@@ -133,6 +133,8 @@ trait PushNotificationTrait
                         $messageFromType = 'customer';
                     } elseif ($key == 'message_from_seller') {
                         $messageFromType = 'seller';
+                    }elseif ($key == 'message_from_office') {
+                        $messageFromType = 'office';
                     } elseif ($key == 'message_from_delivery_man') {
                         $messageFromType = 'delivery_man';
                     } else {

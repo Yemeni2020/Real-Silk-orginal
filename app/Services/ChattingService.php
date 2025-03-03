@@ -81,6 +81,27 @@ class ChattingService
 
     /**
      * @param object $request
+     * @param string|int $shopId
+     * @param string|int $vendorId
+     * @return array
+     */
+    public function getFactoryChattingData(object $request , string|int $shopId, string|int $vendorId):array
+    {
+        return [
+            'seller_id' => $request['seller_id'],
+            'office_id' => $vendorId,
+            'shop_id' => $shopId,
+            'message' => $request->message,
+            'attachment' =>json_encode($this->getAttachment($request)),
+            'sent_by_office' => 1,
+            'seen_by_office' => 1,
+            'seen_by_seller' => 0,
+            'notification_receiver' => 'customer',
+            'created_at' => now(),
+        ];
+    }
+    /**
+     * @param object $request
      * @param string $type
      * @return array
      */

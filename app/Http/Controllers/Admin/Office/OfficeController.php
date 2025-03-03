@@ -589,7 +589,7 @@ class OfficeController extends BaseController
         $referredVendors=Seller::findOrFail($id)->referredVendors;
         $office=Seller::findOrFail($id)->referredBy;
         $seller     =Seller::findOrFail($id);
-        $sellers    =Seller::all();
+        $sellers    =Seller::where("type_account",'=','fictory')->get();
         return view(Office::VIEW_REFERRAL[VIEW], compact("referredVendors","seller","sellers","office"));
 
     }

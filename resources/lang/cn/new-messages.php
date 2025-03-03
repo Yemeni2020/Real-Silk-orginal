@@ -8995,4 +8995,6 @@ return [
 	"service_Preview_File" => "Service Preview File",
 	"service_video" => "Service video",
 	"service_added_successfully" => "Service added successfully",
+	"factory" => "Factory",
+	"factories" => "Factories",
 ];

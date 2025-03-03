@@ -436,6 +436,8 @@
                             <small class="nav-subtitle">{{translate('help_&_support')}}</small>
                             <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                         </li>
+                        @if($seller->type_account!="office")
+
                         <li class="navbar-vertical-aside-has-menu {{Request::is('vendor/messages*')?'active':''}}">
                             <a class="nav-link"
                                href="{{route('vendor.messages.index', ['type' => 'customer'])}}">
@@ -445,6 +447,17 @@
                                     </span>
                             </a>
                         </li>
+                        @else
+                        <li class="navbar-vertical-aside-has-menu {{Request::is('office/messages*')?'active':''}}">
+                            <a class="nav-link"
+                               href="{{route('office.messages.index', ['type' => 'customer'])}}">
+                                <i class="tio-chat nav-icon"></i>
+                                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
+                                        {{translate('inbox')}}
+                                    </span>
+                            </a>
+                        </li>
+                        @endif
                         @if($seller->type_account!="office")
                         <li class="nav-item {{(Request::is('vendor/transaction/order-list')) ? 'scroll-here':''}}">
                             <small class="nav-subtitle">{{translate('reports_&_analytics')}}</small>

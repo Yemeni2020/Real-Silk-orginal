@@ -9186,4 +9186,6 @@ return [
 	"denied_service_request" => "Denied service request",
 	"add_new_service" => "Add new service",
 	"service_gallery" => "Service gallery",
+	"factory" => "Factory",
+	"suspended" => "Suspended",
 ];
