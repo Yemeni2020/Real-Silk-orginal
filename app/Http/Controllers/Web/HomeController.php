@@ -57,24 +57,25 @@ class HomeController extends Controller
         };
     }
 
-    public function default_theme(): View
+    public function default_theme(): View|null
     {
-        $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting();
+        $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(50);
         $userId = Auth::guard('customer')->user() ? Auth::guard('customer')->id() : 0;
         $flashDeal = ProductManager::getPriorityWiseFlashDealsProductsQuery(userId: $userId);
 
         $theme_name = theme_root_path();
         $brand_setting = BusinessSetting::where('type', 'product_brand')->first()->value;
-        $homeCategories = Category::where('home_status', true)->priority()->get();
+        $homeCategories = Category::where('home_status', true)->limit(5)->priority()->get();
         $homeCategories->map(function ($data) {
             $id = '"' . $data['id'] . '"';
             $homeCategoriesProducts = Product::active()
                 ->withCount('reviews')
-                ->where('category_ids', 'like', "%{$id}%");
+                ->where('category_ids', 'like', "%{$id}%")->limit(25);
             $data['products'] = ProductManager::getPriorityWiseCategoryWiseProductsQuery(query: $homeCategoriesProducts, dataLimit: 12);
         });
         $current_date = date('Y-m-d H:i:s');
-
+        // dump($categories);
+        // return null;
         $topVendorsList = Shop::active()
             ->withCount(['products' => function ($query) {
                 $query->active();
@@ -83,11 +84,11 @@ class HomeController extends Controller
                 $query->with('product', function ($query) {
                     $query->active()->with('reviews', function ($query) {
                         $query->active();
-                    });
+                    })->limit(25);
                 })
                     ->withCount(['orders']);
             })
-            ->get()
+            ->limit(12)->get()
             ->each(function ($shop) {
                 $shop->orders_count = $shop->seller->orders_count;
                 $productReviews = $shop->seller->product->pluck('reviews')->collapse();
@@ -105,7 +106,7 @@ class HomeController extends Controller
             })->take(12);
 
 
-        $inhouseProducts = Product::active()->with(['reviews', 'rating'])->withCount('reviews')->where(['added_by' => 'admin'])->get();
+        $inhouseProducts = Product::active()->with(['reviews', 'rating'])->withCount('reviews')->where(['added_by' => 'admin'])->limit(25)->get();
         $inhouseProductCount = $inhouseProducts->count();
 
         $inhouseReviewData = Review::active()->whereIn('product_id', $inhouseProducts->pluck('id'));
