@@ -114,7 +114,7 @@ class CategoryManager
             ->withCount(['product' => function ($query) {
                 $query->active();
             }])
-            ->where('position', 0)->select('id','name', 'parent_id', 'position');
+            ->where('position', 0)->select('id','name','icon','image_ad', 'parent_id', 'position');
 
         // ✅ استخدام paginate بدلاً من get() لتقليل التحميل الزائد
         if ($dataLimit) {
