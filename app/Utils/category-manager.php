@@ -69,52 +69,52 @@ class CategoryManager
 
     public static function getCategoriesWithCountingAndPriorityWiseSorting($dataLimit = null)
     {
-        $categoriesQuery = Category::with(['product' => function ($query) {
-            return $query->active()->withCount(['orderDetails']);
-        }])->withCount(['product' => function ($query) {
-            $query->active();
-        }])->with(['childes' => function ($query) {
-        $query->with(['childes' => function ($query) {
-            $query->withCount(['subSubCategoryProduct' => function ($query) {
-                $query->active();
-            }])->where('position', 2);
-        }])->withCount(['subCategoryProduct' => function ($query) {
-            $query->active();
-        }])->where('position', 1);
-    }, 'childes.childes'])->where('position', 0);
+    //     $categoriesQuery = Category::with(['product' => function ($query) {
+    //         return $query->active()->withCount(['orderDetails']);
+    //     }])->withCount(['product' => function ($query) {
+    //         $query->active();
+    //     }])->with(['childes' => function ($query) {
+    //     $query->with(['childes' => function ($query) {
+    //         $query->withCount(['subSubCategoryProduct' => function ($query) {
+    //             $query->active();
+    //         }])->where('position', 2);
+    //     }])->withCount(['subCategoryProduct' => function ($query) {
+    //         $query->active();
+    //     }])->where('position', 1);
+    // }, 'childes.childes'])->where('position', 0);
         
     
-        // $categoriesQuery = Category::withoutGlobalScope('translate')->with([
-        //         'product' => function ($query) {
-        //             $query->select('id', 'name', 'category_id')
-        //                 ->active()
-        //                 ->withCount(['orderDetails'])
-        //                 ->with('translations'); // تحسين تحميل الترجمات
-        //         },
-        //         'childes' => function ($query) {
-        //             $query->select('id', 'name', 'parent_id', 'position')
-        //                 ->limit(10) // تحديد عدد الأبناء لكل فئة رئيسية
-        //                 ->with([
-        //                     'childes' => function ($query) {
-        //                         $query->select('id','name', 'parent_id', 'position')
-        //                                 ->withCount(['subSubCategoryProduct' => function ($query) {
-        //                                     $query->active();
-        //                                 }])
-        //                                 ->where('position', 2)
-        //                                 ->limit(10); // تحديد عدد الأبناء لكل فئة فرعية
-        //                     }
-        //                 ])
-        //                 ->withCount(['subCategoryProduct' => function ($query) {
-        //                     $query->active();
-        //                 }])
-        //                 ->where('position', 1);
-        //         }
-        //     ])
-        //     ->with('translations') // تحميل الترجمات لتقليل الاستعلامات الإضافية
-        //     ->withCount(['product' => function ($query) {
-        //         $query->active();
-        //     }])
-        //     ->where('position', 0);
+        $categoriesQuery = Category::withoutGlobalScope('translate')->with([
+                'product' => function ($query) {
+                    $query->select('id', 'name', 'category_id')
+                        ->active()
+                        ->withCount(['orderDetails'])
+                        ->with('translations'); // تحسين تحميل الترجمات
+                },
+                'childes' => function ($query) {
+                    $query->select('id', 'name', 'parent_id', 'position')
+                        ->limit(10) // تحديد عدد الأبناء لكل فئة رئيسية
+                        ->with([
+                            'childes' => function ($query) {
+                                $query->select('id','name', 'parent_id', 'position')
+                                        ->withCount(['subSubCategoryProduct' => function ($query) {
+                                            $query->active();
+                                        }])
+                                        ->where('position', 2)
+                                        ->limit(10); // تحديد عدد الأبناء لكل فئة فرعية
+                            }
+                        ])
+                        ->withCount(['subCategoryProduct' => function ($query) {
+                            $query->active();
+                        }])
+                        ->where('position', 1);
+                }
+            ])
+            ->with('translations') // تحميل الترجمات لتقليل الاستعلامات الإضافية
+            ->withCount(['product' => function ($query) {
+                $query->active();
+            }])
+            ->where('position', 0);
 
         // ✅ استخدام paginate بدلاً من get() لتقليل التحميل الزائد
         if ($dataLimit) {
