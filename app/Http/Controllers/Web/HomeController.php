@@ -59,7 +59,7 @@ class HomeController extends Controller
 
     public function default_theme(): View|null
     {
-        $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting();
+        $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(50);
 
         
         $userId = Auth::guard('customer')->user() ? Auth::guard('customer')->id() : 0;
