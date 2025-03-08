@@ -93,7 +93,7 @@ class CategoryManager
                 },
                 'childes' => function ($query) {
                     $query->select('id', 'name', 'parent_id', 'position')
-                        ->limit(10) // تحديد عدد الأبناء لكل فئة رئيسية
+                        ->limit(25) // تحديد عدد الأبناء لكل فئة رئيسية
                         ->with([
                             'childes' => function ($query) {
                                 $query->select('id','name', 'parent_id', 'position')
@@ -101,7 +101,7 @@ class CategoryManager
                                             $query->active();
                                         }])
                                         ->where('position', 2)
-                                        ->limit(10); // تحديد عدد الأبناء لكل فئة فرعية
+                                        ->limit(50); // تحديد عدد الأبناء لكل فئة فرعية
                             }
                         ])
                         ->withCount(['subCategoryProduct' => function ($query) {
@@ -116,6 +116,7 @@ class CategoryManager
             }])
             ->where('position', 0);
 
+        
         // ✅ استخدام paginate بدلاً من get() لتقليل التحميل الزائد
         if ($dataLimit) {
             $categoriesProcessed = $categoriesQuery->paginate($dataLimit);
