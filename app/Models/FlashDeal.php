@@ -80,8 +80,11 @@ class FlashDeal extends Model
         if (strpos(url()->current(), '/admin') || strpos(url()->current(), '/vendor') || strpos(url()->current(), '/seller')) {
             return $title;
         }
+        $curnnet_lang = getDefaultLanguage();
 
-        return $this->translations[0]->value??$title;
+        $translation = $this->translations->where('locale', $curnnet_lang)->first();
+        return $translation->value ?? $title; // إرجاع الترجمة إذا كانت موجودة، وإلا يتم عرض الاسم الأصلي
+        // return $this->translations[0]->value??$title;
     }
     public function getBannerFullUrlAttribute():string|null|array
     {
@@ -92,31 +95,31 @@ class FlashDeal extends Model
         return $this->storageLink('deal',$value,$storage['value'] ?? 'public');
     }
     protected $appends = ['banner_full_url'];
-    protected static function boot(): void
-    {
-        parent::boot();
-        static::addGlobalScope('translate', function (Builder $builder) {
-            $builder->with(['translations' => function ($query) {
-                if (strpos(url()->current(), '/api')){
-                    return $query->where('locale', App::getLocale());
-                }else{
-                    return $query->where('locale', getDefaultLanguage());
-                }
-            }]);
-        });
-        static::saved(function ($model) {
-            if($model->isDirty('banner')){
-                $storage = config('filesystems.disks.default') ?? 'public';
-                DB::table('storages')->updateOrInsert([
-                    'data_type' => get_class($model),
-                    'data_id' => $model->id,
-                    'key' => 'banner',
-                ], [
-                    'value' => $storage,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-        });
-    }
+    // protected static function boot(): void
+    // {
+    //     parent::boot();
+    //     static::addGlobalScope('translate', function (Builder $builder) {
+    //         $builder->with(['translations' => function ($query) {
+    //             if (strpos(url()->current(), '/api')){
+    //                 return $query->where('locale', App::getLocale());
+    //             }else{
+    //                 return $query->where('locale', getDefaultLanguage());
+    //             }
+    //         }]);
+    //     });
+    //     static::saved(function ($model) {
+    //         if($model->isDirty('banner')){
+    //             $storage = config('filesystems.disks.default') ?? 'public';
+    //             DB::table('storages')->updateOrInsert([
+    //                 'data_type' => get_class($model),
+    //                 'data_id' => $model->id,
+    //                 'key' => 'banner',
+    //             ], [
+    //                 'value' => $storage,
+    //                 'created_at' => now(),
+    //                 'updated_at' => now(),
+    //             ]);
+    //         }
+    //     });
+    // }
 }
