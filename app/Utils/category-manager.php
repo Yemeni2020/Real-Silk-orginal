@@ -88,8 +88,8 @@ class CategoryManager
                 'product' => function ($query) {
                     $query->select('id', 'name', 'category_id')
                         ->active()
-                        ->withCount(['orderDetails'])
-                        ->with('translations'); // تحسين تحميل الترجمات
+                        ->withCount(['orderDetails']);
+                         // تحسين تحميل الترجمات
                 },
                 'childes' => function ($query) {
                     $query->select('id', 'name', 'parent_id', 'position')
@@ -110,11 +110,11 @@ class CategoryManager
                         ->where('position', 1);
                 }
             ])
-            ->with('translations') // تحميل الترجمات لتقليل الاستعلامات الإضافية
+             // تحميل الترجمات لتقليل الاستعلامات الإضافية
             ->withCount(['product' => function ($query) {
                 $query->active();
             }])
-            ->where('position', 0);
+            ->where('position', 0)->select('id','name', 'parent_id', 'position');
 
         // ✅ استخدام paginate بدلاً من get() لتقليل التحميل الزائد
         if ($dataLimit) {

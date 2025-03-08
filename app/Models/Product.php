@@ -427,19 +427,19 @@ class Product extends Model
         return $images;
     }
 
-    protected static function boot(): void
-    {
-        parent::boot();
-        static::addGlobalScope('translate', function (Builder $builder) {
-            $builder->with(['translations' => function ($query) {
-                if (strpos(url()->current(), '/api')) {
-                    return $query->where('locale', App::getLocale());
-                } else {
-                    return $query->where('locale', getDefaultLanguage());
-                }
-            }, 'reviews' => function ($query) {
-                $query->whereNull('delivery_man_id');
-            }]);
-        });
-    }
+    // protected static function boot(): void
+    // {
+    //     parent::boot();
+    //     static::addGlobalScope('translate', function (Builder $builder) {
+    //         $builder->with(['translations' => function ($query) {
+    //             if (strpos(url()->current(), '/api')) {
+    //                 return $query->where('locale', App::getLocale());
+    //             } else {
+    //                 return $query->where('locale', getDefaultLanguage());
+    //             }
+    //         }, 'reviews' => function ($query) {
+    //             $query->whereNull('delivery_man_id');
+    //         }]);
+    //     });
+    // }
 }
