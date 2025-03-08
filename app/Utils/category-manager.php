@@ -78,7 +78,7 @@ class CategoryManager
                 },
                 'childes' => function ($query) {
                     $query->select('id', 'name', 'parent_id', 'position')
-                        ->limit(6) // تحديد عدد الأبناء لكل فئة رئيسية
+                        ->limit(10) // تحديد عدد الأبناء لكل فئة رئيسية
                         ->with([
                             'childes' => function ($query) {
                                 $query->select('id', 'parent_id', 'position')

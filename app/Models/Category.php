@@ -116,17 +116,17 @@ class Category extends Model
     }
     protected $appends = ['icon_full_url','adv_full_url'];
 
-    protected static function boot(): void
-    {
-        parent::boot();
-        static::addGlobalScope('translate', function (Builder $builder) {
-            $builder->with(['translations' => function ($query) {
-                if (strpos(url()->current(), '/api')) {
-                    return $query->where('locale', App::getLocale());
-                } else {
-                    return $query->where('locale', getDefaultLanguage());
-                }
-            }]);
-        });
-    }
+    // protected static function boot(): void
+    // {
+    //     parent::boot();
+    //     static::addGlobalScope('translate', function (Builder $builder) {
+    //         $builder->with(['translations' => function ($query) {
+    //             if (strpos(url()->current(), '/api')) {
+    //                 return $query->where('locale', App::getLocale());
+    //             } else {
+    //                 return $query->where('locale', getDefaultLanguage());
+    //             }
+    //         }]);
+    //     });
+    // }
 }
