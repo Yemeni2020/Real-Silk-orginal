@@ -334,7 +334,7 @@
                                 @if($categoryIndex < 10)
                                     <li class="nav-item dropdown {{request()->is('/')?'active':''}}">
                                         <a class="nav-link dropdown-toggle" href="{{route('products',['category_id'=> $category['id'],'data_from'=>'category','page'=>1])}}">
-                                            <span>{{ $category->translations[0]->value?? $category['name'] }}</span>
+                                            <span>{{  $category['name'] }}</span>
                                         </a>
                                         @if ($category->childes->count() > 0)
                                             <ul class="text-align-direction dropdown-menu __dropdown-menu-sizing dropdown-menu-{{Session::get('direction') === "rtl" ? 'right' : 'left'}} scroll-bar">

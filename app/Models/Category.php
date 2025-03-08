@@ -89,8 +89,12 @@ class Category extends Model
         if (strpos(url()->current(), '/admin') || strpos(url()->current(), '/vendor') || strpos(url()->current(), '/seller')) {
             return $name;
         }
+        $curnnet_lang = session()->get("local");
 
-        return $this->translations[0]->value ?? $name;
+        $translation = $this->translations->where('locale', $curnnet_lang)->first();
+        return $translation->value ?? $name; // إرجاع الترجمة إذا كانت موجودة، وإلا يتم عرض الاسم الأصلي
+
+        // return $this->translations[0]->value ?? $name;
     }
 
     public function getDefaultNameAttribute(): string|null

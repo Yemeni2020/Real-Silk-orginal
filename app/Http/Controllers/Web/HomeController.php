@@ -60,6 +60,8 @@ class HomeController extends Controller
     public function default_theme(): View|null
     {
         $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(50);
+
+        
         $userId = Auth::guard('customer')->user() ? Auth::guard('customer')->id() : 0;
         $flashDeal = ProductManager::getPriorityWiseFlashDealsProductsQuery(userId: $userId);
 
@@ -178,11 +180,12 @@ class HomeController extends Controller
         $footer_banner = $this->banner->where('banner_type', 'Footer Banner')->where('theme', theme_root_path())->where('published', 1)->whereJsonContains('language', $curnnet_lang)->orderBy('id', 'desc')->get();
         
 
+        // dump($categories);
         return view(VIEW_FILE_NAMES['home'],
             compact(
                 'flashDeal', 'featuredProductsList', 'topRated', 'bestSellProduct', 'latest_products', 'categories', 'brands',
                 'deal_of_the_day', 'topVendorsList', 'homeCategories', 'brand_setting', 'main_banner', 'main_section_banner',
-                'current_date', 'recommendedProduct', 'footer_banner', 'newArrivalProducts','side_banner'
+                'current_date', 'recommendedProduct', 'footer_banner', 'newArrivalProducts','side_banner','curnnet_lang'
             )
         );
     }
