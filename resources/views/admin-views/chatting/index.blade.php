@@ -30,6 +30,12 @@
                                 </a>
                             </li>
                             <li class="nav-item" role="presentation">
+                                <a class="nav-link bg-transparent p-2 {{ request('type') == 'office' ? 'active' : '' }}"
+                                   href="{{ route('admin.messages.index', ['type' => 'office']) }}">
+                                    {{translate("office")}}
+                                </a>
+                            </li>
+                            <li class="nav-item" role="presentation">
                                 <a class="nav-link bg-transparent p-2 {{ request('type') == 'delivery-man' ? 'active' : '' }}"
                                    href="{{ route('admin.messages.index', ['type' => 'delivery-man']) }}">
                                     {{translate('delivery_Man')}}

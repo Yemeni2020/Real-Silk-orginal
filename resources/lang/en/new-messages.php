@@ -9188,4 +9188,5 @@ return [
 	"service_gallery" => "Service gallery",
 	"factory" => "Factory",
 	"suspended" => "Suspended",
+	"search_admin" => "Search admin",
 ];

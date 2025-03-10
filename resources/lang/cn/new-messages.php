@@ -8997,4 +8997,5 @@ return [
 	"service_added_successfully" => "Service added successfully",
 	"factory" => "Factory",
 	"factories" => "Factories",
+	"service" => "Service",
 ];

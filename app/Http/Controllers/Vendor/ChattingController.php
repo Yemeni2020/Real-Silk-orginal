@@ -124,6 +124,37 @@ class ChattingController extends BaseController
                 ]);
             }
         }
+        elseif ($type == 'office') {
+            $allChattingUsers = $this->chattingRepo->getListWhereNotNull(
+                orderBy: ['created_at' => 'DESC'],
+                filters: ['seller_id' => $vendorId],
+                whereNotNull: ['office_id', 'seller_id'],
+                relations: ['office'],
+                dataLimit: 'all'
+            )->unique('office_id');
+
+            if (count($allChattingUsers) > 0) {
+                $lastChatUser = $allChattingUsers[0]->office;
+                $this->chattingRepo->updateAllWhere(
+                    params: ['seller_id' => $vendorId, 'office_id' => $lastChatUser['id']],
+                    data: ['seen_by_seller' => 1]
+                );
+
+                $chattingMessages = $this->chattingRepo->getListWhereNotNull(
+                    orderBy: ['created_at' => 'DESC'],
+                    filters: ['seller_id' => $vendorId, 'office_id' => $lastChatUser->id],
+                    whereNotNull: ['office_id', 'seller_id'],
+                    relations: ['office'],
+                    dataLimit: 'all'
+                );
+                return view(Chatting::INDEX[VIEW], [
+                    'userType' => $type,
+                    'allChattingUsers' => $allChattingUsers,
+                    'lastChatUser' => $lastChatUser,
+                    'chattingMessages' => $chattingMessages,
+                ]);
+            }
+        }
         return view(Chatting::INDEX[VIEW], compact('shop'));
     }
 
@@ -161,6 +192,19 @@ class ChattingController extends BaseController
                 dataLimit: 'all'
             );
             $data = self::getRenderMessagesView(user: $getUser, message: $chattingMessages, type: 'customer');
+        }elseif ($request->has(key: 'office_id')) {
+            $getUser = $this->customerRepo->getFirstWhere(params: ['id' => $request['office_id']]);
+            $this->chattingRepo->updateAllWhere(
+                params: ['seller_id' => $vendorId, 'office_id' => $request['office_id']],
+                data: ['seen_by_seller' => 1]
+            );
+            $chattingMessages = $this->chattingRepo->getListWhereNotNull(
+                orderBy: ['created_at' => 'DESC'],
+                filters: ['seller_id' => $vendorId, 'office_id' => $request['office_id']],
+                whereNotNull: ['office_id', 'seller_id'],
+                dataLimit: 'all'
+            );
+            $data = self::getRenderMessagesView(user: $getUser, message: $chattingMessages, type: 'office');
         }
         return response()->json($data);
     }
@@ -175,6 +219,7 @@ class ChattingController extends BaseController
         $vendor = $this->vendorRepo->getFirstWhere(params: ['id' => auth('seller')->id()]);
         $shop = $this->shopRepo->getFirstWhere(params: ['seller_id' => auth('seller')->id()]);
         $attachment = $this->chattingService->getAttachment($request);
+
         if ($request->has(key: 'delivery_man_id')) {
             $this->chattingRepo->add(
                 data: $this->chattingService->getDeliveryManChattingData(
@@ -210,6 +255,23 @@ class ChattingController extends BaseController
                 dataLimit: 'all'
             );
             $data = self::getRenderMessagesView(user: $customer, message: $chattingMessages, type: 'customer');
+        } elseif ($request->has(key: 'office_id')) {
+            $this->chattingRepo->add(
+                data: $this->chattingService->getOfficeChattingData(
+                    request: $request,
+                    shopId: $shop['id'],
+                    vendorId: $vendor['id'])
+            );
+            $customer = $this->vendorRepo->getFirstWhere(params: ['id' => $request['office_id']]);
+            event(new ChattingEvent(key: 'message_from_seller', type: 'office', userData: $customer, messageForm: $vendor));
+
+            $chattingMessages = $this->chattingRepo->getListWhereNotNull(
+                orderBy: ['created_at' => 'DESC'],
+                filters: ['seller_id' => $vendor['id'], 'office_id' => $request['office_id']],
+                whereNotNull: ['office_id', 'seller_id'],
+                dataLimit: 'all'
+            );
+            $data = self::getRenderMessagesView(user: $customer, message: $chattingMessages, type: 'office');
         }
         return response()->json($data);
     }

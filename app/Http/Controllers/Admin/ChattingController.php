@@ -124,6 +124,38 @@ class ChattingController extends BaseController
                     'chattingMessages' => $chattingMessages,
                 ]);
             }
+        }elseif ($type == 'office') {
+            $allChattingUsers = $this->chattingRepo->getListWhereNotNull(
+                orderBy: ['created_at' => 'DESC'],
+                filters: ['admin_id' => $adminId],
+                whereNotNull: ['seller_id', 'admin_id'],
+                relations: ['office'],
+                dataLimit: 'all'
+            )->unique('seller_id');
+
+            if (count($allChattingUsers) > 0) {
+                $lastChatUser = $allChattingUsers[0]->office;
+                if ($lastChatUser) {
+                    $this->chattingRepo->updateAllWhere(
+                        params: ['admin_id' => $adminId, 'seller_id' => $lastChatUser['id']],
+                        data: ['seen_by_admin' => 1]
+                    );
+                }
+
+                $chattingMessages = $this->chattingRepo->getListWhereNotNull(
+                    orderBy: ['created_at' => 'DESC'],
+                    filters: ['admin_id' => $adminId, 'seller_id' => $lastChatUser?->id],
+                    whereNotNull: ['seller_id', 'admin_id'],
+                    relations: ['office'],
+                    dataLimit: 'all'
+                );
+                return view(Chatting::INDEX[VIEW], [
+                    'userType' => $type,
+                    'allChattingUsers' => $allChattingUsers,
+                    'lastChatUser' => $lastChatUser,
+                    'chattingMessages' => $chattingMessages,
+                ]);
+            }
         }
         return view(Chatting::INDEX[VIEW], compact('shop'));
 

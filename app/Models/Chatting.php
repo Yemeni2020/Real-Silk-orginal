@@ -102,6 +102,10 @@ class Chatting extends Model
     {
         return $this->belongsTo(Seller::class, 'seller_id');
     }
+    public function office():BelongsTo
+    {
+        return $this->belongsTo(Seller::class, 'office_id');
+    }
     public function customer():BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

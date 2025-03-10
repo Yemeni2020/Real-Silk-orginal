@@ -79,6 +79,22 @@ class ChattingService
         ];
     }
 
+    public function getOfficeChattingData(object $request , string|int $shopId, string|int $vendorId):array
+    {
+        return [
+            'office_id' => $request['office_id'],
+            'seller_id' => $vendorId,
+            'shop_id' => $shopId,
+            'message' => $request->message,
+            'attachment' =>json_encode($this->getAttachment($request)),
+            'sent_by_seller' => 1,
+            'seen_by_seller' => 1,
+            'seen_by_office' => 0,
+            'notification_receiver' => 'office',
+            'created_at' => now(),
+        ];
+    }
+
     /**
      * @param object $request
      * @param string|int $shopId
@@ -96,7 +112,22 @@ class ChattingService
             'sent_by_office' => 1,
             'seen_by_office' => 1,
             'seen_by_seller' => 0,
-            'notification_receiver' => 'customer',
+            'notification_receiver' => 'seller',
+            'created_at' => now(),
+        ];
+    }
+    public function getAdminChattingData(object $request , string|int $shopId, string|int $vendorId):array
+    {
+        return [
+            'admin_id' => $request['admin_id'],
+            'office_id' => $vendorId,
+            'shop_id' => $shopId,
+            'message' => $request->message,
+            'attachment' =>json_encode($this->getAttachment($request)),
+            'sent_by_office' => 1,
+            'seen_by_office' => 1,
+            'seen_by_admin' => 0,
+            'notification_receiver' => 'admin',
             'created_at' => now(),
         ];
     }

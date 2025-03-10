@@ -450,7 +450,7 @@
                         @else
                         <li class="navbar-vertical-aside-has-menu {{Request::is('office/messages*')?'active':''}}">
                             <a class="nav-link"
-                               href="{{route('office.messages.index', ['type' => 'customer'])}}">
+                               href="{{route('office.messages.index', ['type' => 'factory'])}}">
                                 <i class="tio-chat nav-icon"></i>
                                 <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
                                         {{translate('inbox')}}

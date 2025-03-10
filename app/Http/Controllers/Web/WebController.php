@@ -229,8 +229,9 @@ class WebController extends Controller
             return back();
         }
 
-        $vendorsList = Shop::active()
-            ->withCount(['products' => function ($query) {
+        $vendorsList = Shop::active()->whereHas('seller', function ($query) {
+            $query->where("type_account", "fictory"); // ✅ تصفية `Shop` بناءً على `seller`
+        })->withCount(['products' => function ($query) {
                 $query->active();
             }])
             ->when(isset($request['shop_name']), function ($query) use ($request) {

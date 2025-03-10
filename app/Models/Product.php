@@ -376,7 +376,10 @@ class Product extends Model
         if (strpos(url()->current(), '/admin') || strpos(url()->current(), '/vendor') || strpos(url()->current(), '/seller')) {
             return $detail;
         }
-        return $this->translations[1]->value ?? $detail;
+        $curnnet_lang = getDefaultLanguage();
+        $translation = $this->translations->where('locale', $curnnet_lang)->where('key', 'description')->first();
+        return $translation->value ?? $detail; 
+        // return $this->translations[1]->value ?? $detail;
     }
     public function getThumbnailFullUrlAttribute(): string|null|array
     {
