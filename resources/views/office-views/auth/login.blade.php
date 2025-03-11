@@ -62,7 +62,7 @@
                                     @endif
                                 @endforeach
                             </a>
-                            <ul class="text-align-direction dropdown-menu dropdown-menu-{{Session::get('direction') === "rtl" ? 'right' : 'left'}}">
+                            <ul class="text-align-direction dropdown-menu dropdown-menu-{{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}}">
                                 @foreach(json_decode($language['value'],true) as $key =>$data)
                                     @if($data['status']==1)
                                         <li class="change-language" data-action="{{route('change-language')}}" data-language-code="{{$data['code']}}">

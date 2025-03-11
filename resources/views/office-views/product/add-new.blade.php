@@ -998,7 +998,7 @@ $auto_translate=getWebConfig("auto_translate");
     <span id="message-product-added-successfully" data-text="{{ translate('service_added_successfully') }}"></span>
     <span id="message-discount-will-not-larger-then-variant-price" data-text="{{ translate('the_discount_price_will_not_larger_then_Variant_Price') }}"></span>
     <span id="system-currency-code" data-value="{{ getCurrencySymbol(currencyCode: getCurrencyCode()) }}"></span>
-    <span id="system-session-direction" data-value="{{ Session::get('direction') }}"></span>
+    <span id="system-session-direction" data-value="{{ request()->cookie('direction', 'ltr') }}"></span>
 @endsection
 
 @push('script')

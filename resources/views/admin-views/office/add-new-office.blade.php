@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/plugins/intl-tel-input/css/intlTelInput.css') }}">
 @endpush
 @section('content')
-<div class="content container-fluid main-card {{Session::get('direction')}}">
+<div class="content container-fluid main-card {{request()->cookie('direction', 'ltr')}}">
     <div class="mb-4">
         <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
             <img src="{{dynamicAsset(path: 'public/assets/back-end/img/add-new-seller.png')}}" class="mb-1" alt="">

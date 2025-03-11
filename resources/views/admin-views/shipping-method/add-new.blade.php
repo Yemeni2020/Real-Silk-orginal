@@ -24,7 +24,7 @@
                     </div>
                     <div class="card-body">
                         <form action="{{route('admin.business-settings.shipping-method.add')}}"
-                              style="text-align: {{Session::get('direction') === "rtl" ? 'right' : 'left'}};"
+                              style="text-align: {{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}};"
                               method="post">
                             @csrf
                             <div class="form-group">
@@ -76,7 +76,7 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-bordered" width="100%" cellspacing="0"
-                                   style="text-align: {{Session::get('direction') === "rtl" ? 'right' : 'left'}};">
+                                   style="text-align: {{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}};">
                                 <thead>
                                 <tr>
                                     <th scope="col">{{translate('SL')}}#</th>

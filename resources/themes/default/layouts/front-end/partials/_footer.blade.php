@@ -64,7 +64,7 @@
                     class="row mt-3 pb-3 ">
                     <div class="col-md-3 footer-web-logo text-center text-md-start ">
                         <a class="d-block" href="{{route('home')}}">
-                            <img class="{{Session::get('direction') === "rtl" ? 'right-align' : ''}}"
+                            <img class="{{request()->cookie('direction', 'ltr') === "rtl" ? 'right-align' : ''}}"
                                  src="{{ getStorageImages(path: $web_config['footer_logo'], type: 'logo') }}"
                                  alt="{{ $web_config['name']->value }}"/>
                         </a>
@@ -255,7 +255,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-4 {{Session::get('direction') === "rtl" ? ' flex-row-reverse' : ''}}">
+                        <div class="row mt-4 {{request()->cookie('direction', 'ltr') === "rtl" ? ' flex-row-reverse' : ''}}">
                             <div class="col-md-7">
                                 <div
                                     class="d-flex align-items-center mobile-view-center-align text-start justify-content-between">
@@ -263,7 +263,7 @@
                                         <span class="mb-4 font-weight-bold footer-header text-capitalize">{{ translate('start_a_conversation')}}</span>
                                     </div>
                                     <div
-                                        class="flex-grow-1 d-none d-md-block {{Session::get('direction') === "rtl" ? 'mr-4 mx-sm-4' : 'mx-sm-4'}}">
+                                        class="flex-grow-1 d-none d-md-block {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-4 mx-sm-4' : 'mx-sm-4'}}">
                                         <hr>
                                     </div>
                                 </div>
@@ -309,7 +309,7 @@
                                         <span class="mb-4 font-weight-bold footer-header">{{ translate('address')}}</span>
                                     </div>
                                     <div
-                                        class="flex-grow-1 d-none d-md-block {{Session::get('direction') === "rtl" ? 'mr-3 ' : 'ml-3'}}">
+                                        class="flex-grow-1 d-none d-md-block {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-3 ' : 'ml-3'}}">
                                         <hr class="address_under_line"/>
                                     </div>
                                 </div>

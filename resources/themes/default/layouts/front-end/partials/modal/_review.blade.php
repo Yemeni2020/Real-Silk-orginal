@@ -75,7 +75,8 @@
                     @if(isset($order_details->reviewData))
                         <?php
                             $rating = $order_details->reviewData->rating;
-                            $sessionDirection = session()->get('direction') ?? 'ltr';
+                            // $sessionDirection = session()->get('direction') ?? 'ltr';
+                            $sessionDirection = request()->cookie('direction', 'ltr') ?? 'ltr';
                             $style = match ($rating) {
                                 1 => 'inset-inline-start:14px',
                                 2 => 'inset-inline-start:62',

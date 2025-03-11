@@ -6,7 +6,7 @@
                     <a class="text-capitalize view-all-text web-text-primary"
                     href="{{route('flash-deals',[$web_config['flash_deals']?$web_config['flash_deals']['id']:0])}}">
                         {{ translate('view_all')}}
-                        <i class="czi-arrow-{{Session::get('direction') === "rtl" ? 'left mr-1 ml-n1 mt-1 float-left' : 'right ml-1 mr-n1'}}"></i>
+                        <i class="czi-arrow-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left mr-1 ml-n1 mt-1 float-left' : 'right ml-1 mr-n1'}}"></i>
                     </a>
                 @endif
             </div>
@@ -100,7 +100,7 @@
                         <a class="text-capitalize view-all-text web-text-primary"
                             href="{{route('flash-deals',[$web_config['flash_deals']?$web_config['flash_deals']['id']:0])}}">
                             {{ translate('view_all')}}
-                            <i class="czi-arrow-{{Session::get('direction') === "rtl" ? 'left mr-1 ml-n1 mt-1 float-left' : 'right ml-1 mr-n1'}}"></i>
+                            <i class="czi-arrow-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left mr-1 ml-n1 mt-1 float-left' : 'right ml-1 mr-n1'}}"></i>
                         </a>
                     </div>
                 @endif

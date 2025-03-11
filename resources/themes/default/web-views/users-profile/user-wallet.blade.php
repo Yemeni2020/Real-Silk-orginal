@@ -332,7 +332,8 @@ $MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->g
         autoplay: false,
         nav: false,
         margin: 20,
-        '{{session('direction')}}': true,
+        // '{{session('direction')}}': true,
+        '{{request()->cookie('direction', 'ltr')}}': true,
         items: 1.3
     })
 </script>

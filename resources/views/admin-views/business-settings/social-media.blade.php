@@ -4,7 +4,7 @@
 @extends('layouts.back-end.app')
 @section('title', translate('social_media'))
 @section('content')
-    @php($direction = Session::get('direction'))
+    @php($direction = request()->cookie('direction', 'ltr'))
     <div class="content container-fluid">
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">

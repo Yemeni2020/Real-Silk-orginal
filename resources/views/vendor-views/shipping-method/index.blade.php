@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Session;
 @section('title', translate('add_Shipping'))
 
 @section('content')
-    @php($direction = Session::get('direction'))
+    @php($direction = request()->cookie('direction', 'ltr'))
     <div class="content container-fluid">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4 pb-2">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">

@@ -6,7 +6,7 @@
 @section('title', translate('login_Url_Setup'))
 
 @section('content')
-@php($direction = Session::get('direction'))
+@php($direction = request()->cookie('direction', 'ltr'))
 <div class="content container-fluid">
     <div class="mb-4 pb-2">
         <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2 text-capitalize">

@@ -41,7 +41,7 @@
             @else
             <div class="col-12 col-xl-12 __top-slider-images">
             @endif
-                <div class="{{Session::get('direction') === "rtl" ? 'pr-xl-2' : 'pl-xl-2'}}">
+                <div class="{{request()->cookie('direction', 'ltr') === "rtl" ? 'pr-xl-2' : 'pl-xl-2'}}">
                     <div class="owl-theme owl-carousel hero-slider">
                         @foreach($main_banner as $key=>$banner)
                             <a href="{{$banner['url']}}" class="d-block" target="_blank">
@@ -55,7 +55,7 @@
 
 
              <div class="col-3 col-xl-3 d-none d-lg-block __top-slider-images">
-                <div class="{{Session::get('direction') === "rtl" ? 'pr-xl-1' : 'pl-xl-1'}}">
+                <div class="{{request()->cookie('direction', 'ltr') === "rtl" ? 'pr-xl-1' : 'pl-xl-1'}}">
                     <div class="owl-theme owl-carousel hero-slider">
                         @foreach($side_banner as $key=>$banner)
                             <a href="{{$banner['url']}}" class="d-block" target="_blank">

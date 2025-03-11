@@ -7,7 +7,7 @@
                          src="{{ isset($productReview->user) ? getStorageImages(path: $productReview->user->image_full_url, type: 'avatar') : theme_asset(path: 'public/assets/front-end/img/image-place-holder.png') }}"
                          alt="{{isset($productReview->user)?$productReview->user->f_name : translate('not exist')}}"/>
                     <div
-                        class="media-body {{Session::get('direction') === "rtl" ? 'pr-3' : 'pl-3'}} text-body">
+                        class="media-body {{request()->cookie('direction', 'ltr') === "rtl" ? 'pr-3' : 'pl-3'}} text-body">
                         <span class="mb-0 text-body font-semi-bold fs-13">{{isset($productReview->user)?$productReview->user->f_name.' '.$productReview->user->l_name : translate('not exist')}}</span>
                         <div class="d-flex ">
                             <div class="me-2">

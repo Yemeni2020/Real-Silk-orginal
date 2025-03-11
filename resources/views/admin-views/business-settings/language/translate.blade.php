@@ -10,7 +10,7 @@
 @endpush
 
 @section('content')
-    @php($direction = Session::get('direction') === "rtl" ? 'right' : 'left')
+    @php($direction = request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left')
     <div class="content container-fluid">
 
         <div class="mb-4 pb-2">

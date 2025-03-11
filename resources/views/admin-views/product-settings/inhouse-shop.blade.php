@@ -168,7 +168,7 @@
         <div class="modal fade" id="vacation_mode_modal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content"
-                     style="text-align: {{Session::get('direction') === "rtl" ? 'right' : 'left'}};">
+                     style="text-align: {{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}};">
                     <form action="{{ route('admin.product-settings.vacation-add') }}" method="post">
                         @csrf
                         <div class="modal-header border-bottom pb-2">

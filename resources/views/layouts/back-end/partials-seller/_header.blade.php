@@ -7,7 +7,7 @@
     $shop= Shop::where(['seller_id'=>auth('seller')->id()])->first();
     $vendor= Seller::find(auth('seller')->id());
 @endphp
-@php($direction = Session::get('direction'))
+@php($direction = request()->cookie('direction', 'ltr'))
 <div id="headerMain" class="d-none">
     <header id="header"
             class="navbar navbar-expand-lg navbar-fixed navbar-height navbar-flush navbar-container navbar-bordered">
@@ -49,7 +49,10 @@
                     <li class="nav-item">
                         <div class="hs-unfold">
                             <div>
-                                @php( $local = session()->has('local')?session('local'):'en')
+                                <?php
+                                //  $local = session()->has('local')?session('local'):'en';
+                                 ?>
+                                @php( $local = request()->cookie('local', 'cn'))
                                 @php($lang = \App\Models\BusinessSetting::where('type', 'language')->first())
                                 <div
                                     class="topbar-text dropdown disable-autohide {{$direction === "rtl" ? 'ml-3' : 'm-1'}} text-capitalize">

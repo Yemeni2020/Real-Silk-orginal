@@ -35,7 +35,7 @@
                         </div>
                     @endif
                 </div>
-                <div class="__w-100px flex-grow-1 {{Session::get('direction') === "rtl" ? ' pr-2 pr-sm-4' : ' pl-2 pl-sm-4'}}">
+                <div class="__w-100px flex-grow-1 {{request()->cookie('direction', 'ltr') === "rtl" ? ' pr-2 pr-sm-4' : ' pl-2 pl-sm-4'}}">
                     <div class="font-weight-bolder mb-2">
                         @if($shopInfoArray['id'] != 0)
                             {{ $shopInfoArray['name']}}
@@ -77,7 +77,7 @@
             </div>
 
             <div class="d-flex align-items-center">
-                <div class="{{Session::get('direction') === "rtl" ? 'ml-sm-4' : 'mr-sm-4'}}">
+                <div class="{{request()->cookie('direction', 'ltr') === "rtl" ? 'ml-sm-4' : 'mr-sm-4'}}">
                     @if (auth('customer')->check())
                         <div class="d-flex">
                             @if($seller_id == 0)

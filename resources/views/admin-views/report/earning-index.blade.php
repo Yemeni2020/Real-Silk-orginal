@@ -21,21 +21,21 @@
 
                     <div class="media-body">
                         <div class="row align-items-center">
-                            <div class="d-block col-sm mb-1 mb-sm-0 text-start {{Session::get('direction') === "rtl" ? 'mr-2' : 'ml-2'}}">
+                            <div class="d-block col-sm mb-1 mb-sm-0 text-start {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-2' : 'ml-2'}}">
                                 <div>
                                     <h1 class="page-header-title">{{translate('Earning_Report')}}  {{translate('overview')}} </h1>
                                 </div>
 
                                 <div class="row align-items-center">
                                     <div class="flex-between col-auto">
-                                        <h5 class="text-muted {{Session::get('direction') === "rtl" ? 'ml-1' : 'mr-1'}}">{{translate('admin')}}
+                                        <h5 class="text-muted {{request()->cookie('direction', 'ltr') === "rtl" ? 'ml-1' : 'mr-1'}}">{{translate('admin')}}
                                             : </h5>
                                         <h5 class="text-muted">{{auth('admin')->user()->name}}</h5>
                                     </div>
 
                                     <div class="col-auto">
                                         <div class="row align-items-center g-0">
-                                            <h5 class="text-muted col-auto {{Session::get('direction') === "rtl" ? 'pl-2' : 'pr-2'}}">{{translate('date')}}</h5>
+                                            <h5 class="text-muted col-auto {{request()->cookie('direction', 'ltr') === "rtl" ? 'pl-2' : 'pr-2'}}">{{translate('date')}}</h5>
 
                                             <!-- Flatpickr -->
                                             <h5 class="text-muted">( {{session('from_date')}} - {{session('to_date')}}
@@ -122,9 +122,9 @@
                             <div class="col">
                                 <!-- Media -->
                                 <div class="media">
-                                    <i class="tio-dollar-outlined nav-icon {{Session::get('direction') === "rtl" ? 'text-right' : 'text-left'}}"></i>
+                                    <i class="tio-dollar-outlined nav-icon {{request()->cookie('direction', 'ltr') === "rtl" ? 'text-right' : 'text-left'}}"></i>
 
-                                    <div class="media-body {{Session::get('direction') === "rtl" ? 'text-right' : 'text-left'}}">
+                                    <div class="media-body {{request()->cookie('direction', 'ltr') === "rtl" ? 'text-right' : 'text-left'}}">
                                         <h4 class="mb-1">{{translate('total_earning')}} </h4>
                                         <span class="font-size-sm text-success">
                                           <i class="tio-trending-up"></i> {{\App\Utils\BackEndHelper::set_symbol(\App\Utils\BackEndHelper::usd_to_currency($total_earning))}}
@@ -161,9 +161,9 @@
                         <div class="row">
                             <div class="col">
                                 <div class="media">
-                                    <i class="tio-money nav-icon {{Session::get('direction') === "rtl" ? 'text-right' : 'text-left'}}"></i>
+                                    <i class="tio-money nav-icon {{request()->cookie('direction', 'ltr') === "rtl" ? 'text-right' : 'text-left'}}"></i>
 
-                                    <div class="media-body {{Session::get('direction') === "rtl" ? 'text-right' : 'text-left'}}">
+                                    <div class="media-body {{request()->cookie('direction', 'ltr') === "rtl" ? 'text-right' : 'text-left'}}">
                                         <h4 class="mb-1">{{translate('total_Tax')}} </h4>
                                         <span class="font-size-sm text-warning">
                                           <i class="tio-trending-up"></i>  {{\App\Utils\BackEndHelper::set_symbol(\App\Utils\BackEndHelper::usd_to_currency($total_tax))}}
@@ -199,9 +199,9 @@
                         <div class="row">
                             <div class="col">
                                 <div class="media">
-                                    <i class="tio-money nav-icon {{Session::get('direction') === "rtl" ? 'text-right' : 'text-left'}}"></i>
+                                    <i class="tio-money nav-icon {{request()->cookie('direction', 'ltr') === "rtl" ? 'text-right' : 'text-left'}}"></i>
 
-                                    <div class="media-body {{Session::get('direction') === "rtl" ? 'text-right' : 'text-left'}}">
+                                    <div class="media-body {{request()->cookie('direction', 'ltr') === "rtl" ? 'text-right' : 'text-left'}}">
                                         <h4 class="mb-1">{{translate('total_commission')}} </h4>
                                         <span class="font-size-sm text-primary">
                                           <i class="tio-trending-up"></i>  {{\App\Utils\BackEndHelper::set_symbol(\App\Utils\BackEndHelper::usd_to_currency($total_commission))}}
@@ -243,16 +243,16 @@
                 <div class="flex-start">
                     <h6 class="card-subtitle mt-1">{{translate('total_sale_of')}} {{date('Y')}} :</h6>
                     <h6>
-                        <span class="h3 {{Session::get('direction') === "rtl" ? 'mr-sm-2' : 'ml-sm-2'}}"> {{\App\Utils\BackEndHelper::usd_to_currency($total_sold)." "}}</span>
+                        <span class="h3 {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-sm-2' : 'ml-sm-2'}}"> {{\App\Utils\BackEndHelper::usd_to_currency($total_sold)." "}}</span>
                     </h6>
                     <h6>
-                        <span class="h3 {{Session::get('direction') === "rtl" ? 'mr-sm-2' : 'ml-sm-2'}}"> {{\App\Utils\BackEndHelper::currency_symbol()}}</span>
+                        <span class="h3 {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-sm-2' : 'ml-sm-2'}}"> {{\App\Utils\BackEndHelper::currency_symbol()}}</span>
                     </h6>
                 </div>
                 <div class="hs-unfold">
                     <a class="js-hs-unfold-invoker btn btn-white"
                        href="{{route('admin.orders.list',['all'])}}">
-                        <i class="tio-shopping-cart-outlined {{Session::get('direction') === "rtl" ? 'ml-1' : 'mr-1'}}"></i> {{translate('orders')}}
+                        <i class="tio-shopping-cart-outlined {{request()->cookie('direction', 'ltr') === "rtl" ? 'ml-1' : 'mr-1'}}"></i> {{translate('orders')}}
                     </a>
                 </div>
             </div>

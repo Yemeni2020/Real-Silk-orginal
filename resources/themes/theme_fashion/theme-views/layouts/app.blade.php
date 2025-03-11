@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ session()->get('direction') }}">
+<!-- <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ session()->get('direction') }}"> -->
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ request()->cookie('direction', 'ltr') }}">
 
 <head>
     <meta charset="UTF-8">

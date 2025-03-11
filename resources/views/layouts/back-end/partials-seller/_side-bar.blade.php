@@ -14,7 +14,7 @@
     $shop=Shop::where(['seller_id'=>auth('seller')->id()])->first();
 @endphp
 <div id="sidebarMain" class="d-none">
-    <aside style="text-align: {{Session::get('direction') === "rtl" ? 'right' : 'left'}};"
+    <aside style="text-align: {{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}};"
            class="js-navbar-vertical-aside navbar navbar-vertical-aside navbar-vertical navbar-vertical-fixed navbar-expand-xl navbar-bordered  ">
         <div class="navbar-vertical-container">
             <div class="navbar-vertical-footer-offset pb-0">
@@ -148,7 +148,7 @@
                                         <span class="text-truncate">
                                             {{translate('all')}}
                                             <span
-                                                class="badge badge-soft-info badge-pill {{Session::get('direction') === "rtl" ? 'mr-1' : 'ml-1'}}">
+                                                class="badge badge-soft-info badge-pill {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-1' : 'ml-1'}}">
                                                 {{ Order::where(['seller_is'=>'seller'])->where(['seller_id'=>$sellerId])->count()}}
                                             </span>
                                         </span>
@@ -160,7 +160,7 @@
                                         <span class="text-truncate">
                                             {{translate('pending')}}
                                             <span
-                                                class="badge badge-soft-info badge-pill {{Session::get('direction') === "rtl" ? 'mr-1' : 'ml-1'}}">
+                                                class="badge badge-soft-info badge-pill {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-1' : 'ml-1'}}">
                                                 {{ Order::where(['seller_is'=>'seller'])->where(['seller_id'=>$sellerId])->where(['order_status'=>'pending'])->count()}}
                                             </span>
                                         </span>
@@ -172,7 +172,7 @@
                                         <span class="text-truncate">
                                             {{translate('confirmed')}}
                                             <span
-                                                class="badge badge-soft-info badge-pill {{Session::get('direction') === "rtl" ? 'mr-1' : 'ml-1'}}">
+                                                class="badge badge-soft-info badge-pill {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-1' : 'ml-1'}}">
                                                 {{ Order::where(['seller_is'=>'seller'])->where(['seller_id'=>$sellerId])->where(['order_status'=>'confirmed'])->count()}}
                                             </span>
                                         </span>
@@ -185,7 +185,7 @@
                                         <span class="text-truncate">
                                             {{translate('packaging')}}
                                             <span
-                                                class="badge badge-soft-warning badge-pill {{Session::get('direction') === "rtl" ? 'mr-1' : 'ml-1'}}">
+                                                class="badge badge-soft-warning badge-pill {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-1' : 'ml-1'}}">
                                                 {{ Order::where(['seller_is'=>'seller'])->where(['seller_id'=>$sellerId])->where(['order_status'=>'processing'])->count()}}
                                             </span>
                                         </span>
@@ -199,7 +199,7 @@
                                         <span class="text-truncate text-capitalize">
                                             {{translate('out_for_delivery')}}
                                             <span
-                                                class="badge badge-soft-warning badge-pill {{Session::get('direction') === "rtl" ? 'mr-1' : 'ml-1'}}">
+                                                class="badge badge-soft-warning badge-pill {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-1' : 'ml-1'}}">
                                                 {{ Order::where(['seller_is'=>'seller'])->where(['seller_id'=>$sellerId])->where(['order_status'=>'out_for_delivery'])->count()}}
                                             </span>
                                         </span>
@@ -211,7 +211,7 @@
                                         <span class="text-truncate">
                                             {{translate('delivered')}}
                                             <span
-                                                class="badge badge-soft-success badge-pill {{Session::get('direction') === "rtl" ? 'mr-1' : 'ml-1'}}">
+                                                class="badge badge-soft-success badge-pill {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-1' : 'ml-1'}}">
                                                 {{ Order::where(['seller_is'=>'seller'])->where(['seller_id'=>$sellerId])->where(['order_status'=>'delivered'])->count()}}
                                             </span>
                                         </span>
@@ -223,7 +223,7 @@
                                         <span class="text-truncate">
                                             {{translate('returned')}}
                                             <span
-                                                class="badge badge-soft-danger badge-pill {{Session::get('direction') === "rtl" ? 'mr-1' : 'ml-1'}}">
+                                                class="badge badge-soft-danger badge-pill {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-1' : 'ml-1'}}">
                                                 {{ Order::where(['seller_is'=>'seller'])->where(['seller_id'=>$sellerId])->where(['order_status'=>'returned'])->count()}}
                                             </span>
                                         </span>
@@ -235,7 +235,7 @@
                                         <span class="text-truncate">
                                             {{translate('failed To Deliver')}}
                                             <span
-                                                class="badge badge-soft-danger badge-pill {{Session::get('direction') === "rtl" ? 'mr-1' : 'ml-1'}}">
+                                                class="badge badge-soft-danger badge-pill {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-1' : 'ml-1'}}">
                                                 {{ Order::where(['seller_is'=>'seller'])->where(['seller_id'=>$sellerId])->where(['order_status'=>'failed'])->count()}}
                                             </span>
                                         </span>
@@ -247,7 +247,7 @@
                                         <span class="text-truncate">
                                             {{translate('canceled')}}
                                             <span
-                                                class="badge badge-soft-danger badge-pill {{Session::get('direction') === "rtl" ? 'mr-1' : 'ml-1'}}">
+                                                class="badge badge-soft-danger badge-pill {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-1' : 'ml-1'}}">
                                                 {{ Order::where(['seller_is'=>'seller'])->where(['seller_id'=>$sellerId])->where(['order_status'=>'canceled'])->count()}}
                                             </span>
                                         </span>

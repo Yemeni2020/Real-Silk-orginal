@@ -79,7 +79,8 @@ if (!function_exists('getDefaultLanguage')) {
         if (strpos(url()->current(), '/api')) {
             $lang = App::getLocale();
         } elseif (session()->has('local')) {
-            $lang = session('local');
+            // $lang = session('local');
+            $lang = request()->cookie('local', 'cn');
         } else {
             $data = getWebConfig('language');
             $code = 'en';

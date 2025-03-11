@@ -84,7 +84,7 @@
                                                                 {{ translate('remember_me')}}
                                                             </label>
 
-                                                            <a class="font-size-sm {{Session::get('direction') === "rtl" ? 'mr-5' : 'ml-5'}}"
+                                                            <a class="font-size-sm {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-5' : 'ml-5'}}"
                                                                href="{{route('customer.auth.recover-password')}}">
                                                                 {{ translate('forgot_password')}}?
                                                             </a>
@@ -208,7 +208,7 @@
                 <div class="row">
                     <div class="col-6">
                         <a class="btn btn-secondary btn-block" href="{{route('shop-cart')}}">
-                            <i class="czi-arrow-{{Session::get('direction') === "rtl" ? 'right' : 'left'}} mt-sm-0 mx-1"></i>
+                            <i class="czi-arrow-{{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}} mt-sm-0 mx-1"></i>
                             <span
                                 class="d-none d-sm-inline">{{ translate('back_to_cart')}} </span>
                             <span class="d-inline d-sm-none">{{ translate('back')}}</span>
@@ -219,7 +219,7 @@
                             <a class="btn btn--primary btn-block" href="{{route('shop-cart')}}">
                                 <span class="d-none d-sm-inline">{{ translate('shop_cart')}}</span>
                                 <span class="d-inline d-sm-none">{{ translate('next')}}</span>
-                                <i class="czi-arrow-{{Session::get('direction') === "rtl" ? 'left' : 'right'}} mt-sm-0 mx-1"></i>
+                                <i class="czi-arrow-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left' : 'right'}} mt-sm-0 mx-1"></i>
                             </a>
                         @endif
                     </div>

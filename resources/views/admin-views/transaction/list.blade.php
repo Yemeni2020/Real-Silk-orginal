@@ -34,7 +34,7 @@
                     <div class="col-xl-9">
                         <form action="#" id="form-data" method="GET">
                             <div
-                                class="row  gy-2 align-items-center text-{{Session::get('direction') === "rtl" ? 'right' : 'left'}}">
+                                class="row  gy-2 align-items-center text-{{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}}">
                                 <div class="col-md-3">
                                     <div class="">
                                         <select class="js-select2-custom form-control" name="customer_id">
@@ -103,7 +103,7 @@
 
             <div class="table-responsive">
                 <table id="datatable"
-                       style="text-align: {{Session::get('direction') === "rtl" ? 'right' : 'left'}};"
+                       style="text-align: {{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}};"
                        class="table table-hover table-borderless table-thead-bordered table-nowrap table-align-middle card-table w-100">
                     <thead class="thead-light thead-50 text-capitalize">
                     <tr>

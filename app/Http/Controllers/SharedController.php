@@ -10,21 +10,47 @@ use Illuminate\Support\Facades\Session;
 
 class SharedController extends Controller
 {
+    // public function changeLanguage(Request $request): JsonResponse
+    // {
+    //     $direction = 'ltr';
+    //     $language = getWebConfig('language');
+    //     foreach ($language as $data) {
+    //         if ($data['code'] == $request['language_code']) {
+    //             $direction = $data['direction'] ?? 'ltr';
+    //         }
+    //     }
+    //     session()->forget('language_settings');
+    //     Helpers::language_load();
+    //     session()->put('local', $request['language_code']);
+    //     Session::put('direction', $direction);
+    //     return response()->json(['message' => translate('language_change_successfully') . '.']);
+    // }
+
     public function changeLanguage(Request $request): JsonResponse
     {
         $direction = 'ltr';
         $language = getWebConfig('language');
+        // dd( $language);
+
         foreach ($language as $data) {
             if ($data['code'] == $request['language_code']) {
                 $direction = $data['direction'] ?? 'ltr';
             }
         }
+
+        // مسح أي إعدادات سابقة للغة
         session()->forget('language_settings');
         Helpers::language_load();
-        session()->put('local', $request['language_code']);
-        Session::put('direction', $direction);
-        return response()->json(['message' => translate('language_change_successfully') . '.']);
+
+        // تخزين اللغة الجديدة في الكوكيز لمدة سنة كاملة
+        $cookieLang = cookie('local', $request['language_code'], 60 * 24 * 365);
+        $cookieDirection = cookie('direction', $direction, 60 * 24 * 365);
+
+        return response()->json([
+            'message' => translate('language_change_successfully') . '.'
+        ])->withCookie($cookieLang)->withCookie($cookieDirection);
     }
+
 
     public function getSessionRecaptchaCode(Request $request): JsonResponse
     {

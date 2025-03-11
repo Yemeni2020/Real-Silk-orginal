@@ -1,5 +1,5 @@
 <aside
-    class="col-lg-3 hidden-xs col-md-3 col-sm-4 SearchParameters __search-sidebar {{Session::get('direction') === "rtl" ? 'pl-2' : 'pr-2'}}"
+    class="col-lg-3 hidden-xs col-md-3 col-sm-4 SearchParameters __search-sidebar {{request()->cookie('direction', 'ltr') === "rtl" ? 'pl-2' : 'pr-2'}}"
     id="SearchParameters">
     <div class="cz-sidebar __inline-35 p-4 overflow-hidden" id="shop-sidebar">
         <div class="cz-sidebar-header p-0">
@@ -122,7 +122,7 @@
                             data-simplebar-auto-hide="false">
                             @foreach($activeBrands as $brand)
                                 <ul
-                                    class="brand mt-2 p-0 for-brand-hover {{Session::get('direction') === "rtl" ? 'mr-2' : ''}}"
+                                    class="brand mt-2 p-0 for-brand-hover {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-2' : ''}}"
                                     id="brand">
                                     <li class="flex-between get-view-by-onclick cursor-pointer"
                                         data-link="{{ route('shopView', ['id'=> $seller_id, 'brand_id' => $brand['id'], 'data_from' => 'brand', 'page' => 1]) }}"
@@ -160,7 +160,7 @@
                         <div class="__brands-cate-wrap attribute-list" data-simplebar
                             data-simplebar-auto-hide="false">
                             @foreach($shopPublishingHouses as $publishingHouseItem)
-                                <ul class="brand mt-2 p-0 for-brand-hover {{Session::get('direction') === "rtl" ? 'mr-2' : ''}}"
+                                <ul class="brand mt-2 p-0 for-brand-hover {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-2' : ''}}"
                                      id="brand">
                                     <li class="flex-between get-view-by-onclick cursor-pointer"
                                         data-link="{{ route('shopView', ['id'=> $seller_id, 'publishing_house_id' => $publishingHouseItem['id'], 'product_type' => 'digital', 'page' => 1]) }}"
@@ -200,7 +200,7 @@
                         <div class="__brands-cate-wrap attribute-list" data-simplebar
                             data-simplebar-auto-hide="false">
                             @foreach($digitalProductAuthors as $productAuthor)
-                                <ul class="brand mt-2 p-0 for-brand-hover {{Session::get('direction') === "rtl" ? 'mr-2' : ''}}"
+                                <ul class="brand mt-2 p-0 for-brand-hover {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-2' : ''}}"
                                      id="brand">
                                     <li class="flex-between get-view-by-onclick cursor-pointer"
                                         data-link="{{ route('shopView', ['id'=> $seller_id, 'author_id' => $productAuthor['id'], 'product_type' => 'digital', 'page' => 1]) }}">

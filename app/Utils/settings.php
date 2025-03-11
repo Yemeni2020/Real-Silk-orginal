@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Cache;
 if (!function_exists('getWebConfig')) {
     function getWebConfig($name): string|object|array|null
     {
+        // ✅ عند طلب "language"، يتم جلبه من الكوكيز
+        // if ($name === 'language') {
+        //     return request()->cookie('local', 'cn'); // افتراضيًا الإنجليزية إذا لم تكن الكوكيز موجودة
+        // }
         $config = null;
         if (in_array($name, getWebConfigCacheKeys()) && Cache::has($name)) {
             $config = Cache::get($name);

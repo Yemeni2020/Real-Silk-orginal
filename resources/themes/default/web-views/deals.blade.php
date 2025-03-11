@@ -98,7 +98,7 @@
 
         <div class="container pb-5 mb-2 mb-md-4 mt-3 rtl text-align-direction">
             <div class="row">
-                <div class="col-lg-4 col-md-6 my-2 text-center {{Session::get('direction') === "rtl" ? 'text-sm-right' : 'text-sm-left'}}">
+                <div class="col-lg-4 col-md-6 my-2 text-center {{request()->cookie('direction', 'ltr') === "rtl" ? 'text-sm-right' : 'text-sm-left'}}">
                     <div class="flash_deal_title">
                         {{$web_config['flash_deals']->title}}
                     </div>

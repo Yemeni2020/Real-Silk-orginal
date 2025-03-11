@@ -180,7 +180,8 @@
                                 @if(isset($order->deliveryManReview))
                                     <?php
                                         $rating = $order->deliveryManReview->rating;
-                                        $sessionDirection = session()->get('direction') ?? 'ltr';
+                                        // $sessionDirection = session()->get('direction') ?? 'ltr';
+                                        $sessionDirection = request()->cookie('direction', 'ltr') ?? 'ltr';
                                         if ($sessionDirection == 'ltr') {
                                             $style = match ($rating) {
                                                 2 => 'left:36px',

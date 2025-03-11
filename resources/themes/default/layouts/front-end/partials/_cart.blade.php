@@ -1,4 +1,4 @@
-<div class="navbar-tool dropdown me-2 {{Session::get('direction') === "rtl" ? 'mr-md-3' : 'ml-md-3'}}">
+<div class="navbar-tool dropdown me-2 {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-md-3' : 'ml-md-3'}}">
     @if($web_config['guest_checkout_status'] || auth('customer')->check())
         <a class="navbar-tool-icon-box bg-secondary dropdown-toggle" href="{{route('shop-cart')}}">
             <span class="navbar-tool-label">
@@ -31,7 +31,7 @@
     @endif
 
     <div
-        class="dropdown-menu dropdown-menu-{{Session::get('direction') === "rtl" ? 'left' : 'right'}} __w-20rem cart-dropdown py-0">
+        class="dropdown-menu dropdown-menu-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left' : 'right'}} __w-20rem cart-dropdown py-0">
         <div class="widget widget-cart px-3 pt-2 pb-3">
             <div class="widget-cart-top rounded">
                 <h6 class="m-0">
@@ -197,10 +197,10 @@
                 @endif
                 <div class="d-flex flex-wrap justify-content-between align-items-center pb-2">
                     <div
-                        class="font-size-sm {{Session::get('direction') === "rtl" ? 'ml-2 float-left' : 'mr-2 float-right'}} py-2 ">
+                        class="font-size-sm {{request()->cookie('direction', 'ltr') === "rtl" ? 'ml-2 float-left' : 'mr-2 float-right'}} py-2 ">
                         <span>{{translate('subtotal')}} :</span>
                         <span
-                            class="text-accent font-size-base cart_total_amount {{Session::get('direction') === "rtl" ? 'mr-1' : 'ml-1'}}">
+                            class="text-accent font-size-base cart_total_amount {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-1' : 'ml-1'}}">
                                 {{ webCurrencyConverter(amount: $sub_total) }}
                         </span>
                     </div>
@@ -208,12 +208,12 @@
                     @if($web_config['guest_checkout_status'] || auth('customer')->check())
                         <a class="btn btn-outline-secondary btn-sm" href="{{route('shop-cart')}}">
                             {{translate('expand_cart')}}<i
-                                class="czi-arrow-{{Session::get('direction') === "rtl" ? 'left mr-1 ml-n1' : 'right ml-1 mr-n1'}}"></i>
+                                class="czi-arrow-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left mr-1 ml-n1' : 'right ml-1 mr-n1'}}"></i>
                         </a>
                     @else
                         <a class="btn btn-outline-secondary btn-sm" href="{{route('customer.auth.login')}}">
                             {{translate('expand_cart')}}<i
-                                class="czi-arrow-{{Session::get('direction') === "rtl" ? 'left mr-1 ml-n1' : 'right ml-1 mr-n1'}}"></i>
+                                class="czi-arrow-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left mr-1 ml-n1' : 'right ml-1 mr-n1'}}"></i>
                         </a>
                     @endif
                 </div>

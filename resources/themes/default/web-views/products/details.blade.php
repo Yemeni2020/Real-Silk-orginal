@@ -10,7 +10,7 @@
 @section('content')
     <div class="__inline-23">
         <div class="container mt-4 rtl text-align-direction">
-            <div class="row {{Session::get('direction') === "rtl" ? '__dir-rtl' : ''}}">
+            <div class="row {{request()->cookie('direction', 'ltr') === "rtl" ? '__dir-rtl' : ''}}">
                 <div class="col-lg-9 col-12">
 
                     <?php $guestCheckout = getWebConfig(name: 'guest_checkout'); ?>
@@ -151,15 +151,15 @@
                                         @endfor
                                     </div>
                                     <span
-                                        class="d-inline-block  align-middle mt-1 {{Session::get('direction') === "rtl" ? 'ml-md-2 ml-sm-0' : 'mr-md-2 mr-sm-0'}} fs-14 text-muted">({{$overallRating[0]}})</span>
+                                        class="d-inline-block  align-middle mt-1 {{request()->cookie('direction', 'ltr') === "rtl" ? 'ml-md-2 ml-sm-0' : 'mr-md-2 mr-sm-0'}} fs-14 text-muted">({{$overallRating[0]}})</span>
                                     <span
-                                        class="font-regular font-for-tab d-inline-block font-size-sm text-body align-middle mt-1 {{Session::get('direction') === "rtl" ? 'mr-1 ml-md-2 ml-1 pr-md-2 pr-sm-1 pl-md-2 pl-sm-1' : 'ml-1 mr-md-2 mr-1 pl-md-2 pl-sm-1 pr-md-2 pr-sm-1'}}"><span class="web-text-primary">{{$overallRating[1]}}</span> {{translate('reviews')}}</span>
+                                        class="font-regular font-for-tab d-inline-block font-size-sm text-body align-middle mt-1 {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-1 ml-md-2 ml-1 pr-md-2 pr-sm-1 pl-md-2 pl-sm-1' : 'ml-1 mr-md-2 mr-1 pl-md-2 pl-sm-1 pr-md-2 pr-sm-1'}}"><span class="web-text-primary">{{$overallRating[1]}}</span> {{translate('reviews')}}</span>
                                     <span class="__inline-25"></span>
                                     <span
-                                        class="font-regular font-for-tab d-inline-block font-size-sm text-body align-middle mt-1 {{Session::get('direction') === "rtl" ? 'mr-1 ml-md-2 ml-1 pr-md-2 pr-sm-1 pl-md-2 pl-sm-1' : 'ml-1 mr-md-2 mr-1 pl-md-2 pl-sm-1 pr-md-2 pr-sm-1'}}"><span class="web-text-primary">{{$countOrder}}</span> {{translate('orders')}}   </span>
+                                        class="font-regular font-for-tab d-inline-block font-size-sm text-body align-middle mt-1 {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-1 ml-md-2 ml-1 pr-md-2 pr-sm-1 pl-md-2 pl-sm-1' : 'ml-1 mr-md-2 mr-1 pl-md-2 pl-sm-1 pr-md-2 pr-sm-1'}}"><span class="web-text-primary">{{$countOrder}}</span> {{translate('orders')}}   </span>
                                     <span class="__inline-25">    </span>
                                     <span
-                                        class="font-regular font-for-tab d-inline-block font-size-sm text-body align-middle mt-1 {{Session::get('direction') === "rtl" ? 'mr-1 ml-md-2 ml-0 pr-md-2 pr-sm-1 pl-md-2 pl-sm-1' : 'ml-1 mr-md-2 mr-0 pl-md-2 pl-sm-1 pr-md-2 pr-sm-1'}} text-capitalize"> <span class="web-text-primary countWishlist-{{ $product->id }}"> {{$countWishlist}}</span> {{translate('wish_listed')}} </span>
+                                        class="font-regular font-for-tab d-inline-block font-size-sm text-body align-middle mt-1 {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-1 ml-md-2 ml-0 pr-md-2 pr-sm-1 pl-md-2 pl-sm-1' : 'ml-1 mr-md-2 mr-0 pl-md-2 pl-sm-1 pr-md-2 pr-sm-1'}} text-capitalize"> <span class="web-text-primary countWishlist-{{ $product->id }}"> {{$countWishlist}}</span> {{translate('wish_listed')}} </span>
                                 </div>
 
                                 @if($product['product_type'] == 'digital')
@@ -305,7 +305,7 @@
                                         @csrf
                                         <input type="hidden" name="id" value="{{ $product->id }}">
                                         <div
-                                            class="position-relative {{Session::get('direction') === "rtl" ? 'ml-n4' : 'mr-n4'}} mb-2">
+                                            class="position-relative {{request()->cookie('direction', 'ltr') === "rtl" ? 'ml-n4' : 'mr-n4'}} mb-2">
                                             @if (count(json_decode($product->colors)) > 0)
                                                 <div class="flex-start align-items-center mb-2">
                                                     <div
@@ -350,7 +350,7 @@
                                         @if($product['product_type'] == 'digital' && $product['digital_product_file_types'] && count($product['digital_product_file_types']) > 0 && $product['digital_product_extensions'])
                                             @foreach($product['digital_product_extensions'] as $extensionKey => $extensionGroup)
                                             <div class="row flex-start mx-0 align-items-center mb-1">
-                                                <div class="product-description-label text-dark font-bold {{Session::get('direction') === "rtl" ? 'pl-2' : 'pr-2'}} text-capitalize mb-2">
+                                                <div class="product-description-label text-dark font-bold {{request()->cookie('direction', 'ltr') === "rtl" ? 'pl-2' : 'pr-2'}} text-capitalize mb-2">
                                                     {{ translate($extensionKey) }} :
                                                 </div>
                                                 <div>
@@ -382,7 +382,7 @@
                                         @foreach (json_decode($product->choice_options) as $key => $choice)
                                             <div class="row flex-start mx-0 align-items-center">
                                                 <div
-                                                    class="product-description-label text-dark font-bold {{Session::get('direction') === "rtl" ? 'pl-2' : 'pr-2'}} text-capitalize mb-2">{{ $choice->title }}
+                                                    class="product-description-label text-dark font-bold {{request()->cookie('direction', 'ltr') === "rtl" ? 'pl-2' : 'pr-2'}} text-capitalize mb-2">{{ $choice->title }}
                                                     :
                                                 </div>
                                                 <div>
@@ -497,10 +497,10 @@
                                                 <button type="button"
                                                     data-auth-status="{{($guestCheckout == 1 || Auth::guard('customer')->check() ? 'true':'false')}}"
                                                     data-route="{{ route('shop-cart') }}"
-                                                    class="btn btn-secondary element-center btn-gap-{{Session::get('direction') === "rtl" ? 'left' : 'right'}} action-buy-now-this-product">
+                                                    class="btn btn-secondary element-center btn-gap-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left' : 'right'}} action-buy-now-this-product">
                                                     <span class="string-limit">{{ translate('buy_now') }}</span>
                                                 </button>
-                                                <button class="btn btn--primary element-center btn-gap-{{Session::get('direction') === "rtl" ? 'left' : 'right'}} action-add-to-cart-form"
+                                                <button class="btn btn--primary element-center btn-gap-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left' : 'right'}} action-add-to-cart-form"
                                                     type="button" data-update-text="{{ translate('update_cart') }}" data-add-text="{{ translate('add_to_cart') }}">
                                                     <span class="string-limit">{{ translate('add_to_cart') }}</span>
                                                 </button>
@@ -656,7 +656,7 @@
                                                                     </div>
                                                                     <div class="col-1 text-body">
                                                                         <span
-                                                                            class=" {{Session::get('direction') === "rtl" ? 'mr-3 float-left' : 'ml-3 float-right'}} ">
+                                                                            class=" {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-3 float-left' : 'ml-3 float-right'}} ">
                                                                             {{$rating[0]}}
                                                                         </span>
                                                                     </div>
@@ -678,7 +678,7 @@
                                                                     </div>
                                                                     <div class="col-1">
                                                                         <span
-                                                                            class="{{Session::get('direction') === "rtl" ? 'mr-3 float-left' : 'ml-3 float-right'}}">
+                                                                            class="{{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-3 float-left' : 'ml-3 float-right'}}">
                                                                                 {{$rating[1]}}
                                                                         </span>
                                                                     </div>
@@ -700,7 +700,7 @@
                                                                     </div>
                                                                     <div class="col-1">
                                                                         <span
-                                                                            class="{{Session::get('direction') === "rtl" ? 'mr-3 float-left' : 'ml-3 float-right'}}">
+                                                                            class="{{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-3 float-left' : 'ml-3 float-right'}}">
                                                                             {{$rating[2]}}
                                                                         </span>
                                                                     </div>
@@ -722,7 +722,7 @@
                                                                     </div>
                                                                     <div class="col-1">
                                                                         <span
-                                                                            class="{{Session::get('direction') === "rtl" ? 'mr-3 float-left' : 'ml-3 float-right'}}">
+                                                                            class="{{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-3 float-left' : 'ml-3 float-right'}}">
                                                                             {{$rating[3]}}
                                                                         </span>
                                                                     </div>
@@ -744,7 +744,7 @@
                                                                     </div>
                                                                     <div class="col-1">
                                                                         <span
-                                                                            class="{{Session::get('direction') === "rtl" ? 'mr-3 float-left' : 'ml-3 float-right'}}">
+                                                                            class="{{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-3 float-left' : 'ml-3 float-right'}}">
                                                                                 {{$rating[4]}}
                                                                         </span>
                                                                     </div>
@@ -794,7 +794,7 @@
                                 @if ($value['status'] == 1 && !empty($value['title']))
                                     <div class="shipping-details-bottom-border">
                                         <div class="px-3 py-3">
-                                            <img class="{{Session::get('direction') === "rtl" ? 'float-right ml-2' : 'mr-2'}} __img-20"
+                                            <img class="{{request()->cookie('direction', 'ltr') === "rtl" ? 'float-right ml-2' : 'mr-2'}} __img-20"
                                                  src="{{ getStorageImages(path: imagePathProcessing(imageData: $value['image'],path: 'company-reliability'), type: 'source', source: 'public/assets/front-end/img'.'/'.$value['item'].'.png') }}"
                                                 alt="">
                                             <span>{{translate($value['title'])}}</span>
@@ -899,7 +899,7 @@
                                             <img class="__inline-32" alt=""
                                                  src="{{ getStorageImages(path:$web_config['fav_icon'], type: 'logo') }}">
                                         </div>
-                                        <div class="{{Session::get('direction') === "rtl" ? 'right' : 'mt-3 ml-2'}} get-view-by-onclick"
+                                        <div class="{{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'mt-3 ml-2'}} get-view-by-onclick"
                                              data-link="{{ route('shopView',[0]) }}">
                                             <span class="font-bold __text-16px">
                                                 {{$web_config['name']->value}}
@@ -907,7 +907,7 @@
                                         </div>
 
                                         @if($product->added_by == 'admin' && ($inHouseTemporaryClose || ($inHouseVacationStatus && $currentDate >= $inHouseVacationStartDate && $currentDate <= $inHouseVacationEndDate)))
-                                            <div class="{{Session::get('direction') === "rtl" ? 'right' : 'ml-3'}}">
+                                            <div class="{{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'ml-3'}}">
                                                 <span class="chat-seller-info" data-toggle="tooltip"
                                                       title="{{translate('this_shop_is_temporary_closed_or_on_vacation._You_cannot_add_product_to_cart_from_this_shop_for_now')}}">
                                                     <img src="{{theme_asset(path: 'public/assets/front-end/img/info.png')}}"
@@ -1008,18 +1008,18 @@
                     @if(($product->added_by == 'seller' && ($sellerTemporaryClose || (isset($product->seller->shop) && $product->seller->shop->vacation_status && $currentDate >= $sellerVacationStartDate && $currentDate <= $sellerVacationEndDate))) ||
                         ($product->added_by == 'admin' && ($inHouseTemporaryClose || ($inHouseVacationStatus && $currentDate >= $inHouseVacationStartDate && $currentDate <= $inHouseVacationEndDate))))
                         <button
-                            class="btn btn-secondary btn-sm btn-gap-{{Session::get('direction') === "rtl" ? 'left' : 'right'}}"
+                            class="btn btn-secondary btn-sm btn-gap-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left' : 'right'}}"
                             type="button" disabled>
                             {{translate('buy_now')}}
                         </button>
                         <button
-                            class="btn btn--primary btn-sm string-limit btn-gap-{{Session::get('direction') === "rtl" ? 'left' : 'right'}}"
+                            class="btn btn--primary btn-sm string-limit btn-gap-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left' : 'right'}}"
                             type="button" disabled>
                             {{translate('add_to_cart')}}
                         </button>
                     @else
                         <button
-                            class="btn btn-secondary btn-sm btn-gap-{{Session::get('direction') === "rtl" ? 'left' : 'right'}} action-buy-now-this-product"
+                            class="btn btn-secondary btn-sm btn-gap-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left' : 'right'}} action-buy-now-this-product"
                             type="button"
                             data-auth-status="{{($guestCheckout == 1 || Auth::guard('customer')->check() ? 'true':'false')}}"
                             data-route="{{ route('shop-cart') }}"
@@ -1027,7 +1027,7 @@
                             <span class="string-limit">{{translate('buy_now')}}</span>
                         </button>
                         <button
-                            class="btn btn--primary btn-sm string-limit btn-gap-{{Session::get('direction') === "rtl" ? 'left' : 'right'}} action-add-to-cart-form"
+                            class="btn btn--primary btn-sm string-limit btn-gap-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left' : 'right'}} action-add-to-cart-form"
                             type="button">
                             <span class="string-limit">{{translate('add_to_cart')}}</span>
                         </button>
@@ -1050,7 +1050,7 @@
                                     @if($category)
                                         <a class="text-capitalize view-all-text web-text-primary me-1"
                                            href="{{route('products',['category_id'=> $category[0]->id,'data_from'=>'category','page'=>1])}}">{{ translate('view_all')}}
-                                            <i class="czi-arrow-{{Session::get('direction') === "rtl" ? 'left mr-1 ml-n1 mt-1 ' : 'right ml-1 mr-n1'}}"></i>
+                                            <i class="czi-arrow-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left mr-1 ml-n1 mt-1 ' : 'right ml-1 mr-n1'}}"></i>
                                         </a>
                                     @endif
                                 </div>

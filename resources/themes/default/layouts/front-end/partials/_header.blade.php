@@ -42,7 +42,7 @@
                         <a class="topbar-link dropdown-toggle" href="#" data-toggle="dropdown">
                             <span>{{session('currency_code')}} {{session('currency_symbol')}}</span>
                         </a>
-                        <ul class="text-align-direction dropdown-menu dropdown-menu-{{Session::get('direction') === "rtl" ? 'right' : 'left'}} min-width-160px">
+                        <ul class="text-align-direction dropdown-menu dropdown-menu-{{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}} min-width-160px">
                             @foreach (\App\Models\Currency::where('status', 1)->get() as $key => $currency)
                                 <li class="dropdown-item cursor-pointer get-currency-change-function"
                                     data-code="{{$currency['code']}}">
@@ -64,7 +64,7 @@
                             @endif
                         @endforeach
                     </a>
-                    <ul class="text-align-direction dropdown-menu dropdown-menu-{{Session::get('direction') === "rtl" ? 'right' : 'left'}}">
+                    <ul class="text-align-direction dropdown-menu dropdown-menu-{{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}}">
                         @foreach(json_decode($language['value'],true) as $key =>$data)
                             @if($data['status']==1)
                                 <li class="change-language" data-action="{{route('change-language')}}" data-language-code="{{$data['code']}}">
@@ -142,12 +142,12 @@
                             <i class="navbar-tool-icon czi-close close-icon"></i>
                         </div>
                     </a>
-                    <div class="navbar-tool open-search-form-mobile d-lg-none {{Session::get('direction') === "rtl" ? 'mr-md-3' : 'ml-md-3'}}">
+                    <div class="navbar-tool open-search-form-mobile d-lg-none {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-md-3' : 'ml-md-3'}}">
                         <a class="navbar-tool-icon-box bg-secondary" href="javascript:">
                             <i class="tio-search"></i>
                         </a>
                     </div>
-                    <div class="navbar-tool dropdown d-none d-md-block {{Session::get('direction') === "rtl" ? 'mr-md-3' : 'ml-md-3'}}">
+                    <div class="navbar-tool dropdown d-none d-md-block {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-md-3' : 'ml-md-3'}}">
                         <a class="navbar-tool-icon-box bg-secondary dropdown-toggle" href="{{route('wishlists')}}">
                             <span class="navbar-tool-label">
                                 <span class="countWishlist">
@@ -172,7 +172,7 @@
                                     {{ translate('dashboard')}}
                                 </div>
                             </a>
-                            <div class="dropdown-menu dropdown-menu-{{Session::get('direction') === "rtl" ? 'left' : 'right'}}"
+                            <div class="dropdown-menu dropdown-menu-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left' : 'right'}}"
                                  aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item"
                                    href="{{route('account-oder')}}"> {{ translate('my_Order')}} </a>
@@ -185,7 +185,7 @@
                         </div>
                     @else
                         <div class="dropdown">
-                            <a class="navbar-tool {{Session::get('direction') === "rtl" ? 'mr-md-3' : 'ml-md-3'}}"
+                            <a class="navbar-tool {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-md-3' : 'ml-md-3'}}"
                                type="button" data-toggle="dropdown" aria-haspopup="true"
                                aria-expanded="false">
                                 <div class="navbar-tool-icon-box bg-secondary">
@@ -199,7 +199,7 @@
                                     </div>
                                 </div>
                             </a>
-                            <div class="text-align-direction dropdown-menu __auth-dropdown dropdown-menu-{{Session::get('direction') === "rtl" ? 'left' : 'right'}}"
+                            <div class="text-align-direction dropdown-menu __auth-dropdown dropdown-menu-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left' : 'right'}}"
                                  aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="{{route('customer.auth.login')}}">
                                     <i class="fa fa-sign-in mr-2"></i> {{ translate('sign_in')}}
@@ -280,7 +280,7 @@
                                             </a>
                                             @if ($category->childes->count() > 0)
                                                 <a data-toggle='dropdown' class='__ml-50px'>
-                                                    <i class="czi-arrow-{{Session::get('direction') === "rtl" ? 'left' : 'right'}} __inline-16"></i>
+                                                    <i class="czi-arrow-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left' : 'right'}} __inline-16"></i>
                                                 </a>
                                             @endif
 
@@ -295,7 +295,7 @@
                                                             @if($subCategory->childes->count()>0)
                                                                 <a class="header-subcategories-links"
                                                                    data-toggle='dropdown'>
-                                                                    <i class="czi-arrow-{{Session::get('direction') === "rtl" ? 'left' : 'right'}} __inline-16"></i>
+                                                                    <i class="czi-arrow-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left' : 'right'}} __inline-16"></i>
                                                                 </a>
                                                                 <ul class="dropdown-menu">
                                                                     @foreach($subCategory['childes'] as $subSubCategory)
@@ -337,7 +337,7 @@
                                             <span>{{  $category['name'] }}</span>
                                         </a>
                                         @if ($category->childes->count() > 0)
-                                            <ul class="text-align-direction dropdown-menu __dropdown-menu-sizing dropdown-menu-{{Session::get('direction') === "rtl" ? 'right' : 'left'}} scroll-bar">
+                                            <ul class="text-align-direction dropdown-menu __dropdown-menu-sizing dropdown-menu-{{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}} scroll-bar">
                                                 @foreach($category['childes'] as $subCategory)
                                                     <li class="__inline-17">
                                                         <a class="dropdown-item" href="{{route('products',['category_id'=> $subCategory['id'],'data_from'=>'category','page'=>1])}}">
@@ -355,7 +355,7 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link " href="{{route('brands')}}"
                                   >{{ translate('brand') }}</a>
-                                <ul class="text-align-direction dropdown-menu __dropdown-menu-sizing dropdown-menu-{{Session::get('direction') === "rtl" ? 'right' : 'left'}} scroll-bar">
+                                <ul class="text-align-direction dropdown-menu __dropdown-menu-sizing dropdown-menu-{{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}} scroll-bar">
                                     @php($brandIndex=0)
                                     @foreach(\App\Utils\BrandManager::getActiveBrandWithCountingAndPriorityWiseSorting() as $brand)
                                         @php($brandIndex++)
@@ -412,7 +412,7 @@
                                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
                                     {{ translate('Publication_House') }}
                                 </a>
-                                <ul class="text-align-direction dropdown-menu __dropdown-menu-sizing dropdown-menu-{{Session::get('direction') === "rtl" ? 'right' : 'left'}} scroll-bar">
+                                <ul class="text-align-direction dropdown-menu __dropdown-menu-sizing dropdown-menu-{{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}} scroll-bar">
                                     @php($publishingHousesIndex=0)
                                     @foreach($web_config['publishing_houses'] as $publishingHouseItem)
                                         @if($publishingHousesIndex < 10 && $publishingHouseItem['name'] != 'Unknown')
@@ -627,6 +627,6 @@
 
         $(".category-menu").find(".mega_menu").parents("li")
             .addClass("has-sub-item").find("> a")
-            .append("<i class='czi-arrow-{{Session::get('direction') === "rtl" ? 'left' : 'right'}}'></i>");
+            .append("<i class='czi-arrow-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left' : 'right'}}'></i>");
     </script>
 @endpush

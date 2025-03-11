@@ -144,7 +144,7 @@
                                 <div class="dropdown border rounded">
                                     <button class="btn btn-sm pl-3 dropdown-toggle" type="button" id="dropdownMenuButton"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        @if (Session::get('direction') === 'rtl')
+                                        @if (request()->cookie('direction', 'ltr') === 'rtl')
                                             {{ request()->has('type') ? ucwords(translate(request('type'))):translate('all')}}
                                             : {{ translate('filter')}}
                                         @else

@@ -37,7 +37,7 @@
                     <div class="text-end px-3 d-none d-md-block">
                         <a class="text-capitalize view-all-text web-text-primary" href="{{route('products',['data_from'=>'featured','page'=>1])}}">
                             {{ translate('view_all')}}
-                            <i class="czi-arrow-{{Session::get('direction') === 'rtl' ? 'left mr-1 ml-n1 mt-1' : 'right ml-1'}}"></i>
+                            <i class="czi-arrow-{{request()->cookie('direction', 'ltr') === 'rtl' ? 'left mr-1 ml-n1 mt-1' : 'right ml-1'}}"></i>
                         </a>
                     </div>
                     <div class="feature-product">
@@ -53,7 +53,7 @@
                         <div class="text-center pt-2 d-md-none">
                             <a class="text-capitalize view-all-text web-text-primary" href="{{route('products',['data_from'=>'featured','page'=>1])}}">
                                 {{ translate('view_all')}}
-                                <i class="czi-arrow-{{Session::get('direction') === "rtl" ? 'left mr-1 ml-n1 mt-1' : 'right ml-1'}}"></i>
+                                <i class="czi-arrow-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left mr-1 ml-n1 mt-1' : 'right ml-1'}}"></i>
                             </a>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
                             <div>
                                 <a class="text-capitalize view-all-text web-text-primary" href="{{route('products',['data_from'=>'featured_deal'])}}">
                                     {{ translate('view_all')}}
-                                    <i class="czi-arrow-{{Session::get('direction') === 'rtl' ? 'left mr-1 ml-n1 mt-1' : 'right ml-1'}}"></i>
+                                    <i class="czi-arrow-{{request()->cookie('direction', 'ltr') === 'rtl' ? 'left mr-1 ml-n1 mt-1' : 'right ml-1'}}"></i>
                                 </a>
                             </div>
                         </div>
@@ -193,7 +193,7 @@
                     <div class="__mr-2px">
                         <a class="text-capitalize view-all-text web-text-primary" href="{{route('brands')}}">
                             {{ translate('view_all')}}
-                            <i class="czi-arrow-{{Session::get('direction') === 'rtl' ? 'left mr-1 ml-n1 mt-1 float-left' : 'right ml-1 mr-n1'}}"></i>
+                            <i class="czi-arrow-{{request()->cookie('direction', 'ltr') === 'rtl' ? 'left mr-1 ml-n1 mt-1 float-left' : 'right ml-1 mr-n1'}}"></i>
                         </a>
                     </div>
                 </div>

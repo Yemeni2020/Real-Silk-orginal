@@ -13,7 +13,7 @@
             :root {
                 --blue: {{ $web_config['primary_color'] }};
                 --primary: {{ $web_config['primary_color'] }};
-                --bs-direction: {{ Session::get('direction') }};
+                --bs-direction: {{ request()->cookie('direction', 'ltr') }};
                 --theme--text-light: #FFFFFF;
             }
             .btn--primary,

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ Session::get('direction') }}"
-    style="text-align: {{ Session::get('direction') === 'rtl' ? 'right' : 'left' }};">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ request()->cookie('direction', 'ltr') }}"
+    style="text-align: {{ request()->cookie('direction', 'ltr') === 'rtl' ? 'right' : 'left' }};">
 
 <head>
     <meta charset="utf-8">
@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/vendor/icon-set/style.css') }}">
     <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/css/theme.minc619.css?v=1.0') }}">
     <link rel="stylesheet" href="{{dynamicAsset(path: 'public/assets/back-end/css/style.css')}}">
-    @if (Session::get('direction') === 'rtl')
+    @if (request()->cookie('direction', 'ltr') === 'rtl')
         <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/css/menurtl.css')}}">
     @endif
     <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/css/lightbox.css') }}">

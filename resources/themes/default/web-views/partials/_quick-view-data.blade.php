@@ -10,7 +10,7 @@
             <a class="product-title2" href="{{route('product',$product->slug)}}" data-toggle="tooltip"
                data-placement="right"
                title="Go to product page">{{$product['name']}}
-                <i class="czi-arrow-{{ Session::get('direction') === "rtl" ? 'left' : 'right' }} ms-2 font-size-lg mr-0"></i>
+                <i class="czi-arrow-{{ request()->cookie('direction', 'ltr') === "rtl" ? 'left' : 'right' }} ms-2 font-size-lg mr-0"></i>
             </a>
         </h4>
     </div>
@@ -136,15 +136,15 @@
                         @endfor
                     </div>
                     <span
-                            class="d-inline-block  align-middle mt-1 {{Session::get('direction') === "rtl" ? 'ml-md-2 ml-sm-0' : 'mr-md-2 mr-sm-0'}} fs-14 text-muted">({{$overallRating[0]}})</span>
-                    <span class="font-regular font-for-tab d-inline-block font-size-sm text-body align-middle mt-1 {{Session::get('direction') === "rtl" ? 'mr-1 ml-md-2 ml-1 pr-md-2 pr-sm-1 pl-md-2 pl-sm-1' : 'ml-1 mr-md-2 mr-1 pl-md-2 pl-sm-1 pr-md-2 pr-sm-1'}}"><span class="web-text-primary">{{$overallRating[1]}}</span> {{translate('reviews')}}</span>
+                            class="d-inline-block  align-middle mt-1 {{request()->cookie('direction', 'ltr') === "rtl" ? 'ml-md-2 ml-sm-0' : 'mr-md-2 mr-sm-0'}} fs-14 text-muted">({{$overallRating[0]}})</span>
+                    <span class="font-regular font-for-tab d-inline-block font-size-sm text-body align-middle mt-1 {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-1 ml-md-2 ml-1 pr-md-2 pr-sm-1 pl-md-2 pl-sm-1' : 'ml-1 mr-md-2 mr-1 pl-md-2 pl-sm-1 pr-md-2 pr-sm-1'}}"><span class="web-text-primary">{{$overallRating[1]}}</span> {{translate('reviews')}}</span>
                     <span class="__inline-25"></span>
-                    <span class="font-regular font-for-tab d-inline-block font-size-sm text-body align-middle mt-1 {{Session::get('direction') === "rtl" ? 'mr-1 ml-md-2 ml-1 pr-md-2 pr-sm-1 pl-md-2 pl-sm-1' : 'ml-1 mr-md-2 mr-1 pl-md-2 pl-sm-1 pr-md-2 pr-sm-1'}}">
+                    <span class="font-regular font-for-tab d-inline-block font-size-sm text-body align-middle mt-1 {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-1 ml-md-2 ml-1 pr-md-2 pr-sm-1 pl-md-2 pl-sm-1' : 'ml-1 mr-md-2 mr-1 pl-md-2 pl-sm-1 pr-md-2 pr-sm-1'}}">
                         <span class="web-text-primary">
                             {{$countOrder}}
                         </span> {{translate('orders')}}   </span>
                     <span class="__inline-25">    </span>
-                    <span class="font-regular font-for-tab d-inline-block font-size-sm text-body align-middle mt-1 {{Session::get('direction') === "rtl" ? 'mr-1 ml-md-2 ml-0 pr-md-2 pr-sm-1 pl-md-2 pl-sm-1' : 'ml-1 mr-md-2 mr-0 pl-md-2 pl-sm-1 pr-md-2 pr-sm-1'}} text-capitalize">
+                    <span class="font-regular font-for-tab d-inline-block font-size-sm text-body align-middle mt-1 {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-1 ml-md-2 ml-0 pr-md-2 pr-sm-1 pl-md-2 pl-sm-1' : 'ml-1 mr-md-2 mr-0 pl-md-2 pl-sm-1 pr-md-2 pr-sm-1'}} text-capitalize">
                         <span class="web-text-primary countWishlist-{{ $product->id }}"> {{$countWishlist}}</span> {{translate('wish_listed')}}
                     </span>
 
@@ -191,7 +191,7 @@
                     <form id="add-to-cart-form" class="mb-2">
                         @csrf
                         <input type="hidden" name="id" value="{{ $product->id }}">
-                        <div class="position-relative {{Session::get('direction') === "rtl" ? 'ml-n4' : 'mr-n4'}} mb-3">
+                        <div class="position-relative {{request()->cookie('direction', 'ltr') === "rtl" ? 'ml-n4' : 'mr-n4'}} mb-3">
                             @if (count(json_decode($product->colors)) > 0)
                                 <div class="flex-start">
                                     <div class="product-description-label text-dark font-bold">
@@ -257,7 +257,7 @@
                         @if($product['product_type'] == 'digital' && $product['digital_product_file_types'] && count($product['digital_product_file_types']) > 0 && $product['digital_product_extensions'])
                             @foreach($product['digital_product_extensions'] as $extensionKey => $extensionGroup)
                                 <div class="row flex-start mx-0 align-items-center mb-1">
-                                    <div class="product-description-label text-dark font-bold {{Session::get('direction') === "rtl" ? 'pl-2' : 'pr-2'}} text-capitalize mb-2">
+                                    <div class="product-description-label text-dark font-bold {{request()->cookie('direction', 'ltr') === "rtl" ? 'pl-2' : 'pr-2'}} text-capitalize mb-2">
                                         {{ translate($extensionKey) }} :
                                     </div>
                                     <div>

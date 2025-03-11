@@ -9191,4 +9191,5 @@ return [
 	"search_admin" => "Search admin",
 	"want_to_reject_this_office" => "Want to reject this office",
 	"want_to_approve_this_office" => "Want to approve this office",
+	"want_to_apply_as_a_office" => "Want to apply as a office",
 ];

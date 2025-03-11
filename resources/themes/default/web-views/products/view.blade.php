@@ -20,7 +20,7 @@
 
     @php($decimal_point_settings = getWebConfig(name: 'decimal_point_settings'))
 
-    <div class="container py-3" dir="{{Session::get('direction')}}">
+    <div class="container py-3" dir="{{request()->cookie('direction', 'ltr')}}">
         <div class="search-page-header">
             <div>
                 <h5 class="font-semibold mb-1 text-capitalize">
@@ -75,10 +75,10 @@
 
     </div>
 
-    <div class="container pb-5 mb-2 mb-md-4 rtl __inline-35" dir="{{Session::get('direction')}}">
+    <div class="container pb-5 mb-2 mb-md-4 rtl __inline-35" dir="{{request()->cookie('direction', 'ltr')}}">
         <div class="row">
             <aside
-                class="col-lg-3 hidden-xs col-md-3 col-sm-4 SearchParameters __search-sidebar {{Session::get('direction') === "rtl" ? 'pl-2' : 'pr-2'}}"
+                class="col-lg-3 hidden-xs col-md-3 col-sm-4 SearchParameters __search-sidebar {{request()->cookie('direction', 'ltr') === "rtl" ? 'pl-2' : 'pr-2'}}"
                 id="SearchParameters">
                 <div class="cz-sidebar __inline-35 p-4 overflow-hidden" id="shop-sidebar">
                     <div class="cz-sidebar-header p-0">
@@ -163,7 +163,7 @@
 
                                         <div class="d-flex justify-content-center align-items-center __number-filter-btn">
                                             <a class="action-search-products-by-price">
-                                                <i class="__inline-37 czi-arrow-{{Session::get('direction') === "rtl" ? 'left' : 'right'}}"></i>
+                                                <i class="__inline-37 czi-arrow-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left' : 'right'}}"></i>
                                             </a>
                                         </div>
                                     </div>
@@ -250,7 +250,7 @@
                                         data-simplebar-auto-hide="false">
                                         @foreach($activeBrands as $brand)
                                             <ul
-                                                class="brand mt-2 p-0 for-brand-hover {{Session::get('direction') === "rtl" ? 'mr-2' : ''}}"
+                                                class="brand mt-2 p-0 for-brand-hover {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-2' : ''}}"
                                                 id="brand">
                                                 <li class="flex-between get-view-by-onclick cursor-pointer"
                                                     data-link="{{ route('products',['brand_id'=> $brand['id'],'data_from'=>'brand','page'=>1]) }}">
@@ -287,7 +287,7 @@
                                     <ul class="__brands-cate-wrap attribute-list" data-simplebar
                                         data-simplebar-auto-hide="false">
                                         @foreach($web_config['publishing_houses'] as $publishingHouseItem)
-                                            <ul class="brand mt-2 p-0 for-brand-hover {{Session::get('direction') === "rtl" ? 'mr-2' : ''}}"
+                                            <ul class="brand mt-2 p-0 for-brand-hover {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-2' : ''}}"
                                                  id="brand">
                                                 <li class="flex-between get-view-by-onclick cursor-pointer pe-2"
                                                     data-link="{{ route('products',['publishing_house_id'=> $publishingHouseItem['id'], 'product_type' => 'digital', 'page'=>1]) }}">
@@ -326,7 +326,7 @@
                                     <ul class="__brands-cate-wrap attribute-list" data-simplebar
                                         data-simplebar-auto-hide="false">
                                         @foreach($web_config['digital_product_authors'] as $productAuthor)
-                                            <ul class="brand mt-2 p-0 for-brand-hover {{Session::get('direction') === "rtl" ? 'mr-2' : ''}}"
+                                            <ul class="brand mt-2 p-0 for-brand-hover {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-2' : ''}}"
                                                  id="brand">
                                                 <li class="flex-between get-view-by-onclick cursor-pointer pe-2"
                                                     data-link="{{ route('products',['author_id' => $productAuthor['id'], 'product_type' => 'digital', 'page' => 1]) }}">

@@ -1,7 +1,7 @@
 @php
     use Illuminate\Support\Facades\Session;
     $currencyCode = getCurrencyCode(type: 'default');
-    $direction = Session::get('direction');
+    $direction = request()->cookie('direction', 'ltr');
     $lang = getDefaultLanguage();
 @endphp
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{$direction}}"

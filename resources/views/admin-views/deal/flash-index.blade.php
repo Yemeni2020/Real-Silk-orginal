@@ -7,7 +7,7 @@
 @section('title', translate('flash_Deal'))
 
 @section('content')
-    @php($direction = Session::get('direction'))
+    @php($direction = request()->cookie('direction', 'ltr'))
     <div class="content container-fluid">
         <div class="d-flex justify-content-between gap-2 mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">

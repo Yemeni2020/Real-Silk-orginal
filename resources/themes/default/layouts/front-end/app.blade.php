@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ session()->get('direction') ?? 'ltr' }}">
+<!-- <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ session()->get('direction') ?? 'ltr' }}"> -->
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ request()->cookie('direction', 'ltr') }}">
 
 <head>
     <meta charset="utf-8">
@@ -47,18 +48,18 @@
             --web-primary-20: {{ $web_config['primary_color'] }}20;
             --web-primary-40: {{ $web_config['primary_color'] }}40;
             --web-secondary: {{ $web_config['secondary_color'] }};
-            --web-direction: {{ Session::get('direction') }};
-            --text-align-direction: {{ Session::get('direction') === "rtl" ? 'right' : 'left' }};
-            --text-align-direction-alt: {{ Session::get('direction') === "rtl" ? 'left' : 'right'}};
+            --web-direction: {{ request()->cookie('direction', 'ltr') }};
+            --text-align-direction: {{ request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left' }};
+            --text-align-direction-alt: {{ request()->cookie('direction', 'ltr') === "rtl" ? 'left' : 'right'}};
         }
 
         .dropdown-menu:not(.m-0) {
-            margin-{{ Session::get('direction') === "rtl" ? 'right' : 'left' }}: -8px !important;
+            margin-{{ request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left' }}: -8px !important;
         }
 
         @media (max-width: 767px) {
             .navbar-expand-md .dropdown-menu > .dropdown > .dropdown-toggle {
-                padding-{{ Session::get('direction') === "rtl" ? 'left' : 'right'}}: 1.95rem;
+                padding-{{ request()->cookie('direction', 'ltr') === "rtl" ? 'left' : 'right'}}: 1.95rem;
             }
         }
     </style>
@@ -188,7 +189,8 @@
 <span id="password-error-message" data-max-character="{{translate('at_least_8_characters').'.'}}" data-uppercase-character="{{translate('at_least_one_uppercase_letter_').'(A...Z)'.'.'}}" data-lowercase-character="{{translate('at_least_one_uppercase_letter_').'(a...z)'.'.'}}"
       data-number="{{translate('at_least_one_number').'(0...9)'.'.'}}" data-symbol="{{translate('at_least_one_symbol').'(!...%)'.'.'}}"></span>
 <span class="system-default-country-code" data-value="{{ getWebConfig(name: 'country_code') ?? 'us' }}"></span>
-<span id="system-session-direction" data-value="{{ session()->get('direction') ?? 'ltr' }}"></span>
+/* <span id="system-session-direction" data-value="{{ session()->get('direction') ?? 'ltr' }}"></span> */
+<span id="system-session-direction" data-value="{{ request()->cookie('direction', 'ltr') ?? 'ltr' }}"></span>
 
 <span id="is-request-customer-auth-sign-up" data-value="{{ Request::is('customer/auth/sign-up*') ? 1:0 }}"></span>
 <span id="is-customer-auth-active" data-value="{{ auth('customer')->check() ? 1:0 }}"></span>

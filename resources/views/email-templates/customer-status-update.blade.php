@@ -9,7 +9,7 @@ $companyEmail = getWebConfig(name: 'company_email');
 $companyName = getWebConfig(name: 'company_name');
 $companyLogo = getWebConfig(name: 'company_web_logo');
 $lang = Helpers::default_lang();
-$direction = Session::get('direction');
+$direction = request()->cookie('direction', 'ltr');
 ?>
 
     <!DOCTYPE html>

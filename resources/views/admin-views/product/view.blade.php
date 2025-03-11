@@ -148,7 +148,7 @@
 
                                                     <li class="d-flex align-items-center font-size-sm">
                                                         @php($five = getRatingCount($product['id'], 5))
-                                                        <span class="{{ Session::get('direction') === "rtl" ? 'ml-3' : 'mr-3' }}">
+                                                        <span class="{{ request()->cookie('direction', 'ltr') === "rtl" ? 'ml-3' : 'mr-3' }}">
                                                         {{ translate('5') }} {{ translate('star') }}
                                                     </span>
                                                         <div class="progress flex-grow-1">
@@ -158,13 +158,13 @@
                                                             </div>
                                                         </div>
                                                         <span
-                                                            class="{{ Session::get('direction') === "rtl" ? 'mr-3' : 'ml-3' }}">{{ $five }}</span>
+                                                            class="{{ request()->cookie('direction', 'ltr') === "rtl" ? 'mr-3' : 'ml-3' }}">{{ $five }}</span>
                                                     </li>
 
                                                     <li class="d-flex align-items-center font-size-sm">
                                                         @php($four=getRatingCount($product['id'],4))
                                                         <span
-                                                            class="{{ Session::get('direction') === "rtl" ? 'ml-3' : 'mr-3' }}">{{ translate('4') }} {{ translate('star') }}</span>
+                                                            class="{{ request()->cookie('direction', 'ltr') === "rtl" ? 'ml-3' : 'mr-3' }}">{{ translate('4') }} {{ translate('star') }}</span>
                                                         <div class="progress flex-grow-1">
                                                             <div class="progress-bar" role="progressbar"
                                                                     style="width: {{ $total == 0 ? 0 : ($four/$total)*100}}%;"
@@ -172,13 +172,13 @@
                                                                     aria-valuemin="0" aria-valuemax="100"></div>
                                                         </div>
                                                         <span
-                                                            class="{{ Session::get('direction') === "rtl" ? 'mr-3' : 'ml-3' }}">{{ $four }}</span>
+                                                            class="{{ request()->cookie('direction', 'ltr') === "rtl" ? 'mr-3' : 'ml-3' }}">{{ $four }}</span>
                                                     </li>
 
                                                     <li class="d-flex align-items-center font-size-sm">
                                                         @php($three=getRatingCount($product['id'],3))
                                                         <span
-                                                            class="{{ Session::get('direction') === "rtl" ? 'ml-3' : 'mr-3'}}">{{ translate('3') }} {{ translate('star') }}</span>
+                                                            class="{{ request()->cookie('direction', 'ltr') === "rtl" ? 'ml-3' : 'mr-3'}}">{{ translate('3') }} {{ translate('star') }}</span>
                                                         <div class="progress flex-grow-1">
                                                             <div class="progress-bar" role="progressbar"
                                                                     style="width: {{ $total == 0 ? 0 : ($three/$total)*100 }}%;"
@@ -186,13 +186,13 @@
                                                                     aria-valuemin="0" aria-valuemax="100"></div>
                                                         </div>
                                                         <span
-                                                            class="{{ Session::get('direction') === "rtl" ? 'mr-3' : 'ml-3'}}">{{ $three }}</span>
+                                                            class="{{ request()->cookie('direction', 'ltr') === "rtl" ? 'mr-3' : 'ml-3'}}">{{ $three }}</span>
                                                     </li>
 
                                                     <li class="d-flex align-items-center font-size-sm">
                                                         @php($two=getRatingCount($product['id'],2))
                                                         <span
-                                                            class="{{ Session::get('direction') === "rtl" ? 'ml-3' : 'mr-3'}}">{{ translate('2') }} {{ translate('star') }}</span>
+                                                            class="{{ request()->cookie('direction', 'ltr') === "rtl" ? 'ml-3' : 'mr-3'}}">{{ translate('2') }} {{ translate('star') }}</span>
                                                         <div class="progress flex-grow-1">
                                                             <div class="progress-bar" role="progressbar"
                                                                     style="width: {{ $total == 0 ? 0 : ($two/$total)*100}}%;"
@@ -200,13 +200,13 @@
                                                                     aria-valuemin="0" aria-valuemax="100"></div>
                                                         </div>
                                                         <span
-                                                            class="{{ Session::get('direction') === "rtl" ? 'mr-3' : 'ml-3'}}">{{ $two }}</span>
+                                                            class="{{ request()->cookie('direction', 'ltr') === "rtl" ? 'mr-3' : 'ml-3'}}">{{ $two }}</span>
                                                     </li>
 
                                                     <li class="d-flex align-items-center font-size-sm">
                                                         @php($one=getRatingCount($product['id'],1))
                                                         <span
-                                                            class="{{ Session::get('direction') === "rtl" ? 'ml-3' : 'mr-3'}}">{{ translate('1') }} {{ translate('star') }}</span>
+                                                            class="{{ request()->cookie('direction', 'ltr') === "rtl" ? 'ml-3' : 'mr-3'}}">{{ translate('1') }} {{ translate('star') }}</span>
                                                         <div class="progress flex-grow-1">
                                                             <div class="progress-bar" role="progressbar"
                                                                     style="width: {{ $total == 0 ? 0 : ($one/$total)*100}}%;"
@@ -214,7 +214,7 @@
                                                                     aria-valuemin="0" aria-valuemax="100"></div>
                                                         </div>
                                                         <span
-                                                            class="{{ Session::get('direction') === "rtl" ? 'mr-3' : 'ml-3'}}">{{ $one }}</span>
+                                                            class="{{ request()->cookie('direction', 'ltr') === "rtl" ? 'mr-3' : 'ml-3'}}">{{ $one }}</span>
                                                     </li>
 
                                                 </ul>
@@ -591,7 +591,7 @@
                                                  src="{{ getStorageImages(path: $review->customer->image_full_url,type: 'backend-profile') }}"
                                                  alt="">
                                         </div>
-                                        <div class="{{ Session::get('direction') === "rtl" ? 'mr-3' : 'ml-3'}}">
+                                        <div class="{{ request()->cookie('direction', 'ltr') === "rtl" ? 'mr-3' : 'ml-3'}}">
                                             <span class="d-block h5 text-hover-primary mb-0">
                                                 {{ $review->customer['f_name']." ".$review->customer['l_name']}}
                                                 <i class="tio-verified text-primary" data-toggle="tooltip"
