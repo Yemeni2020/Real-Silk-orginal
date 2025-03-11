@@ -8998,4 +8998,5 @@ return [
 	"factory" => "Factory",
 	"factories" => "Factories",
 	"service" => "Service",
+	"search_admin" => "Search admin",
 ];

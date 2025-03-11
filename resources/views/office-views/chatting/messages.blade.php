@@ -6,7 +6,7 @@
 
 @foreach($chattingMessages as $key => $message)
     @php($genTimeGap = $message->created_at)
-    @if (($message->sent_by_customer || $message->sent_by_delivery_man) || ($message->sent_by_office && $seller->type_account=="fictory") || ($message->sent_by_seller && $seller->type_account=="office"))
+    @if (($message->sent_by_customer || $message->sent_by_delivery_man) || ($message->sent_by_office && $seller->type_account=="fictory") || ($message->sent_by_seller && $seller->type_account=="office") || ($message->sent_by_admin && $seller->type_account=="office"))
         <div class="incoming_msg d-flex align-items-end gap-2">
             <div class="">
                 <img class="avatar-img user-avatar-image border inbox-user-avatar-25" id="profile_image" width="40"

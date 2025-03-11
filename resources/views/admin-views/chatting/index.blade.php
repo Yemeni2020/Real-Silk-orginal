@@ -84,6 +84,41 @@
                                                         @endif
                                                     </div>
                                                 </div>
+                                            @elseif($chatting->office_id && $chatting->office)
+                                                <div class="list_filter">
+                                                    <div
+                                                        class="chat_list p-3 d-flex gap-2 @if ($key == 0) bg-soft-secondary @endif get-ajax-message-view"
+                                                        data-user-id="{{ $chatting->office_id }}">
+                                                        <div class="chat_people media gap-10 w-100" id="chat_people">
+                                                            <div class="chat_img avatar avatar-sm avatar-circle">
+                                                                <img src="{{ getStorageImages(path: $chatting->office->image_full_url,type: 'backend-profile') }}"
+                                                                     id="{{$chatting->office_id}}"
+                                                                     class="avatar-img avatar-circle" alt="">
+                                                                <span
+                                                                    class="avatar-status avatar-sm-status avatar-status-success"></span>
+                                                            </div>
+                                                            <div class="chat_ib media-body">
+                                                                <h5 class="mb-1 seller {{$chatting->seen_by_seller ?'active-text' :''}}"
+                                                                    id="{{ $chatting->office_id }}"
+                                                                    data-name="{{ $chatting->office->f_name.' '.$chatting->office->l_name }}"
+                                                                    data-phone="{{ $chatting->office->phone }}">
+                                                                    {{ $chatting->office->f_name .' '. $chatting->office->l_name }}
+
+                                                                    <span class="lead small float-end">{{ $chatting->created_at->diffForHumans() }}</span>
+                                                                </h5>
+                                                                <span
+                                                                    class="mt-2 font-weight-normal text-muted d-block"
+                                                                    id="{{ $chatting->office_id }}"
+                                                                    data-name="{{ $chatting->office->f_name .' '. $chatting->office->l_name}}"
+                                                                    data-phone="{{ $chatting->office->phone }}">{{ $chatting->office->phone }}</span>
+                                                            </div>
+                                                        </div>
+                                                        @if(!$chatting->seen_by_admin && !($key == 0))
+                                                            <div
+                                                                class="message-status bg-danger notify-alert-{{ $chatting->office_id }}"></div>
+                                                        @endif
+                                                    </div>
+                                                </div>
                                             @elseif($chatting->delivery_man_id && $chatting->deliveryMan)
                                                 <div class="list_filter">
                                                     <div
@@ -157,7 +192,13 @@
                             <div class="input_msg_write">
                                 <form class="mt-4 chatting-messages-ajax-form" enctype="multipart/form-data">
                                     @csrf
+                                    @if($userType == 'office')
+                                    <input type="hidden" id="current-user-hidden-id" value="{{ $lastChatUser->id }}" name="{{ 'office_id'  }}">
+
+                                    @else
                                     <input type="hidden" id="current-user-hidden-id" value="{{ $lastChatUser->id }}" name="{{ $userType == 'customer' ? 'user_id' : 'delivery_man_id' }}">
+
+                                    @endif
                                     <div class="position-relative d-flex">
                                         <div class="d-flex align-items-center m-0 position-absolute top-3 px-3 gap-2">
                                             <label class="py-0 cursor-pointer">
@@ -238,8 +279,13 @@
                 </div>
             </section>
         </div>
+        @if($userType=="office")
+        <span id="chatting-post-url"
+              data-url="{{ route('admin.messages.message').'?office_id=' }}"></span>
+        @else
         <span id="chatting-post-url"
               data-url="{{ Request::is('admin/messages/index/customer') ? route('admin.messages.message').'?user_id=' : route('admin.messages.message').'?delivery_man_id=' }}"></span>
+        @endif
         <span id="image-url" data-url="{{ asset('storage/app/public/chatting') }}"></span>
     </div>
     <span id="get-file-icon" data-default-icon="{{dynamicAsset("public/assets/back-end/img/default-icon.png")}}"

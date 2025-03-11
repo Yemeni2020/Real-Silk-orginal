@@ -6949,7 +6949,7 @@ return [
 	"already_have_store " => "Already have store ",
 	"all_vendors" => "All factories",
 	"vendor_zone" => "Factory zone",
-	"become_a_vendor" => "Become a Factory",
+	"become_a_vendor" => "Factory Register/Signup",
 	"vendor_login" => "Factory login",
 	"vendor_Apply" => "Factory Apply",
 	"vendor_Info" => "Factory Info",
@@ -9189,4 +9189,6 @@ return [
 	"factory" => "Factory",
 	"suspended" => "Suspended",
 	"search_admin" => "Search admin",
+	"want_to_reject_this_office" => "Want to reject this office",
+	"want_to_approve_this_office" => "Want to approve this office",
 ];

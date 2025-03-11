@@ -139,17 +139,24 @@ class ChattingService
     public function addChattingData(object $request,string $type):array
     {
         $attachment = $this->getAttachment(request: $request);
+        $adminId=auth('admin')->id();
+        $notification_receiver=$type == 'delivery-man' ? 'deliveryman' : 'customer';
+        if($type=="office"){
+            $notification_receiver="office";
+        }
         return [
             'delivery_man_id' => $type == 'delivery-man' ? $request['delivery_man_id'] : null ,
             'user_id' => $type == 'customer' ? $request['user_id'] : null ,
-            'admin_id' => 0,
+            'office_id' => $type == 'office' ? $request['office_id'] : null ,
+            'admin_id' => $adminId,
             'message' => $request['message'],
             'attachment' => json_encode($attachment),
             'sent_by_admin' => 1,
             'seen_by_admin' => 1,
             'seen_by_customer' => 0,
             'seen_by_delivery_man' => $type == 'delivery-man' ? 0 : null,
-            'notification_receiver' => $type == 'delivery-man' ? 'deliveryman' : 'customer',
+            'seen_by_office' => $type == 'office' ? 0 : null,
+            'notification_receiver' => $notification_receiver,
             'created_at' => now(),
         ];
     }

@@ -285,7 +285,7 @@
                                 </form>
                             </div>
                         </div>
-                    @elseif($userType=="factory")
+                    @elseif($userType=="factory" && count($factories)>0)
                         <div class="inbox_msg_header d-flex flex-wrap gap-3 justify-content-between align-items-center border px-3 py-2 rounded mb-4">
                             <div class="media align-items-center gap-3">
                                 <div class="avatar avatar-sm avatar-circle border">

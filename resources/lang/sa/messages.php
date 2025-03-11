@@ -7118,7 +7118,7 @@
 'already_have_store ' => 'لديك متجر بالفعل',
 'all_vendors' => 'جميع المصانع',
 'vendor_zone' => 'منطقة المصانع',
-'become_a_vendor' => 'اصبح مصنع ',
+'become_a_vendor' => 'انشاء حساب مصنع',
 'vendor_login' => 'تسجيل دخول المصانع',
 'vendor_Apply' => 'تقديم طلب كمصنع',
 'vendor_Info' => 'معلومات المصنع',

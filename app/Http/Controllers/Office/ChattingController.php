@@ -136,6 +136,8 @@ class ChattingController extends BaseController
                 dataLimit: 'all'
             )->unique('user_id');
             $vendor =$this->vendorRepo->getFirstWhere(params:["id"=>$vendorId]);
+            // dump($vendor->referredFactoriesWithLastMessage);
+            // return null;
             $factories=$vendor->referredFactoriesWithLastMessage;
             $chattingMessages=[];
             $lastChatUser=null;
@@ -389,7 +391,7 @@ class ChattingController extends BaseController
 
         return [
             'userData' => $userData,
-            'chattingMessages' => view('vendor-views.chatting.messages', [
+            'chattingMessages' => view('office-views.chatting.messages', [
                 'lastChatUser' => $user,
                 'userType' => $type,
                 'chattingMessages' => $message

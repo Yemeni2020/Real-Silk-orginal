@@ -82,6 +82,8 @@ class ChattingRepository implements ChattingRepositoryInterface
             })
             ->when(isset($filters['seller_id']), function ($query) use ($filters) {
                 return $query->where(['seller_id'=>$filters['seller_id']]);
+            })->when(isset($filters['office_id']), function ($query) use ($filters) {
+                return $query->where(['office_id'=>$filters['office_id']]);
             })
             ->when(isset($filters['shop_id']), function ($query) use ($filters) {
                 return $query->where(['shop_id'=>$filters['shop_id']]);

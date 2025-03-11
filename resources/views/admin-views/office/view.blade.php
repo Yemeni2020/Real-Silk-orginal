@@ -17,6 +17,7 @@
                         <a class="nav-link active"
                            href="{{ route('admin.offices.view', $seller['id']) }}">{{translate('office_overview')}}</a>
                     </li>
+                    
                     @if ($seller['status']!="pending")
                         
                         <!-- <li class="nav-item">
@@ -124,9 +125,14 @@
                                                 class="tio-globe"></i> {{translate('view_live')}}
                                         @endif
                                     </a>
+                                    <a href="{{route('admin.messages.index', ['type' => 'office','office_id'=>$seller['id']])}}"
+                                       class="btn btn-outline--primary px-4" target="_blank"><i
+                                                class="tio-chat"></i> {{translate('Chat')}}
+                                    </a>
                             </div>
                         </div>
                     </div>
+                    
                     @if ($seller['status']=="pending")
                         <div class="d-flex justify-content-sm-end flex-wrap gap-2 mb-3">
                             <form class="d-inline-block" action="{{route('admin.offices.updateStatus')}}" id="reject-form" method="POST">
@@ -153,6 +159,7 @@
                             </form>
                         </div>
                     @endif
+                    
                     @if ($seller['status']=="suspended" || $seller['status']=="rejected")
                         <div class="d-flex justify-content-sm-end flex-wrap gap-2 mb-3">
                             <form class="d-inline-block" action="{{route('admin.offices.updateStatus')}}" id="active-form" method="POST">
