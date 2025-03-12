@@ -61,6 +61,7 @@ use App\Models\User;
                                     <th>{{translate('order_ID')}}</th>
                                     <th class="text-capitalize">{{translate('service')}}</th>
                                     <th class="text-capitalize">{{translate('customer')}}</th>
+                                    <th class="text-capitalize">{{translate('status')}}</th>
                                     <th class="text-capitalize">{{translate('order_date')}}</th>
 
                                     
@@ -89,7 +90,11 @@ use App\Models\User;
                                         $User = User::find($order->customer);
                                         ?>
                                         {{ isset($User) ? $User->email : $order->customer }}
-                                        </td>
+                                    </td>
+                                    <td>
+
+                                        {{ translate($order->status) }}
+                                    </td>
                                     <td>
                                         <div>{{date('d M Y',strtotime($order['created_at']))}},</div>
                                         <div>{{ date("h:i A",strtotime($order['created_at'])) }}</div>

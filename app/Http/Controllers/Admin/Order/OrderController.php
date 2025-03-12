@@ -279,6 +279,26 @@ class OrderController extends BaseController
 
         return view(Order::VIEWSERVICE[VIEW], compact('order','product','DetailsOrder','User'));
     }
+    
+    public function changeStatus(Request $request, string|int $id): View|RedirectResponse
+    {
+        // 🔹 1. التحقق من صحة البيانات قبل الحفظ
+        $validated = $request->validate([
+            'status' => ['required', 'in:pending,completed,failed,canceled'], // تأكد من أن القيمة صحيحة
+            'description' => ['nullable', 'string', 'max:1000'] // الوصف يمكن أن يكون فارغًا، نص، وأقصى 1000 حرف
+        ]);
+
+        // 🔹 2. تحديث الطلب بالحالة الجديدة والملاحظات
+        ModelOrderService::where('id', $id)->update([
+            'status' => $validated['status'], 
+            'note' => $validated['description'] ?? null // إذا لم يتم إدخال وصف، اجعله `null`
+        ]);
+
+        // 🔹 3. عرض إشعار نجاح
+        Toastr::success(translate('Updated_the_order'));
+
+        return back();
+    }
 
     public function getView(string|int $id, DeliveryCountryCodeService $service, OrderService $orderService): View|RedirectResponse
     {

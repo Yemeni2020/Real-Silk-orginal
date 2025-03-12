@@ -19,6 +19,36 @@
                     @endif
                 </div>
                 <div class="card-body">
+                    <form action="{{route('admin.orders.servicedetails',['id'=>$order['id']])}}" method="post">
+                        @csrf
+                        <div class="form-group">
+                            <label class="title-color">
+                                {{ translate('product_type') }}
+                                <span class="input-required-icon">*</span>
+                            </label>
+                            <select name="status" id="status" class="form-control" required>
+                                <option @if($order->status=="pending") selected @endif value="pending" selected>{{ translate('pending') }}</option>
+                                <option @if($order->status=="completed") selected @endif value="completed">{{ translate('completed') }}</option>
+                                <option @if($order->status=="failed") selected @endif value="failed">{{ translate('failed') }}</option>
+                                <option @if($order->status=="canceled") selected @endif value="canceled">{{ translate('canceled') }}</option>
+                            </select>
+                        </div>
+                        <div class="form-group pt-2">
+                            <label class="title-color" for="en_description">
+                                {{ translate('description') }} 
+                                
+                            </label>
+                            <textarea style="width: 100%;" id="en_description" class="summernote  product-description-default-language" name="description">{{$order->note}}</textarea>
+                        </div>
+                        <button class="btn btn--primary px-5 ">
+                            {{ translate('submit') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="card">
+                
+                <div class="card-body">
                     
                     <hr>
                     

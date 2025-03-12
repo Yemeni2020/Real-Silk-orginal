@@ -9192,8 +9192,6 @@ return [
 	"want_to_reject_this_office" => "Want to reject this office",
 	"want_to_approve_this_office" => "Want to approve this office",
 	"want_to_apply_as_a_office" => "Want to apply as a office",
-	"if_you don’t_want_to
-            see_the_information_in_the_mail" => "If you don’t want to see the information in the mail",
 	"Enter Verification Code" => "Enter Verification Code",
 	"Please enter the verification code sent to your email." => "Please enter the verification code sent to your email.",
 	"Enter Code" => "Enter Code",
@@ -9209,4 +9207,6 @@ return [
 	"Email_verification" => "Email verification",
 	"This_Email_Is_Exists" => "This Email Is Exists",
 	"use_the_code_to_Email_verification_on_our_secure_website" => "Use the code to Email verification on our secure website",
+	"sorry_we_can_not_complete_your_order" => "Sorry we can not complete your order",
+	"Updated_the_order" => "Updated the order",
 ];
