@@ -145,7 +145,7 @@
 
                         <!-- إدخال رمز التحقق -->
                         <input type="text" id="verification-code" class="form-control text-center" placeholder="{{ translate('Enter Code') }}" maxlength="6" style="max-width: 200px;">
-                        <label for="verification-code" id="error-verification-code"></label>
+                        <label for="verification-code" class="text-danger" id="error-verification-code"></label>
                         
                         <button id="confirm-code" data-url="{{route('vendor.dashboard.confirmMail')}}" class="btn btn-primary mt-3">
                             {{ translate('confirm') }}
