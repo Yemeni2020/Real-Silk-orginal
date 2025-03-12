@@ -334,8 +334,8 @@ class DashboardController extends BaseController
             'email' => ['required', 'email', 'max:255'], // يجب أن يكون البريد صحيحًا وغير فارغ
         ]);
         $_email= $this->EmailVerification->getFirstWhere(["phone_or_email"=>$request["email"]]);
-        Seller::where("id", auth("seller")->id())->update(["email" => $request["email"],"verification"=>true]);
         if($_email->token==$request["token"]){
+            Seller::where("id", auth("seller")->id())->update(["email" => $request["email"],"verification"=>true]);
             return response()->json([
                 'status' => true,
                 'message' =>  translate("Email_Is_Conifrmed")

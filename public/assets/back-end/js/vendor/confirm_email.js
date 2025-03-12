@@ -21,6 +21,7 @@ $("#confirm-code").on('click', function () {
                 // $(".verification-modal").modal("hide"); // إخفاء المودال عند النجاح
                 location.reload();
             } else {
+                $("#verification-code").html(response.message);
                 toastr.error(response.message);
             }
         },

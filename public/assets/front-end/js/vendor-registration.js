@@ -251,6 +251,7 @@ $("#confirm-code").on('click', function () {
                 $('.first-el').fadeOut(300);
                 $('.second-el').fadeIn(300);
             } else {
+                $("#verification-code").html(response.message);
                 toastr.error(response.message);
             }
         },

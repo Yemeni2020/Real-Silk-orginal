@@ -145,14 +145,16 @@
 
                         <!-- إدخال رمز التحقق -->
                         <input type="text" id="verification-code" class="form-control text-center" placeholder="{{ translate('Enter Code') }}" maxlength="6" style="max-width: 200px;">
-
-                        <!-- زر إعادة إرسال الرمز -->
-                        <button id="resend-code" onclick="$('.proceed-to-next-btn').click();"  class="btn btn-primary mt-3">
-                            {{ translate('Resend Code') }}
-                        </button>
-                        <button id="confirm-code" data-url="{{route('vendor.dashboard.confirmMail')}}" class="btn btn-info mt-3">
+                        <label for="verification-code" id="error-verification-code"></label>
+                        
+                        <button id="confirm-code" data-url="{{route('vendor.dashboard.confirmMail')}}" class="btn btn-primary mt-3">
                             {{ translate('confirm') }}
                         </button>
+                        <!-- زر إعادة إرسال الرمز -->
+                        <button id="resend-code" onclick="$('.proceed-to-next-btn').click();"  class="btn btn-info mt-3">
+                            {{ translate('Resend Code') }}
+                        </button>
+                        
 
                         <!-- رسالة نجاح بعد إرسال الرمز -->
                         <div id="verification-message" class="text-success mt-2" style="display: none;">

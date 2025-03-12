@@ -1266,7 +1266,9 @@ img, figure {
     width: auto;
 }
 .owl-nav.disabled{
-    display: none !important
+    /* display: none !important */
+    /* MyCode */
+    display: block !important
 }
 
 
