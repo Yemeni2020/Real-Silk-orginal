@@ -148,6 +148,46 @@
         </div>
     </form>
 
+    
+    <div class="modal fade verification-modal" id="verification-modal" tabindex="-1" aria-labelledby="verification-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header border-0 pb-0 d-flex justify-content-end">
+                    <button type="button" class="btn-close border-0" data-dismiss="modal" aria-label="Close">
+                        <i class="tio-clear"></i>
+                    </button>
+                </div>
+                <div class="modal-body px-4 px-sm-5 pt-0">
+                    <div class="d-flex flex-column align-items-center text-center gap-2 mb-2">
+                        <img src="{{theme_asset(path: 'public/assets/front-end/img/verification.png')}}" width="70" class="mb-3" alt="">
+
+                        <h5 class="modal-title">{{ translate('Enter Verification Code') }}</h5>
+
+                        <p class="text-muted">{{ translate('Please enter the verification code sent to your email.') }}</p>
+
+                        <!-- إدخال رمز التحقق -->
+                        <input type="text" id="verification-code" class="form-control text-center" placeholder="{{ translate('Enter Code') }}" maxlength="6" style="max-width: 200px;">
+
+                        <!-- زر إعادة إرسال الرمز -->
+                        <button id="resend-code" onclick="$('.proceed-to-next-btn').click();"  class="btn btn-primary mt-3">
+                            {{ translate('Resend Code') }}
+                        </button>
+                        <button id="confirm-code" data-url="{{route('vendor.auth.registration.confirmEmail')}}" class="btn btn-info mt-3">
+                            {{ translate('confirm') }}
+                        </button>
+
+                        <!-- رسالة نجاح بعد إرسال الرمز -->
+                        <div id="verification-message" class="text-success mt-2" style="display: none;">
+                            {{ translate('A new verification code has been sent.') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
 
     <div class="modal fade registration-success-modal" tabindex="-1" aria-labelledby="toggle-modal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">

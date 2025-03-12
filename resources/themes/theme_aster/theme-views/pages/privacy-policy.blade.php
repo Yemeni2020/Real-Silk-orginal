@@ -16,7 +16,7 @@
                 <div class="card-body text-justify">
                 
                 <?php 
-                    $lang=session()->get("local");
+                    $lang=getDefaultLanguage();
                 ?>
                 <?php
                 if($lang=="sa"){

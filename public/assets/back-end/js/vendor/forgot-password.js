@@ -76,3 +76,5 @@ $('.password-check').on('keyup keypress change click', function () {
             passwordError.addClass('d-none').empty();
     }
 });
+
+

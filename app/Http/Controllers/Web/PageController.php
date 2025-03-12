@@ -27,7 +27,7 @@ class PageController extends Controller
             $robotsMetaContentData = $this->robotsMetaContentRepo->getFirstWhere(params: ['page_name' => 'default']);
         }
         // 
-        $lang=session()->get("local");
+        $lang=getDefaultLanguage();
         $value=getWebConfig(name: 'about_us');
 
         if($lang!="en"){
@@ -59,12 +59,12 @@ class PageController extends Controller
 
     public function getHelpTopicView(): View
     {
-        echo session()->get("local");
+        echo getDefaultLanguage();
         $robotsMetaContentData = $this->robotsMetaContentRepo->getFirstWhere(params: ['page_name' => 'helpTopic']);
         if (!$robotsMetaContentData) {
             $robotsMetaContentData = $this->robotsMetaContentRepo->getFirstWhere(params: ['page_name' => 'default']);
         }
-        $helps = $this->helpTopicRepo->getListWhere(orderBy: ['id' => 'desc'], filters: ['status' => 1, 'type' => 'default','lang'=>session()->get("local")], dataLimit: 'all');
+        $helps = $this->helpTopicRepo->getListWhere(orderBy: ['id' => 'desc'], filters: ['status' => 1, 'type' => 'default','lang'=>getDefaultLanguage()], dataLimit: 'all');
         $pageTitleBanner = $this->businessSettingRepo->whereJsonContains(params: ['type' => 'banner_faq_page'], value: ['status' => '1']);
         return view(VIEW_FILE_NAMES['faq'], compact('helps', 'pageTitleBanner', 'robotsMetaContentData'));
     }
@@ -75,7 +75,7 @@ class PageController extends Controller
         if (!$robotsMetaContentData) {
             $robotsMetaContentData = $this->robotsMetaContentRepo->getFirstWhere(params: ['page_name' => 'default']);
         }
-        $lang=session()->get("local");
+        $lang=getDefaultLanguage();
         $value=getWebConfig(name: 'refund-policy');
 
         $status=$value['status'];
@@ -103,7 +103,7 @@ class PageController extends Controller
         if (!$robotsMetaContentData) {
             $robotsMetaContentData = $this->robotsMetaContentRepo->getFirstWhere(params: ['page_name' => 'default']);
         }
-        $lang=session()->get("local");
+        $lang=getDefaultLanguage();
         $value=getWebConfig(name: 'refund-policy');
 
         $status=$value['status'];
@@ -131,7 +131,7 @@ class PageController extends Controller
             $robotsMetaContentData = $this->robotsMetaContentRepo->getFirstWhere(params: ['page_name' => 'default']);
         }
 
-        $lang=session()->get("local");
+        $lang=getDefaultLanguage();
         $value=getWebConfig(name: 'privacy_policy');
 
         
@@ -157,7 +157,7 @@ class PageController extends Controller
             $robotsMetaContentData = $this->robotsMetaContentRepo->getFirstWhere(params: ['page_name' => 'default']);
         }
         
-        $lang=session()->get("local");
+        $lang=getDefaultLanguage();
         $value=getWebConfig(name: 'cancellation-policy');
 
         $status=$value['status'];
@@ -187,7 +187,7 @@ class PageController extends Controller
             $robotsMetaContentData = $this->robotsMetaContentRepo->getFirstWhere(params: ['page_name' => 'default']);
         }
 
-        $lang=session()->get("local");
+        $lang=getDefaultLanguage();
         $value=getWebConfig(name: 'shipping-policy');
         $status=$value['status'];
         $value=$value['content'];
@@ -216,7 +216,7 @@ class PageController extends Controller
         if (!$robotsMetaContentData) {
             $robotsMetaContentData = $this->robotsMetaContentRepo->getFirstWhere(params: ['page_name' => 'default']);
         }
-        $lang=session()->get("local");
+        $lang=getDefaultLanguage();
         $value=getWebConfig(name: 'terms_condition');
 
         

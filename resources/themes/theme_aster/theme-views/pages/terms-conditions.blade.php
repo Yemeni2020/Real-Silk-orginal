@@ -14,7 +14,7 @@
             <div class="card my-4">
                 <div class="card-body p-lg-4 text-dark page-paragraph">
                 <?php 
-                    $lang=session()->get("local");
+                    $lang=getDefaultLanguage();
                 ?>
                 <?php
                 if($lang=="sa"){

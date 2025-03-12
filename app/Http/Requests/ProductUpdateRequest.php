@@ -130,7 +130,7 @@ class ProductUpdateRequest extends FormRequest
                 }
 
 
-                $curnnet_lang = session()->get("local");
+                $curnnet_lang = getDefaultLanguage();
                 if (is_null($this['name'][array_search($curnnet_lang, $this['lang'])])) {
                     $validator->errors()->add(
                         'name', translate('name_field_is_required') . '!'

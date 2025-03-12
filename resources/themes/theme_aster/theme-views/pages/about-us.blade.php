@@ -19,7 +19,7 @@
                     <div class="for-padding text-justify">
                         
                         <?php 
-                            $lang=session()->get("local");
+                            $lang=getDefaultLanguage();
                         ?>
                         <?php
                         if($lang=="sa"){

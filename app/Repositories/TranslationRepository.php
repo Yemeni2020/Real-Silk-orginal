@@ -34,7 +34,7 @@ class TranslationRepository implements TranslationRepositoryInterface
                     );
                 }elseif(isset($request[$type]) && $key != 'en' ){
                     $auto_translate = getWebConfig("auto_translate");
-                    $curnnet_lang = session()->get("local");
+                    $curnnet_lang = getDefaultLanguage();
 
                     $value=$request[$type][array_search($curnnet_lang, $request['lang'])];
                     if ($auto_translate == 1) {
@@ -65,7 +65,7 @@ class TranslationRepository implements TranslationRepositoryInterface
                     $value=$request[$type][$index];
                     if(empty(trim($value))){
                         $auto_translate = getWebConfig("auto_translate");
-                        $curnnet_lang = session()->get("local");
+                        $curnnet_lang = getDefaultLanguage();
     
                         $value=$request[$type][array_search($curnnet_lang, $request['lang'])];
                         if ($auto_translate == 1) {
@@ -91,7 +91,7 @@ class TranslationRepository implements TranslationRepositoryInterface
                     );
                 }elseif(isset($request[$type]) && $key != 'en' ){
                     $auto_translate = getWebConfig("auto_translate");
-                    $curnnet_lang = session()->get("local");
+                    $curnnet_lang = getDefaultLanguage();
 
                     $value=$request[$type][array_search($curnnet_lang, $request['lang'])];
                     if ($auto_translate == 1) {
@@ -127,7 +127,7 @@ class TranslationRepository implements TranslationRepositoryInterface
                     $value=$request[$type][$index];
                     if(empty(trim($value))){
                         $auto_translate = getWebConfig("auto_translate");
-                        $curnnet_lang = session()->get("local");
+                        $curnnet_lang = getDefaultLanguage();
     
                         $value=$request[$type][array_search($curnnet_lang, $request['lang'])];
                         if ($auto_translate == 1) {
@@ -155,7 +155,7 @@ class TranslationRepository implements TranslationRepositoryInterface
                     
                 }elseif(isset($request[$type]) && $key != 'en' ){
                     $auto_translate = getWebConfig("auto_translate");
-                    $curnnet_lang = session()->get("local");
+                    $curnnet_lang = getDefaultLanguage();
 
                     $value=$request[$type][array_search($curnnet_lang, $request['lang'])];
                     if ($auto_translate == 1) {

@@ -104,4 +104,5 @@ class LoginController extends Controller
         Toastr::success(translate('logged_out_successfully').'.');
         return redirect()->route('vendor.auth.login');
     }
+    
 }

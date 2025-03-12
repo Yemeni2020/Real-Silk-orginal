@@ -100,9 +100,15 @@ $(document).ready(function() {
                         });
                         $('.tio-refresh').click();
                     }else {
-                        $('.first-el').fadeOut(300);
-                        $('.second-el').fadeIn(300);
-                        $('.tio-refresh').click();
+
+                        // ✅ عرض الموديل عند نجاح الطلب
+                        $('#verification-modal').modal('show'); 
+
+                        // ✅ إخفاء النموذج الأول وإظهار الثاني إن لزم الأمر
+                        toastr.success("Check Your Email");
+                        // $('.first-el').fadeOut(300);
+                        // $('.second-el').fadeIn(300);
+                        // $('.tio-refresh').click();
                     }
                 },error:function (xhr) {
                     // $("#loading").removeClass("d-grid");
@@ -221,6 +227,40 @@ function submitRegistration(){
         }
     })
 }
+$("#confirm-code").on('click', function () {
+    let email = $("#email").val(); // جلب البريد الإلكتروني من الحقل
+    let token = $("#verification-code").val(); // جلب رمز التحقق من الحقل
+
+    if (!email || !token) {
+        toastr.error("Please_enter_your_phonw");
+        return;
+    }
+
+    $.ajax({
+        type: "POST",
+        url: $("#confirm-code").data("url"), // اجلب رابط الـ route من الزر نفسه
+        data: {
+            email: email,
+            token: token,
+            _token: $('meta[name="csrf-token"]').attr('content') // إضافة CSRF Token
+        },
+        success: function (response) {
+            if (response.status) {
+                toastr.success(response.message); // رسالة نجاح
+                $(".verification-modal").modal("hide"); // إخفاء المودال عند النجاح
+                $('.first-el').fadeOut(300);
+                $('.second-el').fadeIn(300);
+            } else {
+                toastr.success(response.message);
+            }
+        },
+        error: function (xhr) {
+            toastr.error(xhr.responseText);
+            console.error(xhr.responseText);
+        }
+    });
+});
+
 $('#terms-checkbox').on('click', function () {
     if ($(this).is(':checked')) {
         $('#vendor-apply-submit').removeAttr('disabled');

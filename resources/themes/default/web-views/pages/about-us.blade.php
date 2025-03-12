@@ -9,7 +9,7 @@
             <div class="for-padding text-justify">
                 
                 <?php 
-                    $lang=session()->get("local");
+                    $lang=getDefaultLanguage();
                 ?>
 
                 <div class="about-us">

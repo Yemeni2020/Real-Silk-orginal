@@ -631,7 +631,7 @@ class ProductService
         $digitalFileOptions = $this->getDigitalVariationOptions(request: $request);
         $digitalFileCombinations = $this->getDigitalVariationCombinations(arrays: $digitalFileOptions);
         
-        $curnnet_lang = session()->get("local");
+        $curnnet_lang = getDefaultLanguage();
         $name=$request['name'][array_search('en', $request['lang'])];
         $details=$request['description'][array_search('en', $request['lang'])];
         if(empty($name)){
@@ -724,7 +724,7 @@ class ProductService
         $digitalFileCombinations = $this->getDigitalVariationCombinations(arrays: $digitalFileOptions);
 
 
-        $curnnet_lang = session()->get("local");
+        $curnnet_lang = getDefaultLanguage();
         $name=$request['name'][array_search('en', $request['lang'])];
         $details=$request['description'][array_search('en', $request['lang'])];
         if(empty($name)){

@@ -35,7 +35,7 @@ if (!function_exists('currencyConverter')) {
     {
 
         $currencyModel = getWebConfig('currency_model');
-        $curnnet_lang = session()->get("local");
+        $curnnet_lang = getDefaultLanguage();
         if ($currencyModel == MULTI_CURRENCY) {
             $default = Currency::find(getWebConfig('system_default_currency'))->exchange_rate;
             $currencylang = Currency::where(['language' => $curnnet_lang])->first();
@@ -78,7 +78,7 @@ if (!function_exists('usdToDefaultCurrency')) {
                 session()->put('default', $default);
             }
 
-            $curnnet_lang = session()->get("local");
+            $curnnet_lang = getDefaultLanguage();
 
             
 
@@ -188,7 +188,7 @@ if (!function_exists('getCurrencySymbol')) {
             
             $systemDefaultCurrencyInfo = session('system_default_currency_info');
             $currentSymbol = $systemDefaultCurrencyInfo->symbol;
-            $curnnet_lang = session()->get("local");
+            $curnnet_lang = getDefaultLanguage();
             $currencylang = Currency::where(['language' => $curnnet_lang])->first();
 
             if(isset($currencylang)){
@@ -219,7 +219,7 @@ if (!function_exists('CalcCurrency')) {
 
             $systemDefaultCurrencyInfo = session('system_default_currency_info');
             $currentSymbol = $systemDefaultCurrencyInfo->symbol;
-            $curnnet_lang = session()->get("local");
+            $curnnet_lang = getDefaultLanguage();
             $currencylang = Currency::where(['language' => $curnnet_lang])->first();
 
             if(isset($currencylang)){

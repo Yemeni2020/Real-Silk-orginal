@@ -8,7 +8,7 @@
         <div class="card __card">
             <div class="card-body text-justify">
             <?php 
-                    $lang=session()->get("local");
+                    $lang=getDefaultLanguage();
                 ?>
 
                     {!! $returnPolicy !!}

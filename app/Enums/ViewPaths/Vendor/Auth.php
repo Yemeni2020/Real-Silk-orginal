@@ -23,6 +23,9 @@ enum Auth
     const VENDOR_STEP1 = [
         URI => 'step1',
     ];
+    const CONFIRM = [
+        URI => 'confirm',
+    ];
 
 
 }

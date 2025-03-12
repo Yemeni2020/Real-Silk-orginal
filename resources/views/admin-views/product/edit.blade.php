@@ -1,6 +1,6 @@
 @php
 
-$curnnet_lang = session()->get("local");
+$curnnet_lang = getDefaultLanguage();
 $OpenAi=getWebConfig("OpenAi_translate");
 $DeepSeekAI=getWebConfig("DeepSeekAI_translate");
 $deepl=getWebConfig("deepl_translate");

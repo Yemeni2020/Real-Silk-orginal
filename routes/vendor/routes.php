@@ -63,7 +63,10 @@ use App\Http\Controllers\Vendor\OrderReportController;
 Route::group(['middleware' => ['maintenance_mode']], function () {
 
     Route::group(['prefix' => 'vendor', 'as' => 'vendor.'], function () {
+        
+        
         /* authentication */
+        
         Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
             Route::controller(LoginController::class)->group(function () {
                 Route::get(Auth::VENDOR_LOGIN[URI], 'getLoginView');
@@ -85,15 +88,21 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
                 Route::controller(RegisterController::class)->group(function () {
                     Route::get(Auth::VENDOR_REGISTRATION[URI], 'index')->name('index');
                     Route::post(Auth::VENDOR_STEP1[URI], 'checkEmailPhone')->name('check');
+                    Route::post(Auth::CONFIRM[URI], 'confirmEmail')->name('confirmEmail');
                     Route::get(Auth::VENDOR_REGISTRATION[URI]."/{referral_code}", 'index');
                     Route::post(Auth::VENDOR_REGISTRATION[URI], 'add');
                 });
             });
         });
+
+
         /* end authentication */
         Route::group(['middleware' => ['seller']], function () {
             Route::group(['prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
                 Route::controller(DashboardController::class)->group(function () {
+                    Route::get(Dashboard::CONIRM_EMAIL[URI], 'confirm_email')->name('confirm_email');
+                    Route::post(Dashboard::CONIRM_EMAIL[URI], 'sendEmail');
+                    Route::post(Dashboard::CONIRM_EMAIL[ROUTE], 'confirmMail')->name('confirmMail');
                     Route::get(Dashboard::INDEX[URI], 'index')->name('index');
                     Route::get(Dashboard::ORDER_STATUS[URI] . '/{type}', 'getOrderStatus')->name('order-status');
                     Route::get(Dashboard::EARNING_STATISTICS[URI], 'getEarningStatistics')->name('earning-statistics');

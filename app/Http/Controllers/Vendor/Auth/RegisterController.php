@@ -14,6 +14,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\Vendor\VendorAddRequest;
 use App\Http\Requests\Vendor\VendorCheckRequest;
 use App\Repositories\VendorRegistrationReasonRepository;
+use App\Repositories\PhoneOrEmailVerificationRepository;
 use App\Services\ShopService;
 use App\Services\VendorService;
 use App\Traits\EmailTemplateTrait;
@@ -24,6 +25,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Brian2694\Toastr\Facades\Toastr;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EmailSellerVerificationMail;
 
 class RegisterController extends BaseController
 {
@@ -38,6 +41,7 @@ class RegisterController extends BaseController
         private readonly BusinessSettingRepositoryInterface $businessSettingRepo,
         private readonly HelpTopicRepositoryInterface $helpTopicRepo,
         private readonly VendorRegistrationReasonRepository $vendorRegistrationReasonRepo,
+        private readonly PhoneOrEmailVerificationRepository $EmailVerification,
 
     )
     {
@@ -99,18 +103,43 @@ class RegisterController extends BaseController
         );
     }
     public function checkEmailPhone(VendorCheckRequest $request){
-        // $request->validate(
-        //     ['email'=>'required|unique:sellers',
-        //     'phone'=>'required|unique:sellers|max:20',]
-        // ,['email.required' => translate('The_email_field_is_required'),
-        //     'email.unique' => translate('The_email_has_already_been_taken'),
-        //     'phone.required' => translate('The_phone_field_is_required'),
-        //     'phone.unique' => translate('The_phone_number_has_already_been_taken'),
-        // ]);
+
+
+        $token=mt_rand(100000, 999999);
+        $this->EmailVerification->updateOrCreate(["phone_or_email"=>$request["email"]],['token'=>$token]);
+
+        $data = [
+            'subject' => 'Confirm your Email',
+            'token' => $token,
+            
+        ];
+        Mail::to($request["email"])->send(new EmailSellerVerificationMail($data));
 
         return response()->json([
             'status' => true,
             'message' => 'البريد الإلكتروني ورقم الهاتف متاحان للتسجيل.'
         ], 200);
     }
+    public function confirmEmail(Request $request){
+
+
+        $_email= $this->EmailVerification->getFirstWhere(["phone_or_email"=>$request["email"]]);
+
+        if($_email->token==$request["token"]){
+            return response()->json([
+                'status' => true,
+                'message' =>  translate("Email_Is_Conifrmed")
+            ], 200);
+        }
+        else{
+            return response()->json([
+                'status' => false,
+                'message' => translate("The_token_is_invalid")
+            ], 201);
+        }
+
+        
+    }
+    
+    
 }

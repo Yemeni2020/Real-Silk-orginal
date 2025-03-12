@@ -9,6 +9,8 @@ use App\Contracts\Repositories\ProductRepositoryInterface;
 use App\Contracts\Repositories\VendorWalletRepositoryInterface;
 use App\Contracts\Repositories\WithdrawalMethodRepositoryInterface;
 use App\Contracts\Repositories\WithdrawRequestRepositoryInterface;
+use App\Repositories\PhoneOrEmailVerificationRepository;
+use App\Repositories\VendorRepository;
 use App\Enums\OrderStatus;
 use App\Enums\ViewPaths\Vendor\Dashboard;
 use App\Http\Controllers\BaseController;
@@ -28,6 +30,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EmailSellerVerificationMail;
 
 class DashboardController extends BaseController
 {
@@ -44,6 +48,8 @@ class DashboardController extends BaseController
         private readonly WithdrawRequestRepositoryInterface $withdrawRequestRepo,
         private readonly WithdrawRequestService $withdrawRequestService,
         private readonly DashboardService $dashboardService,
+        private readonly PhoneOrEmailVerificationRepository $EmailVerification,
+        private readonly VendorRepository $vendorRepo,
     )
     {
     }
@@ -275,5 +281,71 @@ class DashboardController extends BaseController
     {
         $method = $this->withdrawalMethodRepo->getFirstWhere(params:['id'=> $request['method_id'],'is_active'=>1]);
         return response()->json(['content'=>$method], 200);
+    }
+
+    public function confirm_email(Request $request)
+    {
+
+        
+        return view(Dashboard::CONIRM_EMAIL[VIEW]);
+        // $this->vendorService->logout();
+        // Toastr::success(translate('logged_out_successfully').'.');
+        // return redirect()->route('vendor.auth.confirm');
+    }
+
+  
+    public function sendEmail(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'email', 'max:255'], // يجب أن يكون البريد صحيحًا وغير فارغ
+        ]);
+        $ex = Seller::where("id", "<>", auth("seller")->id())->where("email", $request["email"])->exists();
+
+        if (!$ex) {
+            $token = mt_rand(100000, 999999);
+            $this->EmailVerification->updateOrCreate(
+                ["phone_or_email" => $request["email"]],
+                ['token' => $token]
+            );
+
+            $data = [
+                'subject' => 'Confirm your Email',
+                'token' => $token,
+            ];
+            Mail::to($request["email"])->send(new EmailSellerVerificationMail($data));
+
+            return response()->json([
+                'status' => true,
+                'message' => 'البريد الإلكتروني ورقم الهاتف متاحان للتسجيل.'
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => false,
+                'errors' => [
+                    'email' => [translate("This_Email_Is_Exists")]
+                ]
+            ], 422); // ✅ تعديل كود الخطأ ليكون 422
+        }
+    }
+    
+    public function confirmMail(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'email', 'max:255'], // يجب أن يكون البريد صحيحًا وغير فارغ
+        ]);
+        $_email= $this->EmailVerification->getFirstWhere(["phone_or_email"=>$request["email"]]);
+        Seller::where("id", auth("seller")->id())->update(["email" => $request["email"],"verification"=>true]);
+        if($_email->token==$request["token"]){
+            return response()->json([
+                'status' => true,
+                'message' =>  translate("Email_Is_Conifrmed")
+            ], 200);
+        }
+        else{
+            return response()->json([
+                'status' => false,
+                'message' => translate("The_token_is_invalid")
+            ], 201);
+        }
     }
 }

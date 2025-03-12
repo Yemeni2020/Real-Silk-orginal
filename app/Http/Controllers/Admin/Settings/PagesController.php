@@ -38,7 +38,7 @@ class PagesController extends BaseController
 
     public function getTermsConditionView(): View
     {
-        $curnnet_lang = session()->get("local");
+        $curnnet_lang = getDefaultLanguage();
         $languages = getWebConfig(name: 'pnc_language') ?? null;
 
         $terms_condition = $this->businessSettingRepo->getFirstWhere(params: ['type'=>'terms_condition']);
@@ -63,7 +63,7 @@ class PagesController extends BaseController
 
     public function getPrivacyPolicyView(): View
     {
-        $curnnet_lang = session()->get("local");
+        $curnnet_lang = getDefaultLanguage();
         $languages = getWebConfig(name: 'pnc_language') ?? null;
         $privacy_policy = $this->businessSettingRepo->getFirstWhere(params: ['type'=>'privacy_policy']);
         return view(Pages::PRIVACY_POLICY[VIEW], compact('privacy_policy','curnnet_lang','languages'));
@@ -86,7 +86,7 @@ class PagesController extends BaseController
     public function getPageView($page): View|RedirectResponse|null
     {
 
-        $curnnet_lang = session()->get("local");
+        $curnnet_lang = getDefaultLanguage();
         $languages = getWebConfig(name: 'pnc_language') ?? null;
         $pages = ['refund-policy', 'return-policy', 'cancellation-policy', 'shipping-policy'];
         if (in_array($page, $pages)) {
@@ -126,7 +126,7 @@ class PagesController extends BaseController
 
     public function getAboutUsView(): View
     {
-        $curnnet_lang = session()->get("local");
+        $curnnet_lang = getDefaultLanguage();
         $languages = getWebConfig(name: 'pnc_language') ?? null;
         $pageData = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'about_us']);
         return view(Pages::ABOUT_US[VIEW], compact('pageData','curnnet_lang','languages'));
