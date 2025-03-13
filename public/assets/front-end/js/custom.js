@@ -624,7 +624,9 @@ $(".click-to-copy-data-value").on("click", function () {
 });
 
 $("#customer-login-form").on("submit", function (e) {
+    
     var recaptchaContainer = document.getElementById('recaptcha_element');
+    console.log(recaptchaContainer.innerHTML.trim()?.toString());
     if (recaptchaContainer && recaptchaContainer.innerHTML.trim()?.toString() !== "") {
         var response = grecaptcha.getResponse();
         if (response.length === 0) {
