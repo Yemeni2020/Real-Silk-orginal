@@ -72,12 +72,12 @@ class LoginController extends Controller
             ]);
         } else {
             if ($recaptcha['status'] != 1 && strtolower($request->vendorRecaptchaKey) != strtolower(Session(SessionKey::VENDOR_RECAPTCHA_KEY))) {
-                return response()->json(['error'=>translate('captcha_failed').'!']);
+                return response()->json(['error'=>translate('captcha_failed').'!','error_code'=>'captcha']);
             }
         }
         $vendor = $this->vendorRepo->getFirstWhere(['identity' => $request['email'],'type_account'=>'fictory']);
         if (!$vendor){
-            return response()->json(['error'=>translate('credentials_doesnt_match').'!']);
+            return response()->json(['error'=>translate('credentials_doesnt_match').'!','error_code'=>'email']);
         }
         $passwordCheck = Hash::check($request['password'],$vendor['password']);
         if ($passwordCheck && $vendor['status'] !== 'approved') {
@@ -93,7 +93,7 @@ class LoginController extends Controller
                 'redirectRoute'=>route('vendor.dashboard.index'),
             ]);
         }else{
-            return response()->json(['error'=>translate('credentials_doesnt_match').'!']);
+            return response()->json(['error'=>translate('credentials_doesnt_match').'!','error_code'=>'email']);
 
         }
     }

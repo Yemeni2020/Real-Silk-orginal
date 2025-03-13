@@ -48,6 +48,8 @@
                                      placeholder="{{ translate('enter_email_address') }}" autocomplete="off"
                                         required>
                                 <div class="invalid-feedback">{{ translate('please_enter_valid_email_address') }}!</div>
+                                <label for="ERROR" class="text-danger" id="error-email"></label>
+
                             </div>
                         </div>
                         <div class="col-sm-6">
@@ -61,6 +63,7 @@
                                        placeholder="{{ translate('enter_phone_number') }}" required>
 
                                 <input type="hidden" class="country-picker-phone-number w-50" name="phone" readonly>
+                                <label for="ERROR" class="text-danger" id="error-phone"></label>
 
                             </div>
                         </div>
@@ -79,6 +82,8 @@
                                             class="tio-hidden password-toggle-indicator"></i><span
                                             class="sr-only">{{ translate('show_password') }} </span>
                                     </label>
+                                    <label for="ERROR" class="text-danger" id="error-password"></label>
+
                                 </div>
                             </div>
 
@@ -132,10 +137,13 @@
                                     <div id="recaptcha_element" class="w-100" data-type="image"></div>
                                 @else
                                 <div class="row">
+
                                     <div class="col-6 pr-2">
                                         <input type="text" class="form-control border __h-40" name="default_recaptcha_value_customer_regi" value=""
                                                id="customer-register-recaptcha-input"
                                                 placeholder="{{ translate('enter_captcha_value') }}" autocomplete="off">
+                                        <label for="ERROR" class="text-danger" id="error-g-recaptcha-response"></label>
+
                                     </div>
                                     <div class="col-6 input-icons mb-2 w-100 rounded bg-white">
                                         <a href="javascript:"

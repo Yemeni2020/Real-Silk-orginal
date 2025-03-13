@@ -9210,4 +9210,5 @@ return [
 	"sorry_we_can_not_complete_your_order" => "Sorry we can not complete your order",
 	"Updated_the_order" => "Updated the order",
 	"ReCAPTCHA validation is required." => "ReCAPTCHA validation is required.",
+	"The email must be a valid email address." => "The email must be a valid email address.",
 ];

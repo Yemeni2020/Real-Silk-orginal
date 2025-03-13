@@ -8631,4 +8631,5 @@ return [
 	"use_the_code_to_Email_verification_on_our_secure_website" => "Use the code to Email verification on our secure website",
 	"The_token_is_invalid" => "The token is invalid",
 	"Email_Is_Conifrmed" => "Email Is Conifrmed",
+	"The email must be a valid email address." => "The email must be a valid email address.",
 ];

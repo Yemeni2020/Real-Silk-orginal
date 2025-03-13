@@ -10,6 +10,8 @@ $(document).on('ready', function () {
 });
 
 $('.submit-login-form').on('click',function (){
+    $(".text-danger").html("");
+
     var response = 1;
     try{
         response = grecaptcha.getResponse();
@@ -38,6 +40,8 @@ $('.submit-login-form').on('click',function (){
                             CloseButton: true,
                             ProgressBar: true
                         });
+                        $("#error-"+data.errors[index].error_code).html(data.errors[index].message);
+
                     }
                     $('#loading').fadeOut();
                     $('.tio-refresh').click();
@@ -47,6 +51,8 @@ $('.submit-login-form').on('click',function (){
                         CloseButton: true,
                         ProgressBar: true
                     });
+                    $("#error-"+data.error_code).html(data.error);
+
                     $('#loading').fadeOut();
                     $('.tio-refresh').click();
 

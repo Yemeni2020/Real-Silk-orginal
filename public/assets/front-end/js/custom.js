@@ -637,6 +637,7 @@ $("#customer-login-form").on("submit", function (e) {
 
 $("#customer-register-form").on("submit", function (e) {
     e.preventDefault();
+    $(".text-danger").html("");
     $.ajax({
         type: "POST",
         url: $(this).data("action"),
@@ -648,9 +649,12 @@ $("#customer-register-form").on("submit", function (e) {
             if (response.errors) {
                 for (let index = 0; index < response.errors.length; index++) {
                     toastr.error(response.errors[index].message);
+                    $("#error-"+response.errors[index].error_code).html(response.errors[index].message);
                 }
+                $('.tio-refresh').click();
             } else if (response.error) {
                 toastr.error(response.error);
+                $('.tio-refresh').click();
             } else if (response.status === 1) {
                 toastr.success(response.message);
                 window.location.href = response.redirect_url;

@@ -91,6 +91,8 @@
                                 </div>
                             </div>
                             <div class="js-form-message form-group">
+                                <label for="ERROR" class="text-danger" id="error-email"></label>
+                                <label for="ERROR" class="text-danger" id="error-password"></label>
                                 <label class="input-label" for="signingVendorEmail">{{translate('your_email')}}</label>
                                 <input type="email" class="form-control form-control-lg" name="email"
                                        id="signingVendorEmail"
@@ -143,6 +145,7 @@
                                         <input type="text" class="form-control form-control-lg form-control-focus-none" name="vendorRecaptchaKey" value=""
                                                id="vendor-login-recaptcha-input"
                                                placeholder="{{translate('enter_captcha_value')}}" autocomplete="off">
+                                        <label for="ERROR" class="text-danger" id="error-captcha"></label>
                                     </div>
                                     <div class="col-6 input-icons bg-white rounded">
                                         <a class="get-login-recaptcha-verify cursor-pointer get-session-recaptcha-auto-fill"
