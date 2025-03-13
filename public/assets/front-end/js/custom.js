@@ -1012,7 +1012,10 @@ function removeWishlist(productId, modalId) {
 }
 
 function renderQuickViewFunction() {
-    $(".action-product-quick-view").on("click", function () {
+    $(".action-product-quick-view").on("click", function (event) {
+        event.preventDefault(); // يمنع الانتقال الافتراضي
+        event.stopPropagation(); 
+        console.log("❌ منع الانتقال!");
         let productId = $(this).data("product-id");
         productQuickView(productId);
     });
