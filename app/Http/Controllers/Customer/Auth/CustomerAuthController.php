@@ -23,6 +23,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\Web\CustomerLoginRequest;
 
 class CustomerAuthController extends Controller
 {
@@ -43,7 +44,7 @@ class CustomerAuthController extends Controller
         return theme_root_path() == 'default' ? view('web-views.customer-views.auth.login') : redirect()->route('home');
     }
 
-    public function loginSubmit(Request $request): JsonResponse|RedirectResponse
+    public function loginSubmit(CustomerLoginRequest $request): JsonResponse|RedirectResponse
     {
         $firebaseOTPVerification = getWebConfig(name: 'firebase_otp_verification') ?? [];
 

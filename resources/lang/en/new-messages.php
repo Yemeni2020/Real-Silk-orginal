@@ -9209,4 +9209,5 @@ return [
 	"use_the_code_to_Email_verification_on_our_secure_website" => "Use the code to Email verification on our secure website",
 	"sorry_we_can_not_complete_your_order" => "Sorry we can not complete your order",
 	"Updated_the_order" => "Updated the order",
+	"ReCAPTCHA validation is required." => "ReCAPTCHA validation is required.",
 ];

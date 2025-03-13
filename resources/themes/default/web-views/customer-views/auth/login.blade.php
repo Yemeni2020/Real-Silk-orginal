@@ -65,6 +65,8 @@
                                     method="post" id="customer-login-form">
                                     @csrf
                                     <input type="hidden" name="login_type" value="manual-login">
+                                    <label for="ERROR" class="text-danger" id="error-in-data"></label>
+
                                     @include("web-views.customer-views.auth.partials._email")
                                     @include("web-views.customer-views.auth.partials._password")
                                     @include("web-views.customer-views.auth.partials._remember-me", ['forgotPassword' => true])
@@ -85,6 +87,8 @@
                                     method="post" id="customer-login-form">
                                     @csrf
                                     <input type="hidden" name="login_type" value="manual-login">
+                                    <label for="ERROR" class="text-danger" id="error-in-data"></label>
+
                                     @include("web-views.customer-views.auth.partials._email")
                                     @include("web-views.customer-views.auth.partials._password")
                                     @include("web-views.customer-views.auth.partials._remember-me", ['forgotPassword' => true])
@@ -110,6 +114,8 @@
                                 >
                                     @csrf
                                     <input type="hidden" name="login_type" value="otp-login">
+                                    <label for="ERROR" class="text-danger" id="error-in-data"></label>
+
                                     @include("web-views.customer-views.auth.partials._phone")
                                     @include("web-views.customer-views.auth.partials._firebase-recaptcha-container")
                                     <button class="btn btn--primary btn-block btn-shadow font-semi-bold" type="submit">
@@ -127,6 +133,7 @@
                                         @csrf
 
                                         <input type="hidden" name="login_type" class="auth-login-type-input" value="manual-login">
+                                        <label for="ERROR" class="text-danger" id="error-in-data"></label>
 
                                         <div class="manual-login-items">
                                             @include("web-views.customer-views.auth.partials._email")
@@ -134,8 +141,10 @@
                                             @include("web-views.customer-views.auth.partials._remember-me", ['forgotPassword' => true])
                                         </div>
 
+
                                         <div class="otp-login-items d-none">
                                             @include("web-views.customer-views.auth.partials._phone")
+
                                         </div>
 
                                         @include("web-views.customer-views.auth.partials._recaptcha")

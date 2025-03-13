@@ -624,9 +624,8 @@ $(".click-to-copy-data-value").on("click", function () {
 });
 
 $("#customer-login-form").on("submit", function (e) {
-    
     var recaptchaContainer = document.getElementById('recaptcha_element');
-    console.log(recaptchaContainer.innerHTML.trim()?.toString());
+
     if (recaptchaContainer && recaptchaContainer.innerHTML.trim()?.toString() !== "") {
         var response = grecaptcha.getResponse();
         if (response.length === 0) {
@@ -2274,7 +2273,7 @@ $('.manual-login-btn').on('click', function () {
 
 $('.customer-centralize-login-form').on('submit', async function (event) {
     event.preventDefault();
-
+    $(".text-danger").html("");
     var recaptchaContainer = document.getElementById('recaptcha_element');
     if (recaptchaContainer && recaptchaContainer.innerHTML.trim()?.toString() !== "") {
         var response = grecaptcha.getResponse();
@@ -2311,6 +2310,7 @@ $('.customer-centralize-login-form').on('submit', async function (event) {
 
 
 function responseManager(response) {
+    console.log(response);
     if (response.status === 'success') {
         if (response.message) {
             toastr.success(response.message);
@@ -2321,8 +2321,11 @@ function responseManager(response) {
             location.href = response?.redirect_url;
         }
     } else if (response.status === 'error') {
+        console.log('ssaa123');
         if (response.message) {
             toastr.error(response.message);
+            
+            $("#error-in-data").html(response.message);
         }
         $('.tio-refresh').click();
     }
@@ -2337,6 +2340,7 @@ function responseManager(response) {
                 CloseButton: true,
                 ProgressBar: true,
             });
+            $("#"+response.errors[index].error_code).html(response.errors[index].message);
         }
         $('.tio-refresh').click();
     } else if (response.error) {
@@ -2345,6 +2349,7 @@ function responseManager(response) {
             ProgressBar: true,
         });
         $('.tio-refresh').click();
+        $("#"+response.error_code).html(response.error);
     }
 
     if (response?.reload) {

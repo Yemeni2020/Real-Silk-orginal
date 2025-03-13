@@ -10,7 +10,7 @@
             <input type="text" class="form-control border __h-40" name="default_recaptcha_id_customer_login" value=""
                    id="customer-login-recaptcha-input"
                    placeholder="{{ translate('enter_captcha_value') }}" autocomplete="off">
-                   <label for="ERROR" id="error-captcha"></label>
+                   <label for="ERROR" class="text-danger" id="g-recaptcha-response"></label>
         </div>
         <div class="input-icons mb-2 rounded bg-white">
             <a href="javascript:"
