@@ -2061,13 +2061,13 @@ class ProductManager
                 return $query->whereIn('id', $featuredDealProductIDs);
             })
             ->when($request->has('name') && !empty($request['name']), function ($query) use ($request) {
-                $searchName = str_ireplace(['\'', '"', ',', ';', '<', '>', '?'], ' ', preg_replace('/\s\s+/', ' ', $request['name']));
+                $searchName = addslashes(trim($request['name'])); // احتفاظ بالرموز الخاصة
             
                 return $query->where(function ($query) use ($searchName) {
-                    $query->where('name', 'LIKE', "%{$searchName}%") // البحث في الاسم الأساسي
+                    $query->whereRaw("LOWER(name) LIKE LOWER(?)", ["%{$searchName}%"]) // البحث بدون تعديل الاسم
                           ->orWhereHas('translations', function ($translationQuery) use ($searchName) {
-                              $translationQuery->where('key', 'name') // البحث في الحقل name داخل جدول الترجمة
-                                              ->where('value', 'LIKE', "%{$searchName}%");
+                              $translationQuery->where('key', 'name')
+                                              ->whereRaw("LOWER(value) LIKE LOWER(?)", ["%{$searchName}%"]);
                           });
                 })->orderByRaw("CASE WHEN name LIKE '%{$searchName}%' THEN 1 ELSE 2 END, LOCATE('{$searchName}', name), name");
             })
