@@ -2,7 +2,7 @@
     <div class="text-center pb-4">
         <div class="max-w-860px mx-auto footer-slider-container">
             <div class="container">
-                <div class="footer-slider owl-theme owl-carousel">
+                <div id="footer-slider" class="footer-slider owl-theme owl-carousel">
                     <div class="footer-slide-item">
                         <div>
                             <a href="{{route('about-us')}}">

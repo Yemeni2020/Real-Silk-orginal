@@ -62,6 +62,9 @@
                 padding-{{ request()->cookie('direction', 'ltr') === "rtl" ? 'left' : 'right'}}: 1.95rem;
             }
         }
+        #footer-slider .disabled{
+            display: none !important;
+        }
     </style>
 
     <link rel="stylesheet" href="{{theme_asset(path: 'public/assets/front-end/css/custom.css')}}">
