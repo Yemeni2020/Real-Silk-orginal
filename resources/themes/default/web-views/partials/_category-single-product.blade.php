@@ -28,7 +28,7 @@
                 </div>
             @endif
             <div class="d-block pb-0">
-                <a href="{{route('product',$product->slug)}}" class="d-block">
+                <a href="{{route('product',$product->slug)}}" id="a{{ $product->id }}" class="d-block">
                     <img alt=""
                          src="{{ getStorageImages(path: $product->thumbnail_full_url, type: 'product') }}">
                 </a>
@@ -42,8 +42,8 @@
                 </a>
             </div>
             @else
-            <div class="quick-view">
-                <a class="btn-circle stopPropagation action-product-quick-view"  href="javascript:" data-product-id="{{ $product->id }}">
+            <div class="quick-view" onclick="quick22(event)">
+                <a class="btn-circle stopPropagation action-product-quick-view"  href="javascript:void(0);" data-product-id="{{ $product->id }}">
                     <i class="czi-eye align-middle"></i>
                 </a>
             </div>

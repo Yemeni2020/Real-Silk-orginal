@@ -16,11 +16,29 @@
     });
     $('[data-toggle="tooltip"]').tooltip();
 })(jQuery);
+function quick22(event) {
+    event.preventDefault(); // يمنع الانتقال الافتراضي
+    event.stopPropagation(); // يمنع تنفيذ أي أحداث أخرى في العناصر الأب
+
+    console.log("Quick View Clicked!"); // ✅ تحقق من وصول الحدث
+
+    let productId = $(event.currentTarget).find('.action-product-quick-view').data('product-id');
+    let productLink = $('#a' + productId); // الحصول على رابط المنتج حسب الـ ID
+
+    if (productLink.length) {
+        console.log("✅ تم العثور على الرابط:", productLink.attr('href')); // ✅ تأكيد العثور على الرابط
+        productLink[0].click(); // الضغط تلقائيًا على رابط المنتج
+    } else {
+        console.log("❌ لم يتم العثور على رابط المنتج!"); // ❌ مشكلة: الرابط غير موجود
+    }
+}
 
 $(document).ready(function () {
+    
     const stickyElement = $(".bottom-sticky_ele");
     const offsetElement = $(".bottom-sticky_offset");
 
+    
     if (stickyElement.length !== 0) {
         $(window).on("scroll", function () {
             const elementOffset =
