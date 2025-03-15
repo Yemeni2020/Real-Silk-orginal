@@ -8632,4 +8632,11 @@ return [
 	"The_token_is_invalid" => "The token is invalid",
 	"Email_Is_Conifrmed" => "Email Is Conifrmed",
 	"The email must be a valid email address." => "The email must be a valid email address.",
+	"Chaeck Your Service" => "Chaeck Your Service",
+	"Select_Your_country" => "Select Your country",
+	"Choose_Country" => "Choose Country",
+	"China" => "China",
+	"Saudi Arabia" => "Saudi Arabia",
+	"Choose_City" => "Choose City",
+	"Select_Your_Service" => "Select Your Service",
 ];

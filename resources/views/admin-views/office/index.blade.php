@@ -66,8 +66,7 @@
                                 <th>{{translate('name')}}</th>
                                 <th>{{translate('contact_info')}}</th>
                                 <th>{{translate('status')}}</th>
-                                <th class="text-center">{{translate('total_products')}}</th>
-                                <th class="text-center">{{translate('total_orders')}}</th>
+
                                 <th class="text-center">{{translate('action')}}</th>
                             </tr>
                             </thead>
@@ -108,18 +107,6 @@
                                     </td>
                                     <td>
                                         {!! $seller->status=='approved'?'<label class="badge badge-success">'.translate('active').'</label>':'<label class="badge badge-danger">'.translate('inactive').'</label>' !!}
-                                    </td>
-                                    <td class="text-center">
-                                        <a href="{{route('admin.offices.product-list',[$seller['id']])}}"
-                                           class="btn text--primary bg-soft--primary font-weight-bold px-3 py-1 mb-0 fz-12">
-                                            {{$seller->product->count()}}
-                                        </a>
-                                    </td>
-                                    <td class="text-center">
-                                        <a href="{{route('admin.offices.order-list',[$seller['id']])}}"
-                                            class="btn text-info bg-soft-info font-weight-bold px-3 py-1 fz-12 mb-0">
-                                            {{$seller->orders->where('seller_is','seller')->where('order_type','default_type')->count()}}
-                                        </a>
                                     </td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">

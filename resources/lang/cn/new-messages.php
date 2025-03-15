@@ -9010,4 +9010,11 @@ return [
 	"use_the_code_to_Email_verification_on_our_secure_website" => "Use the code to Email verification on our secure website",
 	"code_confirm" => "Code confirm",
 	"Insert_your_code_in_website:" => "Insert your code in website:",
+	"Chaeck Your Service" => "Chaeck Your Service",
+	"Select_Your_country" => "Select Your country",
+	"Choose_Country" => "Choose Country",
+	"China" => "China",
+	"Saudi Arabia" => "Saudi Arabia",
+	"Choose_City" => "Choose City",
+	"Select_Your_Service" => "Select Your Service",
 ];

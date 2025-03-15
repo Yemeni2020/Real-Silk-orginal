@@ -178,6 +178,11 @@ class Product extends Model
     {
         return $this->hasMany(ProductOffer::class);
     }
+    public function offices()
+    {
+        return $this->belongsToMany(Seller::class, 'office_service', 'service', 'office')
+                    ->withPivot('status'); // ✅ لجلب الحالة أيضًا
+    }
     public function options()
     {
         return $this->hasMany(ProductOption::class);

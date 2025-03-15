@@ -68,6 +68,76 @@
                     @endforeach
                 </div>
             </div>
+            <div class="table-responsive">
+                <table
+                    style="text-align: {{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}};"
+                    class="table table-hover table-borderless table-thead-bordered table-nowrap table-align-middle card-table w-100">
+                    <thead class="thead-light thead-50 text-capitalize">
+                    <tr>
+                        <th>{{translate('SL')}}</th>
+                        <th>{{translate('office_name')}}</th>
+                        <th>{{translate('name')}}</th>
+                        <th>{{translate('contact_info')}}</th>
+                        <th>{{translate('status')}}</th>
+                        <th class="text-center">{{translate('action')}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($officesList as $key=>$seller)
+                        <tr>
+                            <td>{{$key}}</td>
+                            <td>
+                                <div class="d-flex align-items-center gap-10 w-max-content">
+                                    <img width="50"
+                                    class="avatar rounded-circle object-fit-cover" src="{{ getStorageImages(path: $seller?->shop?->image_full_url, type: 'backend-basic') }}"
+                                        alt="">
+                                    <div>
+                                        <a class="title-color" href="{{ route('admin.offices.view', ['id' => $seller->id]) }}">{{ $seller->shop ? Str::limit($seller->shop->name, 20) : translate('shop_not_found')}}</a>
+                                        <br>
+                                        <span class="text-danger">
+                                            @if($seller->shop && $seller->shop->temporary_close)
+                                                {{ translate('temporary_closed') }}
+                                            @elseif($seller->shop && $seller->shop->vacation_status && $current_date >= date('Y-m-d', strtotime($seller->shop->vacation_start_date)) && $current_date <= date('Y-m-d', strtotime($seller->shop->vacation_end_date)))
+                                                {{ translate('on_vacation') }}
+                                            @endif
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <a title="{{translate('view')}}"
+                                    class="title-color"
+                                    href="{{route('admin.offices.view',$seller->id)}}">
+                                    {{$seller->f_name}} {{$seller->l_name}}
+                                </a>
+                            </td>
+                            <td>
+                                <div class="mb-1">
+                                    <strong><a class="title-color hover-c1" href="mailto:{{$seller->email}}">{{$seller->email}}</a></strong>
+                                </div>
+                                <a class="title-color hover-c1" href="tel:{{$seller->phone}}">{{$seller->phone}}</a>
+                            </td>
+                            <td>
+                                {!! $seller->status=='approved'?'<label class="badge badge-success">'.translate('active').'</label>':'<label class="badge badge-danger">'.translate('inactive').'</label>' !!}
+                            </td>
+                            
+                            
+                            <td>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a title="{{translate('view')}}"
+                                        class="btn btn-outline-info btn-sm square-btn"
+                                        href="{{route('admin.offices.view',$seller->id)}}">
+                                        <i class="tio-invisible"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+                    
+            
         </div>
         <div class="col-4">
             @if(isset($product))
@@ -112,8 +182,8 @@
             @endif
 
         </div>
-
     </div>
+        
 
 @endsection
 

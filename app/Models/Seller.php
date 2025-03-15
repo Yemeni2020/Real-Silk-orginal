@@ -93,7 +93,11 @@ class Seller extends Authenticatable
     {
         return $this->hasMany(Shop::class, 'seller_id');
     }
-    
+    public function services()
+    {
+        return $this->belongsToMany(Product::class, 'office_service', 'office', 'service')
+                    ->withPivot('status'); // ✅ لجلب الحالة أيضًا
+    }
     public function referredFactoriesWithLastMessage()
     {
     // جلب آخر رسالة لكل مصنع محال باستخدام LEFT JOIN بدلاً من whereColumn

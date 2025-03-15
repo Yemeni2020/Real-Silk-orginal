@@ -45,6 +45,8 @@ class Shop extends Model
         'slug',
         'address',
         'contact',
+        'country',
+        'city',
         'image',
         'image_storage_type',
         'bottom_banner',
@@ -69,6 +71,8 @@ class Shop extends Model
         'seller_id' => 'integer',
         'vacation_status' => 'boolean',
         'temporary_close' => 'boolean',
+        'country'=> 'string',
+        'city'=> 'string',
     ];
 
     public function seller():BelongsTo

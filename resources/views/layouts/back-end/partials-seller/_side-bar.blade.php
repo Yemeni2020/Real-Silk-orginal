@@ -73,57 +73,16 @@
                             </li>
                         @endif
                         @if($seller->type_account=="office")
-                        <li class="navbar-vertical-aside-has-menu {{(Request::is('vendor/product*'))?'active':''}}">
-                            <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle" href="javascript:">
-                                <i class="tio-premium-outlined nav-icon"></i>
-                                <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
-                                    {{translate('Services')}}
+                        <li class="navbar-vertical-aside-has-menu {{Request::is('office/service*')?'active':''}}">
+                            <a class="nav-link"
+                               href="{{route('office.service.index')}}">
+                               <i class="tio-premium-outlined nav-icon"></i>
+                               <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">
+                                        {{translate('Services')}}
                                 </span>
                             </a>
-                            <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
-                                style="display: {{(Request::is('office/products*'))?'block':''}}">
-                                <li class="nav-item {{Request::is('office/products/'.Product::LIST[URI].'/all')|| Request::is('office/products/'.Product::UPDATE[URI].'*')||   Request::is('office/products/'.Product::VIEW[URI].'*') || Request::is('office/products/'.Product::STOCK_LIMIT[URI])?'active':''}}">
-                                    <a class="nav-link " href="{{route('office.products.list',['type'=>'all'])}}">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate text-capitalize">{{translate('Service_list')}}</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item {{Request::is('office/products/'.Product::LIST[URI].'/approved')?'active':''}}">
-                                    <a class="nav-link " href="{{route('office.products.list',['type'=>'approved'])}}">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate text-capitalize">{{translate('approved_service_list')}}</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item {{Request::is('office/products/'.Product::LIST[URI].'/new-request')?'active':''}}">
-                                    <a class="nav-link " href="{{route('office.products.list',['type'=>'new-request'])}}">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate text-capitalize">{{translate('new_service_request')}}</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item {{Request::is('office/products/'.Product::LIST[URI].'/denied')?'active':''}}">
-                                    <a class="nav-link " href="{{route('office.products.list',['type'=>'denied'])}}">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span class="text-truncate text-capitalize">{{translate('denied_service_request')}}</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item {{Request::is('office/products/'.Product::ADD[URI])||(Request::is('office/products/'.Product::UPDATE[URI].'/*') && request()->has('product-gallery')) ?'active':''}}">
-                                    <a class="nav-link " href="{{route('office.products.add')}}">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span
-                                            class="text-truncate text-capitalize">{{translate('add_new_service')}}</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item {{Request::is('office/products/'.Product::PRODUCT_GALLERY[URI])?'active':''}}">
-                                    <a class="nav-link " href="{{route('office.products.product-gallery')}}">
-                                        <span class="tio-circle nav-indicator-icon"></span>
-                                        <span
-                                            class="text-truncate text-capitalize">{{translate('service_gallery')}}</span>
-                                    </a>
-                                </li>
-
-                                
-                            </ul>
                         </li>
+                        
 
                         @endif
 
@@ -531,21 +490,34 @@
                                 </span>
                             </a>
                         </li>
+                        @if($seller->type_account!="office")
+
                         <li class="navbar-vertical-aside-has-menu {{Request::is('vendor/shop*')?'active':''}}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link"
                                href="{{route('vendor.shop.index')}}">
                                 <i class="tio-home nav-icon"></i>
                                 <span
                                     class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate text-capitalize">
-                                    @if($seller->type_account!="office")
                                     {{translate('shop_Settings')}}
-                                    @else
-                                    {{translate('office_Settings')}}
-                                    @endif
+                                    
                                 </span>
                             </a>
                         </li>
-                        
+                        @else
+                        <li class="navbar-vertical-aside-has-menu {{Request::is('office/info*')?'active':''}}">
+                            <a class="js-navbar-vertical-aside-menu-link nav-link"
+                               href="{{route('office.info.index')}}">
+                                <i class="tio-home nav-icon"></i>
+                                <span
+                                    class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate text-capitalize">
+                                    {{translate('office_Settings')}}
+                                    
+                                </span>
+                            </a>
+                        </li>
+                                    
+                        @endif
+
                         <li class="navbar-vertical-aside-has-menu {{Request::is('vendor/referral_vendor*')?'active':''}}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link"
                                href="{{route('vendor.referral_vendor.index')}}">

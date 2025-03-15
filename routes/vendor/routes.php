@@ -233,7 +233,7 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
 
                 });
             });
-            Route::group(['prefix' => 'messages', 'as' => 'messages.'], function () {
+            Route::group(['prefix' => 'messages', 'as' => 'messages.','middleware' => ['office']], function () {
                 Route::controller(ChattingController::class)->group(function () {
                     Route::get(Chatting::INDEX[URI] . '/{type}', 'index')->name('index');
                     Route::get(Chatting::MESSAGE[URI], 'getMessageByUser')->name('message');

@@ -46,6 +46,7 @@ use Illuminate\Support\Facades\View as PdfView;
 use App\Models\DetailsOrderService;
 use App\Models\OrderService as ModelOrderService;
 use App\Models\Product;
+use App\Models\OfficeService;
 use App\Models\User;
 
 class OrderController extends BaseController
@@ -118,6 +119,8 @@ class OrderController extends BaseController
             'filter',
         ));
     }
+
+
     public function getListView(object $request, string $status): View
     {
 
@@ -272,13 +275,29 @@ class OrderController extends BaseController
 
     public function getViewService(string|int $id): View|RedirectResponse
     {
-        $DetailsOrder = DetailsOrderService::where("order_id",$id)->get();
-        $order = ModelOrderService::where('id',$id)->first();
-        $product=Product::find($order->item??0);
-        $User=User::find($order->customer??0);
+        // البحث عن الطلب
+        $order = ModelOrderService::find($id);
 
-        return view(Order::VIEWSERVICE[VIEW], compact('order','product','DetailsOrder','User'));
+        // التحقق مما إذا كان الطلب موجودًا
+        if (!$order) {
+            return redirect()->back()->withErrors(['error' => 'الطلب غير موجود']);
+        }
+
+        // جلب تفاصيل الطلب
+        $DetailsOrder = DetailsOrderService::where("order_id", $id)->get();
+
+        // البحث عن المنتج والمستخدم
+        $product = Product::with('offices')->find($order->item ?? 0); // ✅ تحميل المكاتب مع المنتج
+        $User = User::find($order->customer ?? 0);
+
+        // جلب المكاتب المرتبطة بالخدمة
+        $officesList = $product ? $product->offices : collect(); // ✅ المكاتب المرتبطة بالخدمة
+
+
+
+        return view(Order::VIEWSERVICE[VIEW], compact('order', 'product', 'DetailsOrder', 'User', 'officesList'));
     }
+
     
     public function changeStatus(Request $request, string|int $id): View|RedirectResponse
     {
