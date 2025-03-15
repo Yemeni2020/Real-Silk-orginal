@@ -515,9 +515,6 @@
                                 </span>
                             </a>
                         </li>
-                                    
-                        @endif
-
                         <li class="navbar-vertical-aside-has-menu {{Request::is('vendor/referral_vendor*')?'active':''}}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link"
                                href="{{route('vendor.referral_vendor.index')}}">
@@ -527,7 +524,10 @@
                                     {{translate('referral_vendor')}}
                                 </span>
                             </a>
-                        </li>
+                        </li>        
+                        @endif
+
+                        
                         @php( $shippingMethod = getWebConfig('shipping_method'))
                         @if($shippingMethod=='sellerwise_shipping')
                             <li class="nav-item {{Request::is('vendor/delivery-man*')?'scroll-here':''}}">
