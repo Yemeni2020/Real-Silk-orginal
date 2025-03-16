@@ -151,6 +151,8 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
                     Route::get(Product::LIST[URI] . '/{type}', 'index')->name('list');
                     Route::get(Product::ADD[URI], 'getAddView')->name('add');
                     Route::post(Product::ADD[URI], 'add');
+                    Route::post(Product::TRANSLATE_AI[URI], 'translate_ai')->name('translate-ai');
+
                     Route::get(Product::GET_CATEGORIES[URI], 'getCategories')->name('get-categories');
                     Route::post(Product::SKU_COMBINATION[URI], 'getSkuCombinationView')->name('sku-combination');
                     Route::post(Product::DIGITAL_VARIATION_COMBINATION[URI], 'getDigitalVariationCombinationView')->name('digital-variation-combination');

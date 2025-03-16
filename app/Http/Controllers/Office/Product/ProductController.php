@@ -766,4 +766,52 @@ class ProductController extends BaseController
             'message' => translate('Preview_file_deleted')
         ]);
     }
+
+    public function translate_ai(Request $request)
+    {
+        // البيانات المرسلة عبر Ajax
+        $productName = $request->input('product_name');
+        $translate_ai = $request->input('translate_ai');
+        $targetLanguage = $request->input('target_language', 'en'); // اللغة الافتراضية هي الإنجليزية
+
+        $targetLanguage=match ($targetLanguage) {
+            "sa" => "ar",
+            "cn" => "zh",
+            default => $targetLanguage,
+        };
+        // مفتاح API الخاص بك
+        $apiKey = 'sk-5cfe868f367b47ae8c732cddb3a7d497';
+
+        // 1. ترجمة اسم المنتج
+        // $translatedName = $this->OpenAIService->translateText($productName, $targetLanguage,"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");
+        // $translatedName=$this->translateText($productName, $targetLanguage);
+        // if($request->has("description")){
+        //     $translatedDescription=$this->productService->translate($translate_ai,$request->input('description'), $targetLanguage);
+
+        // }else{
+            $translatedDescription='';
+        // }
+
+        if(isset($productName)){
+            $translatedName=$this->productService->translate($translate_ai,$productName, $targetLanguage);
+
+        }else{
+            $translatedName='';
+        }
+        // 2. إنشاء وصف للمنتج
+        // $description = $this->OpenAIService->generateDescription($translatedName, "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");
+        // $description = $this->generateDescription($translatedName, $apiKey);
+
+        // إرجاع النتيجة كـ JSON
+        if(isset($translatedName["error"])){
+            return response()->json(["msg" => $translatedName["error"]." : ".$translate_ai], 400); // 400 لتحديد أنه خطأ
+        }else{
+
+            return response()->json([
+                'productName' => $translatedName,
+                'description' => $translatedDescription,
+                'targetLanguage' => $targetLanguage,
+            ]);
+        }
+    }
 }

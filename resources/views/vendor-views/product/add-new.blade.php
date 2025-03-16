@@ -975,7 +975,7 @@ $auto_translate=getWebConfig("auto_translate");
     <span id="route-vendor-products-digital-variation-combination" data-url="{{ route('vendor.products.digital-variation-combination') }}"></span>
     <span id="image-path-of-product-upload-icon" data-path="{{ dynamicAsset(path: 'public/assets/back-end/img/icons/product-upload-icon.svg') }}"></span>
     <span id="image-path-of-product-upload-icon-two" data-path="{{ dynamicAsset(path: 'public/assets/back-end/img/400x400/img2.jpg') }}"></span>
-    <span id="route-admin-products-sku-translate-ai" data-url="{{ route('admin.products.translate-ai') }}"></span>
+    <span id="route-admin-products-sku-translate-ai" data-url="{{ route('vendor.products.translate-ai') }}"></span>
     <span id="message-enter-choice-values" data-text="{{ translate('enter_choice_values') }}"></span>
     <span id="message-upload-image" data-text="{{ translate('upload_Image') }}"></span>
     <span id="message-file-size-too-big" data-text="{{ translate('file_size_too_big') }}"></span>

@@ -13,7 +13,10 @@ enum Product
         URI => 'list',
         VIEW => 'vendor-views.product.list'
     ];
-
+    const TRANSLATE_AI = [
+        URI => 'translate-ai',
+        VIEW => ''
+    ];
     const UPDATE = [
         URI => 'update',
         VIEW => 'vendor-views.product.edit'

@@ -873,12 +873,12 @@ class ProductController extends BaseController
         // 1. ترجمة اسم المنتج
         // $translatedName = $this->OpenAIService->translateText($productName, $targetLanguage,"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");
         // $translatedName=$this->translateText($productName, $targetLanguage);
-        if($request->has("description")){
-            $translatedDescription=$this->productService->translate($translate_ai,$request->input('description'), $targetLanguage);
+        // if($request->has("description")){
+        //     $translatedDescription=$this->productService->translate($translate_ai,$request->input('description'), $targetLanguage);
 
-        }else{
+        // }else{
             $translatedDescription='';
-        }
+        // }
 
         if(isset($productName)){
             $translatedName=$this->productService->translate($translate_ai,$productName, $targetLanguage);
