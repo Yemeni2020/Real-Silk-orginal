@@ -78,6 +78,8 @@
                         <th>{{translate('office_name')}}</th>
                         <th>{{translate('name')}}</th>
                         <th>{{translate('contact_info')}}</th>
+                        <th>{{translate('country')}}</th>
+                        <th>{{translate('city')}}</th>
                         <th>{{translate('status')}}</th>
                         <th class="text-center">{{translate('action')}}</th>
                     </tr>
@@ -116,6 +118,12 @@
                                     <strong><a class="title-color hover-c1" href="mailto:{{$seller->email}}">{{$seller->email}}</a></strong>
                                 </div>
                                 <a class="title-color hover-c1" href="tel:{{$seller->phone}}">{{$seller->phone}}</a>
+                            </td>
+                            <td>
+                                    {{$seller->shop->country}} 
+                            </td>
+                            <td>
+                                    {{$seller->shop->city}} 
                             </td>
                             <td>
                                 {!! $seller->status=='approved'?'<label class="badge badge-success">'.translate('active').'</label>':'<label class="badge badge-danger">'.translate('inactive').'</label>' !!}

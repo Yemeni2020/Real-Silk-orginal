@@ -8639,4 +8639,7 @@ return [
 	"Saudi Arabia" => "Saudi Arabia",
 	"Choose_City" => "Choose City",
 	"Select_Your_Service" => "Select Your Service",
+	"suspended" => "Suspended",
+	"office_Login" => "Office Login",
+	"welcome_back_to_office_login" => "Welcome back to office login",
 ];

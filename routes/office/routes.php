@@ -39,7 +39,7 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
         /* end authentication */
         Route::group(['middleware' => ['seller']], function () {
             /* product */
-            Route::group(['prefix' => 'service', 'as' => 'service.'], function () {
+            Route::group(['prefix' => 'service', 'as' => 'service.','middleware' => ['just_office']], function () {
                 Route::controller(ServiceController::class)->group(function () {
                     Route::get(Service::INDEX[URI] . '/', 'index')->name('index');
                     Route::post(Service::INDEX[URI] . '/', 'store')->name('store');
@@ -76,14 +76,14 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
             //     });
             // });
 
-            Route::group(['prefix' => 'info', 'as' => 'info.'], function () {
+            Route::group(['prefix' => 'info', 'as' => 'info.','middleware' => ['just_office']], function () {
                 Route::controller(OfficeController::class)->group(function () {
                     Route::get(Office::INDEX[URI], 'index')->name('index');
                     Route::post(Office::UPDATE[URI] , 'update')->name('update');
                     
                 });
             });
-            Route::group(['prefix' => 'messages', 'as' => 'messages.'], function () {
+            Route::group(['prefix' => 'messages', 'as' => 'messages.','middleware' => ['just_office']], function () {
                 Route::controller(ChattingController::class)->group(function () {
                     Route::get(Chatting::INDEX[URI] . '/{type}', 'index')->name('index');
                     Route::get(Chatting::MESSAGE[URI], 'getMessageByUser')->name('message');

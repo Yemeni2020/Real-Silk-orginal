@@ -110,7 +110,7 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
                     Route::get(Dashboard::WITHDRAW_REQUEST[URI], 'getMethodList')->name('method-list');
                 });
             });
-            Route::group(['prefix' => 'pos', 'as' => 'pos.','middleware' => ['office']], function () {
+            Route::group(['prefix' => 'pos', 'as' => 'pos.','middleware' => ['just_seller']], function () {
                 Route::controller(POSController::class)->group(function () {
                     Route::get(POS::INDEX[URI], 'index')->name('index');
                     Route::any(POS::CHANGE_CUSTOMER[URI], 'changeCustomer')->name('change-customer');
@@ -137,7 +137,7 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
                     Route::any(POSOrder::HOLD_ORDERS[URI], 'getAllHoldOrdersView')->name('view-hold-orders');
                 });
             });
-            Route::group(['prefix' => 'refund', 'as' => 'refund.','middleware' => ['office']], function () {
+            Route::group(['prefix' => 'refund', 'as' => 'refund.','middleware' => ['just_seller']], function () {
                 Route::controller(RefundController::class)->group(function () {
                     Route::get(Refund::INDEX[URI] . '/{status}', 'index')->name('index');
                     Route::get(Refund::DETAILS[URI] . '/{id}', 'getDetailsView')->name('details');
@@ -146,7 +146,7 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
                 });
             });
             /* product */
-            Route::group(['prefix' => 'products', 'as' => 'products.','middleware' => ['office']], function () {
+            Route::group(['prefix' => 'products', 'as' => 'products.','middleware' => ['just_seller']], function () {
                 Route::controller(ProductController::class)->group(function () {
                     Route::get(Product::LIST[URI] . '/{type}', 'index')->name('list');
                     Route::get(Product::ADD[URI], 'getAddView')->name('add');
@@ -174,7 +174,7 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
                     Route::post(Product::DELETE_PREVIEW_FILE[URI], 'deletePreviewFile')->name('delete-preview-file');
                 });
             });
-            Route::group(['prefix' => 'orders', 'as' => 'orders.','middleware' => ['office']], function () {
+            Route::group(['prefix' => 'orders', 'as' => 'orders.','middleware' => ['just_seller']], function () {
                 Route::controller(OrderController::class)->group(function () {
                     Route::get(Order::LIST[URI] . '/{status}', 'index')->name('list');
                     Route::get(Order::CUSTOMERS[URI], 'getCustomers')->name('customers');
@@ -192,14 +192,14 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
                 });
             }); //end order
 
-            Route::group(['prefix' => 'customer', 'as' => 'customer.','middleware' => ['office']], function () {
+            Route::group(['prefix' => 'customer', 'as' => 'customer.','middleware' => ['just_seller']], function () {
                 Route::controller(CustomerController::class)->group(function () {
                     Route::get(Customer::LIST[URI], 'getList')->name('list');
                     Route::post(Customer::ADD[URI], 'add')->name('add');
                 });
             });
 
-            Route::group(['prefix' => 'reviews', 'as' => 'reviews.','middleware' => ['office']], function () {
+            Route::group(['prefix' => 'reviews', 'as' => 'reviews.','middleware' => ['just_seller']], function () {
                 Route::controller(ReviewController::class)->group(function () {
                     Route::get(Review::INDEX[URI], 'index')->name('index');
                     Route::get(Review::UPDATE_STATUS[URI] . '/{id}/{status}', 'updateStatus')->name('update-status');
@@ -207,7 +207,7 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
                     Route::post(Review::REVIEW_REPLY[URI], 'addReviewReply')->name('add-review-reply');
                 });
             });
-            Route::group(['prefix' => 'brand', 'as' => 'brand.','middleware' => ['office']], function () {
+            Route::group(['prefix' => 'brand', 'as' => 'brand.','middleware' => ['just_seller']], function () {
                 Route::controller(BrandController::class)->group(function () {
                     Route::get(Brand::LIST[URI], 'index')->name('list');
                     Route::get(Brand::ADD[URI], 'getAddView')->name('add-new');
@@ -220,7 +220,7 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
                 });
             });
         
-            Route::group(['prefix' => 'coupon', 'as' => 'coupon.','middleware' => ['office']], function () {
+            Route::group(['prefix' => 'coupon', 'as' => 'coupon.','middleware' => ['just_seller']], function () {
                 Route::controller(CouponController::class)->group(function () {
                     Route::get(Coupon::INDEX[URI], 'index')->name('index')->middleware('actch');
                     Route::post(Coupon::ADD[URI], 'add')->name('add');
@@ -233,7 +233,7 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
 
                 });
             });
-            Route::group(['prefix' => 'messages', 'as' => 'messages.','middleware' => ['office']], function () {
+            Route::group(['prefix' => 'messages', 'as' => 'messages.','middleware' => ['just_seller']], function () {
                 Route::controller(ChattingController::class)->group(function () {
                     Route::get(Chatting::INDEX[URI] . '/{type}', 'index')->name('index');
                     Route::get(Chatting::MESSAGE[URI], 'getMessageByUser')->name('message');
@@ -349,7 +349,7 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
                 Route::get('/get-order-data', 'getOrderData')->name('get-order-data');
             });
 
-            Route::group(['prefix' => 'report', 'as' => 'report.','middleware' => ['office']], function () {
+            Route::group(['prefix' => 'report', 'as' => 'report.','middleware' => ['just_seller']], function () {
                 Route::controller(ProductReportController::class)->group(function () {
                     Route::get('all-product', 'all_product')->name('all-product');
                     Route::get('all-product-excel', 'allProductExportExcel')->name('all-product-excel');

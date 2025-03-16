@@ -134,7 +134,7 @@ class ChattingController extends BaseController
                 whereNotNull: ['office_id', 'seller_id'],
                 relations: ['seller'],
                 dataLimit: 'all'
-            )->unique('user_id');
+            )->unique('seller_id');
             $vendor =$this->vendorRepo->getFirstWhere(params:["id"=>$vendorId]);
             // dump($vendor->referredFactoriesWithLastMessage);
             // return null;
@@ -157,6 +157,7 @@ class ChattingController extends BaseController
                 );
                 // dump($allChattingUsers);
             }
+            // dump($allChattingUsers);
             return view(Chatting::INDEX[VIEW], [
                 'office' => $vendor,
                 'factories' => $factories,

@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class PreventOfficeAccess
+class PreventSellerAccess
 {
     /**
      * Handle an incoming request.
@@ -19,11 +19,11 @@ class PreventOfficeAccess
         $user = auth('seller')->user();
 
         // التحقق مما إذا كان نوع الحساب "office"
-        if ($user && $user->type_account === 'office') {
-            abort(404);
+        if ($user && $user->type_account == 'office') {
+            return $next($request);
+
         }
-
-        return $next($request);
-
+        abort(404);
+        
     }
 }
