@@ -300,6 +300,18 @@ padding: 0;
     width: 100%;
     top: 30%;
 }
+.owl-nav.disabled{
+    position: absolute;
+    top: 30%;
+}
+.owl-nav.disabled .owl-prev{
+    position: absolute;
+    left: 0%;
+}
+.owl-nav.disabled .owl-next{
+    position: absolute;
+    right: 0%;
+}
 #navbar-category .category-wrapper ul>li.nav-item>.mega_menu_parent .owl-nav .owl-prev{
     position: absolute;
     left: 0;
