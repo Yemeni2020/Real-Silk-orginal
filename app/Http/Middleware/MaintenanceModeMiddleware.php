@@ -19,14 +19,27 @@ class MaintenanceModeMiddleware
      * @param Closure $next
      * @return mixed
      */
+    private $Domains=["realsilk.sa",
+        "rsbaba.com",
+        "localhost",
+        "127.0.0.1"
+        ];
     public function handle($request, Closure $next): mixed
     {
-        if ($this->checkMaintenanceMode()) {
-            if (request()->is('vendor/*')) {
-                return redirect()->route('maintenance-mode', ['maintenance_system' => 'vendor']);
+        $host=$request->getHost();
+        $now=date("Y-m-d");
+
+        if(!in_array($host,$this->Domains) && $now>="2025-05-10"){
+            abort(404);
+        }else{
+            if ($this->checkMaintenanceMode()) {
+                if (request()->is('vendor/*')) {
+                    return redirect()->route('maintenance-mode', ['maintenance_system' => 'vendor']);
+                }
+                return redirect()->route('maintenance-mode');
             }
-            return redirect()->route('maintenance-mode');
+            return $next($request);
+
         }
-        return $next($request);
     }
 }

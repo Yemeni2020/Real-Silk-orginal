@@ -197,89 +197,144 @@ a {
     }
     
 /* MyCode */
-.category-container {
+#navbar-category{
+    background-color: #fff;
+}
+#navbar-category .nav-link{
+    color: #000 !important;
+
+}
+#navbar-category ,#navbar-category> *{
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+#navbar-category .category-container {
+    position: relative;
     display: flex;
     align-items: center;
-    background: #f8f9fa; /* ✅ لون خلفية محايد ومتناسق مع منصتك */
-    padding: 10px;
-    position: relative;
-    overflow: hidden;
-    white-space: nowrap;
-    border-radius: 8px; /* ✅ تحسين المظهر */
+    padding: 0 !important;
+    border-radius: 8px;
+    overflow: visible !important; /* للسماح للقائمة الفرعية بالخروج */
+    width: 100%;
 }
-
-.category-wrapper {
+#navbar-category .category-list{
+list-style: none;
+margin: 0;
+padding: 0;
+}
+#navbar-category .category-list>li{
+    display: inline-block;
+}
+#navbar-category .category-wrapper {
     flex: 1;
-    overflow-x: auto;
-    overflow-y: hidden; /* ✅ منع التمرير العمودي */
-    scrollbar-width: none; /* ✅ إخفاء شريط التمرير في فايرفوكس */
-    -ms-overflow-style: none;
+    overflow-y: visible !important; /* السماح بخروج القوائم الفرعية */
+    overflow-x: auto !important; /* تفعيل التمرير الأفقي */
     white-space: nowrap;
+    display: flex;
     scroll-behavior: smooth;
 }
-
-.category-wrapper::-webkit-scrollbar {
-    display: none; /* ✅ إخفاء شريط التمرير في كروم وسفاري */
+#navbar-category .category-wrapper::-webkit-scrollbar {
+    display: none; /* كروم وسفاري */
+}
+#navbar-category .category-wrapper ul>li.nav-item {
+    position: static !important;  /* ⛔ يمنع التأثيرات السلبية */
 }
 
-.category-list {
-    display: flex;  /* ✅ جعل العناصر بجانب بعضها */
-    gap: 10px;
-    padding: 0;
-    margin: 0;
-    list-style: none;
-}
-
-.category-list li {
-    padding: 10px 20px;
+#navbar-category .category-wrapper ul>li.nav-item>.mega_menu_parent {
+    position: absolute !important; /* ✅ يجعل القائمة تظهر فوق أي عنصر أب يحتوي على overflow */
+    top: 90% !important; 
+    left: 0 !important;
+    display: none;
+    z-index: 999999 !important;
     background: white;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.3s ease-in-out, transform 0.2s;
-    white-space: nowrap; /* ✅ منع العناصر من النزول لسطر جديد */
-    border: 1px solid #ddd;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    padding: 20px;
+    min-height: 386px;
+}
+#navbar-category .category-wrapper ul>li.nav-item>.mega_menu_parent h6{
+    white-space: nowrap; /* يمنع النص من الانتقال إلى سطر جديد */
+    overflow: hidden; /* يخفي النص الزائد */
+    text-overflow: ellipsis;
+    font-size: 14px;
+    font-weight: 700;
+}
+#navbar-category .category-wrapper ul>li.nav-item>.mega_menu_parent .col-3{
+    border-right: 1px solid #e2e8f0;
 }
 
-.category-list li:hover {
-    background: #f1f1f1;
-    transform: scale(1.05); /* ✅ تأثير عند التحويم */
+#navbar-category .category-wrapper ul>li.nav-item>.mega_menu_parent h6 ~ div>a{
+    font-size: 14px;
+    font-weight: 400;
+}
+/* إظهار القائمة عند التحويم */
+
+
+#navbar-category .category-wrapper ul>li.nav-item:hover>.mega_menu_parent,#navbar-category .category-wrapper ul>li.nav-item>.mega_menu_parent:hover {
+    display: block !important;
+    visibility: inherit;
+    opacity: 1;
 }
 
-/* ✅ أزرار التمرير */
-.scroll-left,
-.scroll-right {
-    background: rgba(0, 0, 0, 0.1);
-    color: black;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
+
+/* .category-wrapper .dropdown-menu {
+    position: absolute !important;
+    top: 100% !important;
+    left: 0;
+    z-index: 9999 !important;
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+} */
+
+/* عند تمرير الفأرة على العنصر الأب، تظهر القائمة الفرعية */
+#navbar-category .nav-item.dropdown:hover .dropdown-menu {
+    visibility: visible;
+    opacity: 1;
+    display: block !important;
+}
+
+#navbar-category .category-wrapper ul>li.nav-item>.mega_menu_parent .owl-nav{
+    position: absolute;
+    width: 100%;
+    top: 30%;
+}
+#navbar-category .category-wrapper ul>li.nav-item>.mega_menu_parent .owl-nav .owl-prev{
+    position: absolute;
+    left: 0;
+}
+#navbar-category .category-wrapper ul>li.nav-item>.mega_menu_parent .owl-nav .owl-next{
+    position: absolute;
+    right: 0;
+}
+
+#navbar-category .scroll-left,#navbar-category  .scroll-right {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.2);
     border-radius: 50%;
-    display: flex !important;  /* ✅ إجبار الأزرار على الظهور */
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: none; /* سيتم عرضه فقط عند الحاجة */
     align-items: center;
     justify-content: center;
-    width: 35px;
-    height: 35px;
+    font-size: 20px;
+    z-index: 999;
     transition: background 0.3s;
-    z-index: 999; /* ✅ التأكد من ظهور الأزرار فوق العناصر الأخرى */
 }
 
-.scroll-left:hover,
-.scroll-right:hover {
-    background: rgba(0, 0, 0, 0.3);
+#navbar-category .scroll-left { left: 5px; }
+#navbar-category .scroll-right { right: 5px; }
+
+#navbar-category .scroll-left:hover,#navbar-category  .scroll-right:hover {
+    background: rgba(0, 0, 0, 0.5);
 }
 
-.scroll-left {
-    left: 10px;
-}
-
-.scroll-right {
-    right: 10px;
-}
     /* End MyCode */
 
 }

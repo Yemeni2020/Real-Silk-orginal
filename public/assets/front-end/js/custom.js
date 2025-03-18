@@ -32,50 +32,8 @@ function quick22(event) {
         console.log("❌ لم يتم العثور على رابط المنتج!"); // ❌ مشكلة: الرابط غير موجود
     }
 }
-// MyCode Header
-// document.addEventListener("DOMContentLoaded", function () {
-//     const container = document.querySelector(".category-wrapper");
-//     const scrollLeftBtn = document.querySelector(".scroll-left");
-//     const scrollRightBtn = document.querySelector(".scroll-right");
 
-//     if (!container || !scrollLeftBtn || !scrollRightBtn) {
-//         console.error("❌ لم يتم العثور على بعض العناصر! تأكد من أن HTML يحتوي على الأزرار والمحتوى.");
-//         return;
-//     }
 
-//     console.log("✅ جميع العناصر تم العثور عليها بنجاح!");
-
-//     // إجبار الأزرار على الظهور
-//     scrollLeftBtn.style.display = "flex";
-//     scrollRightBtn.style.display = "flex";
-
-//     function updateArrows() {
-//         const maxScrollLeft = container.scrollWidth - container.clientWidth;
-//         console.log("📌 maxScrollLeft:", maxScrollLeft);
-//         console.log("📌 container.scrollLeft:", container.scrollLeft);
-
-//         // إجبار الأزرار على الظهور دائمًا
-//         scrollLeftBtn.style.display = "flex";
-//         scrollRightBtn.style.display = "flex";
-//     }
-
-//     scrollLeftBtn.addEventListener("click", function () {
-//         console.log("⬅️ الضغط على زر اليسار");
-//         container.scrollBy({ left: -200, behavior: "smooth" });
-//         setTimeout(updateArrows, 500);
-//     });
-
-//     scrollRightBtn.addEventListener("click", function () {
-//         console.log("➡️ الضغط على زر اليمين");
-//         container.scrollBy({ left: 200, behavior: "smooth" });
-//         setTimeout(updateArrows, 500);
-//     });
-
-//     container.addEventListener("scroll", updateArrows);
-
-//     // تحديث الأزرار عند تحميل الصفحة
-//     updateArrows();
-// });
 
 $(document).ready(function () {
     
