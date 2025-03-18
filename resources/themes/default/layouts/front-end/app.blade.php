@@ -217,7 +217,7 @@
         <i class="btn-scroll-top-icon czi-arrow-up"></i>
     </a>
 </div>
-
+<script src="{{ theme_asset('public/js/htmx.min.js') }}"></script>
 <script src="{{ theme_asset(path: 'public/assets/front-end/vendor/jquery/dist/jquery-2.2.4.min.js') }}"></script>
 <script src="{{ theme_asset(path: 'public/assets/front-end/vendor/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ theme_asset(path: 'public/assets/front-end/vendor/bs-custom-file-input/dist/bs-custom-file-input.min.js') }}"></script>

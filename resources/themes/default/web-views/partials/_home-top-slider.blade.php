@@ -1,8 +1,11 @@
 @if(count($main_banner) > 0)
+@php
+$categories;
+@endphp
 <section class="bg-transparent py-3">
     <div class="container position-relative">
         <div class="row no-gutters position-relative rtl">
-            @if ($categories->count() > 0 )
+            @if (isset($categories) && $categories->count() > 0 )
                 <!-- <div class="col-xl-3 position-static d-none d-xl-block __top-slider-cate">
                     <div class="category-menu-wrap position-static">
                         <ul class="category-menu mt-0">

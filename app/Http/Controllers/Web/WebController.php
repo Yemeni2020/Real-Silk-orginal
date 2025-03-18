@@ -98,7 +98,11 @@ class WebController extends Controller
         }
         return redirect()->route('home');
     }
+    public function getCategoryMenu(){
+        $categories = CategoryManager::getCategoriesMenu(15);
+        return view(VIEW_FILE_NAMES['category-menu-header'], compact('categories'));
 
+    }
     public function getFlashDealsView(Request $request, $id): View|RedirectResponse
     {
         $userId = Auth::guard('customer')->user() ? Auth::guard('customer')->id() : 0;

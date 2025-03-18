@@ -116,6 +116,11 @@ Route::group(['namespace' => 'Web', 'middleware' => ['maintenance_mode', 'guestC
         Route::post('GoMyFatoorahPayment', [App\Http\Controllers\Payment_Methods\MyFatorahSettingsController::class, 'createPayment'])->name('GoMyFatoorahPayment');
         //End MyCode
         
+
+        // Mycode
+            Route::get('getCategoryMenu', 'getCategoryMenu')->name('getCategoryMenu');
+        // EndMyCode
+
         Route::post('subscription', 'subscription')->name('subscription');
         Route::get('search-shop', 'search_shop')->name('search-shop');
 

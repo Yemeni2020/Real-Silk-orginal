@@ -67,21 +67,46 @@ class CategoryManager
         return '';
     }
 
+    public static function getCategoriesMenu($dataLimit = null)
+    {
+
+        $categories = Category::with(['product' => function ($query) {
+                return $query->active()->withCount(['orderDetails']);
+            }])->withCount(['product' => function ($query) {
+                $query->active();
+            }])->with(['childes' => function ($query) {
+            $query->with(['childes' => function ($query) {
+                $query->withCount(['subSubCategoryProduct' => function ($query) {
+                    $query->active();
+                }])->where('position', 2);
+            }])->withCount(['subCategoryProduct' => function ($query) {
+                $query->active();
+            }])->where('position', 1);
+        }, 'childes.childes'])->where('position', 0);
+
+        $categoriesProcessed = self::getPriorityWiseCategorySortQuery(query: $categories->get());
+        if ($dataLimit) {
+            $categoriesProcessed = $categoriesProcessed->paginate($dataLimit);
+        }
+        return $categoriesProcessed;
+    }
+
     public static function getCategoriesWithCountingAndPriorityWiseSorting($dataLimit = null)
     {
-    //     $categoriesQuery = Category::with(['product' => function ($query) {
-    //         return $query->active()->withCount(['orderDetails']);
-    //     }])->withCount(['product' => function ($query) {
-    //         $query->active();
-    //     }])->with(['childes' => function ($query) {
-    //     $query->with(['childes' => function ($query) {
-    //         $query->withCount(['subSubCategoryProduct' => function ($query) {
-    //             $query->active();
-    //         }])->where('position', 2);
-    //     }])->withCount(['subCategoryProduct' => function ($query) {
-    //         $query->active();
-    //     }])->where('position', 1);
-    // }, 'childes.childes'])->where('position', 0);
+
+        //     $categoriesQuery = Category::with(['product' => function ($query) {
+        //         return $query->active()->withCount(['orderDetails']);
+        //     }])->withCount(['product' => function ($query) {
+        //         $query->active();
+        //     }])->with(['childes' => function ($query) {
+        //     $query->with(['childes' => function ($query) {
+        //         $query->withCount(['subSubCategoryProduct' => function ($query) {
+        //             $query->active();
+        //         }])->where('position', 2);
+        //     }])->withCount(['subCategoryProduct' => function ($query) {
+        //         $query->active();
+        //     }])->where('position', 1);
+        // }, 'childes.childes'])->where('position', 0);
         
     
         $categoriesQuery = Category::withoutGlobalScope('translate')->with([
@@ -125,6 +150,18 @@ class CategoryManager
 
         // ✅ إزالة query: لأنه غير مدعوم في PHP
         return self::getPriorityWiseCategorySortQuery($categoriesProcessed);
+    }
+
+    public static function getCategories($dataLimit = null)
+    {
+
+       $categories = Category::with(['childes.childes'])->where('position', 0);
+
+        $categoriesProcessed = self::getPriorityWiseCategorySortQuery(query: $categories->get());
+        if ($dataLimit) {
+            $categoriesProcessed = $categoriesProcessed->paginate($dataLimit);
+        }
+        return $categoriesProcessed;
     }
 
     public static function getPriorityWiseCategorySortQuery($query)
