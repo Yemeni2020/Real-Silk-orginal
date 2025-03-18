@@ -152,17 +152,6 @@ class CategoryManager
         return self::getPriorityWiseCategorySortQuery($categoriesProcessed);
     }
 
-    public static function getCategories($dataLimit = null)
-    {
-
-       $categories = Category::with(['childes.childes'])->where('position', 0);
-
-        $categoriesProcessed = self::getPriorityWiseCategorySortQuery(query: $categories->get());
-        if ($dataLimit) {
-            $categoriesProcessed = $categoriesProcessed->paginate($dataLimit);
-        }
-        return $categoriesProcessed;
-    }
 
     public static function getPriorityWiseCategorySortQuery($query)
     {
