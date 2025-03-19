@@ -41,7 +41,7 @@
                                         </div>
 
                                         <div class="d-flex flex-column gap-1 upload-img-content text-center">
-                                            <h6 class="text-uppercase mb-1 fs-14">{{translate('vendor_image')}}</h6>
+                                            <h6 class="text-uppercase mb-1 fs-14">{{translate('vendor_image')}} <span class="text-danger">*</span></h6>
                                             <div class="text-muted text-capitalize fs-12">{{translate('image_ratio').' '.'1:1'}}</div>
                                             <span error="image" class="text-danger fs-12"></span>
 
@@ -87,7 +87,7 @@
                                     </div>
 
                                     <div class="d-flex flex-column gap-1 upload-img-content text-center">
-                                        <h6 class="text-uppercase mb-1 fs-14">{{translate('upload_logo')}}</h6>
+                                        <h6 class="text-uppercase mb-1 fs-14">{{translate('upload_logo')}}<span class="text-danger">*</span></h6>
                                         <div class="text-muted text-capitalize fs-12">{{translate('image_ratio').' '.'1:1'}}</div>
                                         <div class="text-muted text-capitalize fs-12">{{translate('Image Size : Max 2 MB')}}</div>
                                         <span error="logo" class="text-danger fs-12"></span>
@@ -112,9 +112,11 @@
                                     </div>
 
                                     <div class="d-flex flex-column gap-1 upload-img-content text-center">
-                                        <h6 class="text-uppercase mb-1 fs-14">{{translate('upload_banner')}}</h6>
+                                        <h6 class="text-uppercase mb-1 fs-14">{{translate('upload_banner')}} <span class="text-danger">*</span></h6>
                                         <div class="text-muted text-capitalize fs-12">{{translate('image_ratio').' '.'2:1'}}</div>
                                         <div class="text-muted text-capitalize fs-12">{{translate('Image Size : Max 2 MB')}}</div>
+                                        <span class="text-danger fs-12"error="banner"></span>
+
                                     </div>
                                 </div>
                             </div>

@@ -786,7 +786,7 @@ $auto_translate=getWebConfig("auto_translate");
                                 <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
                                     <div>
                                         <label for="name"
-                                               class="title-color text-capitalize font-weight-bold mb-0">{{ translate('upload_additional_image') }}</label>
+                                               class="title-color text-capitalize font-weight-bold mb-0">{{ translate('upload_additional_image') }}<span class="input-required-icon">*</span></label>
                                         <span
                                             class="badge badge-soft-info">{{ THEME_RATIO[theme_root_path()]['Product Image'] }}</span>
                                         <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"

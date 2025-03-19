@@ -97,8 +97,11 @@ class RegisterController extends BaseController
             'templateName' => 'registration',
         ];
         event(new VendorRegistrationEvent(email: $request['email'], data: $data));
+        $route = route('vendor.auth.login');
+        if($request['account_type'] == 'office')
+            $route = route('office.auth.login');
         return response()->json([
-                'redirectRoute' => route('vendor.auth.login')
+                'redirectRoute' => $route
             ]
         );
     }

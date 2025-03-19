@@ -102,10 +102,14 @@ $(document).ready(function() {
                     }else {
 
                         // ✅ عرض الموديل عند نجاح الطلب
-                        $('#verification-modal').modal('show'); 
+                        console.log("done1");
+                        $('.first-el').fadeOut(300);
+                        $('.second-el').fadeIn(300);
+                        // $('#verification-modal').modal('show'); 
+                        console.log("done2");
 
                         // ✅ إخفاء النموذج الأول وإظهار الثاني إن لزم الأمر
-                        toastr.success("Check Your Email");
+                        // toastr.success("Check Your Email");
                         // $('.first-el').fadeOut(300);
                         // $('.second-el').fadeIn(300);
                         // $('.tio-refresh').click();
@@ -214,10 +218,10 @@ function submitRegistration(){
                         });
                         $('.tio-refresh').click();
                     }else {
-                        $('.registration-success-modal').modal('show');
                         setTimeout(function () {
                             location.href = data.redirectRoute;
-                        }, 4000);
+                        }, 1000);
+                        $('.registration-success-modal').modal('show');
                         $('.tio-refresh').click();
                     }
                 },complete: function () {

@@ -15,11 +15,11 @@
             @else
                 <span class="for-discount-value-null"></span>
             @endif
-            <a href="{{route('product',$product->slug)}}">
+            <a href="{{route('product',$product->slug)}}" id="a{{ $product->id }}">
                 <img src="{{ getStorageImages(path: $product->thumbnail_full_url, type: 'product') }}" alt="">
             </a>
 
-            <div class="quick-view">
+            <div class="quick-view" onclick="quick22(event)">
                 <a class="btn-circle stopPropagation action-product-quick-view" href="javascript:" data-product-id="{{ $product->id }}">
                     <i class="czi-eye align-middle"></i>
                 </a>

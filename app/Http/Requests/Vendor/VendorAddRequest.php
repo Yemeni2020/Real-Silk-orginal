@@ -48,7 +48,7 @@ class VendorAddRequest extends FormRequest
         if($this->account_type!="office"){
             $rules["image"]="required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff";
             $rules["logo"]="required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff";
-            $rules["banner"]="mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff";
+            $rules["banner"]="required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff";
         }
         return $rules;
 
