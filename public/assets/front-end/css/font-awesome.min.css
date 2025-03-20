@@ -2716,7 +2716,16 @@
 .fa-snapchat-square:before {
     content: "\f2ad"
 }
+.fa-tiktok:before {
+    content: "\f97b"
+}
+.fa-tiktok-ghost:before {
+    content: "\f97b"
+}
 
+.fa-tiktok-square:before {
+    content: "\f97b"
+}
 .fa-pied-piper:before {
     content: "\f2ae"
 }

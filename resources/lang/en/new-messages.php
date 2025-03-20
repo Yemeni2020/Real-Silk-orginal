@@ -6988,7 +6988,7 @@ return [
 	"add_color_wise_product_images_here" => "Add color wise product images here",
 	"must_upload_colour_wise_images_first" => "Must upload colour wise images first",
 	"colour_is_shown_in_the_image_section_top_right." => "Colour is shown in the image section top right.",
-	"welcome_back_to_vendor_login" => "Welcome back to Factory or office login",
+	"welcome_back_to_vendor_login" => "Welcome back to Factory login",
 	"rejected_refund_Requests" => "Rejected refund Requests",
 	"vendor_Requests" => "Vendor Requests",
 	"do_you_want_to_sign_out" => "Do you want to sign out",

@@ -2708,7 +2708,9 @@
 .fa-snapchat:before {
     content: "\f2ab"
 }
-
+.fa-tiktok:before {
+    content: "\f97b"; }
+    
 .fa-snapchat-ghost:before {
     content: "\f2ac"
 }

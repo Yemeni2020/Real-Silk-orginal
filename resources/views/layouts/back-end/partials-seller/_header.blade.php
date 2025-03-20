@@ -95,7 +95,7 @@
                         <div class="hs-unfold">
                             <a title="{{translate('website_shop_view')}}"
                                class="js-hs-unfold-invoker btn btn-icon btn-ghost-secondary rounded-circle"
-                               href="{{ auth('seller')->user()->type_account != 'office' ? route('shopView', ['id' => auth('seller')->id()]) : route('home') }}" target="_blank"
+                               href="{{ $vendor->type_account!='office' ? route('shopView', ['id' => auth('seller')->id()]) : route('home') }}" target="_blank"
                                title="{{translate('Website View')}}" data-toggle="tooltip"
                                data-custom-class="header-icon-title">
                                 <svg width="20" height="21" viewBox="0 0 20 21" fill="none"
@@ -200,6 +200,8 @@
                                     <span class="btn-status btn-sm-status btn-status-danger">{{ $message }}</span>
                                 @endif
                             </a>
+
+                            @if($vendor->type_account!="office")
                             <div id="messageDropdown"
                                  class="hs-unfold-content width--16rem dropdown-unfold dropdown-menu dropdown-menu-right navbar-dropdown-menu navbar-dropdown-account">
                                 <a class="dropdown-item position-relative"
@@ -224,8 +226,35 @@
                                     @endif
                                 </a>
                             </div>
+                            @else
+                            <div id="messageDropdown"
+                                 class="hs-unfold-content width--16rem dropdown-unfold dropdown-menu dropdown-menu-right navbar-dropdown-menu navbar-dropdown-account">
+                                <a class="dropdown-item position-relative"
+                                   href="{{route('office.messages.index', ['type' => 'factory'])}}">
+                                    <span class="text-truncate pr-2"
+                                          title="Settings">{{translate('factory')}}</span>
+                                    @php($messageCustomer=\App\Models\Chatting::where(['seen_by_office'=>0, 'office_id'=>auth('seller')->id()])->whereNotNull(['user_id'])->count())
+                                    @if($messageCustomer > 0)
+                                        <span
+                                            class="btn-status btn-sm-status-custom btn-status-danger">{{$messageCustomer}}</span>
+                                    @endif
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item position-relative"
+                                   href="{{route('office.messages.index', ['type' => 'admin'])}}">
+                                    <span class="text-truncate pr-2"
+                                          title="Settings">{{translate('admin')}}</span>
+                                    @php($messageDeliveryMan =\App\Models\Chatting::where(['seen_by_office'=>0, 'office_id'=>auth('seller')->id()])->whereNotNull(['admin_id'])->count())
+                                    @if($messageDeliveryMan > 0)
+                                        <span
+                                            class="btn-status btn-sm-status-custom btn-status-danger">{{ $messageDeliveryMan }}</span>
+                                    @endif
+                                </a>
+                            </div>
+                            @endif
                         </div>
                     </li>
+                    @if($vendor->type_account!='office')
                     <li class="nav-item">
                         <div class="hs-unfold">
                             <a class="js-hs-unfold-invoker btn btn-icon btn-ghost-secondary rounded-circle"
@@ -258,7 +287,7 @@
                             </a>
                         </div>
                     </li>
-
+                    @endif
                     <li class="nav-item">
                         <div class="hs-unfold">
                             <a class="js-hs-unfold-invoker media align-items-center gap-3 navbar-dropdown-account-wrapper dropdown-toggle dropdown-toggle-left-arrow"
@@ -346,7 +375,7 @@
                 </div>
                 <div class="bg-white p-1 rounded mt-2">
                     <a title="{{('website_shop_view')}}" class="p-2 title-color"
-                       href="{{route('shopView',['id'=>auth('seller')->id()])}}" target="_blank" data-toggle="tooltip"
+                       href="{{ $vendor->type_account=='office'?route('shopView',['id'=>auth('seller')->id()]):route('home')}}" target="_blank" data-toggle="tooltip"
                        data-custom-class="header-icon-title">
                         <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
