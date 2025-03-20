@@ -8645,4 +8645,10 @@ return [
 	"Account_Suspended" => "Account Suspended",
 	"help_topic_table" => "Help topic table",
 	"The_phone_number_must_be_at_least_4_characters" => "The phone number must be at least 4 characters",
+	"search_admin" => "Search admin",
+	"search_by_office_name_or_name_or_phone_or_email" => "Search by office name or name or phone or email",
+	"office_overview" => "Office overview",
+	"want_to_suspend_this_office" => "Want to suspend this office",
+	"suspend_this_office" => "Suspend this office",
+	"office_Wallet" => "Office Wallet",
 ];

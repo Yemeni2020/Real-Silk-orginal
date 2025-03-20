@@ -8699,5 +8699,11 @@
 "Account_Suspended" => "تم تعليق الحساب",
 "help_topic_table" => "جدول مواضيع المساعدة",
 "The_phone_number_must_be_at_least_4_characters" => "رقم الهاتف يجب ان يكون اقل شي يحتوي على 8 ارقام ولايكون فارغ",
+"search_admin" => "البحث عن المشرف",
+"search_by_office_name_or_name_or_phone_or_email" => "البحث بواسطة اسم المكتب أو الاسم أو الهاتف أو البريد الإلكتروني",
+"office_overview" => "نظرة عامة على المكتب",
+"want_to_suspend_this_office" => "هل تريد تعليق هذا المكتب؟",
+"suspend_this_office" => "تعليق هذا المكتب",
+"office_Wallet" => "محفظة المكتب",
 
 );
