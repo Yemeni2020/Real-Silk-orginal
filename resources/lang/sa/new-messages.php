@@ -8642,4 +8642,7 @@ return [
 	"suspended" => "Suspended",
 	"office_Login" => "Office Login",
 	"welcome_back_to_office_login" => "Welcome back to office login",
+	"Account_Suspended" => "Account Suspended",
+	"help_topic_table" => "Help topic table",
+	"The_phone_number_must_be_at_least_4_characters" => "The phone number must be at least 4 characters",
 ];
