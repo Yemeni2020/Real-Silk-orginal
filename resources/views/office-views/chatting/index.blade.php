@@ -190,14 +190,27 @@
                         <div class="inbox_msg_header d-flex flex-wrap gap-3 justify-content-between align-items-center border px-3 py-2 rounded mb-4">
                             <div class="media align-items-center gap-3">
                                 <div class="avatar avatar-sm avatar-circle border">
+                                @if($userType=="admin")
+                                <img class="avatar-img user-avatar-image" id="profile_image"
+                                         src="{{ getStorageImages(path: $web_config['web_logo'], type: 'logo') }}"
+                                         alt="{{$web_config['name']->value}}">
+                                @else
+
                                     <img class="avatar-img user-avatar-image" id="profile_image"
                                          src="{{ getStorageImages(path: $lastChatUser->image_full_url,type: 'backend-profile') }}"
                                          alt="Image Description">
+                                @endif
+
                                     <span class="avatar-status avatar-sm-status avatar-status-success"></span>
                                 </div>
                                 <div class="media-body">
-                                    <h5 class="profile-name mb-1" id="profile_name">{{ $lastChatUser['f_name'].' '.$lastChatUser['l_name'] }}</h5>
-                                    <span class="fz-12" id="profile_phone">{{ $lastChatUser['country_code'] }} {{ $lastChatUser['phone'] }}</span>
+                                    @if($userType=="admin")
+                                        <h5 class="profile-name mb-1" id="profile_name">RealSilk</h5>
+                                        <span class="fz-12" id="profile_phone"></span>
+                                    @else
+                                        <h5 class="profile-name mb-1" id="profile_name">{{ $lastChatUser['f_name'].' '.$lastChatUser['l_name'] }}</h5>
+                                        <span class="fz-12" id="profile_phone">{{ $lastChatUser['country_code'] }} {{ $lastChatUser['phone'] }}</span>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -295,7 +308,7 @@
                                     <span class="avatar-status avatar-sm-status avatar-status-success"></span>
                                 </div>
                                 <div class="media-body">
-                                    <h5 class="profile-name mb-1" id="profile_name">{{$factories->first()->shop->name}}</h5>
+                                    <h5 class="profile-name mb-1" id="profile_name">{{$factories->first()->f_name." ".$factories->first()->l_name}}</h5>
                                     <span class="fz-12" id="profile_phone">{{$factories->first()->shop->phone}}</span>
                                 </div>
                             </div>
@@ -388,8 +401,8 @@
                                     <span class="avatar-status avatar-sm-status avatar-status-success"></span>
                                 </div>
                                 <div class="media-body">
-                                    <h5 class="profile-name mb-1" id="profile_name">{{$factories->first()->name}}</h5>
-                                    <span class="fz-12" id="profile_phone">{{$factories->first()->phone}}</span>
+                                    <h5 class="profile-name mb-1" id="profile_name">RealSilk</h5>
+                                    <!-- <span class="fz-12" id="profile_phone">{{$factories->first()->phone}}</span> -->
                                 </div>
                             </div>
                         </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Office;
 
 use App\Contracts\Repositories\ChattingRepositoryInterface;
 use App\Contracts\Repositories\CustomerRepositoryInterface;
+use App\Contracts\Repositories\SellerRepositoryInterface;
 use App\Contracts\Repositories\DeliveryManRepositoryInterface;
 use App\Contracts\Repositories\ShopRepositoryInterface;
 use App\Contracts\Repositories\VendorRepositoryInterface;
@@ -41,6 +42,7 @@ class ChattingController extends BaseController
         private readonly AdminRepositoryInterface       $adminRepo,
         private readonly DeliveryManRepositoryInterface $deliveryManRepo,
         private readonly CustomerRepositoryInterface    $customerRepo,
+        private readonly SellerRepositoryInterface      $sellerRepo,
     )
     {
     }
@@ -129,7 +131,7 @@ class ChattingController extends BaseController
         }
         elseif($type == 'factory'){
             $allChattingUsers = $this->chattingRepo->getListWhereNotNull(
-                orderBy: ['created_at' => 'DESC'],
+                orderBy: ['created_at' => 'ASC'],
                 filters: ['office_id' => $vendorId],
                 whereNotNull: ['office_id', 'seller_id'],
                 relations: ['seller'],
@@ -188,7 +190,7 @@ class ChattingController extends BaseController
 
                 $chattingMessages = $this->chattingRepo->getListWhereNotNull(
                     orderBy: ['created_at' => 'DESC'],
-                    filters: ['office_id' => $vendorId, 'admin_id' => $lastChatUser->id],
+                    filters: ['office_id' => $vendorId, ['admin_id', '>', 0]],
                     whereNotNull: ['admin_id', 'office_id'],
                     relations: ['admin'],
                     dataLimit: 'all'
@@ -243,7 +245,7 @@ class ChattingController extends BaseController
             );
             $data = self::getRenderMessagesView(user: $getUser, message: $chattingMessages, type: 'customer');
         }elseif ($request->has(key: 'seller_id')) {
-            $getUser = $this->customerRepo->getFirstWhere(params: ['id' => $request['seller_id']]);
+            $getUser = $this->sellerRepo->getFirstWhere(params: ['id' => $request['seller_id']],relations:["shop"]);
             $this->chattingRepo->updateAllWhere(
                 params: ['office_id' => $vendorId, 'seller_id' => $request['seller_id']],
                 data: ['seen_by_seller' => 1]
@@ -254,7 +256,7 @@ class ChattingController extends BaseController
                 whereNotNull: ['seller_id', 'office_id'],
                 dataLimit: 'all'
             );
-            $data = self::getRenderMessagesView(user: $getUser, message: $chattingMessages, type: 'customer');
+            $data = self::getRenderMessagesView(user: $getUser, message: $chattingMessages, type: 'seller');
         }
         return response()->json($data);
     }

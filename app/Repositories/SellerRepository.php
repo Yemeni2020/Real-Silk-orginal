@@ -21,6 +21,7 @@ class SellerRepository implements SellerRepositoryInterface
 
     public function getFirstWhere(array $params, array $relations = []): ?Model
     {
+        return $this->seller->with($relations)->where($params)->first();
         // TODO: Implement getFirstWhere() method.
     }
 

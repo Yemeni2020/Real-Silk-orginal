@@ -131,13 +131,13 @@ class ChattingController extends BaseController
             $adminId=auth('admin')->id();
             $allChattingUsers = $this->chattingRepo->getListWhereNotNull(
                 orderBy: ['created_at' => 'DESC'],
-                filters: ['admin_id' => $adminId],
+                filters: [['admin_id', '>', 0]],
                 whereNotNull: ['office_id', 'admin_id'],
                 relations: ['office'],
                 dataLimit: 'all'
             )->unique('office_id');
 
-            if (count($allChattingUsers) > 0) {
+            if (count($allChattingUsers) > 0 || isset($request["office_id"])) {
                 if(isset($request["office_id"])){
                     $lastChatUser = $this->vendorRepo->getFirstWhere(params: ['id' => $request['office_id']]);
                     $last=$request["office_id"];
@@ -147,17 +147,16 @@ class ChattingController extends BaseController
                     $last=$lastChatUser['id'];
 
                 }
-                if ($lastChatUser) {
-                    $this->chattingRepo->updateAllWhere(
-                        params: ['admin_id' => $adminId, 'office_id' => $lastChatUser['id']],
-                        data: ['seen_by_admin' => 1]
-                    );
-                }
+                // if ($lastChatUser) {
+                //     $this->chattingRepo->updateAllWhere(
+                //         params: ['admin_id' => $adminId, 'office_id' => $lastChatUser['id']],
+                //         data: ['seen_by_admin' => 1]
+                //     );
+                // }
                 $chattingMessages = $this->chattingRepo->getListWhereNotNull(
                     orderBy: ['created_at' => 'DESC'],
-                    filters: ['admin_id' => $adminId, 'office_id' => $last],
+                    filters: [['admin_id', '>', 0], 'office_id' => $last],
                     whereNotNull: ['office_id', 'admin_id'],
-                    relations: ['office'],
                     dataLimit: 'all'
                 );
 
@@ -214,14 +213,14 @@ class ChattingController extends BaseController
             $adminId=auth('admin')->id();
 
             $getUser = $this->vendorRepo->getFirstWhere(params: ['id' => $request['office_id']]);
-            $this->chattingRepo->updateAllWhere(
-                params: ['admin_id' => $adminId, 'office_id' => $request['office_id']],
-                data: ['seen_by_admin' => 1]
-            );
+            // $this->chattingRepo->updateAllWhere(
+            //     params: ['admin_id' => $adminId, 'office_id' => $request['office_id']],
+            //     data: ['seen_by_admin' => 1]
+            // );
 
             $chattingMessages = $this->chattingRepo->getListWhereNotNull(
                 orderBy: ['created_at' => 'DESC'],
-                filters: ['admin_id' => $adminId, 'office_id' => $request['office_id']],
+                filters: [['admin_id', '>', 0], 'office_id' => $request['office_id']],
                 whereNotNull: ['office_id', 'admin_id'],
                 dataLimit: 'all'
             );

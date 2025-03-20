@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Vendor;
 
 use App\Contracts\Repositories\ChattingRepositoryInterface;
 use App\Contracts\Repositories\CustomerRepositoryInterface;
+use App\Contracts\Repositories\SellerRepositoryInterface;
 use App\Contracts\Repositories\DeliveryManRepositoryInterface;
 use App\Contracts\Repositories\ShopRepositoryInterface;
 use App\Contracts\Repositories\VendorRepositoryInterface;
@@ -39,6 +40,8 @@ class ChattingController extends BaseController
         private readonly VendorRepositoryInterface      $vendorRepo,
         private readonly DeliveryManRepositoryInterface $deliveryManRepo,
         private readonly CustomerRepositoryInterface    $customerRepo,
+        private readonly SellerRepositoryInterface      $sellerRepo,
+
     )
     {
     }
@@ -193,7 +196,7 @@ class ChattingController extends BaseController
             );
             $data = self::getRenderMessagesView(user: $getUser, message: $chattingMessages, type: 'customer');
         }elseif ($request->has(key: 'office_id')) {
-            $getUser = $this->customerRepo->getFirstWhere(params: ['id' => $request['office_id']]);
+            $getUser = $this->sellerRepo->getFirstWhere(params: ['id' => $request['seller_id']],relations:["shop"]);
             $this->chattingRepo->updateAllWhere(
                 params: ['seller_id' => $vendorId, 'office_id' => $request['office_id']],
                 data: ['seen_by_seller' => 1]
@@ -303,7 +306,13 @@ class ChattingController extends BaseController
      */
     protected function getRenderMessagesView(object $user, object $message, string $type): array
     {
-        $userData = ['name' => $user['f_name'] . ' ' . $user['l_name'], 'phone' => $user['country_code'] . $user['phone']];
+        if($type == 'office'){
+            $userData = ['name' => $user->shop->name, 'phone' => $user['country_code'] . $user['phone']];
+
+        }else{
+            $userData = ['name' => $user['f_name'] . ' ' . $user['l_name'], 'phone' => $user['country_code'] . $user['phone']];
+
+        }
 
         if ($type == 'customer') {
             $userData['image'] = getStorageImages(path: $user->image_full_url, type: 'backend-profile');
