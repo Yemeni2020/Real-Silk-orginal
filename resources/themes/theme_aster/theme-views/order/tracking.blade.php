@@ -298,7 +298,7 @@
                                                         <div class="d-flex flex-column">
                                                             <small>
                                                                 <strong>{{translate('unit_price')}} :</strong>
-                                                                {{webCurrencyConverter($orderDetail['price'])}}
+                                                                {!!webCurrencyConverter($orderDetail['price'])!!}
                                                                 @if ($orderDetail->tax_model =='include')
                                                                     ({{translate('tax_incl.')}})
                                                                 @else
@@ -342,7 +342,7 @@
                                                 {{$orderDetail->qty}}
                                             </td>
                                             <td class="text-end">
-                                                {{webCurrencyConverter($orderDetail['price']*$orderDetail['qty'])}}
+                                            {!!webCurrencyConverter($orderDetail['price']*$orderDetail['qty'])!!}
                                             </td>
                                         </tr>
                                         @php($sub_total+=$orderDetail['price']*$orderDetail['qty'])
@@ -387,31 +387,31 @@
                                     <tbody>
                                     <tr>
                                         <td class="text-dark">
-                                            {{webCurrencyConverter($sub_total)}}
+                                        {!!webCurrencyConverter($sub_total)!!}
                                         </td>
                                         @if ($orderDetails['order_type'] == 'default_type')
                                             <td class="text-dark">
-                                                {{webCurrencyConverter($orderDetails['is_shipping_free'] ? $total_shipping_cost-$orderDetails['extra_discount']:$total_shipping_cost)}}
+                                            {!!webCurrencyConverter($orderDetails['is_shipping_free'] ? $total_shipping_cost-$orderDetails['extra_discount']:$total_shipping_cost)!!}
                                             </td>
 
                                         @endif
 
                                         <td class="text-dark">
-                                            {{webCurrencyConverter($total_tax)}}
+                                        {!!webCurrencyConverter($total_tax)!!}
                                         </td>
                                         <td class="text-dark">
-                                            -{{webCurrencyConverter($total_discount_on_product)}}
+                                            -{!!webCurrencyConverter($total_discount_on_product)!!}
                                         </td>
                                         <td class="text-dark">
-                                            - {{webCurrencyConverter($coupon_discount)}}
+                                            - {!!webCurrencyConverter($coupon_discount)!!}
                                         </td>
                                         @if ($orderDetails['order_type'] == 'POS')
                                             <td class="text-dark">
-                                                - {{webCurrencyConverter($extra_discount)}}
+                                                - {!!webCurrencyConverter($extra_discount)!!}
                                             </td>
                                         @endif
                                         <td class="text-dark">
-                                            {{webCurrencyConverter($sub_total+$total_tax+$total_shipping_cost-($orderDetails->discount)-$total_discount_on_product - $coupon_discount - $extra_discount)}}
+                                        {!!webCurrencyConverter($sub_total+$total_tax+$total_shipping_cost-($orderDetails->discount)-$total_discount_on_product - $coupon_discount - $extra_discount)!!}
                                         </td>
                                     </tr>
                                     </tbody>

@@ -10,7 +10,7 @@
         <a class="navbar-tool-text ms-2"
            href="{{route('shop-cart')}}"><small>{{translate('my_cart')}}</small>
             <span class="cart-total-price font-bold fs-14">
-                {{ webCurrencyConverter(amount: \App\Utils\CartManager::cart_total_applied_discount(\App\Utils\CartManager::get_cart()))}}
+                {!! webCurrencyConverter(amount: \App\Utils\CartManager::cart_total_applied_discount(\App\Utils\CartManager::get_cart()))!!}
             </span>
         </a>
     @else
@@ -25,7 +25,7 @@
            href="{{ route('customer.auth.login') }}">
             <small>{{translate('my_cart')}}</small>
             <span class="cart-total-price font-bold fs-14">
-                {{ webCurrencyConverter(amount: \App\Utils\CartManager::cart_total_applied_discount(\App\Utils\CartManager::get_cart()))}}
+            {!! webCurrencyConverter(amount: \App\Utils\CartManager::cart_total_applied_discount(\App\Utils\CartManager::get_cart()))!!}
             </span>
         </a>
     @endif
@@ -69,7 +69,7 @@
                 <div class="dropdown-saved-amount text-center  align-items-center justify-content-center text-accent mb-3 {{$totalSavedAmount <= 0 ? 'd-none' : 'd-flex'}}">
                     <img src="{{theme_asset(path: 'public/assets/front-end/img/party-popper.svg')}}" class="mr-2" alt="">
                     <small>{{translate('you_have_saved')}} <span
-                            class="total_discount">{{ webCurrencyConverter(amount: $totalSavedAmount)}}</span>!</small>
+                            class="total_discount">{!! webCurrencyConverter(amount: $totalSavedAmount)!!}</span>!</small>
                 </div>
                 <div class="__h-20rem" data-simplebar data-simplebar-auto-hide="false">
                     @php($sub_total=0)
@@ -120,7 +120,7 @@
                                                     class="cart_quantity_multiply{{$cartItem['id']}}">{{$cartItem['quantity']}}</span></span>
                                             <span
                                                 class="text-accent me-2 discount_price_of_{{$cartItem['id']}}">
-                                                    {{ webCurrencyConverter(amount: ($cartItem['price']-$cartItem['discount'])*$cartItem['quantity'])}}
+                                                    {!! webCurrencyConverter(amount: ($cartItem['price']-$cartItem['discount'])*$cartItem['quantity'])!!}
                                             </span>
                                         </div>
                                     </div>
@@ -187,7 +187,7 @@
                             class="amount_fullfill text-accent __text-12px {{$free_delivery_status['amount_need'] <= 0 ? '' :'d-none'}}">{{ translate('you_Get_Free_Delivery_Bonus') }}</span>
                         <small
                             class="amount_need_to_fullfill {{$free_delivery_status['amount_need'] <= 0 ? 'd-none' :''}}"><span
-                                class="text-accent __text-12px free_delivery_amount_need">{{ webCurrencyConverter(amount: $free_delivery_status['amount_need']) }}</span> {{ translate('add_more_for_free_delivery') }}
+                                class="text-accent __text-12px free_delivery_amount_need">{!! webCurrencyConverter(amount: $free_delivery_status['amount_need']) !!}</span> {{ translate('add_more_for_free_delivery') }}
                         </small>
                         <div class="progress __progress bg-DFEDFF">
                             <div class="progress-bar"
@@ -201,7 +201,7 @@
                         <span>{{translate('subtotal')}} :</span>
                         <span
                             class="text-accent font-size-base cart_total_amount {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-1' : 'ml-1'}}">
-                                {{ webCurrencyConverter(amount: $sub_total) }}
+                                {!! webCurrencyConverter(amount: $sub_total) !!}
                         </span>
                     </div>
 

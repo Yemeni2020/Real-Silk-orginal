@@ -101,7 +101,7 @@
                                                     </td>
                                                     <td>
                                                         @php($orderTotalPriceSummary = \App\Utils\OrderManager::getOrderTotalPriceSummary(order: $order))
-                                                        {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['totalAmount']) }}
+                                                        {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['totalAmount']) !!}
                                                     </td>
                                                     <td>
                                                         <div class="d-flex justify-content-center gap-2 align-items-center">
@@ -144,7 +144,7 @@
                                                         class="text-muted fs-12">{{date('d M, Y h:i A',strtotime($order['created_at']))}}</div>
                                                     <div class="d-flex gap-2 align-items-center fs-12">
                                                         <div class="text-muted">{{ translate('price').':' }}</div>
-                                                        <div class="text-dark"> {{webCurrencyConverter($order['order_amount'])}}</div>
+                                                        <div class="text-dark"> {!!webCurrencyConverter($order['order_amount'])!!}</div>
                                                     </div>
                                                     <div class="d-flex gap-2 align-items-center fs-12">
                                                         <div class="text-muted">{{ translate('status') }} :</div>

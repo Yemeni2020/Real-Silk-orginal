@@ -201,7 +201,7 @@
                                         <td class="bg-section rounded">
                                             <div class="trx-history-order">
                                                 <h5 class="direction-ltr mb-1 text-start">
-                                                    {{ $item['debit'] != 0 ? ' - '.webCurrencyConverter(amount: $item['debit']): ' + '.webCurrencyConverter(amount: $item['credit']) }}
+                                                {!! $item['debit'] != 0 ? ' - '.webCurrencyConverter(amount: $item['debit']): ' + '.webCurrencyConverter(amount: $item['credit']) !!}
                                                 </h5>
                                                 <div>
                                                     @if ($item['transaction_type'] == 'add_fund_by_admin')

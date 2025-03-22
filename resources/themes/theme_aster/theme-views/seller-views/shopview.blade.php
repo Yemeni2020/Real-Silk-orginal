@@ -85,7 +85,7 @@
                                         @php($minimumOrderAmount=getWebConfig(name: 'minimum_order_amount_status'))
                                         @php($minimumOrderAmountBySeller=getWebConfig(name: 'minimum_order_amount_by_seller'))
                                         @if ($minimumOrderAmount ==1 && $minimumOrderAmountBySeller ==1)
-                                            <li>{{ webCurrencyConverter($shopInfoArray['minimum_order_amount'])}} {{translate('minimum_order_amount')}} </li>
+                                            <li>{!! webCurrencyConverter($shopInfoArray['minimum_order_amount'])!!} {{translate('minimum_order_amount')}} </li>
                                         @endif
                                     </ul>
                                 </div>
@@ -132,7 +132,7 @@
                                     @php($minimumOrderAmountStatus=getWebConfig(name: 'minimum_order_amount_status'))
                                     @php($minimumOrderAmountBySeller=getWebConfig(name: 'minimum_order_amount_by_seller'))
                                     @if ($minimumOrderAmountStatus ==1 && $minimumOrderAmountBySeller ==1)
-                                        <span class="text-sm-nowrap">{{ webCurrencyConverter($shopInfoArray['minimum_order_amount'])}} {{translate('minimum_order_amount')}}</span>
+                                        <span class="text-sm-nowrap">{!! webCurrencyConverter($shopInfoArray['minimum_order_amount'])!!} {{translate('minimum_order_amount')}}</span>
                                     @endif
                                 </div>
                             </div>

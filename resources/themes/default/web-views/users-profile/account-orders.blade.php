@@ -100,7 +100,7 @@
                                         <td class="bodytr">
                                             <div class="text-dark fs-13 font-bold">
                                                 @php($orderTotalPriceSummary = \App\Utils\OrderManager::getOrderTotalPriceSummary(order: $order))
-                                                {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['totalAmount']) }}
+                                                {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['totalAmount']) !!}
                                             </div>
                                         </td>
                                         <td class="bodytr">
@@ -173,7 +173,7 @@
                                                 <div class="fs-11 font-semibold text-secondary-50">{{date('d M, Y h:i A',strtotime($order['created_at'])) }}</div>
                                                 <div class="d-flex gap-2 align-items-center">
                                                     <div class="text-nowrap fs-11 font-semibold text-secondary-50">{{ translate('total') }} :</div>
-                                                    <div class="text-dark fs-13 font-weight-bold">{{ webCurrencyConverter(amount: $order['order_amount']) }}</div>
+                                                    <div class="text-dark fs-13 font-weight-bold">{!! webCurrencyConverter(amount: $order['order_amount']) !!}</div>
                                                 </div>
                                                 <div class="my-2">
                                                     @if($order['order_status']=='failed' || $order['order_status']=='canceled')

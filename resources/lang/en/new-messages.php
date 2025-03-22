@@ -9129,4 +9129,10 @@ return [
 	"Updated_the_office" => "Updated the office",
 	"withdrawal_method_not_found" => "Withdrawal method not found",
 	"swift" => "Swift",
+	"Please_add_or_checked_items_before_proceeding_to_checkout" => "Please add or checked items before proceeding to checkout",
+	"Share_Modal" => "Share Modal",
+	"Share_this_link_via" => "Share this link via",
+	"Or_copy_link" => "Or copy link",
+	"copy" => "Copy",
+	"no_Coupon_Found" => "No Coupon Found",
 ];

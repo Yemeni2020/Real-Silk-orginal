@@ -151,13 +151,13 @@
                                         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                                             <div>{{translate('subtotal')}}</div>
                                             <div>
-                                                {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['subTotal']) }}
+                                            {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['subTotal']) !!}
                                             </div>
                                         </div>
                                         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                                             <div>{{translate('tax_fee')}}</div>
                                             <div>
-                                                {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['taxTotal']) }}
+                                            {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['taxTotal']) !!}
                                             </div>
                                         </div>
                                         @if($order->order_type == 'default_type' && $order?->is_shipping_free == 0)
@@ -165,14 +165,14 @@
                                                 class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                                                 <div>{{translate('shipping_fee')}}</div>
                                                 <div>
-                                                    {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['shippingTotal']) }}
+                                                {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['shippingTotal']) !!}
                                                 </div>
                                             </div>
                                         @endif
                                         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                                             <div class="text-capitalize">{{translate('coupon_discount')}}</div>
                                             <div>
-                                                - {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['couponDiscount']) }}
+                                                - {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['couponDiscount']) !!}
                                             </div>
                                         </div>
                                         @if($order->order_type != 'default_type')
@@ -180,14 +180,14 @@
                                                 class="d-flex flex-wrap justify-content-between align-`item`s-center gap-2">
                                                 <div class="text-capitalize">{{translate('extra_discount')}}</div>
                                                 <div>
-                                                    - {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['extraDiscount']) }}
+                                                    - {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['extraDiscount']) !!}
                                                 </div>
                                             </div>
                                         @endif
                                         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                                             <h4>{{translate('total')}}</h4>
                                             <h2 class="text-base">
-                                                {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['totalAmount']) }}
+                                            {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['totalAmount']) !!}
                                             </h2>
                                         </div>
                                     </div>

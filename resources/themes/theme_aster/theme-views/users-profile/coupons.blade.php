@@ -39,7 +39,7 @@
                                                         @if ($item->coupon_type == "free_delivery")
                                                             {{ translate('free_Delivery') }}
                                                         @else
-                                                            {{ ($item->discount_type == 'percentage')? $item->discount.'%'.translate('off') : webCurrencyConverter($item->discount)}}
+                                                        {!! ($item->discount_type == 'percentage')? $item->discount.'%'.translate('off') : webCurrencyConverter($item->discount)!!}
                                                         @endif
                                                     </h2>
                                                     <p class="text-capitalize">
@@ -67,7 +67,7 @@
                                                     <button
                                                         class="ticket-welcome-btn coupon-id-hide coupon-hide-id-{{ $item->code }} d-none">{{ translate('copied') }}</button>
                                                     <h6>{{ translate('valid_till') }} {{ $item->expire_date->format('d M, Y') }}</h6>
-                                                    <p class="m-0">{{ translate('available_from_minimum_purchase') }} {{webCurrencyConverter($item->min_purchase)}}</p>
+                                                    <p class="m-0">{{ translate('available_from_minimum_purchase') }} {!!webCurrencyConverter($item->min_purchase)!!}</p>
                                                 </div>
                                             </div>
                                         </div>

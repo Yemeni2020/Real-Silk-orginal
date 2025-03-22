@@ -8,7 +8,7 @@
                     @if ($product->discount_type == 'percent')
                         -{{round($product->discount,(!empty($decimal_point_settings) ? $decimal_point_settings: 0))}}%
                     @elseif($product->discount_type =='flat')
-                        -{{ webCurrencyConverter(amount: $product->discount) }}
+                        -{!! webCurrencyConverter(amount: $product->discount) !!}
                     @endif
                 </span>
             </span>
@@ -45,11 +45,11 @@
                     <div class="d-flex flex-wrap gap-8 align-items-center row-gap-0">
                         @if($product->discount > 0)
                             <del class="category-single-product-price">
-                                {{ webCurrencyConverter(amount: $product->unit_price) }}
+                                {!! webCurrencyConverter(amount: $product->unit_price) !!}
                             </del>
                         @endif
                         <span class="flash-product-price text-dark fw-semibold">
-                            {{ webCurrencyConverter(amount: $product->unit_price - getProductDiscount(product: $product, price: $product->unit_price)) }}
+                            {!! webCurrencyConverter(amount: $product->unit_price - getProductDiscount(product: $product, price: $product->unit_price)) !!}
                         </span>
                     </div>
 

@@ -82,7 +82,7 @@
                                                 @if ($deal_of_the_day->product->discount_type === "percent")
                                                     -{{$deal_of_the_day->product->discount}}%
                                                 @else
-                                                    {{translate('save')}} {{ webCurrencyConverter(amount: $deal_of_the_day->product->discount) }}
+                                                    {{translate('save')}} {!! webCurrencyConverter(amount: $deal_of_the_day->product->discount) !!}
                                                 @endif
                                             </span>
                                         @endif
@@ -148,7 +148,7 @@
                                                 @if ($random_product->discount_type === "percent")
                                                     -{{$random_product->discount}}%
                                                 @else
-                                                    {{translate('save')}} {{ webCurrencyConverter(amount: $random_product->discount) }}
+                                                    {{translate('save')}} {!! webCurrencyConverter(amount: $random_product->discount) !!}
                                                 @endif
                                             </span>
                                         @endif

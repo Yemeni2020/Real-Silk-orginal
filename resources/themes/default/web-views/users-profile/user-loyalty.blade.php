@@ -283,7 +283,7 @@
                             </div>
                             <div class="text-center mb-3 text-primary">
                     <span>
-                        {{ $loyaltyPointExchangeRate }} {{translate('point')}} = {{ webCurrencyConverter(amount: 1)}}
+                        {{ $loyaltyPointExchangeRate }} {{translate('point')}} = {!! webCurrencyConverter(amount: 1)!!}
                     </span>
                             </div>
                             <div class="my-wallet-card-content text-break-word">

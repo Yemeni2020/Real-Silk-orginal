@@ -27,9 +27,9 @@
             <tr>
                 <td>{{$data['walletTransaction']->transaction_id ?? 'ebdaa18c'}}</td>
                 <td>{{date('d M,Y h:i:A',strtotime($data['walletTransaction']->created_at??now()))}}</td>
-                <td>{{isset($data['walletTransaction']) ? webCurrencyConverter(amount: $data['walletTransaction']->credit) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 5000), currencyCode: getCurrencyCode())}}</td>
-                <td>{{isset($data['walletTransaction']) ? webCurrencyConverter(amount: $data['walletTransaction']->debit) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 700), currencyCode: getCurrencyCode())}}</td>
-                <td>{{isset($data['walletTransaction']) ? webCurrencyConverter(amount: $data['walletTransaction']->balance) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 1000), currencyCode: getCurrencyCode())}}</td>
+                <td>{!!isset($data['walletTransaction']) ? webCurrencyConverter(amount: $data['walletTransaction']->credit) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 5000), currencyCode: getCurrencyCode())!!}</td>
+                <td>{!!isset($data['walletTransaction']) ? webCurrencyConverter(amount: $data['walletTransaction']->debit) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 700), currencyCode: getCurrencyCode())!!}</td>
+                <td>{!!isset($data['walletTransaction']) ? webCurrencyConverter(amount: $data['walletTransaction']->balance) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 1000), currencyCode: getCurrencyCode())!!}</td>
             </tr>
             </tbody>
         </table>

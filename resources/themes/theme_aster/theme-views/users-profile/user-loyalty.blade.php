@@ -149,7 +149,7 @@
                         </div>
                         <div class="text-center mb-2">
                             <span>
-                                {{ $loyaltyPointExchangeRate }} {{translate('point')}} = {{webCurrencyConverter(1)}}
+                                {{ $loyaltyPointExchangeRate }} {{translate('point')}} = {!!webCurrencyConverter(1)!!}
                             </span>
                         </div>
                         <div class="form-row">

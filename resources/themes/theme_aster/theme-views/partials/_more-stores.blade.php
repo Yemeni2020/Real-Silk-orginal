@@ -46,7 +46,7 @@
                                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                                     <div class="">
                                         <h6 class="fs-10 mb-2">{{ translate('Order_ID').':'. '#' }}{{ $order['id'] }}</h6>
-                                        <h6>{{ translate('final_total').':' }}{{ webCurrencyConverter($order['order_amount']) }}</h6>
+                                        <h6>{{ translate('final_total').':' }}{!! webCurrencyConverter($order['order_amount']) !!}</h6>
                                     </div>
                                     <a href="javascript:" data-order-id="{{ $order['id'] }}"
                                        class="btn btn-primary order-again">{{ translate('order_again') }}</a>

@@ -113,7 +113,7 @@ if (!function_exists('webCurrencyConverter')) {
      * @param string|int|float|null $amount
      * @return float|string
      */
-    function webCurrencyConverter(string|int|float|null $amount = 0): float|string
+    function webCurrencyConverter(string|int|float|null $amount = 0,bool $img=true): float|string
     {
         loadCurrency();
         $currencyModel = getWebConfig('currency_model');
@@ -130,7 +130,7 @@ if (!function_exists('webCurrencyConverter')) {
             $rate = 1;
         }
 
-        return setCurrencySymbol(amount: round($amount * $rate, 2), currencyCode: getCurrencyCode(type: 'web'), type: 'web');
+        return setCurrencySymbol(amount: round($amount * $rate, 2), currencyCode: getCurrencyCode(type: 'web'), type: 'web',img:$img);
     }
 }
 
@@ -179,11 +179,16 @@ if (!function_exists('getCurrencySymbol')) {
      * @param string $type
      * @return float|int|string
      */
-    function getCurrencySymbol(string $currencyCode = USD, string $type = 'default'): float|int|string
+    function getCurrencySymbol(string $currencyCode = USD, string $type = 'default',bool $img=false): float|int|string
     {
+        $SAR_IMAGE_PATH = asset('public/images/Saudi_Riyal_Symbol-2.svg'); // تأكد من وضع المسار الصحيح للصورة
+        $defaultSymbol = $img?'<img src="'.$SAR_IMAGE_PATH.'" alt="SAR" style="width: 20px; height: 20px;display:inline;">':'';
+    
+        
         loadCurrency();
         if ($type == 'web' && session()->has('currency_symbol')) {
-            $currentSymbol = session('currency_symbol');
+            $sessionSymbol = session('currency_symbol');
+            $currentSymbol = $sessionSymbol == "SAR" ? $defaultSymbol : ($sessionSymbol ?? 'SAR');
         } else {
             
             $systemDefaultCurrencyInfo = session('system_default_currency_info');
@@ -243,12 +248,12 @@ if (!function_exists('setCurrencySymbol')) {
      * @param string $type
      * @return string
      */
-    function setCurrencySymbol(string|int|float $amount, string $currencyCode = USD, string $type = 'default'): string
+    function setCurrencySymbol(string|int|float $amount, string $currencyCode = USD, string $type = 'default', bool $img=true): string
     {
         $decimalPointSettings = getWebConfig('decimal_point_settings');
         $position = getWebConfig('currency_symbol_position');
         if ($position === 'left') {
-            $string = getCurrencySymbol(currencyCode: $currencyCode, type: $type) . '' . number_format($amount, (!empty($decimalPointSettings) ? $decimalPointSettings : 0));
+            $string = getCurrencySymbol(currencyCode: $currencyCode, type: $type,img:$img) .  number_format($amount, (!empty($decimalPointSettings) ? $decimalPointSettings : 0));
         } else {
             $string = number_format($amount, !empty($decimalPointSettings) ? $decimalPointSettings : 0) . '' . getCurrencySymbol(currencyCode: $currencyCode, type: $type);
         }

@@ -42,11 +42,11 @@
             </div>
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div>{{ translate('item_price') }}</div>
-                <div>{{webCurrencyConverter($product_price_total)}}</div>
+                <div>{!!webCurrencyConverter($product_price_total)!!}</div>
             </div>
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div class="text-capitalize">{{ translate('product_discount') }}</div>
-                <div>{{webCurrencyConverter($total_discount_on_product)}}</div>
+                <div>{!!webCurrencyConverter($total_discount_on_product)!!}</div>
             </div>
             @php($coupon_discount = 0)
             @php($coupon_dis=0)
@@ -67,15 +67,15 @@
 
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div>{{ translate('sub_total') }}</div>
-                <div>{{webCurrencyConverter($product_price_total - $total_discount_on_product)}}</div>
+                <div>{!!webCurrencyConverter($product_price_total - $total_discount_on_product)!!}</div>
             </div>
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div>{{ translate('tax') }}</div>
-                <div>{{webCurrencyConverter($total_tax)}}</div>
+                <div>{!!webCurrencyConverter($total_tax)!!}</div>
             </div>
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div>{{ translate('shipping') }}</div>
-                <div class="text-primary">{{webCurrencyConverter($total_shipping_cost)}}</div>
+                <div class="text-primary">{!!webCurrencyConverter($total_shipping_cost)!!}</div>
             </div>
 
             @php($coupon_discount = session()->has('coupon_discount')?session('coupon_discount'):0)
@@ -84,12 +84,12 @@
                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <div>{{ translate('coupon_discount') }}</div>
                     <div class="text-primary">
-                         {{'-'.webCurrencyConverter($coupon_discount+$order_wise_shipping_discount)}}</div>
+                    {!!'-'.webCurrencyConverter($coupon_discount+$order_wise_shipping_discount)!!}</div>
                 </div>
             @endif
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <h4>{{ translate('total') }}</h4>
-                <h2 class="text-primary">{{webCurrencyConverter($product_price_total+$total_tax+$total_shipping_cost-$coupon_dis-$total_discount_on_product-$order_wise_shipping_discount)}}</h2>
+                <h2 class="text-primary">{!!webCurrencyConverter($product_price_total+$total_tax+$total_shipping_cost-$coupon_dis-$total_discount_on_product-$order_wise_shipping_discount)!!}</h2>
             </div>
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-4">
                 <a href="{{ route('home') }}" class="btn-link text-primary text-capitalize"><i

@@ -43,7 +43,7 @@
         </div>
 
         <h4 class="mt-4 font-weight-bold text-center">
-            {{translate('amount')}} : {{ webCurrencyConverter(amount: $totalOfflineAmount) }}
+            {{translate('amount')}} : {!! webCurrencyConverter(amount: $totalOfflineAmount) !!}
         </h4>
 
         <div class="mx-xl-5">

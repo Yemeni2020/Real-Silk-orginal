@@ -26,7 +26,7 @@
                                                 @if ($bestSell->product->discount_type == 'percent')
                                                     -{{round($bestSell->product->discount)}}%
                                                 @elseif($bestSell->product->discount_type =='flat')
-                                                    -{{ webCurrencyConverter(amount: $bestSell->product->discount) }}
+                                                    -{!! webCurrencyConverter(amount: $bestSell->product->discount) !!}
                                                 @endif
                                             </span>
                                         </span>
@@ -65,14 +65,14 @@
                                             <span>
                                                 @if($bestSell->product->discount > 0)
                                                     <del class="__color-9B9B9B __text-12px">
-                                                        {{ webCurrencyConverter(amount: $bestSell->product->unit_price) }}
+                                                    {!! webCurrencyConverter(amount: $bestSell->product->unit_price) !!}
                                                     </del>
                                                 @endif
                                             </span>
                                             <span class="text-accent text-dark">
-                                                {{ webCurrencyConverter(amount:
+                                            {!! webCurrencyConverter(amount:
                                                 $bestSell->product->unit_price-(getProductDiscount(product: $bestSell->product, price: $bestSell->product->unit_price))
-                                                ) }}
+                                                ) !!}
                                             </span>
                                         </div>
                                     </div>

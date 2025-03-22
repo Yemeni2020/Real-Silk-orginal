@@ -96,7 +96,7 @@
                                                             data-bs-toggle="tooltip"
                                                             data-bs-placement="right"
                                                             data-bs-custom-class="custom-tooltip"
-                                                            data-bs-title="{{ translate('minimum_Order_Amount') }} {{ webCurrencyConverter($verify_status['minimum_order_amount']) }} {{ translate('for') }} @if($cartItem->seller_is=='admin') {{getWebConfig(name: 'company_name')}} @else {{ get_shop_name($cartItem['seller_id']) }} @endif">
+                                                            data-bs-title="{{ translate('minimum_Order_Amount') }} {!! webCurrencyConverter($verify_status['minimum_order_amount']) !!} {{ translate('for') }} @if($cartItem->seller_is=='admin') {{getWebConfig(name: 'company_name')}} @else {{ get_shop_name($cartItem['seller_id']) }} @endif">
                                                         <i class="bi bi-info-circle"></i>
                                                     </span>
                                                     @endif
@@ -131,12 +131,12 @@
                                                                                     }
                                                                                 }
                                                                                 ?>
-                                                                            {{ $shippings_title }}
+                                                                            {!! $shippings_title !!}
                                                                         </button>
                                                                         <ul class="dropdown-menu dropdown-left-auto bs-dropdown-min-width--8rem">
                                                                             @foreach($shippings as $shipping)
                                                                                 <li class="cursor-pointer set-shipping-id" data-id="{{$shipping['id']}}" data-cart-group="{{$cartItem['cart_group_id']}}">
-                                                                                    {{$shipping['title'].' ( '.$shipping['duration'].' ) '.webCurrencyConverter($shipping['cost'])}}
+                                                                                {!!$shipping['title'].' ( '.$shipping['duration'].' ) '.webCurrencyConverter($shipping['cost'])!!}
                                                                                 </li>
                                                                             @endforeach
                                                                         </ul>
@@ -256,7 +256,7 @@
                                                                     <div class="fs-12">{{$key1}} : {{$variation}}</div>
                                                                 @endforeach
                                                                 <div class="fs-12 text-capitalize">{{ translate('unit_price') }}
-                                                                    : {{ webCurrencyConverter($cartItem['price']) }}</div>
+                                                                    : {!! webCurrencyConverter($cartItem['price']) !!}</div>
 
                                                                 @if($product->product_type == 'physical' && $getProductCurrentStock < $cartItem['quantity'])
                                                                     <div class="d-flex text-danger font-bold">
@@ -321,12 +321,12 @@
                                                     @endif
 
                                                 </td>
-                                                <td class="text-end">{{ webCurrencyConverter($cartItem['price']*$cartItem['quantity']) }}</td>
-                                                <td class="text-end">{{ webCurrencyConverter($cartItem['discount']*$cartItem['quantity']) }}</td>
-                                                <td class="text-end">{{ webCurrencyConverter(($cartItem['price']-$cartItem['discount'])*$cartItem['quantity']) }}</td>
+                                                <td class="text-end">{!! webCurrencyConverter($cartItem['price']*$cartItem['quantity']) !!}</td>
+                                                <td class="text-end">{!! webCurrencyConverter($cartItem['discount']*$cartItem['quantity']) !!}</td>
+                                                <td class="text-end">{!! webCurrencyConverter(($cartItem['price']-$cartItem['discount'])*$cartItem['quantity']) !!}</td>
                                                 <td>
                                                     @if ( $shipping_type != 'order_wise')
-                                                        {{ webCurrencyConverter($cartItem['shipping_cost']) }}
+                                                    {!! webCurrencyConverter($cartItem['shipping_cost']) !!}
                                                     @endif
                                                 </td>
                                             </tr>
@@ -348,7 +348,7 @@
                                                     </span>
                                                 @else
                                                     <span class="need-for-free-delivery font-bold">
-                                                        {{ webCurrencyConverter($free_delivery_status['amount_need']) }}
+                                                    {!! webCurrencyConverter($free_delivery_status['amount_need']) !!}
                                                     </span>
                                                     <span class="text-muted fs-16">
                                                         {{ translate('add_more_for_free_delivery') }}
@@ -425,14 +425,14 @@
                                                             <div class="fs-12">{{$key1}} : {{$variation}}</div>
                                                         @endforeach
                                                         <div class="fs-12 text-capitalize">{{ translate('unit_price') }}
-                                                            : {{ webCurrencyConverter($cartItem['price']*$cartItem['quantity']) }}</div>
+                                                            : {!! webCurrencyConverter($cartItem['price']*$cartItem['quantity']) !!}</div>
                                                         <div class="fs-12">{{ translate('discount') }}
-                                                            : {{ webCurrencyConverter($cartItem['discount']*$cartItem['quantity']) }}</div>
+                                                            : {!! webCurrencyConverter($cartItem['discount']*$cartItem['quantity']) !!}</div>
                                                         <div class="fs-12">{{ translate('total') }}
-                                                            : {{ webCurrencyConverter(($cartItem['price']-$cartItem['discount'])*$cartItem['quantity']) }}</div>
+                                                            : {!! webCurrencyConverter(($cartItem['price']-$cartItem['discount'])*$cartItem['quantity']) !!}</div>
                                                         @if ( $shipping_type != 'order_wise')
                                                             <div class="fs-12">{{ translate('shipping_cost') }}
-                                                                : {{ webCurrencyConverter($cartItem['shipping_cost']) }}</div>
+                                                                : {!! webCurrencyConverter($cartItem['shipping_cost']) !!}</div>
                                                         @endif
 
                                                         @if($product->product_type == 'physical' && $getProductCurrentStock < $cartItem['quantity'])
@@ -506,7 +506,7 @@
                                                         class="text-muted fs-16">{{ translate('you_Get_Free_Delivery_Bonus') }}</span>
                                                 @else
                                                     <span
-                                                        class="need-for-free-delivery font-bold">{{ webCurrencyConverter($free_delivery_status['amount_need']) }}</span>
+                                                        class="need-for-free-delivery font-bold">{!! webCurrencyConverter($free_delivery_status['amount_need']) !!}</span>
                                                     <span
                                                         class="text-muted fs-16">{{ translate('add_more_for_free_delivery') }}</span>
                                                 @endif
@@ -553,7 +553,7 @@
                                             @foreach($shippings as $shipping)
                                                 <option
                                                         value="{{$shipping['id']}}" {{$choosen_shipping['shipping_method_id']==$shipping['id']?'selected':''}}>
-                                                    {{$shipping['title'].' ( '.$shipping['duration'].' ) '.webCurrencyConverter($shipping['cost'])}}
+                                                        {!!$shipping['title'].' ( '.$shipping['duration'].' ) '.webCurrencyConverter($shipping['cost'])!!}
                                                 </option>
                                             @endforeach
                                         </select>

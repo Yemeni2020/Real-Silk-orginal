@@ -16,7 +16,7 @@
                     @if ($product->discount_type == 'percent')
                         {{'-'.' '.round($product->discount, (!empty($decimal_point_settings) ? $decimal_point_settings: 0)).'%'}}
                     @elseif($product->discount_type =='flat')
-                        {{'-'.' '.webCurrencyConverter($product->discount)}}
+                    {!!'-'.' '.webCurrencyConverter($product->discount)!!}
                     @endif
                 </span>
             </span>
@@ -86,12 +86,12 @@
             <a href="{{route('product',$product->slug)}}">
                 <div class="product__price d-flex flex-wrap column-gap-2">
                     @if($product->discount > 0)
-                        <del class="product__old-price">{{webCurrencyConverter($product->unit_price)}}</del>
+                        <del class="product__old-price">{!!webCurrencyConverter($product->unit_price)!!}</del>
                     @endif
                     <ins class="product__new-price">
-                        {{webCurrencyConverter(
+                    {!!webCurrencyConverter(
                             $product->unit_price-(Helpers::getProductDiscount($product,$product->unit_price))
-                        )}}
+                        )!!}
                     </ins>
                 </div>
             </a>

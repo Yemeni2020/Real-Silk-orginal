@@ -18,7 +18,7 @@
                                 @if ($product->discount_type == 'percent')
                                     -{{round($product->discount,(!empty($decimal_point_settings) ? $decimal_point_settings: 0))}}%
                                 @elseif($product->discount_type =='flat')
-                                    -{{ webCurrencyConverter(amount: $product->discount) }}
+                                    -{!! webCurrencyConverter(amount: $product->discount) !!}
                                 @endif
                             </span>
                         @endif

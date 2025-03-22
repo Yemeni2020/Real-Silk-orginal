@@ -151,7 +151,7 @@
                                                                 <label
                                                                     for="">{{ translate('your_current_balance') }}</label>
                                                                 <input class="form-control" type="text"
-                                                                       value="{{webCurrencyConverter($customer_balance)}}"
+                                                                       value="{!!webCurrencyConverter($customer_balance)!!}"
                                                                        readonly>
                                                             </div>
                                                         </div>
@@ -161,7 +161,7 @@
                                                                 <label
                                                                     for="">{{ translate('order_amount') }}</label>
                                                                 <input class="form-control" type="text"
-                                                                       value="{{webCurrencyConverter($amount)}}"
+                                                                       value="{!!webCurrencyConverter($amount)!!}"
                                                                        readonly>
                                                             </div>
                                                         </div>
@@ -171,7 +171,7 @@
                                                                     {{ translate('remaining_balance') }}
                                                                 </label>
                                                                 <input class="form-control" type="text"
-                                                                       value="{{webCurrencyConverter($remain_balance)}}"
+                                                                       value="{!!webCurrencyConverter($remain_balance)!!}"
                                                                        readonly>
                                                                 @if ($remain_balance<0)
                                                                     <label

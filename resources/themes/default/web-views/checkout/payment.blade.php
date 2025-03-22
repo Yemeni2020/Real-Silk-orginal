@@ -235,20 +235,20 @@ $currencyModel = getWebConfig('currency_model');
                     <div class="form-row">
                         <div class="form-group col-12">
                             <label for="">{{ translate('your_current_balance')}}</label>
-                            <input class="form-control" type="text" value="{{ webCurrencyConverter(amount: $customer_balance ?? 0) }}" readonly>
+                            <input class="form-control" type="text" value="{!! webCurrencyConverter(amount: $customer_balance ?? 0) !!}" readonly>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-12">
                             <label for="">{{ translate('order_amount')}}</label>
-                            <input class="form-control" type="text" value="{{ webCurrencyConverter(amount: $amount ?? 0) }}" readonly>
+                            <input class="form-control" type="text" value="{!! webCurrencyConverter(amount: $amount ?? 0) !!}" readonly>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-12">
                             <label for="">{{ translate('remaining_balance')}}</label>
-                            <input class="form-control" type="text" value="{{ webCurrencyConverter(amount: $remain_balance ?? 0) }}" readonly>
+                            <input class="form-control" type="text" value="{!! webCurrencyConverter(amount: $remain_balance ?? 0) !!}" readonly>
                             @if ($remain_balance<0)
                             <label class="__color-crimson mt-1">{{ translate('you_do_not_have_sufficient_balance_for_pay_this_order!!')}}</label>
                             @endif
@@ -290,7 +290,7 @@ $currencyModel = getWebConfig('currency_model');
                       <div class="form-group col-12">
                           <label for="">{{ translate('order_amount')}}</label>
                           <input type="hidden" name="amount" value="{{$amount}}">
-                          <input class="form-control" type="text" value="{{ webCurrencyConverter(amount: $amount ?? 0) }}" readonly>
+                          <input class="form-control" type="text" value="{!! webCurrencyConverter(amount: $amount ?? 0) !!}" readonly>
                       </div>
                   </div>
                   <div class="form-row">
@@ -356,7 +356,7 @@ $currencyModel = getWebConfig('currency_model');
                       <div class="form-group col-12">
                           <label for="">{{ translate('order_amount')}}</label>
                           <input type="hidden" name="amount" value="{{$amount}}">
-                          <input class="form-control" type="text" value="{{ webCurrencyConverter(amount: $amount ?? 0) }}" readonly>
+                          <input class="form-control" type="text" value="{!! webCurrencyConverter(amount: $amount ?? 0) !!}" readonly>
                       </div>
                   </div>
                   <div class="form-row">

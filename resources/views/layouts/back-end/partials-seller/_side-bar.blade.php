@@ -481,6 +481,7 @@
                                 </span>
                             </a>
                         </li>
+                        @if($seller->type_account!="office")
                         <li class="navbar-vertical-aside-has-menu {{Request::is('vendor/profile/'.Profile::INDEX[URI]) || Request::is('vendor/profile/'.Profile::BANK_INFO_UPDATE[URI]) ?'active':''}}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link"
                                href="{{route('vendor.profile.index')}}">
@@ -490,7 +491,7 @@
                                 </span>
                             </a>
                         </li>
-                        @if($seller->type_account!="office")
+                        
 
                         <li class="navbar-vertical-aside-has-menu {{Request::is('vendor/shop*')?'active':''}}">
                             <a class="js-navbar-vertical-aside-menu-link nav-link"

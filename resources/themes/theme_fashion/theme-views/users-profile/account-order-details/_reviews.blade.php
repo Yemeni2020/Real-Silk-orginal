@@ -26,7 +26,7 @@
                                                         @if ($order_details?->product?->discount_type == 'percent')
                                                             {{ round($order_details?->product?->discount)}}%
                                                         @elseif($order_details?->product?->discount_type =='flat')
-                                                            {{ webCurrencyConverter(amount: $order_details?->product?->discount) }}
+                                                        {!! webCurrencyConverter(amount: $order_details?->product?->discount) !!}
                                                         @endif
                                                     </span>
                                                 @endif

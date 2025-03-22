@@ -45,7 +45,7 @@
         </div>
 
         <h4 class="text-center py-3 fw-6 font-weight--600">
-            {{ translate('amount').' '.':' }} {{ webCurrencyConverter($total_offline_amount) }}
+            {{ translate('amount').' '.':' }} {!! webCurrencyConverter($total_offline_amount) !!}
         </h4>
 
         <div class="row">

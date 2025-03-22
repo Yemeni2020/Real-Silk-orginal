@@ -5,6 +5,8 @@
 
 
     $categories_menu = Category::where('menu', 1)->get();
+    $SAR_IMAGE_PATH = asset('public/images/Saudi_Riyal_Symbol-2.svg'); // تأكد من وضع المسار الصحيح للصورة
+    $defaultSymbol_Svg = '<img src="'.$SAR_IMAGE_PATH.'" alt="SAR" style="width: 20px; height: 20px;display:inline;">';
 
 @endphp
 @php($announcement=getWebConfig(name: 'announcement'))
@@ -40,7 +42,7 @@
                 @if($currency_model=='multi_currency')
                     <div class="topbar-text dropdown disable-autohide mr-4">
                         <a class="topbar-link dropdown-toggle" href="#" data-toggle="dropdown">
-                            <span>{{session('currency_code')}} {{session('currency_symbol')}}</span>
+                            <span>{{session('currency_code')}} {!!session('currency_symbol')=="SAR"? $defaultSymbol_Svg :session('currency_symbol')!!}</span>
                         </a>
                         <ul class="text-align-direction dropdown-menu dropdown-menu-{{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}} min-width-160px">
                             @foreach (\App\Models\Currency::where('status', 1)->get() as $key => $currency)

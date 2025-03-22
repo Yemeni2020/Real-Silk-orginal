@@ -85,8 +85,8 @@
                                         @if ($verify_status['minimum_order_amount'] > $verify_status['amount'])
                                             <span class="pl-1 text-danger pulse-button minimum-order-amount-message" data-toggle="tooltip"
                                                   data-placement="right"
-                                                  data-title="{{ translate('minimum_Order_Amount') }} {{ webCurrencyConverter(amount: $verify_status['minimum_order_amount']) }} {{ translate('for') }} @if($cartItem->seller_is=='admin') {{getWebConfig(name: 'company_name')}} @else {{ \App\Utils\get_shop_name($cartItem['seller_id']) }} @endif"
-                                                  title="{{ translate('minimum_Order_Amount') }} {{ webCurrencyConverter(amount: $verify_status['minimum_order_amount']) }} {{ translate('for') }} @if($cartItem->seller_is=='admin') {{getWebConfig(name: 'company_name')}} @else {{ \App\Utils\get_shop_name($cartItem['seller_id']) }} @endif">
+                                                  data-title="{{ translate('minimum_Order_Amount') }} {!! webCurrencyConverter(amount: $verify_status['minimum_order_amount']) !!} {{ translate('for') }} @if($cartItem->seller_is=='admin') {{getWebConfig(name: 'company_name')}} @else {{ \App\Utils\get_shop_name($cartItem['seller_id']) }} @endif"
+                                                  title="{{ translate('minimum_Order_Amount') }} {!! webCurrencyConverter(amount: $verify_status['minimum_order_amount']) !!} {{ translate('for') }} @if($cartItem->seller_is=='admin') {{getWebConfig(name: 'company_name')}} @else {{ \App\Utils\get_shop_name($cartItem['seller_id']) }} @endif">
                                                     <i class="czi-security-announcement"></i>
                                                 </span>
                                         @endif
@@ -109,8 +109,8 @@
                                             @if ($verify_status['minimum_order_amount'] > $verify_status['amount'])
                                                 <span class="pl-1 text-danger pulse-button minimum-order-amount-message" data-toggle="tooltip"
                                                       data-placement="right"
-                                                      data-title="{{ translate('minimum_Order_Amount') }} {{ webCurrencyConverter(amount: $verify_status['minimum_order_amount']) }} {{ translate('for') }} @if($cartItem->seller_is=='admin') {{getWebConfig(name: 'company_name')}} @else {{ \App\Utils\get_shop_name($cartItem['seller_id']) }} @endif"
-                                                      title="{{ translate('minimum_Order_Amount') }} {{ webCurrencyConverter(amount: $verify_status['minimum_order_amount']) }} {{ translate('for') }} @if($cartItem->seller_is=='admin') {{getWebConfig(name: 'company_name')}} @else {{ \App\Utils\get_shop_name($cartItem['seller_id']) }} @endif">
+                                                      data-title="{{ translate('minimum_Order_Amount') }} {!! webCurrencyConverter(amount: $verify_status['minimum_order_amount']) !!} {{ translate('for') }} @if($cartItem->seller_is=='admin') {{getWebConfig(name: 'company_name')}} @else {{ \App\Utils\get_shop_name($cartItem['seller_id']) }} @endif"
+                                                      title="{{ translate('minimum_Order_Amount') }} {!! webCurrencyConverter(amount: $verify_status['minimum_order_amount']) !!} {{ translate('for') }} @if($cartItem->seller_is=='admin') {{getWebConfig(name: 'company_name')}} @else {{ \App\Utils\get_shop_name($cartItem['seller_id']) }} @endif">
                                                     <i class="czi-security-announcement"></i>
                                                 </span>
                                             @endif
@@ -141,7 +141,7 @@
                                                             {{ translate('shipping_cost')}}
                                                         </span>:
                                                         <span>
-                                                            {{webCurrencyConverter($chosenShipping['shipping_cost'])}}
+                                                        {!!webCurrencyConverter($chosenShipping['shipping_cost'])!!}
                                                         </span>
                                                     </div>
                                                 @endisset
@@ -162,7 +162,7 @@
                                                                     <i class="fa fa-truck"></i>
                                                                     {{ translate('shipping_method') }} :
                                                                 </div>
-                                                                <span class="px-1 max-width-200px text-nowrap text-truncate">{{ $shippingTitle }}</span>
+                                                                <span class="px-1 max-width-200px text-nowrap text-truncate">{!! $shippingTitle !!}</span>
                                                             </a>
                                                             <div class="dropdown-menu m-0 pb-0 w-100">
                                                                 <ul class="list-unstyled mb-0">
@@ -171,7 +171,7 @@
                                                                             data-id="{{$shipping['id']}}"
                                                                             data-cart-group="{{$cartItem['cart_group_id']}}"
                                                                         >
-                                                                            {{ucfirst($shipping['title']).' ( '.$shipping['duration'].' ) '.webCurrencyConverter($shipping['cost'])}}
+                                                                        {!!ucfirst($shipping['title']).' ( '.$shipping['duration'].' ) '.webCurrencyConverter($shipping['cost'])!!}
                                                                         </li>
                                                                     @endforeach
                                                                 </ul>
@@ -194,13 +194,13 @@
                                             <div class="">
                                                 <span class="font-weight-bold">{{ translate('total_shipping_cost')}}</span>
                                                 :
-                                                <span>{{ webCurrencyConverter(amount: $total_shipping_cost)}}</span>
+                                                <span>{!! webCurrencyConverter(amount: $total_shipping_cost)!!}</span>
                                             </div>
                                         @elseif($isPhysicalProductExist && $shipping_type == 'order_wise' && $chosenShipping)
                                             <div class="">
                                                 <span class="font-weight-bold">{{ translate('total_shipping_cost')}}</span>
                                                 :
-                                                <span>{{ webCurrencyConverter(amount: $chosenShipping->shipping_cost)}}</span>
+                                                <span>{!! webCurrencyConverter(amount: $chosenShipping->shipping_cost)!!}</span>
                                             </div>
                                         @endif
                                     @endif
@@ -309,7 +309,7 @@
                                                             {{ translate('shipping_cost')}}
                                                         </span>:
                                                         <span>
-                                                            {{ webCurrencyConverter(amount: $cartItem['shipping_cost']) }}
+                                                            {!! webCurrencyConverter(amount: $cartItem['shipping_cost']) !!}
                                                         </span>
                                                     </div>
                                                 @endif
@@ -326,12 +326,12 @@
                                 <td class="{{ $checkProductStatus == 0?'custom-cart-opacity-50':'' }} __w-15p">
                                     <div class="text-center">
                                         <div class="fw-semibold">
-                                            {{ webCurrencyConverter(amount: $cartItem['price']-$cartItem['discount']) }}
+                                            {!! webCurrencyConverter(amount: $cartItem['price']-$cartItem['discount']) !!}
                                         </div>
                                         <span class="text-nowrap fs-10">
                                                 @if ($cartItem->tax_model === "exclude")
                                                 ({{ translate('tax')}}
-                                                : {{ webCurrencyConverter(amount: $cartItem['tax']*$cartItem['quantity'])}}
+                                                : {!! webCurrencyConverter(amount: $cartItem['tax']*$cartItem['quantity'])!!}
                                                 )
                                             @else
                                                 ({{ translate('tax_included')}})
@@ -390,7 +390,7 @@
                                 </td>
                                 <td class="__w-15p text-end {{ $checkProductStatus == 0?'custom-cart-opacity-50':'' }}">
                                     <div>
-                                        {{ webCurrencyConverter(amount: ($cartItem['price']-$cartItem['discount'])*$cartItem['quantity']) }}
+                                    {!! webCurrencyConverter(amount: ($cartItem['price']-$cartItem['discount'])*$cartItem['quantity']) !!}
                                     </div>
                                 </td>
                             </tr>
@@ -409,7 +409,7 @@
                                         class="text-muted fs-12 mt-1">{{ translate('you_Get_Free_Delivery_Bonus') }}</span>
                                 @else
                                     <span
-                                        class="need-for-free-delivery font-bold fs-12 mt-1 text-primary">{{ webCurrencyConverter(amount: $free_delivery_status['amount_need']) }}</span>
+                                        class="need-for-free-delivery font-bold fs-12 mt-1 text-primary">{!! webCurrencyConverter(amount: $free_delivery_status['amount_need']) !!}</span>
                                     <span
                                         class="text-muted fs-12 mt-1">{{ translate('add_more_for_free_delivery') }}</span>
                                 @endif
@@ -478,8 +478,8 @@
                                     @if ($verify_status['minimum_order_amount'] > $verify_status['amount'])
                                         <span class="pl-1 text-danger pulse-button minimum-order-amount-message" data-toggle="tooltip"
                                               data-placement="bottom"
-                                              data-title="{{ translate('minimum_Order_Amount') }} {{ webCurrencyConverter(amount: $verify_status['minimum_order_amount']) }} {{ translate('for') }} @if($cartItem->seller_is=='admin') {{getWebConfig(name: 'company_name')}} @else {{ \App\Utils\get_shop_name($cartItem['seller_id']) }} @endif"
-                                              title="{{ translate('minimum_Order_Amount') }} {{ webCurrencyConverter(amount: $verify_status['minimum_order_amount']) }} {{ translate('for') }} @if($cartItem->seller_is=='admin') {{getWebConfig(name: 'company_name')}} @else {{ \App\Utils\get_shop_name($cartItem['seller_id']) }} @endif">
+                                              data-title="{{ translate('minimum_Order_Amount') }} {!! webCurrencyConverter(amount: $verify_status['minimum_order_amount']) !!} {{ translate('for') }} @if($cartItem->seller_is=='admin') {{getWebConfig(name: 'company_name')}} @else {{ \App\Utils\get_shop_name($cartItem['seller_id']) }} @endif"
+                                              title="{{ translate('minimum_Order_Amount') }} {!! webCurrencyConverter(amount: $verify_status['minimum_order_amount']) !!} {{ translate('for') }} @if($cartItem->seller_is=='admin') {{getWebConfig(name: 'company_name')}} @else {{ \App\Utils\get_shop_name($cartItem['seller_id']) }} @endif">
                                                 <i class="czi-security-announcement"></i>
                                             </span>
                                     @endif
@@ -501,8 +501,8 @@
                                         @if ($verify_status['minimum_order_amount'] > $verify_status['amount'])
                                             <span class="pl-1 text-danger pulse-button minimum-order-amount-message" data-toggle="tooltip"
                                                   data-placement="right"
-                                                  data-title="{{ translate('minimum_Order_Amount') }} {{ webCurrencyConverter(amount: $verify_status['minimum_order_amount']) }} {{ translate('for') }} @if($cartItem->seller_is=='admin') {{getWebConfig(name: 'company_name')}} @else {{ \App\Utils\get_shop_name($cartItem['seller_id']) }} @endif"
-                                                  title="{{ translate('minimum_Order_Amount') }} {{ webCurrencyConverter(amount: $verify_status['minimum_order_amount']) }} {{ translate('for') }} @if($cartItem->seller_is=='admin') {{getWebConfig(name: 'company_name')}} @else {{ \App\Utils\get_shop_name($cartItem['seller_id']) }} @endif">
+                                                  data-title="{{ translate('minimum_Order_Amount') }} {!! webCurrencyConverter(amount: $verify_status['minimum_order_amount']) !!} {{ translate('for') }} @if($cartItem->seller_is=='admin') {{getWebConfig(name: 'company_name')}} @else {{ \App\Utils\get_shop_name($cartItem['seller_id']) }} @endif"
+                                                  title="{{ translate('minimum_Order_Amount') }} {!! webCurrencyConverter(amount: $verify_status['minimum_order_amount']) !!} {{ translate('for') }} @if($cartItem->seller_is=='admin') {{getWebConfig(name: 'company_name')}} @else {{ \App\Utils\get_shop_name($cartItem['seller_id']) }} @endif">
                                                 <i class="czi-security-announcement"></i>
                                             </span>
                                         @endif
@@ -535,7 +535,7 @@
                                                         <option
                                                             value="{{$shipping['id']}}" {{$chosenShipping['shipping_method_id']==$shipping['id']?'selected':''}}>
                                                             {{ translate('shipping_method')}}
-                                                            : {{$shipping['title'].' ( '.$shipping['duration'].' ) '.webCurrencyConverter(amount: $shipping['cost'])}}
+                                                            : {!!$shipping['title'].' ( '.$shipping['duration'].' ) '.webCurrencyConverter(amount: $shipping['cost'])!!}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -551,7 +551,7 @@
                                         @isset($chosenShipping['shipping_cost'])
                                             <div class="text-sm-nowrap mt-2 text-center fs-12">
                                                 <span class="font-weight-bold">{{ translate('shipping_cost')}}</span>
-                                                :<span>{{webCurrencyConverter($chosenShipping['shipping_cost'])}}</span>
+                                                :<span>{!!webCurrencyConverter($chosenShipping['shipping_cost'])!!}</span>
                                             </div>
                                         @endisset
                                     @endif
@@ -559,12 +559,12 @@
                                     @if ($isPhysicalProductExist && $shipping_type != 'order_wise')
                                         <div class="text-sm-nowrap text-center fs-12">
                                             <span class="font-weight-bold">{{ translate('total_shipping_cost') }}</span> :
-                                            <span>{{ webCurrencyConverter(amount: $total_shipping_cost) }}</span>
+                                            <span>{!! webCurrencyConverter(amount: $total_shipping_cost) !!}</span>
                                         </div>
                                     @elseif($isPhysicalProductExist && $shipping_type == 'order_wise' && $chosenShipping)
                                         <div class="text-sm-nowrap text-center fs-12">
                                             <span class="font-weight-bold">{{ translate('total_shipping_cost')}}</span> :
-                                            <span>{{ webCurrencyConverter(amount: isset($chosenShipping['shipping_cost']) ? $chosenShipping['shipping_cost'] : 0)}}</span>
+                                            <span>{!! webCurrencyConverter(amount: isset($chosenShipping['shipping_cost']) ? $chosenShipping['shipping_cost'] : 0)!!}</span>
                                         </div>
                                     @endif
                                 @endif
@@ -650,20 +650,20 @@
                                         <div class="text-nowrap text-muted">{{ translate('unit_price')}} :</div>
                                         <div class="text-start d-flex gap-1 flex-wrap">
                                             <div
-                                                class="fw-semibold">{{ webCurrencyConverter(amount: $cartItem['price']-$cartItem['discount']) }}</div>
+                                                class="fw-semibold">{!! webCurrencyConverter(amount: $cartItem['price']-$cartItem['discount']) !!}</div>
                                         </div>
                                     </div>
 
                                     <div class="d-flex gap-2">
                                         <div class="text-nowrap text-muted">{{ translate('total')}} :</div>
                                         <div class="font-semi-bold">
-                                            {{ webCurrencyConverter(amount: ($cartItem['price']-$cartItem['discount'])*$cartItem['quantity']) }}
+                                        {!! webCurrencyConverter(amount: ($cartItem['price']-$cartItem['discount'])*$cartItem['quantity']) !!}
 
                                         </div>
                                         <span class="text-nowrap fs-10 mt-1px">
                                             @if ($cartItem->tax_model === "exclude")
                                                 ({{ translate('tax')}}
-                                                : {{ webCurrencyConverter(amount: $cartItem['tax']*$cartItem['quantity'])}}
+                                                : {!! webCurrencyConverter(amount: $cartItem['tax']*$cartItem['quantity'])!!}
                                                 )
                                             @else
                                                 ({{ translate('tax_included')}})
@@ -674,7 +674,7 @@
                                     @if ($shipping_type != 'order_wise')
                                         <div class="d-flex flex-wrap gap-2 {{ $checkProductStatus == 0?'custom-cart-opacity-50':'' }}">
                                             <span class="text-muted"> {{ translate('shipping_cost')}}</span>:<span
-                                                class="font-semi-bold">{{ webCurrencyConverter(amount: $cartItem['shipping_cost']) }}</span>
+                                                class="font-semi-bold">{!! webCurrencyConverter(amount: $cartItem['shipping_cost']) !!}</span>
                                         </div>
                                     @endif
 
@@ -746,7 +746,7 @@
                                     class="text-muted fs-12 mt-1">{{ translate('you_Get_Free_Delivery_Bonus') }}</span>
                             @else
                                 <span
-                                    class="need-for-free-delivery font-bold fs-12 mt-1 text-primary">{{ webCurrencyConverter(amount: $free_delivery_status['amount_need']) }}</span>
+                                    class="need-for-free-delivery font-bold fs-12 mt-1 text-primary">{!! webCurrencyConverter(amount: $free_delivery_status['amount_need']) !!}</span>
                                 <span class="text-muted fs-12 mt-1">{{ translate('add_more_for_free_delivery') }}</span>
                             @endif
                         </div>
@@ -795,7 +795,7 @@
                                     <option
                                         value="{{$shipping['id']}}" {{$chosenShipping['shipping_method_id']==$shipping['id']?'selected':''}}>
                                         {{ translate('shipping_method')}}
-                                        : {{$shipping['title'].' ( '.$shipping['duration'].' ) '.webCurrencyConverter(amount: $shipping['cost'])}}
+                                        : {!!$shipping['title'].' ( '.$shipping['duration'].' ) '.webCurrencyConverter(amount: $shipping['cost'])!!}
                                     </option>
                                 @endforeach
                             </select>

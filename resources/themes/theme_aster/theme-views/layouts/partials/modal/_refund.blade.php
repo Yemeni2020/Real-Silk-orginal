@@ -38,9 +38,9 @@
                     </div>
                     <div class="d-flex flex-column gap-1 fs-12">
                         <span>{{ translate('Qty')}} : {{$order_details->qty}}</span>
-                        <span>{{ translate('Price')}} : {{webCurrencyConverter($order_details->price)}}</span>
-                        <span>{{ translate('Discount')}} : {{webCurrencyConverter($order_details->discount)}}</span>
-                        <span>{{ translate('Tax')}} : {{webCurrencyConverter($order_details->tax)}}</span>
+                        <span>{{ translate('Price')}} : {!!webCurrencyConverter($order_details->price)!!}</span>
+                        <span>{{ translate('Discount')}} : {!!webCurrencyConverter($order_details->discount)!!}</span>
+                        <span>{{ translate('Tax')}} : {!!webCurrencyConverter($order_details->tax)!!}</span>
                     </div>
 
                     <?php
@@ -56,9 +56,9 @@
                     $refund_amount = $subtotal - $coupon_discount;
                     ?>
                     <div class="d-flex flex-column gap-1 fs-12">
-                        <span>{{translate('Subtotal')}}: {{webCurrencyConverter($subtotal)}}</span>
-                        <span>{{translate('Coupon_discount')}}: {{webCurrencyConverter($coupon_discount)}}</span>
-                        <span>{{translate('Total_refundable_amount')}}:{{webCurrencyConverter($refund_amount)}}</span>
+                        <span>{{translate('Subtotal')}}: {!!webCurrencyConverter($subtotal)!!}</span>
+                        <span>{{translate('Coupon_discount')}}: {!!webCurrencyConverter($coupon_discount)!!}</span>
+                        <span>{{translate('Total_refundable_amount')}}:{!!webCurrencyConverter($refund_amount)!!}</span>
                     </div>
                 </div>
 

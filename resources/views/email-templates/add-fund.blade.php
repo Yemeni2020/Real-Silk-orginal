@@ -98,9 +98,9 @@
                 <td class="col">1</td>
                 <td class="col">{{$data->transaction_id}}</td>
                 <td class="col">{{$data->created_at}}</td>
-                <td class="col">{{webCurrencyConverter($data->credit) }}</td>
-                <td class="col">{{webCurrencyConverter($data->debit) }}</td>
-                <td class="col">{{webCurrencyConverter($data->balance) }}</td>
+                <td class="col">{!!webCurrencyConverter($data->credit) !!}</td>
+                <td class="col">{!!webCurrencyConverter($data->debit) !!}</td>
+                <td class="col">{!!webCurrencyConverter($data->balance) !!}</td>
             </tr>
             </tbody>
         </table>

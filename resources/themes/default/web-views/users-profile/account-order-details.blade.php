@@ -210,7 +210,7 @@
                                                                             -{{round($product['discount'],(!empty($decimal_point_settings) ? $decimal_point_settings: 0))}}
                                                                             %
                                                                         @elseif($product['discount_type'] =='flat')
-                                                                            -{{ webCurrencyConverter(amount: $product['discount']) }}
+                                                                            -{!! webCurrencyConverter(amount: $product['discount']) !!}
                                                                         @endif
                                                                         </span>
                                                                 @endif
@@ -319,7 +319,7 @@
                                                     </td>
                                                     <td class="text-right align-middle">
                                                         <span class="font-weight-bold amount">
-                                                            {{ webCurrencyConverter(amount: $detail->price) }}
+                                                        {!! webCurrencyConverter(amount: $detail->price) !!}
                                                         </span>
                                                     </td>
                                                 </tr>
@@ -348,7 +348,7 @@
                                                                     -{{round($product['discount'],(!empty($decimal_point_settings) ? $decimal_point_settings: 0))}}
                                                                     %
                                                                 @elseif($product['discount_type'] =='flat')
-                                                                    -{{ webCurrencyConverter(amount: $product['discount']) }}
+                                                                    -{!! webCurrencyConverter(amount: $product['discount']) !!}
                                                                 @endif
                                                             </span>
                                                         @endif
@@ -390,7 +390,7 @@
                                                                 {{translate('price')}} :
                                                             </span>
                                                             <span class="font-weight-bold amount">
-                                                                {{ webCurrencyConverter(amount: $detail->price) }}
+                                                            {!! webCurrencyConverter(amount: $detail->price) !!}
                                                             </span>
                                                         </small>
                                                     </div>
@@ -491,7 +491,7 @@
                                                 <td>
                                                     <div class="text-end">
                                                         <span class="fs-15 font-semi-bold">
-                                                            {{ webCurrencyConverter(amount: $orderTotalPriceSummary['subTotal']) }}
+                                                        {!! webCurrencyConverter(amount: $orderTotalPriceSummary['subTotal']) !!}
                                                         </span>
                                                     </div>
                                                 </td>
@@ -508,7 +508,7 @@
                                                 <td>
                                                     <div class="text-end">
                                                         <span class="fs-15 font-semi-bold">
-                                                            {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['taxTotal']) }}
+                                                        {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['taxTotal']) !!}
                                                         </span>
                                                     </div>
                                                 </td>
@@ -525,7 +525,7 @@
                                                     <td>
                                                         <div class="text-end">
                                                             <span class="fs-15 font-semi-bold">
-                                                                {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['shippingTotal']) }}
+                                                            {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['shippingTotal']) !!}
                                                             </span>
                                                         </div>
                                                     </td>
@@ -543,7 +543,7 @@
                                                 <td>
                                                     <div class="text-end">
                                                         <span class="fs-15 font-semi-bold">
-                                                            - {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['itemDiscount']) }}
+                                                            - {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['itemDiscount']) !!}
                                                         </span>
                                                     </div>
                                                 </td>
@@ -560,7 +560,7 @@
                                                 <td>
                                                     <div class="text-end">
                                                         <span class="fs-15 font-semi-bold">
-                                                            - {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['couponDiscount']) }}
+                                                            - {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['couponDiscount']) !!}
                                                         </span>
                                                     </div>
                                                 </td>
@@ -578,7 +578,7 @@
                                                     <td>
                                                         <div class="text-end">
                                                             <span class="fs-15 font-semi-bold">
-                                                                - {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['extraDiscount']) }}
+                                                                - {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['extraDiscount']) !!}
                                                             </span>
                                                         </div>
                                                     </td>
@@ -596,7 +596,7 @@
                                                 <td>
                                                     <div class="text-end">
                                                         <span class="font-weight-bold amount">
-                                                            {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['totalAmount']) }}
+                                                        {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['totalAmount']) !!}
                                                         </span>
                                                     </div>
                                                 </td>

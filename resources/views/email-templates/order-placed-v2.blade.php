@@ -160,9 +160,9 @@ if ($order->is_guest) {
                             @endif
 
                         </td>
-                        <td class="p-1">{{ webCurrencyConverter(amount: $details['price']) }}</td>
+                        <td class="p-1">{!! webCurrencyConverter(amount: $details['price']) !!}</td>
                         <td class="p-1">{{ $details->qty }}</td>
-                        <td class="p-1">{{ webCurrencyConverter(amount: $subtotal) }}</td>
+                        <td class="p-1">{!! webCurrencyConverter(amount: $subtotal) !!}</td>
                     </tr>
                         <?php
                         $subTotal += $details['price'] * $details['qty'];
@@ -188,42 +188,42 @@ if ($order->is_guest) {
                     <tbody>
                     <tr>
                         <th class="pb-2">{{ translate('sub_total') }} :</th>
-                        <td class="pb-2">{{ webCurrencyConverter(amount: $orderTotalPriceSummary['subTotal']) }}</td>
+                        <td class="pb-2">{!! webCurrencyConverter(amount: $orderTotalPriceSummary['subTotal']) !!}</td>
                     </tr>
                     <tr>
                         <td class="pb-2">{{ translate('tax') }} :</td>
-                        <td class="pb-2">{{ webCurrencyConverter(amount: $orderTotalPriceSummary['taxTotal']) }}</td>
+                        <td class="pb-2">{!! webCurrencyConverter(amount: $orderTotalPriceSummary['taxTotal']) !!}</td>
                     </tr>
                     @if($order->order_type == 'default_type')
                         <tr>
                             <td class="pb-2">{{ translate('shipping') }} :</td>
-                            <td class="pb-2">{{ webCurrencyConverter(amount: $orderTotalPriceSummary['shippingTotal']) }}</td>
+                            <td class="pb-2">{!! webCurrencyConverter(amount: $orderTotalPriceSummary['shippingTotal']) !!}</td>
                         </tr>
                     @endif
                     <tr>
                         <td class="pb-2">{{ translate('coupon_discount') }} :</td>
                         <td class="pb-2">
-                            - {{ webCurrencyConverter(amount: $orderTotalPriceSummary['couponDiscount']) }}
+                            - {!! webCurrencyConverter(amount: $orderTotalPriceSummary['couponDiscount']) !!}
                         </td>
                     </tr>
                     <tr class="border-bottom">
                         <td class="pb-2">{{ translate('discount_on_product') }} :</td>
                         <td class="pb-2">
-                            - {{ webCurrencyConverter(amount: $orderTotalPriceSummary['itemDiscount']) }}
+                            - {!! webCurrencyConverter(amount: $orderTotalPriceSummary['itemDiscount']) !!}
                         </td>
                     </tr>
                     @if ($order->order_type != 'default_type')
                         <tr class="border-bottom pb-2">
                             <th class="pb-2">{{ translate('extra_discount') }} :</th>
                             <td class="pb-2">
-                                - {{ webCurrencyConverter(amount: $orderTotalPriceSummary['extraDiscount']) }}
+                                - {!! webCurrencyConverter(amount: $orderTotalPriceSummary['extraDiscount']) !!}
                             </td>
                         </tr>
                     @endif
                     <tr class="bg-primary">
                         <th class="pb-2">{{ translate('total') }} :</th>
                         <td class="pb-2 ps-3">
-                            {{ webCurrencyConverter(amount: $orderTotalPriceSummary['totalAmount']) }}
+                        {!! webCurrencyConverter(amount: $orderTotalPriceSummary['totalAmount']) !!}
                         </td>
                     </tr>
                     </tbody>

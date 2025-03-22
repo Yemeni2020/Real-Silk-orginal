@@ -45,9 +45,9 @@
                                     </div>
                                     <div class="col-4 col-sm-3 text-left d-flex flex-column pl-0 mt-2 mt-sm-0 pl-sm-5">
                                         <span>{{translate('QTY')}} : {{$order_details->qty}}</span>
-                                        <span>{{translate('price')}} : {{ webCurrencyConverter(amount: $order_details->price) }}</span>
-                                        <span>{{translate('discount')}} : {{ webCurrencyConverter(amount: $order_details->discount) }}</span>
-                                        <span>{{translate('tax')}} : {{ webCurrencyConverter(amount: $order_details->tax) }}</span>
+                                        <span>{{translate('price')}} : {!! webCurrencyConverter(amount: $order_details->price) !!}</span>
+                                        <span>{{translate('discount')}} : {!! webCurrencyConverter(amount: $order_details->discount) !!}</span>
+                                        <span>{{translate('tax')}} : {!! webCurrencyConverter(amount: $order_details->tax) !!}</span>
                                     </div>
                                 </div>
                             </div>
@@ -68,9 +68,9 @@
                         <div class="card mt-2">
                             <div class="card-body">
                                 <div class="row text-center">
-                                    <span class="col-sm-2">{{translate('subtotal')}}: {{ webCurrencyConverter(amount: $subtotal) }}</span>
-                                    <span class="col-sm-5">{{translate('coupon_discount')}}: {{ webCurrencyConverter(amount: $coupon_discount) }}</span>
-                                    <span class="col-sm-5">{{translate('total_refundable_amount')}}:{{ webCurrencyConverter(amount: $refund_amount) }}</span>
+                                    <span class="col-sm-2">{{translate('subtotal')}}: {!! webCurrencyConverter(amount: $subtotal) !!}</span>
+                                    <span class="col-sm-5">{{translate('coupon_discount')}}: {!! webCurrencyConverter(amount: $coupon_discount) !!}</span>
+                                    <span class="col-sm-5">{{translate('total_refundable_amount')}}:{!! webCurrencyConverter(amount: $refund_amount) !!}</span>
                                 </div>
                             </div>
                         </div>

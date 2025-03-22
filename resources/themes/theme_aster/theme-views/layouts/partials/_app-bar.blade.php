@@ -115,13 +115,13 @@
                                             class="d-flex flex-column gap-1 {{ $product && $product->status == 0?'blur-section':'' }}">
                                             <div class="fs-12"><span
                                                     class="cart_quantity_{{ $cartItem['id'] }}">{{$cartItem['quantity']}}</span>
-                                                 {{'×'.webCurrencyConverter(($cartItem['price']-$cartItem['discount']))}}
+                                                    {!!'×'.webCurrencyConverter(($cartItem['price']-$cartItem['discount']))!!}
                                             </div>
                                             <div class="product__price d-flex flex-wrap gap-2">
                                                 <del
-                                                    class="product__old-price quantity_price_of_{{ $cartItem['id'] }}">{{webCurrencyConverter($cartItem['price']*$cartItem['quantity'])}}</del>
+                                                    class="product__old-price quantity_price_of_{{ $cartItem['id'] }}">{!!webCurrencyConverter($cartItem['price']*$cartItem['quantity'])!!}</del>
                                                 <ins
-                                                    class="product__new-price discount_price_of_{{ $cartItem['id'] }}">{{webCurrencyConverter(($cartItem['price']-$cartItem['discount'])*(int)$cartItem['quantity'])}}</ins>
+                                                    class="product__new-price discount_price_of_{{ $cartItem['id'] }}">{!!webCurrencyConverter(($cartItem['price']-$cartItem['discount'])*(int)$cartItem['quantity'])!!}</ins>
                                             </div>
                                         </div>
 
@@ -199,7 +199,7 @@
                     <li>
                         <div class="flex-between-gap-3 pt-2 pb-4">
                             <h6>{{translate('total')}}</h6>
-                            <h3 class="text-primary cart_total_amount">{{webCurrencyConverter($sub_total)}}</h3>
+                            <h3 class="text-primary cart_total_amount">{!!webCurrencyConverter($sub_total)!!}</h3>
                         </div>
                         <div class="d-flex gap-3">
                             @if($web_config['guest_checkout_status'] || auth('customer')->check())

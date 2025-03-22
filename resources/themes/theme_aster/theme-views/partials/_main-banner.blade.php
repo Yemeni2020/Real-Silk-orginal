@@ -124,7 +124,7 @@
                                                             <img src="{{ theme_asset('assets/img/svg/delivery-car.svg') }}"
                                                                 alt="" class="svg">
                                                         @else
-                                                            {{ $coupon->discount_type == 'amount' ? webCurrencyConverter($coupon->discount) : $coupon->discount.'%'}}
+                                                        {!! $coupon->discount_type == 'amount' ? webCurrencyConverter($coupon->discount) : $coupon->discount.'%'!!}
                                                             {{translate('off')}}
                                                             <img src="{{ theme_asset('assets/img/svg/dollar.svg') }}" alt=""
                                                                 class="svg">

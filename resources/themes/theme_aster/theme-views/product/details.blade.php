@@ -98,7 +98,7 @@
                                                                         @elseif($product->discount > 0)
                                                                             <span class="product__discount-badge">
                                                                                 <span>
-                                                                                    {{'-'.webCurrencyConverter($product->discount)}}
+                                                                                {!!'-'.webCurrencyConverter($product->discount)!!}
                                                                                 </span>
                                                                             </span>
                                                                         @endif
@@ -120,7 +120,7 @@
                                                                             </span>
                                                                         @elseif($product->discount > 0)
                                                                             <span class="product__discount-badge">
-                                                                                    -{{webCurrencyConverter($product->discount)}}
+                                                                                    -{!!webCurrencyConverter($product->discount)!!}
                                                                                 </span>
                                                                         @endif
                                                                         <div class="easyzoom easyzoom--overlay">
@@ -144,7 +144,7 @@
                                                                     @elseif($product->discount > 0)
                                                                         <span class="product__discount-badge">
                                                                             <span>
-                                                                                {{'-'.webCurrencyConverter($product->discount)}}
+                                                                            {!!'-'.webCurrencyConverter($product->discount)!!}
                                                                             </span>
                                                                         </span>
                                                                     @endif
@@ -220,7 +220,7 @@
                                                         class="product__save-amount">{{translate('save')}} {{$product->discount.'%'}}</span>
                                                 @elseif($product->discount > 0)
                                                     <span
-                                                        class="product__save-amount">{{translate('save')}} {{webCurrencyConverter($product->discount)}}</span>
+                                                        class="product__save-amount">{{translate('save')}} {!!webCurrencyConverter($product->discount)!!}</span>
                                                 @endif
                                             </div>
 
@@ -579,13 +579,13 @@
                                                                         <span
                                                                             class="text-muted">{{translate('total_price').':'}}</span>
                                                                         <span
-                                                                            class="total_price">{{webCurrencyConverter($product->unit_price)}}</span>
+                                                                            class="total_price">{!!webCurrencyConverter($product->unit_price)!!}</span>
                                                                     </h6>
                                                                     <h6 class="flex-middle-gap-2">
                                                                         <span
                                                                             class="text-muted">{{translate('tax').':'}}</span>
                                                                         <span
-                                                                            class="product_vat">{{ $product->tax_model == 'include' ? 'incl.' : webCurrencyConverter($product->tax)}}</span>
+                                                                            class="product_vat">{!! $product->tax_model == 'include' ? 'incl.' : webCurrencyConverter($product->tax)!!}</span>
                                                                     </h6>
                                                                 </div>
                                                             </div>
@@ -918,7 +918,7 @@
                                                 </div>
                                                 <div class="product__price">
                                                     <ins class="product__new-price">
-                                                        {{webCurrencyConverter($item->unit_price-(Helpers::getProductDiscount($item,$item->unit_price)))}}
+                                                    {!!webCurrencyConverter($item->unit_price-(Helpers::getProductDiscount($item,$item->unit_price)))!!}
                                                     </ins>
                                                 </div>
                                             </div>

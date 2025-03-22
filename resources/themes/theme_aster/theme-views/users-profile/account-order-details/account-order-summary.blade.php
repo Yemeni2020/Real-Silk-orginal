@@ -125,9 +125,9 @@
                                                             </div>
                                                         </td>
                                                         <td class="text-center">{{$detail->qty}}</td>
-                                                        <td class="text-end">{{webCurrencyConverter($detail->price)}} </td>
-                                                        <td class="text-end">{{webCurrencyConverter($detail->discount)}}</td>
-                                                        <td class="text-end">{{webCurrencyConverter(($detail->qty*$detail->price)-$detail->discount)}}</td>
+                                                        <td class="text-end">{!!webCurrencyConverter($detail->price)!!} </td>
+                                                        <td class="text-end">{!!webCurrencyConverter($detail->discount)!!}</td>
+                                                        <td class="text-end">{!!webCurrencyConverter(($detail->qty*$detail->price)-$detail->discount)!!}</td>
                                                         @php($length = $detail->created_at->diffInDays($current_date))
                                                         <td>
                                                             <div class="d-flex justify-content-center gap-2">
@@ -215,14 +215,14 @@
                                                     class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                                                     <div>{{translate('subtotal')}}</div>
                                                     <div>
-                                                        {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['subTotal'] + $orderTotalPriceSummary['itemDiscount']) }}
+                                                    {!!webCurrencyConverter(amount:  $orderTotalPriceSummary['subTotal'] + $orderTotalPriceSummary['itemDiscount']) !!}
                                                     </div>
                                                 </div>
                                                 <div
                                                     class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                                                     <div>{{translate('tax_fee')}}</div>
                                                     <div>
-                                                        {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['taxTotal']) }}
+                                                    {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['taxTotal']) !!}
                                                     </div>
                                                 </div>
                                                 @if($order->order_type == 'default_type' && $order?->is_shipping_free == 0)
@@ -230,7 +230,7 @@
                                                         class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                                                         <div class="text-capitalize">{{translate('shipping_fee')}}</div>
                                                         <div>
-                                                            {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['shippingTotal']) }}
+                                                        {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['shippingTotal']) !!}
                                                         </div>
                                                     </div>
                                                 @endif
@@ -238,20 +238,20 @@
                                                     class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                                                     <div class="text-capitalize">{{translate('discount_on_product')}}</div>
                                                     <div>
-                                                        {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['itemDiscount']) }}
+                                                    {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['itemDiscount']) !!}
                                                     </div>
                                                 </div>
                                                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                                                     <div class="text-capitalize">{{translate('coupon_discount')}}</div>
                                                     <div>
-                                                        - {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['couponDiscount']) }}
+                                                        - {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['couponDiscount']) !!}
                                                     </div>
                                                 </div>
                                                 @if($order->order_type != 'default_type')
                                                     <div class="d-flex flex-wrap justify-content-between align-`item`s-center gap-2">
                                                         <div class="text-capitalize">{{translate('extra_discount')}}</div>
                                                         <div>
-                                                            - {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['extraDiscount']) }}
+                                                            - {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['extraDiscount'])!!}
                                                         </div>
                                                     </div>
                                                 @endif
@@ -259,7 +259,7 @@
                                                     class="d-flex flex-wrap justify-content-between align-items-center gap-2">
                                                     <h4 class="text-capitalize">{{translate('total')}}</h4>
                                                     <h2 class="text-primary">
-                                                        {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['totalAmount']) }}
+                                                    {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['totalAmount']) !!}
                                                     </h2>
                                                 </div>
                                                 @if ($order['order_status']=='pending' && $order['payment_method']=='cash_on_delivery')

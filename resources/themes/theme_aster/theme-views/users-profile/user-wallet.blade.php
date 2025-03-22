@@ -38,7 +38,7 @@
                                                 @endif
                                             </div>
                                             <h2 class="fs-36 absolute-white d-flex align-items-center">
-                                                {{webCurrencyConverter($total_wallet_balance ?? 0)}}
+                                            {!!webCurrencyConverter($total_wallet_balance ?? 0)!!}
                                                 @if ($add_funds_to_wallet)
                                                     <span class="ms-2 fs-18 d-none d-sm-block" data-bs-toggle="tooltip"
                                                           data-bs-placement="top"
@@ -69,10 +69,10 @@
                                                                 </div>
                                                                 <div>
                                                                     @if ($bonus->bonus_type == 'percentage')
-                                                                        <p>{{ translate('add_fund_to_wallet') }} {{ webCurrencyConverter($bonus->min_add_money_amount) }} {{ translate('and_enjoy') }} {{ $bonus->bonus_amount }}
+                                                                        <p>{{ translate('add_fund_to_wallet') }} {!!webCurrencyConverter($bonus->min_add_money_amount) !!} {{ translate('and_enjoy') }} {{ $bonus->bonus_amount }}
                                                                             % {{ translate('bonus') }}</p>
                                                                     @else
-                                                                        <p>{{ translate('add_fund_to_wallet') }} {{ webCurrencyConverter($bonus->min_add_money_amount) }} {{ translate('and_enjoy') }} {{ webCurrencyConverter($bonus->bonus_amount) }} {{ translate('bonus') }}</p>
+                                                                        <p>{{ translate('add_fund_to_wallet') }} {!! webCurrencyConverter($bonus->min_add_money_amount) !!} {{ translate('and_enjoy') }} {!! webCurrencyConverter($bonus->bonus_amount) !!} {{ translate('bonus') }}</p>
                                                                     @endif
                                                                     <p class="fw-bold text-primary mb-0">{{ $bonus->description ? Str::limit($bonus->description, 50):'' }}</p>
                                                                 </div>
@@ -173,7 +173,7 @@
                                                             <img
                                                                 src="{{ theme_asset('assets/img/icons/coin-success.png') }}"
                                                                 width="25" alt="">
-                                                             {{'+'. webCurrencyConverter($item['admin_bonus']) }}
+                                                                {!!'+'. webCurrencyConverter($item['admin_bonus']) !!}
                                                         </h4>
                                                         <h6 class="text-muted">
                                                             {{translate('admin_bonus')}}
@@ -206,7 +206,7 @@
                                                         @endif
 
                                                         <span class="absolute-ltr font-bold fs-18">
-                                                            {{ $item['debit'] != 0 ? ' - '.webCurrencyConverter(amount: $item['debit']): ' + '.webCurrencyConverter(amount: $item['credit']) }}
+                                                        {!! $item['debit'] != 0 ? ' - '.webCurrencyConverter(amount: $item['debit']): ' + '.webCurrencyConverter(amount: $item['credit']) !!}
                                                         </span>
                                                     </h4>
                                                     <h6 class="text-muted">

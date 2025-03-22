@@ -76,10 +76,10 @@
                                                                     class="product__price d-flex justify-content-center flex-wrap column-gap-2">
                                                                     @if($product['discount'] > 0)
                                                                         <del
-                                                                            class="product__old-price">{{webCurrencyConverter($product['unit_price'])}}</del>
+                                                                            class="product__old-price">{!!webCurrencyConverter($product['unit_price'])!!}</del>
                                                                     @endif
                                                                     <ins class="product__new-price">
-                                                                        {{webCurrencyConverter($product['unit_price']-Helpers::getProductDiscount($product,$product['unit_price']))}}
+                                                                    {!!webCurrencyConverter($product['unit_price']-Helpers::getProductDiscount($product,$product['unit_price']))!!}
                                                                     </ins>
                                                                 </div>
                                                             </a>

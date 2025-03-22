@@ -85,7 +85,7 @@
                                     <span>{{$productDetails->name.' x '.$detail['qty']}}</span>
                                 </div>
                             </td>
-                            <td class="text-right fw-bold">{{webCurrencyConverter(amount: ($detail['price']*$detail['qty']))}}</td>
+                            <td class="text-right fw-bold">{!!webCurrencyConverter(amount: ($detail['price']*$detail['qty']))!!}</td>
                         </tr>
                         @php($itemPrice+=$detail['price']*$detail['qty'])
                         @php($subtotal=$detail['price']*$detail['qty']-$detail['discount'])
@@ -118,34 +118,34 @@
                 <dl class="email-dl">
                     <dt class="flex-1">{{translate('item_price')}}</dt>
                     <dd class="flex-1 text-right">
-                        {{isset($itemPrice) ? webCurrencyConverter(amount: $itemPrice) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 500), currencyCode: getCurrencyCode())}}
+                    {!!isset($itemPrice) ? webCurrencyConverter(amount: $itemPrice) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 500), currencyCode: getCurrencyCode())!!}
                     </dd>
                     <dt class="flex-1">{{translate('item_discount')}}</dt>
                     <dd class="flex-1 text-right">
-                        - {{isset($discount) ? webCurrencyConverter(amount: $discount) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 50), currencyCode: getCurrencyCode())}}
+                        - {!!isset($discount) ? webCurrencyConverter(amount: $discount) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 50), currencyCode: getCurrencyCode())!!}
                     </dd>
                     <dt class="flex-1">{{translate('sub_total')}}</dt>
                     <dd class="flex-1 text-right">
-                        {{isset($total) ? webCurrencyConverter(amount: $total) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 450), currencyCode: getCurrencyCode())}}
+                        {!!isset($total) ? webCurrencyConverter(amount: $total) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 450), currencyCode: getCurrencyCode())!!}
                     </dd>
                     <dt class="flex-1">
                         {{translate('coupon_discount')}}
                     </dt>
                     <dd class="flex-1 text-right">
-                        - {{isset($couponDiscount) ? webCurrencyConverter(amount: $couponDiscount) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 0), currencyCode: getCurrencyCode())}}
+                        - {!!isset($couponDiscount) ? webCurrencyConverter(amount: $couponDiscount) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 0), currencyCode: getCurrencyCode())!!}
                     </dd>                    <dt class="flex-1">{{translate('vat/Tax')}}</dt>
                     <dd class="flex-1 text-right">
-                        {{isset($tax) ? webCurrencyConverter(amount: $tax) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 25), currencyCode: getCurrencyCode())}}
+                        {!!isset($tax) ? webCurrencyConverter(amount: $tax) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 25), currencyCode: getCurrencyCode())!!}
                     </dd>
                     <dt class="flex-1">
                         {{translate('delivery_fee')}}
                     </dt>
                     <dd class="flex-1 text-right">
-                        {{isset($shipping) ? webCurrencyConverter(amount: $shipping-$deliveryFeeDiscount) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 0), currencyCode: getCurrencyCode())}}
+                        {!!isset($shipping) ? webCurrencyConverter(amount: $shipping-$deliveryFeeDiscount) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 0), currencyCode: getCurrencyCode())!!}
                     </dd>
                     <dt class="flex-1 fw-bold">{{translate('Total')}}</dt>
                     <dd class="flex-1 text-right text-success fw-bold fs">
-                        {{isset($finalAmount) ? webCurrencyConverter(amount: $finalAmount) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 475), currencyCode: getCurrencyCode())}}
+                        {!!isset($finalAmount) ? webCurrencyConverter(amount: $finalAmount) :setCurrencySymbol(amount: usdToDefaultCurrency(amount: 475), currencyCode: getCurrencyCode())!!}
                     </dd>
                 </dl>
             </div>

@@ -12,7 +12,7 @@ return [
     | the usual Laravel view path has already been registered for you.
     |
     */
-
+    'escape' => false,
     'paths' => [
         resource_path('views')
     ],
@@ -32,5 +32,6 @@ return [
         'VIEW_COMPILED_PATH',
         realpath(storage_path('framework/views'))
     ),
+
 
 ];

@@ -111,7 +111,7 @@
                                             <div class="d-flex justify-content-center column-gap-2">
                                                 <span class="text-base">
                                                     @php($orderTotalPriceSummary = \App\Utils\OrderManager::getOrderTotalPriceSummary(order: $order))
-                                                    {{ webCurrencyConverter(amount:  $orderTotalPriceSummary['totalAmount']) }}
+                                                    {!! webCurrencyConverter(amount:  $orderTotalPriceSummary['totalAmount']) !!}
                                                 </span>
                                             </div>
                                         </td>

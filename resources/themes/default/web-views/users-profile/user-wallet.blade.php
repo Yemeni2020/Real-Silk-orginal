@@ -56,7 +56,7 @@ $MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->g
                                                     @endif
 
                                                     <h2 class="fs-36 text-white d-flex align-items-center m-0 w-100">
-                                                        {{ webCurrencyConverter(amount: $total_wallet_balance ?? 0) }}
+                                                    {!! webCurrencyConverter(amount: $total_wallet_balance ?? 0) !!}
 
                                                         @if ($addFundsToWallet)
                                                         <span class="ml-2 fs-18">
@@ -83,9 +83,9 @@ $MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->g
                                                         </div>
                                                         <div>
                                                             @if ($bonus->bonus_type == 'percentage')
-                                                            <p>{{ translate('add_fund_to_wallet') }} {{ webCurrencyConverter(amount: $bonus->min_add_money_amount) }} {{ translate('and_enjoy') }} {{ $bonus->bonus_amount }}% {{ translate('bonus') }}</p>
+                                                            <p>{{ translate('add_fund_to_wallet') }} {!! webCurrencyConverter(amount: $bonus->min_add_money_amount) !!} {{ translate('and_enjoy') }} {{ $bonus->bonus_amount }}% {{ translate('bonus') }}</p>
                                                             @else
-                                                                <p>{{ translate('add_fund_to_wallet') }} {{ webCurrencyConverter(amount: $bonus->min_add_money_amount) }} {{ translate('and_enjoy') }} {{ webCurrencyConverter(amount: $bonus->bonus_amount) }} {{ translate('bonus') }}</p>
+                                                                <p>{{ translate('add_fund_to_wallet') }} {!! webCurrencyConverter(amount: $bonus->min_add_money_amount) !!} {{ translate('and_enjoy') }} {!! webCurrencyConverter(amount: $bonus->bonus_amount) !!} {{ translate('bonus') }}</p>
                                                             @endif
                                                             <p class="fw-bold text-accent mb-0">{{ $bonus->description ? Str::limit($bonus->description, 40):'' }}</p>
                                                         </div>
@@ -117,7 +117,7 @@ $MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->g
                                                     <h4 class="text-center">{{ translate('add_Fund_to_Wallet') }}</h4>
                                                     <p class="text-center">{{ translate('add_fund_by_from_secured_digital_payment_gateways') }}</p>
                                                     <input type="number" class="h-70 form-control text-center text-24 rounded-10 fs-25-important light-placeholder" id="add-fund-amount-input" name="amount"
-                                                    required placeholder="{{ translate('ex') }}: {{ webCurrencyConverter(amount: 500) }}">
+                                                    required placeholder="{{ translate('ex') }}: {!! webCurrencyConverter(amount: 500,img:false) !!}">
                                                     <input type="hidden" value="web" name="payment_platform" required>
                                                     <input type="hidden" value="{{ request()->url() }}" name="external_redirect_link" required>
                                                 </div>
@@ -234,7 +234,7 @@ $MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->g
                                                         <div class="">
                                                             <h6 class="mb-2 d-flex align-items-center gap-8">
                                                                 <img src="{{ theme_asset(path: 'public/assets/front-end/img/icons/coin-success.png') }}" width="25" alt="">
-                                                                <span class="absolute-ltr font-bold fs-18">+ {{ webCurrencyConverter(amount: $item['admin_bonus']) }}</span>
+                                                                <span class="absolute-ltr font-bold fs-18">+ {!! webCurrencyConverter(amount: $item['admin_bonus']) !!}</span>
                                                             </h6>
                                                             <h6 class="text-muted mb-0 small text-capitalize fs-13 font-semibold">
                                                                 {{ucwords(str_replace('_', ' ', translate('admin_bonus')))}}
@@ -262,7 +262,7 @@ $MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->g
                                                             @endif
 
                                                             <span class="absolute-ltr font-bold fs-18">
-                                                                {{ $item['debit'] != 0 ? ' - '.webCurrencyConverter(amount: $item['debit']): ' + '.webCurrencyConverter(amount: $item['credit']) }}
+                                                            {!! $item['debit'] != 0 ? ' - '.webCurrencyConverter(amount: $item['debit']): ' + '.webCurrencyConverter(amount: $item['credit']) !!}
                                                             </span>
 
                                                         </h6>

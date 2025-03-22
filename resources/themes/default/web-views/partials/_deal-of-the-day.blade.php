@@ -20,7 +20,7 @@
                                                 @if ($deal_of_the_day->discount_type == 'percent')
                                                     -{{round($deal_of_the_day->discount,(!empty($decimal_point_settings) ? $decimal_point_settings: 0))}}%
                                                 @elseif($deal_of_the_day->discount_type =='flat')
-                                                    -{{ webCurrencyConverter(amount: $deal_of_the_day->discount) }}
+                                                    -{!! webCurrencyConverter(amount: $deal_of_the_day->discount) !!}
                                                 @endif
                                             </span>
                                         </span>
@@ -53,13 +53,13 @@
 
                                         @if($deal_of_the_day->product->discount > 0)
                                             <del class="fs-14 font-semibold __color-9B9B9B">
-                                                {{ webCurrencyConverter(amount: $deal_of_the_day->product->unit_price) }}
+                                            {!! webCurrencyConverter(amount: $deal_of_the_day->product->unit_price) !!}
                                             </del>
                                         @endif
                                         <span class="text-accent fs-18 font-bold text-dark">
-                                            {{ webCurrencyConverter(amount:
+                                        {!! webCurrencyConverter(amount:
                                                 $deal_of_the_day->product->unit_price-(getProductDiscount(product: $deal_of_the_day->product, price: $deal_of_the_day->product->unit_price))
-                                            ) }}
+                                            ) !!}
                                         </span>
                                     </div>
                                     <button class="btn btn--primary font-bold px-4 rounded-10 text-uppercase get-view-by-onclick"
@@ -89,7 +89,7 @@
                                                     @if ($recommendedProduct->discount_type == 'percent')
                                                         -{{ round($recommendedProduct->discount,(!empty($decimal_point_settings) ? $decimal_point_settings: 0))}}%
                                                     @elseif($recommendedProduct->discount_type =='flat')
-                                                        -{{ webCurrencyConverter(amount: $recommendedProduct->discount) }}
+                                                        -{!! webCurrencyConverter(amount: $recommendedProduct->discount) !!}
                                                     @endif
                                                 </span>
                                             </span>
@@ -122,13 +122,13 @@
                                         <div class="mb-4 pt-1 d-flex flex-wrap justify-content-center align-items-center text-center gap-8">
                                             @if($recommendedProduct->discount > 0)
                                                 <del class="__text-12px __color-9B9B9B">
-                                                    {{ webCurrencyConverter(amount: $recommendedProduct->unit_price) }}
+                                                    {!! webCurrencyConverter(amount: $recommendedProduct->unit_price) !!}
                                                 </del>
                                             @endif
                                             <span class="text-accent __text-22px text-dark">
-                                                {{ webCurrencyConverter(amount:
+                                                {!! webCurrencyConverter(amount:
                                                     $recommendedProduct->unit_price-(getProductDiscount(product: $recommendedProduct, price: $recommendedProduct->unit_price))
-                                                ) }}
+                                                ) !!}
                                             </span>
                                         </div>
                                         <button class="btn btn--primary font-bold px-4 rounded-10 text-uppercase get-view-by-onclick"

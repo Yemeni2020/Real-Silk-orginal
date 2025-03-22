@@ -25,7 +25,7 @@
                                             @if ($order_details?->productAllStatus->discount_type == 'percent')
                                                 -{{round($order_details?->productAllStatus->discount)}}%
                                             @elseif($order_details?->productAllStatus->discount_type =='flat')
-                                                -{{ webCurrencyConverter(amount: $order_details?->productAllStatus->discount) }}
+                                                -{!! webCurrencyConverter(amount: $order_details?->productAllStatus->discount) !!}
                                             @endif
                                         </span>
                                     @endif
@@ -51,7 +51,7 @@
                                     <div>
                                         <small class="text-muted">{{translate('price')}} :
                                             <span
-                                                class="text-primary">{{ webCurrencyConverter(amount: $order_details->price)}}</span>
+                                                class="text-primary">{!! webCurrencyConverter(amount: $order_details->price)!!}</span>
                                         </small>
                                     </div>
                                     <div>
@@ -72,15 +72,15 @@
                     <div class="p-3 fs-12 d-flex flex-column gap-2">
                         <div class="d-flex justify-content-between gap-2">
                             <div class="text-muted text-capitalize">{{translate('total_price')}}</div>
-                            <div>{{ webCurrencyConverter(amount: $order_details->price) }}</div>
+                            <div>{!! webCurrencyConverter(amount: $order_details->price) !!}</div>
                         </div>
                         <div class="d-flex justify-content-between gap-2">
                             <div class="text-muted text-capitalize">{{translate('product_discount')}}</div>
-                            <div>-{{ webCurrencyConverter(amount: $order_details->discount) }}</div>
+                            <div>-{!! webCurrencyConverter(amount: $order_details->discount) !!}</div>
                         </div>
                         <div class="d-flex justify-content-between gap-2">
                             <div class="text-muted">vat/tax</div>
-                            <div>{{ webCurrencyConverter(amount: $order_details->tax) }}</div>
+                            <div>{!! webCurrencyConverter(amount: $order_details->tax) !!}</div>
                         </div>
                         <?php
                         $total_product_price = 0;
@@ -96,17 +96,17 @@
                         ?>
                         <div class="d-flex justify-content-between gap-2">
                             <div class="text-muted text-capitalize">{{translate('sub_total')}}</div>
-                            <div>{{ webCurrencyConverter(amount: $subtotal) }}</div>
+                            <div>{!! webCurrencyConverter(amount: $subtotal) !!}</div>
                         </div>
                         <div class="d-flex justify-content-between gap-2">
                             <div class="text-muted text-capitalize">{{translate('coupon_discount')}}</div>
-                            <div> -{{ webCurrencyConverter(amount: $coupon_discount) }}</div>
+                            <div> -{!! webCurrencyConverter(amount: $coupon_discount) !!}</div>
                         </div>
                     </div>
                     <div class="d-flex justify-content-between gap-2 border-top py-2 px-3 fs-12">
                         <div
                             class="text-muted font-weight-bold text-capitalize">{{translate('total_refundable_amount')}}</div>
-                        <div class="font-weight-bold">{{ webCurrencyConverter(amount: $refund_amount) }}</div>
+                        <div class="font-weight-bold">{!! webCurrencyConverter(amount: $refund_amount) !!}</div>
                     </div>
                 </div>
 

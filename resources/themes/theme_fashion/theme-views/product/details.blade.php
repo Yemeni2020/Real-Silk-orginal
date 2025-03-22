@@ -452,7 +452,7 @@
                                         <span class="badge bg-base">-{{$product->discount}}%</span>
                                     @else
                                         <span class="badge bg-base">
-                                            {{translate('save')}} {{ webCurrencyConverter(amount: $product->discount) }}
+                                            {{translate('save')}} {!! webCurrencyConverter(amount: $product->discount) !!}
                                         </span>
                                     @endif
                                 @endif

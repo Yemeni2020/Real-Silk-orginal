@@ -41,7 +41,7 @@
                                 <div class="card border flex-grow-1">
                                     <div class="card-body grid-center">
                                         <div class="text-center">
-                                            <h3 class="mb-2">{{ webCurrencyConverter($total_wallet_balance ?? 0) }}</h3>
+                                            <h3 class="mb-2">{!! webCurrencyConverter($total_wallet_balance ?? 0) !!}</h3>
                                             <div class="d-flex align-items-center gap-2">
                                                 <img width="16"
                                                      src="{{theme_asset('assets/img/icons/profile-icon5.png')}}"

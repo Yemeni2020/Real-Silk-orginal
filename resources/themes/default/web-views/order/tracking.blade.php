@@ -77,7 +77,7 @@
                                                     <div class="d-flex flex-column mb-1">
                                                         <small class="fs-12">
                                                             <strong>{{translate('unit_price')}} :</strong>
-                                                            {{ webCurrencyConverter(amount: $order_details['price']) }}
+                                                            {!! webCurrencyConverter(amount: $order_details['price']) !!}
                                                             @if ($order_details->tax_model =='include')
                                                                 ({{translate('tax_incl.')}})
                                                             @else
@@ -121,7 +121,7 @@
                                             {{$order_details->qty}}
                                         </td>
                                         <td class="text-end fs-12 font-semi-bold">
-                                            {{ webCurrencyConverter(amount: $order_details['price']*$order_details['qty']) }}
+                                        {!! webCurrencyConverter(amount: $order_details['price']*$order_details['qty']) !!}
                                         </td>
                                     </tr>
                                     @php($sub_total+=$order_details['price']*$order_details['qty'])
@@ -167,31 +167,31 @@
                                 <tbody>
                                 <tr class="fs-14 font-semibold">
                                     <td class="text-dark">
-                                        {{ webCurrencyConverter(amount: $sub_total) }}
+                                    {!! webCurrencyConverter(amount: $sub_total) !!}
                                     </td>
                                     @if ($orderDetails['order_type'] == 'default_type')
                                         <td class="text-dark">
-                                            {{ webCurrencyConverter(amount: $orderDetails['is_shipping_free'] ? $total_shipping_cost-$orderDetails['extra_discount']:$total_shipping_cost) }}
+                                        {!! webCurrencyConverter(amount: $orderDetails['is_shipping_free'] ? $total_shipping_cost-$orderDetails['extra_discount']:$total_shipping_cost) !!}
                                         </td>
 
                                     @endif
 
                                     <td class="text-dark">
-                                        {{ webCurrencyConverter(amount: $total_tax) }}
+                                    {!! webCurrencyConverter(amount: $total_tax) !!}
                                     </td>
                                     <td class="text-dark">
-                                        -{{ webCurrencyConverter(amount: $total_discount_on_product) }}
+                                        -{!! webCurrencyConverter(amount: $total_discount_on_product) !!}
                                     </td>
                                     <td class="text-dark">
-                                        - {{ webCurrencyConverter(amount: $coupon_discount) }}
+                                        - {!! webCurrencyConverter(amount: $coupon_discount) !!}
                                     </td>
                                     @if ($orderDetails['order_type'] == 'POS')
                                         <td class="text-dark">
-                                            - {{ webCurrencyConverter(amount: $extra_discount) }}
+                                            - {!! webCurrencyConverter(amount: $extra_discount) !!}
                                         </td>
                                     @endif
                                     <td class="text-dark">
-                                        {{ webCurrencyConverter(amount: $sub_total+$total_tax+$total_shipping_cost-($orderDetails->discount)-$total_discount_on_product - $coupon_discount - $extra_discount) }}
+                                        {!! webCurrencyConverter(amount: $sub_total+$total_tax+$total_shipping_cost-($orderDetails->discount)-$total_discount_on_product - $coupon_discount - $extra_discount) !!}
                                     </td>
                                 </tr>
                                 </tbody>

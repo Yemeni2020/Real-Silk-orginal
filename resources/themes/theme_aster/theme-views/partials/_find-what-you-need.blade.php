@@ -63,7 +63,7 @@
                                                 </a>
                                             </h6>
                                             <h6 class="text-capitalize">{{ translate('final_total').':' }}
-                                                {{ webCurrencyConverter($order['order_amount']) }}</h6>
+                                            {!! webCurrencyConverter($order['order_amount']) !!}</h6>
                                         </div>
                                         <a href="javascript:" data-order-id="{{ $order['id'] }}"
                                            class="btn btn-primary order-again">{{ translate('order_again') }}</a>
@@ -243,7 +243,7 @@
                                                 <img src="{{ theme_asset('assets/img/svg/delivery-car.svg') }}" alt=""
                                                      class="svg">
                                             @else
-                                                {{ $coupon->discount_type == 'amount' ? webCurrencyConverter($coupon->discount) : $coupon->discount.'%' .' '.translate('OFF')}}
+                                            {!! $coupon->discount_type == 'amount' ? webCurrencyConverter($coupon->discount) : $coupon->discount.'%' .' '.translate('OFF')!!}
                                                 <img src="{{ theme_asset('assets/img/svg/dollar.svg') }}" alt=""
                                                      class="svg">
                                             @endif

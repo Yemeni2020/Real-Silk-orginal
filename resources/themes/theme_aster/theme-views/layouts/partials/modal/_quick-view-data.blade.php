@@ -63,7 +63,7 @@
                                                             <span class="product__discount-badge">{{'-'.$product->discount}}%</span>
                                                         @elseif($product->discount > 0)
                                                             <span
-                                                                class="product__discount-badge">{{'-'.webCurrencyConverter($product->discount)}}</span>
+                                                                class="product__discount-badge">{!!'-'.webCurrencyConverter($product->discount)!!}</span>
                                                         @endif
                                                         <a href="{{$photo['image_name']['path']}}">
                                                             <img class="dark-support rounded" alt=""
@@ -79,7 +79,7 @@
                                                             <span class="product__discount-badge">{{'-'.$product->discount.'%'}}</span>
                                                         @elseif($product->discount > 0)
                                                             <span
-                                                                class="product__discount-badge">{{'-'.webCurrencyConverter($product->discount)}}</span>
+                                                                class="product__discount-badge">{!!'-'.webCurrencyConverter($product->discount)!!}</span>
                                                         @endif
                                                         <a href="{{ getStorageImages(path:$photo['image_name'], type:'product') }}">
                                                             <img class="dark-support rounded" alt=""
@@ -96,7 +96,7 @@
                                                     @if ($product->discount > 0 && $product->discount_type === "percent")
                                                         <span class="product__discount-badge">{{'-'.$product->discount.'%'}}</span>
                                                     @elseif($product->discount > 0)
-                                                        <span class="product__discount-badge">-{{webCurrencyConverter($product->discount)}}</span>
+                                                        <span class="product__discount-badge">-{!!webCurrencyConverter($product->discount)!!}</span>
                                                     @endif
                                                     <a href="{{ getStorageImages(path: $photo, type: 'product') }}">
                                                         <img class="dark-support rounded" alt=""
@@ -159,7 +159,7 @@
                                 <span class="product__save-amount">{{translate('save')}} {{$product->discount}}%</span>
                             @elseif($product->discount > 0)
                                 <span
-                                    class="product__save-amount">{{translate('save')}} {{webCurrencyConverter($product->discount)}}</span>
+                                    class="product__save-amount">{{translate('save')}} {!!webCurrencyConverter($product->discount)!!}</span>
                             @endif
                         </div>
 
@@ -335,12 +335,12 @@
                                                 <h6 class="flex-middle-gap-2 mb-2">
                                                     <span class="text-muted">{{translate('total_price').':'}}</span>
                                                     <span
-                                                        class="total_price">{{webCurrencyConverter($product->unit_price)}}</span>
+                                                        class="total_price">{!!webCurrencyConverter($product->unit_price)!!}</span>
                                                 </h6>
                                                 <h6 class="flex-middle-gap-2">
                                                     <span class="text-muted">{{translate('tax').':'}}</span>
                                                     <span
-                                                        class="product_vat">{{webCurrencyConverter($product->tax)}}</span>
+                                                        class="product_vat">{!!webCurrencyConverter($product->tax)!!}</span>
                                                 </h6>
                                             </div>
                                         </div>

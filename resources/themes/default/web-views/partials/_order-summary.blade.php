@@ -39,32 +39,32 @@
                 <h6 class="text-center text-primary mb-4 d-flex align-items-center justify-content-center gap-2">
                     <img src="{{theme_asset(path: 'public/assets/front-end/img/icons/offer.svg')}}" alt="">
                     {{translate('you_have_Saved')}}
-                    <strong>{{ webCurrencyConverter(amount: $totalSavedAmount) }}!</strong>
+                    <strong>{!! webCurrencyConverter(amount: $totalSavedAmount) !!}!</strong>
                 </h6>
             @endif
 
             <div class="d-flex justify-content-between">
                 <span class="cart_title">{{translate('sub_total')}}</span>
                 <span class="cart_value">
-                    {{ webCurrencyConverter(amount: $subTotal) }}
+                {!! webCurrencyConverter(amount: $subTotal) !!}
                 </span>
             </div>
             <div class="d-flex justify-content-between">
                 <span class="cart_title">{{translate('tax')}}</span>
                 <span class="cart_value">
-                    {{ webCurrencyConverter(amount: $totalTax) }}
+                {!! webCurrencyConverter(amount: $totalTax) !!}
                 </span>
             </div>
             <div class="d-flex justify-content-between">
                 <span class="cart_title">{{translate('shipping')}}</span>
                 <span class="cart_value">
-                    {{ webCurrencyConverter(amount: $totalShippingCost) }}
+                {!! webCurrencyConverter(amount: $totalShippingCost) !!}
                 </span>
             </div>
             <div class="d-flex justify-content-between">
                 <span class="cart_title">{{translate('discount_on_product')}}</span>
                 <span class="cart_value">
-                    - {{ webCurrencyConverter(amount: $totalDiscountOnProduct) }}
+                    - {!! webCurrencyConverter(amount: $totalDiscountOnProduct) !!}
                 </span>
             </div>
             @php($coupon_dis=0)
@@ -76,7 +76,7 @@
                     <div class="d-flex justify-content-between">
                             <span class="cart_title">{{translate('coupon_discount')}}</span>
                             <span class="cart_value">
-                                - {{ webCurrencyConverter(amount: $couponDiscount) }}
+                                - {!! webCurrencyConverter(amount: $couponDiscount) !!}
                             </span>
                     </div>
 
@@ -86,7 +86,7 @@
                             <div class="px-2 d-flex justify-content-between w-100">
                                 <div>
                                     {{ session('coupon_code') }}
-                                    <span class="text-primary small">( -{{ webCurrencyConverter(amount: $couponDiscount) }} )</span>
+                                    <span class="text-primary small">( -{!! webCurrencyConverter(amount: $couponDiscount) !!} )</span>
                                 </div>
                                 <div class="bg-transparent text-danger cursor-pointer px-2 get-view-by-onclick" data-link="{{ route('coupon.remove') }}">x</div>
                             </div>
@@ -115,7 +115,7 @@
             <div class="d-flex justify-content-between">
                 <span class="cart_title text-primary font-weight-bold">{{translate('total')}}</span>
                 <span class="cart_value">
-                {{ webCurrencyConverter(amount: $subTotal+$totalTax+$totalShippingCost-$coupon_dis-$totalDiscountOnProduct-$orderWiseShippingDiscount) }}
+                {!! webCurrencyConverter(amount: $subTotal+$totalTax+$totalShippingCost-$coupon_dis-$totalDiscountOnProduct-$orderWiseShippingDiscount) !!}
                 </span>
             </div>
         </div>
@@ -153,7 +153,7 @@
     <div class="d-flex justify-content-center align-items-center fs-14 mb-2">
         <div class="product-description-label fw-semibold text-capitalize">{{translate('total_price')}} :</div>
         &nbsp; <strong
-                class="text-base">{{ webCurrencyConverter(amount: $subTotal+$totalTax+$totalShippingCost-$coupon_dis-$totalDiscountOnProduct-$orderWiseShippingDiscount) }}</strong>
+                class="text-base">{!! webCurrencyConverter(amount: $subTotal+$totalTax+$totalShippingCost-$coupon_dis-$totalDiscountOnProduct-$orderWiseShippingDiscount) !!}</strong>
     </div>
     <a data-route="{{ Route::currentRouteName() }}"
        class="btn btn--primary btn-block proceed_to_next_button text-capitalize {{$cart->count() <= 0 ? 'disabled' : ''}} action-checkout-function">{{translate('proceed_to_checkout')}}</a>

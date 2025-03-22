@@ -35,15 +35,15 @@
                                         <div class="product__price d-flex flex-wrap align-items-end gap-2 mt-2">
                                             @if($deal_of_the_day->product->discount > 0)
                                                 <del
-                                                    class="product__old-price">{{webCurrencyConverter($deal_of_the_day->product->unit_price)}}</del>
+                                                    class="product__old-price">{!!webCurrencyConverter($deal_of_the_day->product->unit_price)!!}</del>
                                             @endif
                                             <ins class="product__new-price">
-                                                {{ webCurrencyConverter($deal_of_the_day->product->unit_price-Helpers::getProductDiscount($deal_of_the_day->product,$deal_of_the_day->product->unit_price)) }}
+                                            {!! webCurrencyConverter($deal_of_the_day->product->unit_price-Helpers::getProductDiscount($deal_of_the_day->product,$deal_of_the_day->product->unit_price)) !!}
                                             </ins>
                                         </div>
                                         <div class="mt-xl-2">
                                             <span class="product__save-amount">{{ translate('save') }}
-                                                {{ webCurrencyConverter(Helpers::getProductDiscount($deal_of_the_day->product,$deal_of_the_day->product->unit_price)) }}
+                                            {!! webCurrencyConverter(Helpers::getProductDiscount($deal_of_the_day->product,$deal_of_the_day->product->unit_price)) !!}
                                             </span>
                                         </div>
                                     </div>
@@ -82,7 +82,7 @@
                                                         {{'-'.' '.round($product->discount,(!empty($decimal_point_settings) ? $decimal_point_settings: 0))}}
                                                         {{translate('%')}}
                                                     @elseif($product->discount_type =='flat')
-                                                        {{'-'.' '.webCurrencyConverter($product->discount)}}
+                                                    {!!'-'.' '.webCurrencyConverter($product->discount)!!}
                                                     @endif
                                                 </span>
                                             </span>
@@ -93,11 +93,11 @@
                                     <div class="product__price d-flex flex-wrap justify-content-center column-gap-2">
                                         @if($product->discount > 0)
                                             <del class="product__old-price">
-                                                {{webCurrencyConverter($product->unit_price)}}
+                                            {!!webCurrencyConverter($product->unit_price)!!}
                                             </del>
                                         @endif
                                         <ins
-                                            class="product__new-price">{{webCurrencyConverter($product->unit_price-(Helpers::getProductDiscount($product,$product->unit_price)))}}</ins>
+                                            class="product__new-price">{!!webCurrencyConverter($product->unit_price-(Helpers::getProductDiscount($product,$product->unit_price)))!!}</ins>
                                     </div>
                                 </a>
                             @endforeach

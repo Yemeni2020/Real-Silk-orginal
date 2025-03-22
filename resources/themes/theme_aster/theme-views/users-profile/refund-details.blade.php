@@ -51,10 +51,10 @@
                                             </div>
                                         </div>
                                         <div class="d-flex flex-column gap-1 fs-12">
-                                            <span>{{ translate('QTY') }} : {{webCurrencyConverter($order_details->qty)}}</span>
-                                            <span>{{ translate('price') }} : {{webCurrencyConverter($order_details->price)}}</span>
-                                            <span>{{ translate('discount') }} : {{webCurrencyConverter($order_details->discount)}}</span>
-                                            <span>{{ translate('tax') }} : {{webCurrencyConverter($order_details->tax)}}</span>
+                                            <span>{{ translate('QTY') }} : {!!webCurrencyConverter($order_details->qty)!!}</span>
+                                            <span>{{ translate('price') }} : {!!webCurrencyConverter($order_details->price)!!}</span>
+                                            <span>{{ translate('discount') }} : {!!webCurrencyConverter($order_details->discount)!!}</span>
+                                            <span>{{ translate('tax') }} : {!!webCurrencyConverter($order_details->tax)!!}</span>
                                         </div>
 
                                         <?php
@@ -68,9 +68,9 @@
                                         $refund_amount = $subtotal - $coupon_discount;
                                         ?>
                                         <div class="d-flex flex-column gap-1 fs-12">
-                                            <span>{{translate('subtotal')}}: {{webCurrencyConverter($subtotal)}}</span>
-                                            <span>{{translate('coupon_discount')}}: {{webCurrencyConverter($coupon_discount)}}</span>
-                                            <span>{{translate('total_refundable_amount')}}:{{webCurrencyConverter($refund_amount)}}</span>
+                                            <span>{{translate('subtotal')}}: {!!webCurrencyConverter($subtotal)!!}</span>
+                                            <span>{{translate('coupon_discount')}}: {!!webCurrencyConverter($coupon_discount)!!}</span>
+                                            <span>{{translate('total_refundable_amount')}}:{!!webCurrencyConverter($refund_amount)!!}</span>
                                         </div>
                                     </div>
                                     <div class="form-group mb-4">

@@ -68,7 +68,7 @@
                             @php($minimum_order_amount_by_seller = getWebConfig(name: 'minimum_order_amount_by_seller'))
                             @if ($minimum_order_amount_status ==1 && $minimum_order_amount_by_seller ==1)
                                 <span class="__inline-69"></span>
-                                <span>{{ webCurrencyConverter(amount: $shopInfoArray['minimum_order_amount']) }} {{translate('minimum_order_amount')}}</span>
+                                <span>{!! webCurrencyConverter(amount: $shopInfoArray['minimum_order_amount']) !!} {{translate('minimum_order_amount')}}</span>
                             @endif
                         </div>
 

@@ -66,7 +66,7 @@
                                             <tr>
                                                 <th>{{ translate('price') }}</th>
                                                 @foreach ($compareLists as $compareList)
-                                                    <td>{{ webCurrencyConverter($compareList->product['unit_price']) }}</td>
+                                                    <td>{!! webCurrencyConverter($compareList->product['unit_price']) !!}</td>
                                                 @endforeach
                                             </tr>
                                             <tr>
