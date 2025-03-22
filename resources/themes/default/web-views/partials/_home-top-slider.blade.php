@@ -40,7 +40,7 @@ $categories;
 
            
             @if($side_banner->count()>0)
-            <div class="col-9 col-md-12 col-sm-12 col-xm-12 col-lg-9 __top-slider-images">
+            <div class="col-md-12 col-sm-12 col-xm-12 col-lg-9 col-xl-9 __top-slider-images">
             @else
             <div class="col-12 col-xl-12 __top-slider-images">
             @endif
