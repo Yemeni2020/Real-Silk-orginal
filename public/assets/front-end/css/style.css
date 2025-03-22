@@ -190,7 +190,11 @@ a {
 .feature-product .owl-item:not(.active) {
     transition: all ease 0.3s;
 }
-
+@media (max-width: 768px) {
+    #navbar-category{
+        display: none !important;
+    }
+}
 @media (min-width: 768px) {
     .feature-product:not(:hover) .owl-item:not(.active) {
         opacity: 0;

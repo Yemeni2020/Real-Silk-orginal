@@ -516,7 +516,7 @@
             <div class="megamenu-wrap" id="category-menu" hx-get="{{ route('getCategoryMenu') }}" hx-trigger="load" hx-target="#category-menu" hx-swap="innerHTML">
             </div>
         </div>
-        <div class="navbar navbar-expand-md " id="navbar-category">
+        <div class="navbar navbar-expand-md" id="navbar-category">
             <div class="category-container">
                 <button class="scroll-left">&#10094;</button>
                 <div class="category-wrapper">
