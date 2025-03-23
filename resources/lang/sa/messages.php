@@ -8721,4 +8721,14 @@
 "must_use_country_code_before_phone_number" => "يجب استخدام رمز الدولة قبل رقم الهاتف",
 "please_provide_valid_identity" => "يرجى تقديم هوية صالحة",
 "enter_your_phone_or_email" => "أدخل رقم هاتفك أو بريدك الإلكتروني",
+"Vendor_Registration_Approved" => "تمت الموافقة على تسجيل البائع",
+"Find_your_favourite_brands_and_products" => "ابحث عن علاماتك التجارية ومنتجاتك المفضلة",
+"Select Language" => "اختر اللغة",
+"something_went_wrong." => "حدث خطأ ما.",
+"please_try_again_after_sometime" => "يرجى المحاولة مرة أخرى بعد فترة.",
+"password_reset" => "إعادة تعيين كلمة المرور",
+"change_password" => "تغيير كلمة المرور",
+"Check_your_email" => "تحقق من بريدك الإلكتروني",
+"Password_reset_url_sent" => "تم إرسال رابط إعادة تعيين كلمة المرور",
+
 );
