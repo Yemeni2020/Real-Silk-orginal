@@ -11,6 +11,7 @@ use App\Http\Requests\Admin\AboutUsRequest;
 use App\Http\Requests\Admin\PageUpdateRequest;
 use App\Http\Requests\Admin\PrivacyPolicyRequest;
 use App\Http\Requests\Admin\TermsConditionRequest;
+use App\Http\Requests\Admin\ContractRequest;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -36,6 +37,8 @@ class PagesController extends BaseController
         return $this->getTermsConditionView();
     }
 
+    
+   
     public function getTermsConditionView(): View
     {
         $curnnet_lang = getDefaultLanguage();
@@ -61,6 +64,28 @@ class PagesController extends BaseController
         return back();
     }
 
+
+    public function getcontract($type="factory"): View
+    {
+        $curnnet_lang = getDefaultLanguage();
+        $languages = getWebConfig(name: 'pnc_language') ?? null;
+
+        $contract = $this->businessSettingRepo->getFirstWhere(params: ['type'=>"contract_$type"]);
+        return view(Pages::CONTRACTS[VIEW], compact('contract','curnnet_lang','languages','type'));
+    }
+    public function updateContract(TermsConditionRequest $request,$type): RedirectResponse|null
+    {
+        $value=$request['value'];
+        if($type=="office" || $type=="factory"){
+            $this->businessSettingRepo->updateOrInsert(type: "contract_$type", value: $value);
+            clearWebConfigCacheKeys();
+            Toastr::success(translate("contract_Updated_successfully"));
+        }else
+            Toastr::error(translate('Cannot_saved'));
+
+        return back();
+        
+    }
     public function getPrivacyPolicyView(): View
     {
         $curnnet_lang = getDefaultLanguage();

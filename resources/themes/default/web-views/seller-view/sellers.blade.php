@@ -53,12 +53,12 @@
                             <div class="col-lg-3 col-md-6 col-sm-12 px-2 pb-4 text-center">
                                 <a href="{{route('shopView',['id' => $vendorItem['id']])}}" class="others-store-card text-capitalize">
                                     <div class="overflow-hidden other-store-banner">
-                                        <img class="w-100 h-100 object-cover" alt="" src="{{ getStorageImages(path: $vendorItem->banner_full_url, type: 'shop-banner') }}">
+                                        <img loading="lazy" class="w-100 h-100 object-cover" alt="" src="{{ getStorageImages(path: $vendorItem->banner_full_url, type: 'shop-banner') }}">
                                     </div>
                                     <div class="name-area">
                                         <div class="position-relative">
                                             <div class="overflow-hidden other-store-logo rounded-full">
-                                                <img class="rounded-full" alt="{{ translate('store') }}"
+                                                <img loading="lazy" class="rounded-full" alt="{{ translate('store') }}"
                                                      src="{{ getStorageImages(path: $vendorItem->image_full_url, type: 'shop') }}">
                                             </div>
 
@@ -106,7 +106,7 @@
                 @else
                     <div class="mb-5 text-center text-muted">
                         <div class="d-flex justify-content-center my-2">
-                            <img alt="" src="{{ theme_asset(path: 'public/assets/front-end/img/media/seller.svg') }}">
+                            <img loading="lazy" alt="" src="{{ theme_asset(path: 'public/assets/front-end/img/media/seller.svg') }}">
                         </div>
                         <h4 class="text-muted">{{ translate('vendor_not_available') }}</h4>
                         <p>{{ translate('Sorry_no_data_found_related_to_your_search') }}</p>

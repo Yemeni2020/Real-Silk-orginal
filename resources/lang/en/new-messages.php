@@ -9135,4 +9135,5 @@ return [
 	"Or_copy_link" => "Or copy link",
 	"copy" => "Copy",
 	"no_Coupon_Found" => "No Coupon Found",
+	"contracts" => "Contracts",
 ];

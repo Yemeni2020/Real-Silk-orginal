@@ -820,6 +820,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
                 Route::get(Pages::TERMS_CONDITION[URI], 'index')->name('terms-condition');
                 Route::post(Pages::TERMS_CONDITION[URI], 'updateTermsCondition')->name('update-terms');
 
+
+                Route::get(Pages::CONTRACTS[URI]."/{type}", 'getcontract')->name('contracts');
+                Route::post(Pages::CONTRACTS[URI]."/{type}", 'updateContract');
+
                 Route::get(Pages::PRIVACY_POLICY[URI], 'getPrivacyPolicyView')->name('privacy-policy');
                 Route::post(Pages::PRIVACY_POLICY[URI], 'updatePrivacyPolicy')->name('privacy-policy-update');
 

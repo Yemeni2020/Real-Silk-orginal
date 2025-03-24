@@ -8676,4 +8676,11 @@ return [
 	"change_password" => "Change password",
 	"Check_your_email" => "Check your email",
 	"Password_reset_url_sent" => "Password reset url sent",
+	"contracts" => "Contracts",
+	"The_file_must_be_of_type:_jpeg,_png,_jpg,_gif" => "The file must be of type: jpeg  png  jpg  gif",
+	"contract_office" => "Contract office",
+	"contract_factory" => "Contract factory",
+	"factory_contract" => "Factory contract",
+	"office_contract" => "Office contract",
+	"contract_Updated_successfully" => "Contract Updated successfully",
 ];

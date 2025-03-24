@@ -38,11 +38,11 @@
         <div class="rtl">
             <div class="bg-white __shop-banner-main">
                 @if($shopInfoArray['id'] != 0)
-                    <img class="__shop-page-banner" alt=""
+                    <img loading="lazy" class="__shop-page-banner" alt=""
                          src="{{ getStorageImages(path: $shopInfoArray['banner_full_url'], type: 'wide-banner') }}">
                 @else
                     @php($banner=getWebConfig(name: 'shop_banner'))
-                    <img class="__shop-page-banner" alt=""
+                    <img loading="lazy" class="__shop-page-banner" alt=""
                          src="{{ getStorageImages(path: $banner, type: 'wide-banner') }}">
                 @endif
                 @include('web-views.seller-view.shop-info-card', ['displayClass' => 'd-none d-md-block max-width-500px'])
@@ -129,7 +129,7 @@
                 @else
                     <div class="d-flex justify-content-center align-items-center w-100 py-5 my-2">
                         <div>
-                            <img src="{{ theme_asset(path: 'public/assets/front-end/img/media/product.svg') }}"
+                            <img loading="lazy" src="{{ theme_asset(path: 'public/assets/front-end/img/media/product.svg') }}"
                                  class="img-fluid" alt="">
                             <h6 class="text-muted text-capitalize">{{ translate('no_product_found') }}</h6>
                         </div>

@@ -2,7 +2,12 @@
 <div class="inline-page-menu my-4">
     <ul class="list-unstyled">
         <li class="{{ Request::is('admin/business-settings/'.Pages::TERMS_CONDITION[URI]) ?'active':'' }}">
-            <a href="{{route('admin.business-settings.terms-condition')}}">{{translate('terms_&_Conditions')}}</a>
+            <a href="{{route('admin.business-settings.terms-condition',['type'=>'factory'])}}">{{translate('terms_&_Conditions')}}</a>
+        </li>
+        <li class="{{ Str::contains(Request::url(), 'admin/business-settings/contracts') ? 'active' : '' }}">
+            <a href="{{ route('admin.business-settings.contracts', ['type' => 'factory']) }}">
+                {{ translate('contracts') }}
+            </a>
         </li>
         <li class="{{ Request::is('admin/business-settings/'.Pages::PRIVACY_POLICY[URI]) ?'active':'' }}">
             <a href="{{route('admin.business-settings.privacy-policy')}}">{{translate('privacy_Policy')}}</a>

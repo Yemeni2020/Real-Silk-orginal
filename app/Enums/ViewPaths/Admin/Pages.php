@@ -14,6 +14,11 @@ enum Pages
         VIEW => 'admin-views.business-settings.page.terms-condition'
     ];
 
+    const CONTRACTS = [
+        URI => 'contracts',
+        VIEW => 'admin-views.business-settings.page.contracts'
+    ];
+
     const PRIVACY_POLICY = [
         URI => 'privacy-policy',
         VIEW => 'admin-views.business-settings.page.privacy-policy'

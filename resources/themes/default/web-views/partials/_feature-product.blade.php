@@ -16,7 +16,7 @@
                 <span class="for-discount-value-null"></span>
             @endif
             <a href="{{route('product',$product->slug)}}" id="a{{ $product->id }}">
-                <img src="{{ getStorageImages(path: $product->thumbnail_full_url, type: 'product') }}" alt="">
+                <img loading="lazy" src="{{ getStorageImages(path: $product->thumbnail_full_url, type: 'product') }}" alt="">
             </a>
 
             <div class="quick-view" onclick="quick22(event)">

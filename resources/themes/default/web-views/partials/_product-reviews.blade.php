@@ -3,7 +3,7 @@
         <div class="row product-review d-flex mb-3">
             <div class="col-md-4 d-flex mb-3">
                 <div class="media media-ie-fix me-4 {{ $productReview->reply ? 'before-content-border' : '' }}">
-                    <img class="rounded-circle __img-64 object-cover"
+                    <img loading="lazy" class="rounded-circle __img-64 object-cover"
                          src="{{ isset($productReview->user) ? getStorageImages(path: $productReview->user->image_full_url, type: 'avatar') : theme_asset(path: 'public/assets/front-end/img/image-place-holder.png') }}"
                          alt="{{isset($productReview->user)?$productReview->user->f_name : translate('not exist')}}"/>
                     <div

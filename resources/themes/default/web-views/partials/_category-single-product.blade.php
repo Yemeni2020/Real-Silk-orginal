@@ -29,8 +29,8 @@
             @endif
             <div class="d-block pb-0">
                 <a href="{{route('product',$product->slug)}}" id="a{{ $product->id }}" class="d-block">
-                    <img alt=""
-                         src="{{ getStorageImages(path: $product->thumbnail_full_url, type: 'product') }}">
+                    <img loading="lazy" alt=""
+                         src="{{ getStorageImages(path: $product->thumbnail_full_url, type: 'product') }}" loading="lazy">
                 </a>
             </div>
 

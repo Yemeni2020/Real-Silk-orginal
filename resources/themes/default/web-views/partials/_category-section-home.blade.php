@@ -53,7 +53,7 @@
                                         <div class="text-center d-inline-block mx-2 __cate-item" style="width: 100px;">
                                             <a href="{{route('products',['category_id'=> $category['id'],'data_from'=>'category','page'=>1])}}">
                                                 <div class="__img" style="border-radius: 50%; overflow: hidden; width: 80px; height: 80px; margin: auto;">
-                                                    <img alt="{{ $category->name }}"
+                                                    <img loading="lazy" alt="{{ $category->name }}"
                                                         src="{{ getStorageImages(path:$category->icon_full_url, type: 'category') }}"
                                                         style="width: 100%; height: 100%; object-fit: cover;">
                                                 </div>

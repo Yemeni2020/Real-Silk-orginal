@@ -32,7 +32,7 @@
                         </div>
                     @elseif($previewFileInfo['mime_category'] == 'image')
                         <div>
-                            <img class="w-100" src="{{ $product->preview_file_full_url['path'] }}" alt="">
+                            <img loading="lazy" class="w-100" src="{{ $product->preview_file_full_url['path'] }}" alt="">
                         </div>
                     @elseif($previewFileInfo['mime_category'] == 'document' && $previewFileInfo['mime_type'] == 'application/pdf')
                         <div class="pdf-preview">
