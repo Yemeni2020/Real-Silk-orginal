@@ -120,11 +120,11 @@ class ProductController extends BaseController
 
         // echo $request->description[0];
        
-
-
         // echo count($request["item"]["Name"]);
         // dump($request->product_type);
         $dataArray = $service->getAddProductData(request: $request, addedBy: 'admin');
+
+
         // dump($request);
         // return null;
         

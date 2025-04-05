@@ -802,6 +802,14 @@
                                     </div>
                                 @endif
                             @endforeach
+                            @if(isset($product["production_period"]))
+                            <div class="shipping-details-bottom-border">
+                                <div class="px-3 py-3">
+                                    
+                                    <span>{{translate('The minimum production period you require is ')}} {{$product["production_period"]}} Days</span>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                     @endif
 

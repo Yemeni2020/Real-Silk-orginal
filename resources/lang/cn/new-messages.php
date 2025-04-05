@@ -8644,4 +8644,13 @@ return [
 	"welcome_back_to_office_login" => "Welcome back to office login",
 	"Account_Suspended" => "Account Suspended",
 	"help_topic_table" => "Help topic table",
+	"Production period" => "Production period",
+	"1-3 dayes" => "1-3 dayes",
+	"4-7 dayes" => "4-7 dayes",
+	"8-11 dayes" => "8-11 dayes",
+	"11-15 dayes" => "11-15 dayes",
+	"dayes" => "Dayes",
+	"12-16 dayes" => "12-16 dayes",
+	"The minimum production period you require is " => "The minimum production period you require is ",
+	"production_period" => "Production period",
 ];

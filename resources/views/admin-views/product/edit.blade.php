@@ -522,6 +522,48 @@ $auto_translate=getWebConfig("auto_translate");
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-md-6 physical_product_show" id="shipping_cost_multy2">
+                            <div class="form-group">
+                                <div
+                                    class="form-control h-auto min-form-control-height d-flex align-items-center flex-wrap justify-content-between gap-2">
+                                    <fieldset>
+                                        <legend>{{translate("Production period")}}:</legend>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <input type="radio" name="period" @if($product['production_period']=="1-3") checked @endif value="1-3" id="period">
+                                                <span>{{translate("1-3 dayes")}}</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <input type="radio" name="period" @if($product['production_period']=="4-7") checked @endif value="4-7" id="period">
+                                                <span>{{translate("4-7 dayes")}}</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <input type="radio" name="period" @if($product['production_period']=="8-11") checked @endif value="8-11" id="period">
+                                                <span>{{translate("8-11 dayes")}}</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <input type="radio" name="period" @if($product['production_period']=="12-16") checked @endif value="12-16" id="period">
+                                                <span>{{translate("12-16 dayes")}}</span>
+                                            </div>
+                                            <div class="col-6">
+                                                <input type="radio" name="period" @if($product['production_period']!="1-3" && $product['production_period']!="4-7" && $product['production_period']!="8-11" && $product['production_period']!="12-16" && isset($product['production_period']) ) checked @endif value="custom" id="period">
+                                                <input type="number" style="width: 80px;" @if($product['production_period']!="1-3" && $product['production_period']!="4-7" && $product['production_period']!="8-11" && $product['production_period']!="12-16" && isset($product['production_period']) ) value="{{$product['production_period']}}" @endif name="custom_period" min=1 >
+                                                <span>{{translate("dayes")}}</span>
+                                            </div>
+                                        </div>
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+ 
+                                    </fieldset>
+                                   
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

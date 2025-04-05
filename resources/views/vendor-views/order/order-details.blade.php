@@ -156,6 +156,10 @@
                                                         <h6 class="title-color">{{substr($productDetails->name, 0, 30)}}{{strlen($productDetails->name)>10?'...':''}}</h6>
                                                         <div><strong>{{translate('qty')}} :</strong> {{$detail['qty']}}
                                                         </div>
+                                                        @if(isset($productDetails["production_period"]))
+                                                            <div><strong>{{translate('production_period')}} :</strong> {{$productDetails["production_period"]}} {{translate("Days")}}
+                                                            </div>
+                                                        @endif
                                                         <div>
                                                             <strong>{{translate('unit_price')}} :</strong>
                                                             {{ setCurrencySymbol(amount: usdToDefaultCurrency(amount: $detail['price'] + ($detail->tax_model =='include' ? ($detail['tax'] / $detail['qty']) :0))) }}

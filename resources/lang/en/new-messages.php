@@ -9151,4 +9151,13 @@ return [
 	"not_selected" => "Not selected",
 	"show_contract" => "Show contract",
 	"The signature field is required." => "The signature field is required.",
+	"Production period" => "Minimum production quantity period",
+	"1-3 dayes" => "1-3 dayes",
+	"4-7 dayes" => "4-7 dayes",
+	"8-11 dayes" => "8-11 dayes",
+	"11-15 dayes" => "11-15 dayes",
+	"dayes" => "Dayes",
+	"12-16 dayes" => "12-16 dayes",
+	"The minimum production period you require is " => "The minimum production period you require is ",
+	"production_period" => "Minimum production quantity period",
 ];

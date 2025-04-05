@@ -8710,4 +8710,13 @@ return [
 	"Invalid_signature_format" => "Invalid signature format",
 	"Sign_Contract" => "Sign Contract",
 	"if_enabled_Vendors_must_sing_contract" => "If enabled Vendors must sing contract",
+	"Production period" => "Minimum production quantity period",
+	"1-3 dayes" => "1-3 dayes",
+	"4-7 dayes" => "4-7 dayes",
+	"8-11 dayes" => "8-11 dayes",
+	"11-15 dayes" => "11-15 dayes",
+	"dayes" => "Dayes",
+	"12-16 dayes" => "12-16 dayes",
+	"The minimum production period you require is " => "The minimum production period you require is ",
+	"production_period" => "Minimum production quantity period",
 ];

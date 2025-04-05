@@ -8763,5 +8763,14 @@
 "Signature saved and contract generated successfully" => "تم حفظ التوقيع وإنشاء العقد بنجاح",
 "Invalid_signature_format" => "صيغة توقيع غير صالحة",
 "Sign_Contract" => "توقيع العقد",
-"if_enabled_Vendors_must_sing_contract" => "إذا تم التمكين، يجب على البائعين توقيع العقد"
+"if_enabled_Vendors_must_sing_contract" => "إذا تم التمكين، يجب على البائعين توقيع العقد",
+"Production period" => "فترة إنتاج الحد الأدنى للكمية",
+"1-3 dayes" => "1-3 يوم", 
+"4-7 dayes" => "4-7 يوم",
+"8-11 dayes" => "8-11 يوم",
+"11-15 dayes" => "11-15 يوم",
+"dayes" => "يوم",
+"12-16 dayes" => "12-16 يوم",
+"The minimum production period you require is " => "أقل فترة إنتاج تحتاجها هي ",
+"production_period" => "فترة إنتاج الحد الأدنى للكمية"
 );

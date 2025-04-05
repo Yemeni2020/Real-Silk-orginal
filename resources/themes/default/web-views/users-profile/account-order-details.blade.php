@@ -194,6 +194,7 @@
                                             <th>{{translate('order_details')}}</th>
                                             <th>{{translate('qty')}}</th>
                                             <th class="text-right">{{translate('price')}}</th>
+                                            <th class="text-right">{{translate('production_period')}}</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -320,6 +321,11 @@
                                                     <td class="text-right align-middle">
                                                         <span class="font-weight-bold amount">
                                                         {!! webCurrencyConverter(amount: $detail->price) !!}
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-right align-middle">
+                                                        <span class="font-weight-bold amount">
+                                                        {!! $product['production_period']  !!} {{translate('Days')}}
                                                         </span>
                                                     </td>
                                                 </tr>

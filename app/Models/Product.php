@@ -91,6 +91,7 @@ class Product extends Model
         'attributes',
         'current_stock',
         'minimum_order_qty',
+        'production_period',
         'video_provider',
         'video_url',
         'status',
@@ -142,6 +143,7 @@ class Product extends Model
         'discount' => 'float',
         'current_stock' => 'integer',
         'minimum_order_qty' => 'integer',
+        'production_period' => 'string',
         'free_shipping' => 'integer',
         'request_status' => 'integer',
         'featured_status' => 'integer',
@@ -389,12 +391,10 @@ class Product extends Model
 
     public function getUnitPriceAttribute($value): float
     {
-        // ✅ إذا كان المستخدم داخل لوحة التحكم، لا تُغيّر السعر
         if (strpos(url()->current(), '/admin') || strpos(url()->current(), '/vendor') || strpos(url()->current(), '/seller')) {
             return (float) $value;
         }
     
-        // ✅ إذا كان المنتج أُضيف بواسطة تاجر
         if ($this->added_by === 'seller') {
             $commission = $this->seller->sales_commission_percentage ?? null;
 
@@ -407,7 +407,6 @@ class Product extends Model
             return (float) $value * $commission;
         }
     
-        // ✅ لأي منتج آخر
         return (float) $value;
     }
     

@@ -9054,6 +9054,15 @@
 "Signature saved and contract generated successfully" => "签名保存成功，合同生成成功",
 "Invalid_signature_format" => "签名格式无效",
 "Sign_Contract" => "签署合同",
-"if_enabled_Vendors_must_sing_contract" => "如果启用，供应商必须签署合同"
+"if_enabled_Vendors_must_sing_contract" => "如果启用，供应商必须签署合同",
+"Production period" => "最小生产量周期",
+"1-3 dayes" => "1-3 天", 
+"4-7 dayes" => "4-7 天",
+"8-11 dayes" => "8-11 天",
+"11-15 dayes" => "11-15 天",
+"dayes" => "天",
+"12-16 dayes" => "12-16 天",
+"The minimum production period you require is " => "您要求的最短生产周期是 ",
+"production_period" => "最小生产量周期"
 );
 ?>

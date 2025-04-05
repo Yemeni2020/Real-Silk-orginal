@@ -641,7 +641,15 @@ class ProductService
         if(empty($details)){
             $details=$request['description'][array_search($curnnet_lang, $request['lang'])];
         }
-
+        $production_period=null;
+        if($request->has("period")){
+            if($request->period=='custom'){
+                $production_period=$request->custom_period;
+            }else{
+                $production_period=$request->period;
+            }
+        }
+        
 
 
         return [
@@ -677,6 +685,7 @@ class ProductService
             'attributes' => $request['product_type'] == 'physical' ? json_encode($request['choice_attributes']) : json_encode([]),
             'current_stock' => $request['product_type'] == 'physical' ? abs($stockCount) : 999999999,
             'minimum_order_qty' => $request['minimum_order_qty'],
+            'production_period' => $production_period,
             'video_provider' => 'youtube',
             'video_url' => $request['video_url'],
             'status' => $addedBy == 'admin' ? 1 : $this->vendor_auto_product()??0,
@@ -734,7 +743,14 @@ class ProductService
             $details=$request['description'][array_search($curnnet_lang, $request['lang'])];
         }
 
-
+        $production_period=null;
+        if($request->has("period")){
+            if($request->period=='custom'){
+                $production_period=$request->custom_period;
+            }else{
+                $production_period=$request->period;
+            }
+        }
         $dataArray = [
             'name' => $name,
             'code' => $request['code'],
@@ -762,6 +778,7 @@ class ProductService
             'attributes' => $request['product_type'] == 'physical' ? json_encode($request['choice_attributes']) : json_encode([]),
             'current_stock' => $request['product_type'] == 'physical' ? abs($stockCount) : 999999999,
             'minimum_order_qty' => $request['minimum_order_qty'],
+            'production_period' => $production_period,
             'video_provider' => 'youtube',
             'video_url' => $request['video_url'],
             'multiply_qty' => ($request['product_type'] == 'physical') ? ($request['multiply_qty'] == 'on' ? 1 : 0) : 0,
