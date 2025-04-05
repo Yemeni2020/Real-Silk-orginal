@@ -171,7 +171,6 @@ class VendorService
             'l_name' => $request['l_name'],
             'phone' => $request['phone'],
             'email' => $request['email'],
-            'verification' =>true,
             'image' =>$request->hasFile("image")? $this->upload(dir: 'seller/', format: 'webp', image: $request->file('image')):"",
             'password' => bcrypt($request['password']),
             'referral_code' => Helpers::generate_referer_code("seller"),

@@ -175,6 +175,37 @@
                                 </label>
                             </div>
                         </div>
+
+                        <div class="col-xl-4 col-md-6">
+                            <div class="d-flex justify-content-between align-items-center gap-10 form-control form-group">
+                                <span class="title-color">
+                                    {{ translate('Sign_Contract') }}
+                                    <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
+                                          data-placement="right"
+                                          title="{{ translate('if_enabled_Vendors_must_sing_contract') }}">
+                                        <img width="16" src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}"
+                                             alt="">
+                                    </span>
+                                </span>
+
+                                @php($sing_contract = getWebConfig('vendors_must_sing_contract') ?? 0)
+
+                                <label class="switcher" for="vendors-must-sing-contract">
+                                    <input type="checkbox" value="1" class="switcher_input toggle-switch-message"
+                                           name="vendors_must_sing_contract" id="vendors-must-sing-contract"
+                                           {{ $sing_contract == 1 ? 'checked' : '' }}
+                                           data-modal-id="toggle-modal"
+                                           data-toggle-id="vendors-must-sing-contract"
+                                           data-on-image="vendor-review-reply-on.png"
+                                           data-off-image="vendor-review-reply-off.png"
+                                           data-on-title="{{ translate('By_Turning_On_Vendors_must_sing_contract').'?' }}"
+                                           data-off-title="{{ translate('By_Turning_Off_Vendors_must_sing_contract').'?' }}"
+                                           data-on-message="<p>{{ translate('If_enabled,_vendors_will_be_required_to_sign_the_contract_upon_registration').'.' }}</p>"
+                                           data-off-message="<p>{{ translate('If_disabled,_vendors_will_be_able_to_register_without_signing_the_contract').'.' }}</p>">
+                                    <span class="switcher_control"></span>
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

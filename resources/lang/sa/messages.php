@@ -8730,5 +8730,11 @@
 "change_password" => "تغيير كلمة المرور",
 "Check_your_email" => "تحقق من بريدك الإلكتروني",
 "Password_reset_url_sent" => "تم إرسال رابط إعادة تعيين كلمة المرور",
-
+"contracts" => "العقود",
+"The_file_must_be_of_type:_jpeg,_png,_jpg,_gif" => "يجب أن يكون الملف من النوع: jpeg، png، jpg، gif",
+"contract_office" => "عقد المكتب",
+"contract_factory" => "عقد المصنع",
+"factory_contract" => "عقد المصنع",
+"office_contract" => "عقد المكتب",
+"contract_Updated_successfully" => "تم تحديث العقد بنجاح",
 );

@@ -66,6 +66,7 @@ class Seller extends Authenticatable
         'free_delivery_status',
         'app_language',
         'referral_code',
+        'signatures',
     ];
 
     protected $casts = [
@@ -76,7 +77,8 @@ class Seller extends Authenticatable
         'orders_count' => 'integer',
         'product_count' => 'integer',
         'pos_status' => 'integer',
-        'type_account' => 'string'
+        'type_account' => 'string',
+        'signatures' => 'boolean'
     ];
 
     public function scopeApproved($query)
@@ -88,16 +90,23 @@ class Seller extends Authenticatable
     {
         return $this->hasOne(Shop::class, 'seller_id');
     }
-
+    
     public function shops():HasMany
     {
         return $this->hasMany(Shop::class, 'seller_id');
     }
+
+    public function signatures()
+    {
+        return $this->hasMany(Signatures::class, 'seller', 'id');
+    }
+
     public function services()
     {
         return $this->belongsToMany(Product::class, 'office_service', 'office', 'service')
                     ->withPivot('status'); // ✅ لجلب الحالة أيضًا
     }
+
     public function referredFactoriesWithLastMessage()
     {
     // جلب آخر رسالة لكل مصنع محال باستخدام LEFT JOIN بدلاً من whereColumn

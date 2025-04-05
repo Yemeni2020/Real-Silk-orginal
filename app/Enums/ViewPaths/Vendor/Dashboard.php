@@ -14,6 +14,11 @@ enum Dashboard
         ROUTE => 'confirm-email',
         VIEW => 'vendor-views.auth.confirm_email',
     ];
+    const SIGNATURES_EMAIL = [
+        URI => 'signatures',
+        ROUTE => 'confirm-email',
+        VIEW => 'vendor-views.auth.signatures',
+    ];
     const ORDER_STATUS = [
         URI => 'order-status',
         VIEW => 'vendor-views.partials._dashboard-order-status'

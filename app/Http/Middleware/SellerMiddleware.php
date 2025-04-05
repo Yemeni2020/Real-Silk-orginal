@@ -29,18 +29,26 @@ class SellerMiddleware
             }
 
             // ✅ السماح بالدخول إذا كان الحساب "معتمد" والبريد الإلكتروني "مؤكد"
-            if ($user->status === 'approved' && $user->verification) {
+            $mustSignContract = getWebConfig('vendors_must_sing_contract') ?? 0;
+
+            if (
+                $user->status === 'approved' &&
+                $user->verification && 
+                (
+                    ($mustSignContract && $user->signatures) || !$mustSignContract
+                )
+            ) {
                 if ($request->route()->getName() !== 'vendor.dashboard.confirm_email') {
                     return $next($request);
-
-                }else{
+                } else {
                     return redirect()->route('vendor.dashboard.index');
-
                 }
             }
 
+
             // ✅ السماح بطلبات POST دون إعادة التوجيه لمنع فقدان CSRF
-            if (!$user->verification) {
+            if (!$user->verification  ) {
+                
                 if ($request->isMethod('post')) {
                     return $next($request); // السماح بطلبات POST بدون إعادة التوجيه
                 }
@@ -50,6 +58,20 @@ class SellerMiddleware
                     return redirect()->route('vendor.dashboard.confirm_email');
                 }
                 return $next($request);
+            }
+            else if(!$user->signatures && (getWebConfig('vendors_must_sing_contract') ?? 0)){
+
+                // dump($request->route()->getName());
+                // return redirect()->route('vendor.dashboard.signatures');
+                if ($request->isMethod('post')) {
+                    return $next($request); // السماح بطلبات POST بدون إعادة التوجيه
+                }
+
+                if ($request->route()->getName() !== 'vendor.dashboard.signatures') {
+                    return redirect()->route('vendor.dashboard.signatures');
+                }
+                return $next($request);
+
             }
 
             // ✅ تسجيل الخروج إذا لم يكن الحساب معتمدًا

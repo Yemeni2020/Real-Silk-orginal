@@ -1,3 +1,4 @@
+
 <div class="second-el d--none">
     <div class="container">
         <div class="row justify-content-center">
@@ -15,12 +16,12 @@
                                 <div class="col-sm-6">
                                     <div class="form-group mb-4">
                                         <label  for="f_name">{{translate('first_name')}} <span class="text-danger">*</span></label>
-                                        <input class="form-control" type="text" name="f_name" placeholder="{{translate('ex').': John'}}" required>
+                                        <input class="form-control" type="text" id="f_name" name="f_name" placeholder="{{translate('ex').': John'}}" required>
                                         <span error="f_name" class="text-danger fs-12"></span>
                                     </div>
                                     <div class="form-group mb-4">
                                         <label  for="l_name">{{translate('last_name')}} <span class="text-danger">*</span></label>
-                                        <input class="form-control" type="text" name="l_name" placeholder="{{translate('ex').': Doe'}}" required>
+                                        <input class="form-control" type="text" id="l_name" name="l_name" placeholder="{{translate('ex').': Doe'}}" required>
                                         <span error="l_name" class="text-danger fs-12"></span>
                                     </div>
                                 </div>
@@ -142,14 +143,25 @@
                             </div>
                         @endif
                         <span error="g-recaptcha-response" class="text-danger fs-12"></span>
-
+                        @php($vendors_must_sing_contract = getWebConfig('vendors_must_sing_contract') ?? 0)
                         <div class="d-flex justify-content-start mt-2">
                             <label class="custom-checkbox align-items-center">
-                                <input type="checkbox" class="" id="terms-checkbox" >
-                                <span class="form-check-label">{{ translate('i_agree_with_the') }} <a
-                                        href="{{route('terms')}}" target="_blank" class="text-underline color-bs-primary-force">
+                                
+                                @if($vendors_must_sing_contract)    
+                                <input type="checkbox" class="" disabled id="terms-checkbox" >
+                                <span class="form-check-label">{{ translate('i_agree_with_the') }}
+                                <a
+                                        href="#" data-toggle="modal" id="show-contract-btn" data-target="#contract-modal" class="text-underline color-bs-primary-force">
                                         {{ translate('terms_&_conditions') }}
                                     </a>
+                                @else
+                                <input type="checkbox" class=""  id="terms-checkbox" >
+                                <span class="form-check-label">{{ translate('i_agree_with_the') }}
+                                <a
+                                href="{{route('terms')}}" target="_blank"  class="text-underline color-bs-primary-force">
+                                {{ translate('terms_&_conditions') }}
+                                </a>
+                                @endif
                                 </span>
                             </label>
                         </div>
@@ -159,6 +171,48 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div id="contract-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">📜 {{translate("show_contract")}}</h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- ✅ عرض العقد كـ PDF داخل iframe -->
+                <iframe id="contract-frame" src="{{route('vendor.auth.registration.contract',['type'=>$type])}}" width="100%" height="500px"></iframe>
+
+                <!-- ✅ مربع الموافقة -->
+                <div class="form-check mt-3">
+                    <input type="checkbox" disabled id="agree-checkbox" class="form-check-input">
+                    <span class="form-check-label">{{ translate('i_agree_with_the') }} <a
+                            href="#" >
+                            {{ translate('terms_&_conditions') }}
+                        </a>
+                    </span>
+                </div>
+                <div class="form-check mt-3">
+                    <canvas id="signature-pad" width="400" height="200" style="border: 1px solid #000;"></canvas>
+                    <button type="button" class="btn btn-danger" id="clear-signature">{{translate('clear')}}</button>
+                    
+                    <input type="hidden" id="signature-data" name="signature">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="save-signature">{{translate('save')}} </button>
+                <button type="button" class="btn btn-secondary" id="closemodel" data-dismiss="modal">
+                    {{translate("close")}}
+                </button>
             </div>
         </div>
     </div>

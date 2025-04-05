@@ -87,6 +87,7 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
             Route::group(['prefix' => 'registration', 'as' => 'registration.'], function () {
                 Route::controller(RegisterController::class)->group(function () {
                     Route::get(Auth::VENDOR_REGISTRATION[URI], 'index')->name('index');
+                    Route::get(Auth::VENDOR_CONTRACTS[URI]."/{type}", 'ViewContract')->name('contract');
                     Route::post(Auth::VENDOR_STEP1[URI], 'checkEmailPhone')->name('check');
                     Route::post(Auth::CONFIRM[URI], 'confirmEmail')->name('confirmEmail');
                     Route::get(Auth::VENDOR_REGISTRATION[URI]."/{referral_code}", 'index');
@@ -101,6 +102,8 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
             Route::group(['prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
                 Route::controller(DashboardController::class)->group(function () {
                     Route::get(Dashboard::CONIRM_EMAIL[URI], 'confirm_email')->name('confirm_email');
+                    Route::get(Dashboard::SIGNATURES_EMAIL[URI], 'signatures')->name('signatures');
+                    Route::post(Dashboard::SIGNATURES_EMAIL[URI], 'post_signatures');
                     Route::post(Dashboard::CONIRM_EMAIL[URI], 'sendEmail');
                     Route::post(Dashboard::CONIRM_EMAIL[ROUTE], 'confirmMail')->name('confirmMail');
                     Route::get(Dashboard::INDEX[URI], 'index')->name('index');
@@ -309,6 +312,7 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
             });
             Route::group(['prefix' => 'shop', 'as' => 'shop.'], function () {
                 Route::controller(ShopController::class)->group(function () {
+                    Route::get('contract/download/{id}',  'DownloadContract')->name('contract.download');
                     Route::get(Shop::INDEX[URI], 'index')->name('index');
                     Route::get(Shop::UPDATE[URI] . '/{id}', 'getUpdateView')->name('update');
                     Route::post(Shop::UPDATE[URI] . '/{id}', 'update');

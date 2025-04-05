@@ -16,11 +16,15 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+    RewriteCond %{REQUEST_URI} ^/storage/app/private/ [NC]
 
     # cors
     # Header set Access-Control-Allow-Origin "*"
 </IfModule>
-
+<FilesMatch "\.(pdf)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
 #<IfModule mod_headers.c>
 #    Header set Access-Control-Allow-Origin "*"
 #</IfModule>

@@ -823,6 +823,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
 
                 Route::get(Pages::CONTRACTS[URI]."/{type}", 'getcontract')->name('contracts');
                 Route::post(Pages::CONTRACTS[URI]."/{type}", 'updateContract');
+                Route::get(Pages::CONTRACTS[URI]."/download/{type}", 'DownloadTemplate')->name('download_contract');
+                Route::get(Pages::CONTRACTS[URI]."/View/{type}", 'ViewTemplate')->name('View_contract');
 
                 Route::get(Pages::PRIVACY_POLICY[URI], 'getPrivacyPolicyView')->name('privacy-policy');
                 Route::post(Pages::PRIVACY_POLICY[URI], 'updatePrivacyPolicy')->name('privacy-policy-update');

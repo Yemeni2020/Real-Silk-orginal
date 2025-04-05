@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Settings;
 
 use App\Contracts\Repositories\BusinessSettingRepositoryInterface;
 use App\Contracts\Repositories\TranslationRepositoryInterface;
+use App\Services\ContractsService;
 use App\Enums\ViewPaths\Admin\Pages;
 use App\Http\Controllers\BaseController;
 use App\Models\BusinessSetting;
@@ -23,6 +24,7 @@ class PagesController extends BaseController
     public function __construct(
         private readonly BusinessSettingRepositoryInterface $businessSettingRepo,
         private readonly TranslationRepositoryInterface $translationRepo,
+        private readonly ContractsService $ContractsService,
     ){}
 
     /**
@@ -80,12 +82,33 @@ class PagesController extends BaseController
             $this->businessSettingRepo->updateOrInsert(type: "contract_$type", value: $value);
             clearWebConfigCacheKeys();
             Toastr::success(translate("contract_Updated_successfully"));
+            
+
+
+
+            
         }else
             Toastr::error(translate('Cannot_saved'));
 
         return back();
         
     }
+
+    public function DownloadTemplate($type = "factory")
+    {
+        $this->ContractsService->DownloadTemplate($type);// إنهاء التنفيذ بعد الإخراج
+    }
+
+    public function ViewTemplate(Request $request,$type = "factory")
+    {
+        $fullname="";
+        if($request->has("fullname"))
+            $fullname = $request->query('fullname', translate("not_selected"));
+        $contract = $this->businessSettingRepo->getFirstWhere(params: ['type' => "contract_$type"])?->value;
+        return view("contract.contract", compact('contract','fullname'));
+        
+    }
+
     public function getPrivacyPolicyView(): View
     {
         $curnnet_lang = getDefaultLanguage();

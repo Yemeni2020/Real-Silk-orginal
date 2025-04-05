@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Vendor;
 
 use App\Contracts\Repositories\CustomerRepositoryInterface;
+use App\Contracts\Repositories\SignatureRepositoryInterface;
 use App\Contracts\Repositories\DeliveryManRepositoryInterface;
 use App\Contracts\Repositories\OrderRepositoryInterface;
 use App\Contracts\Repositories\ProductRepositoryInterface;
@@ -18,6 +19,7 @@ use App\Http\Requests\Vendor\WithdrawRequest;
 use App\Repositories\BrandRepository;
 use App\Repositories\OrderTransactionRepository;
 use App\Services\DashboardService;
+use App\Services\ContractsService;
 use App\Services\VendorWalletService;
 use App\Services\WithdrawRequestService;
 use Brian2694\Toastr\Facades\Toastr;
@@ -32,6 +34,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EmailSellerVerificationMail;
+use Illuminate\Support\Facades\Validator;
 
 class DashboardController extends BaseController
 {
@@ -41,6 +44,7 @@ class DashboardController extends BaseController
         private readonly DeliveryManRepositoryInterface $deliveryManRepo,
         private readonly OrderRepositoryInterface $orderRepo,
         private readonly CustomerRepositoryInterface $customerRepo,
+        private readonly SignatureRepositoryInterface $signatureRepo,
         private readonly BrandRepository $brandRepo,
         private readonly VendorWalletRepositoryInterface $vendorWalletRepo,
         private readonly VendorWalletService $vendorWalletService,
@@ -48,6 +52,7 @@ class DashboardController extends BaseController
         private readonly WithdrawRequestRepositoryInterface $withdrawRequestRepo,
         private readonly WithdrawRequestService $withdrawRequestService,
         private readonly DashboardService $dashboardService,
+        private readonly ContractsService $ContractsService,
         private readonly PhoneOrEmailVerificationRepository $EmailVerification,
         private readonly VendorRepository $vendorRepo,
     )
@@ -283,6 +288,48 @@ class DashboardController extends BaseController
         return response()->json(['content'=>$method], 200);
     }
 
+    public function signatures(Request $request) {
+
+        $seller=auth("seller")->user();
+        if(!getWebConfig('vendors_must_sing_contract') ?? 0)
+            return redirect(route("vendor.dashboard.index"));
+
+        return view(Dashboard::SIGNATURES_EMAIL[VIEW],compact("seller"));
+    
+    }
+    public function post_signatures(Request $request) {
+
+        $seller = auth("seller")->user();
+
+       
+        $validator = Validator::make($request->all(), [
+            'signature' => ['required', 'string', 'starts_with:data:image/png;base64,'],
+        ], [
+            'signature.required' => translate("You_must_enter_your_signature_in_box"),
+            'signature.starts_with' => translate("Invalid_signature_format"),
+        ]);
+
+        if ($validator->fails()) {
+            Toastr::error($validator->errors()->first('signature'));
+            return back()->withErrors($validator)->withInput();
+        }
+        
+        $signatureBase64 = $request->input('signature'); // ✅ استلام التوقيع كنص
+        
+        $this->signatureRepo->add([
+            'seller' => $seller->id,
+            'signature_path' => $signatureBase64, // ✅ حفظ المسار فقط
+            'contract_path' => 'app/private/contracts/'.$seller->type_account.'/contract_' . $seller->id . '.pdf'
+        ]);
+        
+        // ✅ إذا تم التوقيع بنجاح، حفظ العقد
+        $this->ContractsService->SaveContract($seller);
+        Seller::where("id", auth("seller")->id())->update(["email" => $request["email"],"signatures"=>true]);
+        
+        Toastr::success(translate('Signature saved and contract generated successfully'));
+        return redirect(route("vendor.dashboard.index"));
+        
+    }
     public function confirm_email(Request $request)
     {
 

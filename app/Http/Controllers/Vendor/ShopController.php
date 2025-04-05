@@ -45,6 +45,27 @@ class ShopController extends BaseController
      * @param string|null $type
      * @return View|Collection|LengthAwarePaginator|callable|null
      */
+    public function DownloadContract($id)
+    {
+        $vendor = auth('seller')->user(); // السماح فقط للتاجر المسجل بالدخول
+
+        
+
+        if ($vendor->id != $id) {
+            abort(403, "ليس لديك صلاحية لتنزيل هذا العقد!");
+        }
+        $type=str_replace("fictory","factory",$vendor->type_account);
+        $filePath = storage_path("app/private/contracts/{$type}/contract_{$id}.pdf");
+        
+        // dump($filePath);
+        // dump(file_exists($filePath));
+        // return null;
+        if (!file_exists($filePath)) {
+            abort(404, "العقد غير موجود!");
+        }
+
+        return response()->download($filePath);
+    }
     public function getView(?Request $request, string $type = null): View|Collection|LengthAwarePaginator|null|callable
     {
         

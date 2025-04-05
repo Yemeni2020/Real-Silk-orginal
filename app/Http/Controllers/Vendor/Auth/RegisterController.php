@@ -8,6 +8,7 @@ use App\Contracts\Repositories\HelpTopicRepositoryInterface;
 use App\Contracts\Repositories\ShopRepositoryInterface;
 use App\Contracts\Repositories\VendorRepositoryInterface;
 use App\Contracts\Repositories\VendorWalletRepositoryInterface;
+use App\Contracts\Repositories\SignatureRepositoryInterface;
 use App\Enums\ViewPaths\Vendor\Auth;
 use App\Events\VendorRegistrationEvent;
 use App\Http\Controllers\BaseController;
@@ -17,6 +18,7 @@ use App\Repositories\VendorRegistrationReasonRepository;
 use App\Repositories\PhoneOrEmailVerificationRepository;
 use App\Services\ShopService;
 use App\Services\VendorService;
+use App\Services\ContractsService;
 use App\Traits\EmailTemplateTrait;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
@@ -34,9 +36,11 @@ class RegisterController extends BaseController
     public function __construct(
         private readonly VendorRepositoryInterface $vendorRepo,
         private readonly VendorWalletRepositoryInterface $vendorWalletRepo,
+        private readonly SignatureRepositoryInterface $signatureRepo,
         private readonly ShopRepositoryInterface $shopRepo,
         private readonly VendorService $vendorService,
         private readonly ShopService $shopService,
+        private readonly ContractsService $ContractsService,
         private readonly EmailTemplatesRepositoryInterface $emailTemplatesRepo,
         private readonly BusinessSettingRepositoryInterface $businessSettingRepo,
         private readonly HelpTopicRepositoryInterface $helpTopicRepo,
@@ -56,7 +60,7 @@ class RegisterController extends BaseController
         $isoffice=false;
         if(isset($_GET["office"]))
             $isoffice=true;
-        
+        $type=$isoffice?"office":"factory";
         // dump($isoffice);
         // return null;
         $businessMode = getWebConfig(name:'business_mode');
@@ -76,17 +80,43 @@ class RegisterController extends BaseController
             orderBy: ['id' => 'desc'],
             filters: ['type' => 'vendor_registration', 'status' => '1'],
             dataLimit: 'all');
-        return view(VIEW_FILE_NAMES[Auth::VENDOR_REGISTRATION[VIEW]],compact('vendorRegistrationHeader','vendorRegistrationReasons','sellWithUs','downloadVendorApp','helpTopics','businessProcess','businessProcessStep',"referral_code","isoffice"));
+        return view(VIEW_FILE_NAMES[Auth::VENDOR_REGISTRATION[VIEW]],compact('vendorRegistrationHeader','vendorRegistrationReasons','sellWithUs','downloadVendorApp','helpTopics','businessProcess','businessProcessStep',"referral_code","isoffice",'type'));
     }
-
+    public function ViewContract(Request $request,$type = "factory")
+    {
+        $fullname="";
+        if($request->has("fullname"))
+            $fullname = $request->query('fullname', translate("not_selected"));
+        $contract = $this->businessSettingRepo->getFirstWhere(params: ['type' => "contract_$type"])?->value;
+        return view("contract.contract", compact('contract','fullname'));
+        
+    }
     public function add(VendorAddRequest $request): JsonResponse
     {
         
+
         $vendor = $this->vendorRepo->add(data: $this->vendorService->getAddData($request));
         if(!empty($request->referral_code))
             $this->vendorService->create_referral_vendor($vendor->id,$request->referral_code);
         $this->shopRepo->add($this->shopService->getAddShopDataForRegistration(request: $request, vendorId: $vendor['id']));
         $this->vendorWalletRepo->add($this->vendorService->getInitialWalletData(vendorId: $vendor['id']));
+        $vendorId=$vendor['id'];
+
+
+        //signature
+        if(getWebConfig('vendors_must_sing_contract') && $request->has('signature')){
+
+            $signatureBase64 = $request->input('signature'); // ✅ استلام التوقيع كنص
+           
+            $this->signatureRepo->add([
+                'seller' => $vendorId,
+                'signature_path' => $signatureBase64, // ✅ حفظ المسار فقط
+                'contract_path' => 'app/private/contracts/'.$vendor->type_account.'/contract_' . $vendor->id . '.pdf'
+            ]);
+            // $this->ContractsService->DownloadContract($vendor);
+            $this->ContractsService->SaveContract($vendor);
+            //End signature
+        }
 
         $data = [
             'vendorName' => $request['f_name'],

@@ -268,8 +268,68 @@
         }
         @endif
     });
+    
 </script>
 <script src="{{ theme_asset(path: 'public/assets/front-end/plugin/intl-tel-input/js/intlTelInput.js') }}"></script>
 <script src="{{ theme_asset(path: 'public/assets/front-end/js/country-picker-init.js') }}"></script>
 <script src="{{ theme_asset(path: 'public/assets/front-end/js/vendor-registration.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/js/signature_pad.umd.min.js') }}"></script>
+
+<script>
+
+document.getElementById("show-contract-btn").addEventListener("click", function() {
+    var _fullname = encodeURIComponent(window.f_name.value + " " + window.l_name.value);
+
+    // تكوين الرابط وإضافة الاسم الكامل كـ query parameter
+    var contractUrl = "{{ route('vendor.auth.registration.contract', ['type' => $type]) }}" + "?fullname=" + _fullname;
+
+    // تحديث iframe لعرض العقد مع الاسم
+    document.getElementById("contract-frame").src = contractUrl;
+});
+document.getElementById("agree-checkbox").addEventListener("change", function() {
+        document.getElementById("terms-checkbox").checked = this.checked;
+        document.getElementById("agree-btn").disabled = !this.checked;
+        this.disabled=true;
+        if (!$(this).is(':checked')) {
+            $('#vendor-apply-submit').attr('disabled');
+        }
+    });
+    document.getElementById("terms-checkbox").addEventListener("change", function() {
+        document.getElementById("agree-checkbox").checked = this.checked;
+        document.getElementById("agree-btn").disabled = !this.checked;
+        if (!$(this).is(':checked')) {
+            $('#vendor-apply-submit').attr('disabled');
+        }
+    });
+
+var canvas = document.getElementById("signature-pad");
+var signaturePad = new SignaturePad(canvas);
+
+document.getElementById("save-signature").addEventListener("click", function () {
+    if (!signaturePad.isEmpty()) {
+        document.getElementById("signature-data").value = signaturePad.toDataURL();
+        document.getElementById("terms-checkbox").checked = true;
+        document.getElementById("agree-checkbox").checked = true;
+        document.getElementById("terms-checkbox").disabled = false;
+        document.getElementById("agree-checkbox").disabled = false;
+        $('#vendor-apply-submit').removeAttr('disabled');
+        $("#closemodel").click();
+    }
+});
+document.getElementById("clear-signature").addEventListener("click", function () {
+    signaturePad.clear()
+    document.getElementById("terms-checkbox").checked = false;
+    document.getElementById("agree-checkbox").checked = false;
+    document.getElementById("terms-checkbox").disabled = true;
+    document.getElementById("agree-checkbox").disabled = true;
+    $('#vendor-apply-submit').attr('disabled');
+
+});
+
+
+    document.getElementById("agree-btn").addEventListener("click", function() {
+        $("#contract-modal").modal("hide"); // إغلاق النافذة
+        document.getElementById("submit-btn").disabled = false; // تفعيل زر التسجيل
+    });
+    </script>
 @endpush
