@@ -75,18 +75,21 @@
                     {{ $product['name'] }}
                 </a>
             </div>
-            @if($product->product_type!="Service" )
-                <div class="justify-content-between ">
+            @if($product->product_type != "Service")
+                <?php
+                    $final_price = $product->unit_price;
+                    $discount = getProductDiscount($product, $final_price);
+                ?>
+
+                <div class="justify-content-between">
                     <div class="product-price d-flex flex-wrap gap-8 align-items-center row-gap-0">
                         @if($product->discount > 0)
                             <del class="category-single-product-price">
-                            {!! webCurrencyConverter(amount: $product->unit_price) !!}
+                                {!! webCurrencyConverter(amount: $final_price) !!}
                             </del>
                         @endif
                         <span class="text-accent text-dark">
-                        {!! webCurrencyConverter(amount:
-                                $product->unit_price-(getProductDiscount(product: $product, price: $product->unit_price))
-                            ) !!}
+                            {!! webCurrencyConverter(amount: $final_price - $discount) !!}
                         </span>
                     </div>
                 </div>

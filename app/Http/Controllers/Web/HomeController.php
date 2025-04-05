@@ -73,7 +73,7 @@ class HomeController extends Controller
             $id = '"' . $data['id'] . '"';
             $homeCategoriesProducts = Product::active()
                 ->withCount('reviews')
-                ->where('category_ids', 'like', "%{$id}%")->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail")->limit(12);
+                ->where('category_ids', 'like', "%{$id}%")->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by")->limit(12);
             $data['products'] = ProductManager::getPriorityWiseCategoryWiseProductsQuery(query: $homeCategoriesProducts, dataLimit: 25);
         });
         $current_date = date('Y-m-d H:i:s');
@@ -109,7 +109,7 @@ class HomeController extends Controller
             })->take(12);
 
 
-        $inhouseProducts = Product::active()->with(['reviews', 'rating'])->withCount('reviews')->where(['added_by' => 'admin'])->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail")->limit(25)->get();
+        $inhouseProducts = Product::active()->with(['reviews', 'rating'])->withCount('reviews')->where(['added_by' => 'admin'])->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by")->limit(25)->get();
         $inhouseProductCount = $inhouseProducts->count();
 
         $inhouseReviewData = Review::active()->whereIn('product_id', $inhouseProducts->pluck('id'));
@@ -134,7 +134,7 @@ class HomeController extends Controller
         $featuredProductsList = ProductManager::getPriorityWiseFeaturedProductsQuery(query: $this->product->active(), dataLimit: 12);
 
         $latest_products = $this->product->with(['reviews'])->active()->orderBy('id', 'desc')->take(8)->get();
-        $newArrivalProducts = ProductManager::getPriorityWiseNewArrivalProductsQuery(query: $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail")->active(), dataLimit: 8);
+        $newArrivalProducts = ProductManager::getPriorityWiseNewArrivalProductsQuery(query: $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by")->active(), dataLimit: 8);
 
         $brands = Brand::active()->take(50)->get();
 
@@ -177,7 +177,7 @@ class HomeController extends Controller
         $main_section_banner = $this->banner->where(['banner_type' => 'Main Section Banner', 'theme' => $theme_name, 'published' => 1])->whereJsonContains('language', $curnnet_lang)->orderBy('id', 'desc')->latest()->first();
 
         
-        $recommendedProduct = $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail")->active()->inRandomOrder()->first();
+        $recommendedProduct = $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by")->active()->inRandomOrder()->first();
         $footer_banner = $this->banner->where('banner_type', 'Footer Banner')->where('theme', theme_root_path())->where('published', 1)->whereJsonContains('language', $curnnet_lang)->orderBy('id', 'desc')->get();
         
 

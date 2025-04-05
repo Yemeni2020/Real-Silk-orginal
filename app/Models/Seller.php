@@ -78,7 +78,8 @@ class Seller extends Authenticatable
         'product_count' => 'integer',
         'pos_status' => 'integer',
         'type_account' => 'string',
-        'signatures' => 'boolean'
+        'signatures' => 'boolean',
+        'sales_commission_percentage'=>'float'
     ];
 
     public function scopeApproved($query)

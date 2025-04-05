@@ -168,7 +168,7 @@ class Product extends Model
         'digital_file_ready_storage_type' => 'string',
     ];
 
-    protected $appends = ['is_shop_temporary_close', 'thumbnail_full_url', 'preview_file_full_url', 'color_images_full_url', 'meta_image_full_url', 'images_full_url', 'digital_file_ready_full_url'];
+    protected $appends = ['is_shop_temporary_close', 'thumbnail_full_url', 'preview_file_full_url', 'color_images_full_url', 'meta_image_full_url', 'images_full_url', 'digital_file_ready_full_url','unit_price'];
 
     public function translations(): MorphMany
     {
@@ -386,6 +386,31 @@ class Product extends Model
         return $translation->value ?? $detail; 
         // return $this->translations[1]->value ?? $detail;
     }
+
+    public function getUnitPriceAttribute($value): float
+    {
+        // ✅ إذا كان المستخدم داخل لوحة التحكم، لا تُغيّر السعر
+        if (strpos(url()->current(), '/admin') || strpos(url()->current(), '/vendor') || strpos(url()->current(), '/seller')) {
+            return (float) $value;
+        }
+    
+        // ✅ إذا كان المنتج أُضيف بواسطة تاجر
+        if ($this->added_by === 'seller') {
+            $commission = $this->seller->sales_commission_percentage ?? null;
+
+            if (isset($commission)) {
+                $commission = ($commission / 100) + 1;
+            } else {
+                $commission = (getWebConfig('sales_commission') / 100) + 1;
+            }
+                
+            return (float) $value * $commission;
+        }
+    
+        // ✅ لأي منتج آخر
+        return (float) $value;
+    }
+    
     public function getThumbnailFullUrlAttribute(): string|null|array
     {
         $value = $this->thumbnail;
