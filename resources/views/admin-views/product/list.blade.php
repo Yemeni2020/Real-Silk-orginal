@@ -174,6 +174,7 @@
                                 <th>{{ translate('SL') }}</th>
                                 <th>{{ translate('product Name') }}</th>
                                 <th class="text-center">{{ translate('product Type') }}</th>
+                                <th class="text-center">{{ translate('vendor') }}</th>
                                 <th class="text-center">{{ translate('unit_price') }}</th>
                                 <th class="text-center">{{ translate('show_as_featured') }}</th>
                                 <th class="text-center">{{ translate('active_status') }}</th>
@@ -196,6 +197,18 @@
                                     </td>
                                     <td class="text-center">
                                         {{ translate(str_replace('_',' ',$product['product_type'])) }}
+                                    </td>
+                                    <td class="text-center">
+                                    @if($product->seller)
+                                        <a title="{{translate('view')}}"
+                                        class="title-color"
+                                        href="{{ route('admin.vendors.view', $product->seller->id) }}">
+                                            {{ $product->seller->f_name }} {{ $product->seller->l_name }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">{{translate('admin')}}</span>
+                                    @endif
+
                                     </td>
                                     <td class="text-center">
                                         {{setCurrencySymbol(amount: usdToDefaultCurrency(amount: $product['unit_price']), currencyCode: getCurrencyCode()) }}

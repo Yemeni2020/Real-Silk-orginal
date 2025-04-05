@@ -264,7 +264,7 @@ class Product extends Model
 
     public function shop(): BelongsTo
     {
-        return $this->belongsTo(Shop::class, 'seller_id');
+        return $this->belongsTo(Shop::class, 'seller_id', 'seller_id');
     }
 
     public function seller(): BelongsTo
