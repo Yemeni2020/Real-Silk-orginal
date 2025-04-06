@@ -8774,4 +8774,6 @@
 "The minimum production period you require is " => "أقل فترة إنتاج تحتاجها هي ",
 "production_period" => "فترة إنتاج الحد الأدنى للكمية",
 "ReCAPTCHA validation is required." => "مطلوب التحقق من صحة ReCAPTCHA.",
+"Complaints" => "الشكاوى",
+
 );

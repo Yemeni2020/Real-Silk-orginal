@@ -8720,4 +8720,6 @@ return [
 	"The minimum production period you require is " => "The minimum production period you require is ",
 	"production_period" => "Minimum production quantity period",
 	"ReCAPTCHA validation is required." => "ReCAPTCHA validation is required.",
+	"Minimum_order_quantity" => "Minimum order quantity",
+	"Complaints" => "Complaints",
 ];

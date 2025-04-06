@@ -289,12 +289,12 @@
                                         <div class="pe-3">
                                             @if(auth('customer')->check())
                                                 <a class="widget-list-link" href="{{route('account-tickets')}}">
-                                                    <span><i class="fa fa-user-o  me-2 mt-2 mb-2"></i> {{ translate('support_ticket')}} </span>
+                                                    <span><i class="fa fa-user-o  me-2 mt-2 mb-2"></i> {{ translate('Complaints')}} </span>
                                                 </a>
                                                 <br class="d-none d-md-block" />
                                             @else
                                                 <a class="widget-list-link" href="{{route('customer.auth.login')}}">
-                                                    <span><i class="fa fa-user-o  me-2 mt-2 mb-2"></i> {{ translate('support_ticket')}} </span>
+                                                    <span><i class="fa fa-user-o  me-2 mt-2 mb-2"></i> {{ translate('Complaints')}} </span>
                                                 </a>
                                                 <br class="d-none d-md-block" />
                                             @endif

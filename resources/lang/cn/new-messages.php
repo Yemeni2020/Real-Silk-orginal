@@ -8653,4 +8653,6 @@ return [
 	"12-16 dayes" => "12-16 dayes",
 	"The minimum production period you require is " => "The minimum production period you require is ",
 	"production_period" => "Production period",
+	"Complaints" => "Complaints",
+
 ];
