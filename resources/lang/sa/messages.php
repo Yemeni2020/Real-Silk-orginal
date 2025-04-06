@@ -8772,5 +8772,6 @@
 "dayes" => "يوم",
 "12-16 dayes" => "12-16 يوم",
 "The minimum production period you require is " => "أقل فترة إنتاج تحتاجها هي ",
-"production_period" => "فترة إنتاج الحد الأدنى للكمية"
+"production_period" => "فترة إنتاج الحد الأدنى للكمية",
+"ReCAPTCHA validation is required." => "مطلوب التحقق من صحة ReCAPTCHA.",
 );
