@@ -65,7 +65,14 @@ class CustomerAuthController extends Controller
         } elseif (isset($loginOptions['manual_login']) && $loginOptions['manual_login'] && $request['login_type'] == 'manual-login') {
             return $this->loginByEmailOrPhone(request: $request);
         } else {
-            return redirect()->route('home');
+            $url = session()->pull('keep_return_url'); // نسحب وننسى الرابط
+
+            if ($url) {
+                return redirect()->to($url);
+            } else {
+                return redirect()->route('home');
+            }
+            // return redirect()->route('home');
         }
     }
 
@@ -221,11 +228,12 @@ class CustomerAuthController extends Controller
             $redirectUrl = $this->customerAuthService->getCustomerLoginPreviousRoute(previousUrl: url()->previous());
 
             if ($request->ajax()) {
+                $url = session()->pull('keep_return_url');
                 return response()->json([
                     'status' => 'success',
                     'message' => translate('login_successful'),
-                    'redirect_url' => $redirectUrl,
-                    'reload' => true,
+                    'redirect_url' => $url??$redirectUrl,
+                    'reload' => false,
                 ]);
             }
 
