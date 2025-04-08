@@ -8722,4 +8722,6 @@ return [
 	"ReCAPTCHA validation is required." => "ReCAPTCHA validation is required.",
 	"Minimum_order_quantity" => "Minimum order quantity",
 	"Complaints" => "Complaints",
+	"Adv" => "Adv",
+	"Adv_List" => "Adv List",
 ];

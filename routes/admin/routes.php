@@ -8,6 +8,7 @@ use App\Enums\ViewPaths\Admin\Brand;
 use App\Enums\ViewPaths\Admin\Order;
 use App\Enums\ViewPaths\Admin\Pages;
 use App\Enums\ViewPaths\Admin\Banner;
+use App\Enums\ViewPaths\Admin\Adv;
 use App\Enums\ViewPaths\Admin\Coupon;
 use App\Enums\ViewPaths\Admin\Review;
 use App\Enums\ViewPaths\Admin\Vendor;
@@ -106,6 +107,8 @@ use App\Http\Controllers\Admin\Product\ProductController;
 use App\Http\Controllers\Admin\ThirdParty\MailController;
 use App\Http\Controllers\Admin\Product\CategoryController;
 use App\Http\Controllers\Admin\Promotion\BannerController;
+use App\Http\Controllers\Admin\Promotion\AdvController;
+use App\Http\Controllers\Admin\Promotion\CategoryAdvController;
 use App\Http\Controllers\Admin\Promotion\CouponController;
 use App\Http\Controllers\Admin\Settings\SiteMapController;
 use App\Http\Controllers\Admin\Customer\CustomerController;
@@ -373,6 +376,27 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
             Route::post(Banner::STATUS[URI], 'updateStatus')->name('status');
             Route::get(Banner::UPDATE[URI] . '/{id}', 'getUpdateView')->name('update');
             Route::post(Banner::UPDATE[URI] . '/{id}', 'update');
+        });
+    });
+
+    // advertisements
+    Route::group(['prefix' => 'adver', 'as' => 'adver.', 'middleware' => ['module:promotion_management']], function () {
+        Route::controller(AdvController::class)->group(function () {
+            Route::get(Adv::LIST[URI], 'index')->name('list');
+            Route::post(Adv::ADD[URI], 'store')->name('store');
+            Route::post(Adv::DELETE[URI], 'delete')->name('delete');
+            Route::post(Adv::STATUS[URI], 'updateStatus')->name('status');
+            Route::get(Adv::UPDATE[URI] . '/{id}', 'getUpdateView')->name('update');
+            Route::post(Adv::UPDATE[URI] . '/{id}', 'update');
+
+        });
+        Route::controller(CategoryAdvController::class)->group(function () {
+            Route::get(Adv::LISTCATEGORY[URI], 'index')->name('list-category');
+            Route::post(Adv::ADDCATEGORY[URI], 'store')->name('store-category');
+            Route::post(Adv::DELETECATEGORY[URI], 'delete')->name('delete-category');
+            Route::get(Adv::UPDATECATEGORY[URI] . '/{id}', 'getUpdateView')->name('update-category');
+            Route::post(Adv::UPDATECATEGORY[URI] . '/{id}', 'update');
+
         });
     });
 

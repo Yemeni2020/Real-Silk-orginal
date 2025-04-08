@@ -28,6 +28,7 @@
     use App\Enums\ViewPaths\Admin\SystemSetup;
     use App\Utils\Helpers;
     use App\Enums\EmailTemplateKey;
+    use App\Enums\ViewPaths\Admin\Adv;
     $eCommerceLogo = getWebConfig(name: 'company_web_logo');
 @endphp
 <div id="sidebarMain" class="d-none">
@@ -503,6 +504,36 @@
                                 </a>
                             </li>
 
+                            <li class="navbar-vertical-aside-has-menu {{(Request::is('admin/adver*')) ?'active':''}}">
+                                <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
+                                   href="javascript:" title="{{translate('Adv')}}">
+                                    <i class="tio-users-switch nav-icon"></i>
+                                    <span
+                                        class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('Adv')}}</span>
+                                </a>
+                                <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
+                                    style="display: {{(Request::is('admin/adver*') )?'block':'none'}}">
+                                    <li class="navbar-vertical-aside-has-menu {{Request::is('admin/adver/'.Adv::LISTCATEGORY[URI])?'active':''}}">
+                                        <a class="js-navbar-vertical-aside-menu-link nav-link"
+                                           href="{{route('admin.adver.list-category')}}"
+                                           title="{{translate('Category')}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span
+                                                class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('Category')}}</span>
+                                        </a>
+                                    </li>
+                                    <li class="navbar-vertical-aside-has-menu {{(Request::is('admin/adver/'.Adv::LIST[URI]) || (Request::is('admin/adver/'.Adv::UPDATE[URI].'*')))?'active':''}}">
+                                        <a class="js-navbar-vertical-aside-menu-link nav-link"
+                                           href="{{route('admin.adver.list')}}"
+                                           title="{{translate('Adv_List')}}">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span
+                                                class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('Adv_List')}}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            
                             <li class="navbar-vertical-aside-has-menu {{(Request::is('admin/coupon*') || Request::is('admin/deal*')) ?'active':''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
                                    href="javascript:" title="{{translate('offers_&_Deals')}}">
