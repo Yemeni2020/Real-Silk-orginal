@@ -131,6 +131,7 @@ class Product extends Model
         'brand_id' => 'integer',
         'unit' => 'string',
         'digital_product_type' => 'string',
+        'variation' => 'array',
         'product_type' => 'string',
         'details' => 'string',
         'min_qty' => 'integer',
@@ -409,6 +410,40 @@ class Product extends Model
     
         return (float) $value;
     }
+    public function getVariationPrice(int $index = 0): float|null
+    {
+        $rawVariation = $this->getRawOriginal('variation'); // يتفادى Accessor
+        $variations = json_decode($rawVariation);
+
+        if (!isset($variations[$index])) {
+            return null;
+        }
+
+        $price = $variations[$index]->price;
+
+        if (strpos(url()->current(), '/admin') || strpos(url()->current(), '/vendor') || strpos(url()->current(), '/seller')) {
+            return (float) $price;
+        }
+
+        if ($this->added_by === 'seller') {
+            $commission = $this->seller->sales_commission_percentage ?? getWebConfig('sales_commission');
+            $commission = ($commission / 100) + 1;
+            $price *= $commission;
+        }
+
+        return (float) $price;
+    }
+    public function getVariationAttribute($value): string
+    {
+        $variations = json_decode($value, true);
+
+        foreach ($variations as $index => &$variation) {
+            $variation['price'] = $this->getVariationPrice($index);
+        }
+    
+        return json_encode($variations); // ✅ تحويلها إلى string JSON
+    }
+
     
     public function getThumbnailFullUrlAttribute(): string|null|array
     {

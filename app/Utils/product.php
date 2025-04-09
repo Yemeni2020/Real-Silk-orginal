@@ -69,6 +69,27 @@ if (!function_exists('getProductDiscount')) {
     }
 }
 
+if (!function_exists('AddCommissionPrice')) {
+    function AddCommissionPrice($product,$price){
+        if (strpos(url()->current(), '/admin') || strpos(url()->current(), '/vendor') || strpos(url()->current(), '/seller')) {
+            return (float) $price;
+        }
+    
+        if ($product->added_by === 'seller') {
+            $commission = $product->seller->sales_commission_percentage ?? null;
+
+            if (isset($commission)) {
+                $commission = ($commission / 100) + 1;
+            } else {
+                $commission = (getWebConfig('sales_commission') / 100) + 1;
+            }
+                
+            return (float) $price * $commission;
+        }
+    
+        return (float) $price;
+    }
+}
 if (!function_exists('getPriceRangeWithDiscount')) {
     function getPriceRangeWithDiscount(array|object $product, string|null $type = 'web'): float|string
     {

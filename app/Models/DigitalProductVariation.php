@@ -55,7 +55,25 @@ class DigitalProductVariation extends Model
         }
         return $this->storageLink('product/digital-product', $value, $storage['value'] ?? 'public');
     }
+    public function getPriceAttribute($value){
+        if (strpos(url()->current(), '/admin') || strpos(url()->current(), '/vendor') || strpos(url()->current(), '/seller')) {
+            return (float) $value;
+        }
+    
+        if ($this->added_by === 'seller') {
+            $commission = $this->seller->sales_commission_percentage ?? null;
 
+            if (isset($commission)) {
+                $commission = ($commission / 100) + 1;
+            } else {
+                $commission = (getWebConfig('sales_commission') / 100) + 1;
+            }
+                
+            return (float) $value * $commission;
+        }
+    
+        return (float) $value;
+    }
     protected $with = ['storage'];
     protected $appends = ['file_full_url'];
 
