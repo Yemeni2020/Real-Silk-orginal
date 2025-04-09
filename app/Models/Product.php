@@ -131,7 +131,6 @@ class Product extends Model
         'brand_id' => 'integer',
         'unit' => 'string',
         'digital_product_type' => 'string',
-        'variation' => 'array',
         'product_type' => 'string',
         'details' => 'string',
         'min_qty' => 'integer',
@@ -433,16 +432,16 @@ class Product extends Model
 
         return (float) $price;
     }
-    public function getVariationAttribute($value): string
-    {
-        $variations = json_decode($value, true);
+    // public function getVariationAttribute($value): string
+    // {
+    //     $variations = json_decode($value, true);
 
-        foreach ($variations as $index => &$variation) {
-            $variation['price'] = $this->getVariationPrice($index);
-        }
+    //     foreach ($variations as $index => &$variation) {
+    //         $variation['price'] = $this->getVariationPrice($index);
+    //     }
     
-        return json_encode($variations); // ✅ تحويلها إلى string JSON
-    }
+    //     return json_encode($variations); // ✅ تحويلها إلى string JSON
+    // }
 
     
     public function getThumbnailFullUrlAttribute(): string|null|array

@@ -96,7 +96,7 @@ if (!function_exists('getPriceRangeWithDiscount')) {
         $productUnitPrice = $product->unit_price;
         foreach (json_decode($product->variation) as $key => $variation) {
             if ($key == 0) {
-                $productUnitPrice = $variation->price;
+                $productUnitPrice =AddCommissionPrice( $product, $variation->price);
             }
         }
 

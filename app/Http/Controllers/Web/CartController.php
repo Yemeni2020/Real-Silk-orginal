@@ -80,12 +80,12 @@ class CartController extends Controller
             $count = count(json_decode($product->variation));
             for ($i = 0; $i < $count; $i++) {
                 if (json_decode($product->variation)[$i]->type == $string) {
-                    $tax = $product->tax_model == 'exclude' ? Helpers::tax_calculation(product: $product, price: json_decode($product->variation)[$i]->price, tax: $product['tax'], tax_type: $product['tax_type']) : 0;
+                    $tax = $product->tax_model == 'exclude' ? Helpers::tax_calculation(product: $product, price: $product->getVariationPrice($i), tax: $product['tax'], tax_type: $product['tax_type']) : 0;
                     $update_tax = $tax * $requestQuantity;
-                    $discount = Helpers::getProductDiscount($product, json_decode($product->variation)[$i]->price);
-                    $price = json_decode($product->variation)[$i]->price - $discount + $tax;
-                    $discountedUnitPrice = json_decode($product->variation)[$i]->price - $discount;
-                    $unit_price = json_decode($product->variation)[$i]->price;
+                    $discount = Helpers::getProductDiscount($product, $product->getVariationPrice($i));
+                    $price = $product->getVariationPrice($i) - $discount + $tax;
+                    $discountedUnitPrice = $product->getVariationPrice($i) - $discount;
+                    $unit_price = $product->getVariationPrice($i);
                     $quantity = json_decode($product->variation)[$i]->qty;
                 }
             }
@@ -377,9 +377,9 @@ class CartController extends Controller
             $count = count(json_decode($product->variation));
             for ($i = 0; $i < $count; $i++) {
                 if (json_decode($product->variation)[$i]->type == $str) {
-                    $tax = $product->tax_model == 'exclude' ? Helpers::tax_calculation(product: $product, price: json_decode($product->variation)[$i]->price, tax: $product['tax'], tax_type: $product['tax_type']) : 0;
-                    $discount = Helpers::getProductDiscount($product, json_decode($product->variation)[$i]->price);
-                    $price = json_decode($product->variation)[$i]->price - $discount + $tax;
+                    $tax = $product->tax_model == 'exclude' ? Helpers::tax_calculation(product: $product, price: $product->getVariationPrice($i), tax: $product['tax'], tax_type: $product['tax_type']) : 0;
+                    $discount = Helpers::getProductDiscount($product, $product->getVariationPrice($i));
+                    $price = $product->getVariationPrice($i) - $discount + $tax;
                     $quantity = json_decode($product->variation)[$i]->qty;
                 }
             }
@@ -410,7 +410,7 @@ class CartController extends Controller
                 $count = count(json_decode($product->variation));
                 for ($i = 0; $i < $count; $i++) {
                     if (json_decode($product->variation)[$i]->type == $str) {
-                        $price = json_decode($product->variation)[$i]->price;
+                        $price = $product->getVariationPrice($i);
                         if (json_decode($product->variation)[$i]->qty < $request['quantity']) {
                             return [
                                 'status' => 0,

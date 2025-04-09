@@ -383,7 +383,7 @@ class CartManager
             $count = count(json_decode($product->variation));
             for ($i = 0; $i < $count; $i++) {
                 if (json_decode($product->variation)[$i]->type == $string) {
-                    $price = json_decode($product->variation)[$i]->price;
+                    $price = $product->getVariationPrice($i);
                     if (json_decode($product->variation)[$i]->qty < $request['quantity']) {
                         return ['status' => 0, 'message' => translate('out_of_stock!')];
                     }

@@ -1130,7 +1130,7 @@ class OrderManager
                         $count = count(json_decode($product->variation));
                         for ($i = 0; $i < $count; $i++) {
                             if (json_decode($product->variation)[$i]->type == $orderProduct->variant) {
-                                $price = json_decode($product->variation)[$i]->price;
+                                $price = $product->getVariationPrice($i);
                                 if (json_decode($product->variation)[$i]->qty < $orderProduct->qty) {
                                     $productValid = false;
                                 }

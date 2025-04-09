@@ -37,9 +37,9 @@ class CartService
             $count = count(json_decode($product->variation));
             for ($i = 0; $i < $count; $i++) {
                 if (json_decode($product->variation)[$i]->type == $variation) {
-                    $discount = $this->getDiscountAmount(price: json_decode($product->variation)[$i]->price, discount: $product['discount'], discountType: $product['discount_type']);
-                    $tax = $product->tax_model == 'exclude' ? $this->getTaxAmount(price: json_decode($product->variation)[$i]->price, tax: $product['tax']) : 0;
-                    $price = json_decode($product->variation)[$i]->price - $discount + $tax;
+                    $discount = $this->getDiscountAmount(price: $product->getVariationPrice($i), discount: $product['discount'], discountType: $product['discount_type']);
+                    $tax = $product->tax_model == 'exclude' ? $this->getTaxAmount(price: $product->getVariationPrice($i), tax: $product['tax']) : 0;
+                    $price = $product->getVariationPrice($i) - $discount + $tax;
                     $quantity = json_decode($product->variation)[$i]->qty;
                 }
             }

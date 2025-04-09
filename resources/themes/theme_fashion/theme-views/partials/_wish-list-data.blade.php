@@ -63,7 +63,7 @@
                                         <a href="{{route('product',$product['slug'])}}"
                                            class="name text-title">{{ $product->name }}</a>
                                         @if ($product->product_type == "physical")
-                                            @php($price = isset($variation[0]) ? $variation[0]->price : $product->unit_price)
+                                            @php($price = isset($variation[0]) ? AddCommissionPrice($product, $variation[0]->price) : $product->unit_price)
                                             <div class="d-flex column-gap-1">
                                                 <span>{{ translate('price') }}</span> <span>:</span> <strong
                                                         class="unit_price{{$product->id}}">{{\App\Utils\Helpers::currency_converter($price) }}</strong>
@@ -206,7 +206,7 @@
                                 <a href="{{route('product',$product['slug'])}}"
                                    class="name text-title">{{ $product->name }}</a>
                                 @if ($product->product_type == "physical")
-                                    @php($price = isset($variation[0]) ? $variation[0]->price : $product->unit_price)
+                                    @php($price = isset($variation[0]) ? AddCommissionPrice($product , $variation[0]->price) : $product->unit_price)
                                     <div class="d-flex column-gap-1">
                                         <span>{{ translate('price') }}</span> <span>:</span> <strong
                                                 class="unit_price{{$product->id}}">{{\App\Utils\Helpers::currency_converter($price) }}</strong>

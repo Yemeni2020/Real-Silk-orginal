@@ -409,11 +409,11 @@ class Helpers
         $highest_price = $product->unit_price;
 
         foreach (json_decode($product->variation) as $key => $variation) {
-            if ($lowest_price > $variation->price) {
-                $lowest_price = round($variation->price, 2);
+            if ($lowest_price >AddCommissionPrice( $product, $variation->price)) {
+                $lowest_price = round(AddCommissionPrice( $product,$variation->price), 2);
             }
-            if ($highest_price < $variation->price) {
-                $highest_price = round($variation->price, 2);
+            if ($highest_price < AddCommissionPrice( $product,$variation->price)) {
+                $highest_price = round(AddCommissionPrice( $product,$variation->price), 2);
             }
         }
 
