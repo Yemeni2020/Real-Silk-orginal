@@ -118,7 +118,6 @@ class ProductController extends BaseController
     {
         $languages = $this->businessSettingRepo->getFirstWhere(params: ['type' => 'pnc_language']);
         $categories = $this->categoryRepo->getListWhere(filters: ['position' => 0], dataLimit: 'all');
-        dump($categories);
         $brands = $this->brandRepo->getListWhere(filters: ['status' => 1], dataLimit: 'all');
         $brandSetting = getWebConfig(name: 'product_brand');
         $digitalProductSetting = getWebConfig(name: 'digital_product');
