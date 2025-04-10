@@ -511,6 +511,7 @@
                                     <span
                                         class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('Adv')}}</span>
                                 </a>
+                                @if(1==2)
                                 <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
                                     style="display: {{(Request::is('admin/adver*') )?'block':'none'}}">
                                     <li class="navbar-vertical-aside-has-menu {{Request::is('admin/adver/'.Adv::LISTCATEGORY[URI])?'active':''}}">
@@ -532,6 +533,7 @@
                                         </a>
                                     </li>
                                 </ul>
+                                @endif
                             </li>
                             
                             <li class="navbar-vertical-aside-has-menu {{(Request::is('admin/coupon*') || Request::is('admin/deal*')) ?'active':''}}">

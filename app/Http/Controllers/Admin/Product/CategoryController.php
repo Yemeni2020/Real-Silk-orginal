@@ -54,7 +54,7 @@ class CategoryController extends BaseController
     {
         $categories = $this->categoryRepo->getListWhere(orderBy: ['id'=>'desc'], searchValue: $request->get('searchValue'), filters: ['position' => 0], dataLimit: getWebConfig(name: 'pagination_limit'));
         $languages = getWebConfig(name: 'pnc_language') ?? null;
-        $brands=Brand::all();
+        $brands=$this->brandRepo->getListWhere();
 
         $defaultLanguage = $languages[0];
         return view(Category::LIST[VIEW], [
