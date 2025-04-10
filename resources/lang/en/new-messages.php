@@ -9179,4 +9179,5 @@ return [
 	"if_disabled_this_advertisement_it_will_be_hidden_from_the_advertisement_wise_product_section_in_the_website_and_customer_app_in_the_homepage" => "If disabled this advertisement it will be hidden from the advertisement wise product section in the website and customer app in the homepage",
 	"adv_Name" => "Adv Name",
 	"advertisement_image_is_required" => "Advertisement image is required",
+	"Minimum_order" => "Minimum order",
 ];

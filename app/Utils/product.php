@@ -134,7 +134,7 @@ if (!function_exists('getRatingCount')) {
 if (!function_exists('units')) {
     function units(): array
     {
-        return ['pc','kg', 'gms', 'ltrs','pair','oz','lb'];
+        return ['pc','kg', 'gms', 'ltrs','pair','oz','lb','Packet','box'];
     }
 }
 if (!function_exists('getVendorProductsCount')) {

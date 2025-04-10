@@ -88,9 +88,13 @@
                                 {!! webCurrencyConverter(amount: $final_price) !!}
                             </del>
                         @endif
-                        <span class="text-accent text-dark">
+                        <p class="text-accent text-dark">
                             {!! webCurrencyConverter(amount: $final_price - $discount) !!}
-                        </span>
+                        </p>
+                        <p class="footer-product-ditals">
+                            {{translate('Minimum_order')}}: {{$product->min_qty??1}}<br>
+                            {{translate('Stock')}}: {{$product->current_stock	}}
+                        </p>
                     </div>
                 </div>
             @endif

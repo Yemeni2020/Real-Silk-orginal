@@ -62,18 +62,22 @@
                                             </div>
                                         @endif
                                         <div class="widget-product-meta d-flex flex-wrap gap-8 align-items-center row-gap-0">
-                                            <span>
+                                            <p>
                                                 @if($bestSell->product->discount > 0)
                                                     <del class="__color-9B9B9B __text-12px">
                                                     {!! webCurrencyConverter(amount: $bestSell->product->unit_price) !!}
                                                     </del>
                                                 @endif
-                                            </span>
-                                            <span class="text-accent text-dark">
+                                            </p>
+                                            <p class="text-accent text-dark">
                                             {!! webCurrencyConverter(amount:
                                                 $bestSell->product->unit_price-(getProductDiscount(product: $bestSell->product, price: $bestSell->product->unit_price))
                                                 ) !!}
-                                            </span>
+                                            </p>
+                                            <p class="footer-product-ditals">
+                                             {{translate('Minimum_order')}}: {{$bestSell->product->min_qty??1}}<br>
+                                             {{translate('Stock')}}: {{$bestSell->product->current_stock	}}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>

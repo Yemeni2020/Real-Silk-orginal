@@ -76,6 +76,10 @@
                                                 $top->product->unit_price-(getProductDiscount(product: $top->product, price: $top->product->unit_price))
                                                 ) !!}
                                             </span>
+                                            <p class="footer-product-ditals">
+                                             {{translate('Minimum_order')}}: {{$top->product->min_qty??1}}<br>
+                                             {{translate('Stock')}}: {{$top->product->current_stock	}}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>

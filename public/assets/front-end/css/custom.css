@@ -10,6 +10,12 @@
     color: var(--web-primary);
 }
 
+p.footer-product-ditals{
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--web-primary);
+}
+
 .dropdown-item.active, .dropdown-item:active {
     color: var(--web-secondary);
 }

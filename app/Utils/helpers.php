@@ -290,7 +290,7 @@ class Helpers
 
     public static function units(): array
     {
-        return ['kg', 'pc', 'gms', 'ltrs'];
+        return ['kg', 'pc', 'gms', 'ltrs','Packet','fund'];
     }
 
     public static function getDefaultPaymentGateways(): array
