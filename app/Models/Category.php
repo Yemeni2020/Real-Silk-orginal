@@ -86,9 +86,9 @@ class Category extends Model
 
     public function getNameAttribute($name): string|null
     {
-        if (strpos(url()->current(), '/admin') || strpos(url()->current(), '/vendor') || strpos(url()->current(), '/seller')) {
-            return $name;
-        }
+        // if (strpos(url()->current(), '/admin') || strpos(url()->current(), '/vendor') || strpos(url()->current(), '/seller')) {
+        //     return $name;
+        // }
         $curnnet_lang = getDefaultLanguage();
 
         $translation = $this->translations->where('locale', $curnnet_lang)->first();
@@ -99,7 +99,8 @@ class Category extends Model
 
     public function getDefaultNameAttribute(): string|null
     {
-        return $this->translations[0]->value ?? $this->name;
+        // return $this->translations[0]->value ?? $this->name;
+        return  $this->name;
     }
 
 
