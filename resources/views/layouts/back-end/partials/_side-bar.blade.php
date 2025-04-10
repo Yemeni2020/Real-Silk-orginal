@@ -503,7 +503,7 @@
                                         class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('banner_Setup')}}</span>
                                 </a>
                             </li>
-
+                            @if(1==2)
                             <li class="navbar-vertical-aside-has-menu {{(Request::is('admin/adver*')) ?'active':''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
                                    href="javascript:" title="{{translate('Adv')}}">
@@ -511,7 +511,7 @@
                                     <span
                                         class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate">{{translate('Adv')}}</span>
                                 </a>
-                                @if(1==2)
+                               
                                 <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
                                     style="display: {{(Request::is('admin/adver*') )?'block':'none'}}">
                                     <li class="navbar-vertical-aside-has-menu {{Request::is('admin/adver/'.Adv::LISTCATEGORY[URI])?'active':''}}">
@@ -533,9 +533,9 @@
                                         </a>
                                     </li>
                                 </ul>
-                                @endif
+                                
                             </li>
-                            
+                            @endif
                             <li class="navbar-vertical-aside-has-menu {{(Request::is('admin/coupon*') || Request::is('admin/deal*')) ?'active':''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
                                    href="javascript:" title="{{translate('offers_&_Deals')}}">
