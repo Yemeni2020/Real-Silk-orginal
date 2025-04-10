@@ -8775,5 +8775,5 @@
 "production_period" => "فترة إنتاج الحد الأدنى للكمية",
 "ReCAPTCHA validation is required." => "مطلوب التحقق من صحة ReCAPTCHA.",
 "Complaints" => "الشكاوى",
-
+"Minimum_order" => "最低起订量",
 );

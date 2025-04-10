@@ -8654,5 +8654,6 @@ return [
 	"The minimum production period you require is " => "The minimum production period you require is ",
 	"production_period" => "Production period",
 	"Complaints" => "Complaints",
+	"Minimum_order" => "Minimum order",
 
 ];

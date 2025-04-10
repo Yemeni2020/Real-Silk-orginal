@@ -8724,4 +8724,5 @@ return [
 	"Complaints" => "Complaints",
 	"Adv" => "Adv",
 	"Adv_List" => "Adv List",
+	"Minimum_order" => "Minimum order",
 ];

@@ -526,7 +526,7 @@
                         @php($categoryIndex=0)
                         @foreach($categories_menu as $category)
                             @php($categoryIndex++)
-                            @if($categoryIndex < 10)
+                            @if($categoryIndex < 20)
                             
                                 <li class="nav-item dropdown {{request()->is('/')?'active':''}}">
                                 <a class="nav-link " href="{{route('products',['category_id'=> $category['id'],'data_from'=>'category','page'=>1])}}">

@@ -52,16 +52,23 @@
             </div>
             <div class="justify-content-between">
                 <div class="product-price">
-                    @if($product->discount > 0)
-                        <del class="category-single-product-price">
-                            {!! webCurrencyConverter(amount: $product->unit_price) !!}
-                        </del>
-                    @endif
-                    <span class="text-accent text-dark">
-                        {!! webCurrencyConverter(amount:
-                            $product->unit_price-(getProductDiscount(product: $product, price: $product->unit_price))
-                        ) !!}
-                    </span>
+                    <p style="width: 100%;">
+                        @if($product->discount > 0)
+                            <del class="category-single-product-price">
+                                {!! webCurrencyConverter(amount: $product->unit_price) !!}
+                            </del>
+                        @endif
+                        <span class="text-accent text-dark">
+                            {!! webCurrencyConverter(amount:
+                                $product->unit_price-(getProductDiscount(product: $product, price: $product->unit_price))
+                            ) !!}
+                        </span>
+
+                    </p>
+                    <p class="footer-product-ditals">
+                        {{translate('Minimum_order')}}: {{$product->min_qty??1}}<br>
+                        {{translate('Stock')}}: {{$product->current_stock	}}
+                    </p>
                 </div>
             </div>
         </div>

@@ -9065,5 +9065,7 @@
 "The minimum production period you require is " => "您要求的最短生产周期是 ",
 "production_period" => "最小生产量周期",
 "Complaints" => "投诉",
+"Minimum_order" => "Minimum order",
+
 );
 ?>
