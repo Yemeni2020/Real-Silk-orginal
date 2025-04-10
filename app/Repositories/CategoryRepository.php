@@ -25,12 +25,12 @@ class CategoryRepository implements CategoryRepositoryInterface
 
     public function getFirstWhere(array $params, array $relations = []): ?Model
     {
-        return $this->category->where($params)->with($relations)->withoutGlobalScopes()->first();
+        return $this->category->where($params)->with($relations)->with('translations')->withoutGlobalScopes()->first();
     }
 
     public function getList(array $orderBy = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
     {
-        $query = $this->category->with($relations)
+        $query = $this->category->with($relations)->with('translations')
                 ->when(!empty($orderBy), function ($query) use ($orderBy) {
                     return $query->orderBy(array_key_first($orderBy),array_values($orderBy)[0]);
                 });
@@ -46,7 +46,7 @@ class CategoryRepository implements CategoryRepositoryInterface
         int|string $dataLimit = DEFAULT_DATA_LIMIT,
         int $offset = null
     ): Collection|LengthAwarePaginator {
-        $query = $this->category->with($relations);
+        $query = $this->category->with($relations)->with('translations');
     
         // تطبيق الفلاتر
         foreach ($filters as $field => $value) {

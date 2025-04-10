@@ -140,21 +140,24 @@ if (!function_exists('units')) {
 if (!function_exists('getVendorProductsCount')) {
     function getVendorProductsCount(string $type):int
     {
-        $products = \Illuminate\Support\Facades\DB::table('products')->where(['added_by'=>'seller'])->get();
+        // $products = \Illuminate\Support\Facades\DB::table('products')->where(['added_by'=>'seller'])->get();
+        $query = \Illuminate\Support\Facades\DB::table('products')->where('added_by', 'seller');
+
         return match ($type) {
-            'new-product' => $products->where('request_status', 0)->count(),
-            'product-updated-request' => $products->whereNotNull('is_shipping_cost_updated')->where('is_shipping_cost_updated', 0)->count(),
-            'approved' => $products->where('request_status', 1)->count(),
-            'denied' => $products->where('request_status', 2)->where('status' , 0)->count(),
-            'active' => $products->where('status', 1)->count(),
-            'unactive' => $products->where('status', 0)->count(),
+            'new-product' => $query->where('request_status', 0)->count(),
+            'product-updated-request' => $query->whereNotNull('is_shipping_cost_updated')->where('is_shipping_cost_updated', 0)->count(),
+            'approved' => $query->where('request_status', 1)->count(),
+            'denied' => $query->where('request_status', 2)->where('status', 0)->count(),
+            'active' => $query->where('status', 1)->count(),
+            'unactive' => $query->where('status', 0)->count(),
+            default => 0,
         };
     }
 }
 if (!function_exists('getAdminProductsCount')) {
     function getAdminProductsCount(string $type):int
     {
-        $products = \Illuminate\Support\Facades\DB::table('products')->where(['added_by'=>'admin'])->get();
+        $products = \Illuminate\Support\Facades\DB::table('products')->where(['added_by'=>'admin']);
         return match ($type) {
             'all' => $products->count(),
             'new-product' => $products->where('request_status', 0)->count(),
