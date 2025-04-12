@@ -121,7 +121,7 @@ color: var(--base) !important;
 
 }
 a:hover{
-    color: var(--dark);
+    color: var(--dark) !important;
 }
 .footer-product-ditals{
     background: var(--web-primary);

@@ -16531,6 +16531,13 @@ a.badge-shadow:hover {
     box-shadow: none !important;
 }
 
+.social-btn.sb-light:hover > * {
+    background-color: #fff !important;
+    box-shadow: none !important;
+    fill: var(--base);
+    color: var(--base);
+}
+
 .sb-lg {
     width: 2.75rem;
     height: 2.75rem;
