@@ -79,14 +79,25 @@ class Admin extends Authenticatable
     {
         return $this->belongsTo(AdminRole::class,'admin_role_id');
     }
-    public function getImageFullUrlAttribute():string|null|array
+    
+    public function getImageFullUrlAttribute(): string|null|array
     {
         $value = $this->image;
-        if (count($this->storage) > 0) {
-            $storage = $this->storage->where('key', 'image')->first();
-        }
-        return $this->storageLink('admin',$value,$storage['value'] ?? 'public');
+
+        $storage = $this->relationLoaded('storage') 
+            ? $this->storage->where('key', 'image')->first() 
+            : $this->storage()->where('key', 'image')->first();
+
+        return $this->storageLink('admin', $value, $storage['value'] ?? 'public');
     }
+    // public function getImageFullUrlAttribute():string|null|array
+    // {
+    //     $value = $this->image;
+    //     if (count($this->storage) > 0) {
+    //         $storage = $this->storage->where('key', 'image')->first();
+    //     }
+    //     return $this->storageLink('admin',$value,$storage['value'] ?? 'public');
+    // }
     public function getIdentifyImagesFullUrlAttribute():array
     {
         $images = [];
