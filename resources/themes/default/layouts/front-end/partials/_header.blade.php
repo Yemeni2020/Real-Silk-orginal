@@ -1,7 +1,6 @@
 @php
     use App\Models\Category;
     use Illuminate\Support\Facades\Storage;
-    use App\Models\Brand;
 
 
     $SAR_IMAGE_PATH = asset('public/images/Saudi_Riyal_Symbol-2.svg'); // تأكد من وضع المسار الصحيح للصورة
