@@ -25,11 +25,11 @@ p.footer-product-ditals{
 }
 
 .search_button {
-    background-color: var(--web-primary);
+    background: var(--web-primary);
 }
 
 .navbar-stuck-menu {
-    background-color: var(--web-primary);
+    background: var(--web-primary);
 }
 
 .mega-nav .nav-item .nav-link {
@@ -66,12 +66,12 @@ p.footer-product-ditals{
 }
 
 .navbar-tool .navbar-tool-label {
-    background-color: var(--web-secondary) !important;
+    background: var(--web-secondary) !important;
 }
 
 .btn--primary {
     color: #fff;
-    background-color: var(--web-primary) !important;
+    background: var(--web-primary) !important;
     border-color: var(--web-primary) !important;
 }
 
@@ -86,18 +86,18 @@ p.footer-product-ditals{
 
 .btn--primary:hover {
     color: #fff;
-    background-color: var(--web-primary) !important;
+    background: var(--web-primary) !important;
     border-color: var(--web-primary) !important;
 }
 
 .btn-secondary {
-    background-color: var(--web-secondary) !important;
+    background: var(--web-secondary) !important;
     border-color: var(--web-secondary) !important;
 }
 
 .btn-outline-accent:hover {
     color: #fff;
-    background-color: var(--web-primary);
+    background: var(--web-primary);
     border-color: var(--web-primary);
 }
 
@@ -113,8 +113,13 @@ p.footer-product-ditals{
 .text-base-2 {
     color: var(--web-secondary);
 }
-a:hover {
-    color: var(--web-primary);
+a {
+    /* background: var(--web-primary);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent; */
+}
+a:hover{
+    color: var(--dark);
 }
 
 .text-primary,
@@ -128,11 +133,11 @@ a:hover {
 }
 
 .page-item.active .page-link {
-    background-color: var(--web-primary)
+    background: var(--web-primary)
 }
 
 .btn-outline-accent:not(:disabled):not(.disabled):active, .btn-outline-accent:not(:disabled):not(.disabled).active, .show > .btn-outline-accent.dropdown-toggle {
-    background-color: var(--web-secondary);
+    background: var(--web-secondary);
     border-color: var(--web-secondary);
 }
 
@@ -142,7 +147,7 @@ a:hover {
 }
 
 .btn-outline-primary:hover {
-    background-color: var(--web-secondary);
+    background: var(--web-secondary);
     border-color: var(--web-secondary);
 }
 
@@ -151,7 +156,7 @@ a:hover {
 }
 
 .btn-outline-primary:not(:disabled):not(.disabled):active, .btn-outline-primary:not(:disabled):not(.disabled).active, .show > .btn-outline-primary.dropdown-toggle {
-    background-color: var(--web-primary);
+    background: var(--web-primary);
     border-color: var(--web-primary);
 }
 
@@ -165,7 +170,7 @@ a:hover {
 
 span.badge-accent {
     color: var(--base);
-    background-color: var(--web-primary-40);
+    background: var(--web-primary-40);
 }
 
 span.badge-accent:hover {
@@ -173,11 +178,11 @@ span.badge-accent:hover {
 }
 
 .custom-light-primary-color {
-    background-color: var(--web-primary-10);
+    background: var(--web-primary-10);
 }
 
 .custom-light-primary-color-20 {
-    background-color: var(--web-primary-20);
+    background: var(--web-primary-20);
 }
 
 .password-toggle-btn .custom-control-input:checked ~ .password-toggle-indicator {
@@ -189,11 +194,11 @@ span.badge-accent:hover {
 }
 
 .web--bg-primary {
-    background-color: var(--web-primary);
+    background: var(--web-primary);
 }
 
 .web--bg-secondary {
-    background-color: var(--web-secondary);
+    background: var(--web-secondary);
 }
 
 .count-value {
@@ -202,7 +207,7 @@ span.badge-accent:hover {
 
 @media (min-width: 768px) {
     .navbar-stuck-menu {
-        background-color: var(--web-primary);
+        background: var(--web-primary);
     }
 }
 
@@ -299,12 +304,12 @@ span.badge-accent:hover {
 
 .checkout-steps.steps-light .step-item.active .step-count, .checkout-steps.steps-light .step-item.active .step-progress {
     color: #FFFFFF;
-    background-color: var(--web-primary);
+    background: var(--web-primary);
 }
 
 .checkout-steps.steps-light .step-count, .checkout-steps.steps-light .step-progress {
     color: #4f4f4f;
-    background-color: rgba(225, 225, 225, 0.67);
+    background: rgba(225, 225, 225, 0.67);
 }
 
 .checkout-steps.steps-light .step-item.active.current {
@@ -353,7 +358,7 @@ span.badge-accent:hover {
 .order-details-nav.nav-menu > * {
     border: none;
     border-bottom: 2px solid transparent;
-    background-color: transparent;
+    background: transparent;
     padding: .5rem 0;
     color: #9B9B9B;
 }
@@ -783,7 +788,7 @@ img, figure {
 }
 
 .image-default-bg-color{
-    background-color: #1455ac10;
+    background: #1455ac10;
 }
 
 @media (min-width: 768px) {
@@ -796,7 +801,7 @@ img, figure {
 }
 .owl-theme .owl-nav *,
 .owl-theme .owl-nav [class*="owl-"]:hover {
-    background-color: var(--web-primary) !important;;
+    background: var(--web-primary) !important;;
 }
 
 
@@ -873,7 +878,7 @@ img, figure {
 }
 
 .rating--nojs::-webkit-slider-thumb {
-    background-color: var(--fill);
+    background: var(--fill);
     box-shadow: calc(0rem - var(--w)) 0 0 var(--w) var(--fill);
     opacity: 1;
     width: 1px;
@@ -1156,7 +1161,7 @@ img, figure {
 }
 
 .temporarily-closed-sticky-alert div.alert-box {
-    background-color: rgba(254, 247, 209, 1);
+    background: rgba(254, 247, 209, 1);
     font-size: 12px;
     letter-spacing: .5px;
     font-weight: 500;
@@ -1172,7 +1177,7 @@ img, figure {
 }
 
 .temporarily-closed-sticky-alert div button {
-    background-color: transparent;
+    background: transparent;
     border: 0;
     font-size: 14px;
     min-width: 20px;
@@ -1398,7 +1403,7 @@ body {
 
 .rich-editor-html-content table > :not(caption) > * > * {
     padding: 0.5rem 0.5rem;
-    background-color: var(--bs-table-bg);
+    background: var(--bs-table-bg);
     border-bottom-width: var(--bs-border-width);
     box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg);
 }
@@ -1530,7 +1535,7 @@ body {
 }
 
 .social-media-login-btn {
-    background-color: #0000000A;
+    background: #0000000A;
     width: 100%;
     gap: .85rem;
     display: flex;

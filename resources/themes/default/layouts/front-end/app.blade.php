@@ -43,7 +43,7 @@
         :root {
             --base: {{ $web_config['primary_color'] }};
             --base-2: {{ $web_config['secondary_color'] }};
-            --web-primary: {{ $web_config['primary_color'] }};
+            --web-primary: linear-gradient(to right, #007bff, #ff7f00);
             --web-primary-10: {{ $web_config['primary_color'] }}10;
             --web-primary-20: {{ $web_config['primary_color'] }}20;
             --web-primary-40: {{ $web_config['primary_color'] }}40;

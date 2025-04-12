@@ -221,7 +221,10 @@
         </div>
         <div>
             <div class="navbar navbar-expand-md navbar-stuck-menu">
-                <div class="container px-10px">
+                <div class="container px-10px" style="
+        margin: auto;
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;">
                 <!-- <div class=" px-10px" style="
         margin: auto;
         padding-top: 0px;
@@ -242,7 +245,7 @@
     
                         @php($categories = \App\Utils\CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(dataLimit: 11))
     
-                        <ul class="navbar-nav mega-nav pr-lg-2 pl-lg-2 mr-2 d-none d-md-block __mega-nav" style="margin-top: 5px !important;margin-bottom:5px !important;">
+                        <ul class="navbar-nav mega-nav pr-lg-2 pl-lg-2 mr-2 d-none d-md-block __mega-nav" style="margin-top: 1px !important;margin-bottom:1px !important;height:45px;">
                             <li class="nav-item {{!request()->is('/')?'dropdown':''}}">
     
                                 <a class="nav-link dropdown-toggle category-menu-toggle-btn ps-0"
