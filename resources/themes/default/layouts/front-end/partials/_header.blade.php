@@ -21,7 +21,7 @@
 
 
 <header class="rtl __inline-10">
-    <div class="topbar">
+    <div class="topbar  d-lg-none d-md-none d-xlg-none">
         <div class="container">
 
             <div>
@@ -89,8 +89,9 @@
 
 
     <div class="navbar-sticky bg-light mobile-head">
-        <div class="navbar navbar-expand-md navbar-light">
-            <div class="container ">
+        <div class="navbar navbar-expand-md navbar-light row" >
+            
+            <div class="container col-xlg-10 col-lg-10 col-md-10 col-sm-12 col-xs-12 ">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -218,17 +219,73 @@
                     </div>
                 </div>
             </div>
+            
+
+
+
+            <!-- Languge -->
+            <div class="col-xl-2 col-lg-2 col-md-2 d-none d-md-block">
+                <div class="row">
+                    @php($currency_model = getWebConfig(name: 'currency_model'))
+                    @if($currency_model=='multi_currency')
+                        <div class="topbar-text dropdown disable-autohide mr-4">
+                            <a class="topbar-link dropdown-toggle" href="#" data-toggle="dropdown">
+                                <span>{{session('currency_code')}} {!!session('currency_symbol')=="SAR"? $defaultSymbol_Svg :session('currency_symbol')!!}</span>
+                            </a>
+                            <ul class="text-align-direction dropdown-menu dropdown-menu-{{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}} min-width-160px">
+                                @foreach (\App\Models\Currency::where('status', 1)->get() as $key => $currency)
+                                    <li class="dropdown-item cursor-pointer get-currency-change-function"
+                                        data-code="{{$currency['code']}}">
+                                        {{ $currency->name }}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+    
+                    <div class="topbar-text dropdown disable-autohide  __language-bar text-capitalize">
+                        <a class="topbar-link dropdown-toggle" href="#" data-toggle="dropdown">
+                            @foreach(json_decode($language['value'],true) as $data)
+                                @if($data['code'] == getDefaultLanguage())
+                                    <img class="mr-2" width="20"
+                                         src="{{theme_asset(path: 'public/assets/front-end/img/flags/'.$data['code'].'.png')}}"
+                                         alt="{{$data['name']}}">
+                                    {{$data['name']}}
+                                @endif
+                            @endforeach
+                        </a>
+                        <ul class="text-align-direction dropdown-menu dropdown-menu-{{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}}">
+                            @foreach(json_decode($language['value'],true) as $key =>$data)
+                                @if($data['status']==1)
+                                    <li class="change-language" data-action="{{route('change-language')}}" data-language-code="{{$data['code']}}">
+                                        <a class="dropdown-item pb-1" href="javascript:">
+                                            <img class="mr-2"
+                                                 width="20"
+                                                 src="{{theme_asset(path: 'public/assets/front-end/img/flags/'.$data['code'].'.png')}}"
+                                                 alt="{{$data['name']}}"/>
+                                            <span class="text-capitalize">{{$data['name']}}</span>
+                                        </a>
+                                    </li>
+                                @endif
+                            @endforeach
+                        </ul>
+                    </div>
+    
+
+                </div>
+            </div>
         </div>
+
         <div>
             <div class="navbar navbar-expand-md navbar-stuck-menu">
                 <div class="container px-10px" style="
-        margin: auto;
-        padding-top: 0px !important;
-        padding-bottom: 0px !important;">
+                    margin: auto;
+                    padding-top: 0px !important;
+                    padding-bottom: 0px !important;">
                 <!-- <div class=" px-10px" style="
-        margin: auto;
-        padding-top: 0px;
-        padding-bottom: 0px;"> -->
+                    margin: auto;
+                    padding-top: 0px;
+                    padding-bottom: 0px;"> -->
                     <div class="collapse navbar-collapse text-align-direction" id="navbarCollapse">
                         <div class="w-100 d-md-none text-align-direction">
                             <button class="navbar-toggler p-0" type="button" data-toggle="collapse"
