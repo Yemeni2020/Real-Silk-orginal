@@ -3,6 +3,7 @@
     <section class="pb-4 rtl">
         <div class="container">
             <div>
+                @if(1==2)
                 <!-- <div class="mt-sm-3 mb-3 brand-slider">
                     <div class="owl-carousel owl-theme p-2 brands-slider">
                         @foreach($categories as $category)
@@ -20,7 +21,7 @@
                         @endforeach
                     </div>
                 </div> -->
-
+                @endif
                 
 
                 <div class="card __shadow h-100 max-md-shadow-0">

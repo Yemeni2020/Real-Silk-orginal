@@ -298,8 +298,7 @@
                             </li>
                         </ul>
     
-                        @php($categories = \App\Utils\CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(dataLimit: 11))
-    
+                        
                         <ul class="navbar-nav mega-nav pr-lg-2 pl-lg-2 mr-2 d-none d-md-block __mega-nav" style="margin-top: 1px !important;margin-bottom:1px !important;height:45px;">
                             <li class="nav-item {{!request()->is('/')?'dropdown':''}}">
     
@@ -318,7 +317,10 @@
                             </li>
                         </ul>
     
-                        <ul class="navbar-nav mega-nav1 pr-md-2 pl-md-2 d-block d-xl-none">
+                        @if(1==2)
+                        @php($categories = \App\Utils\CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(dataLimit: 11))
+    
+                        <ul class="navbar-nav mega-nav1 pr-md-2 pl-md-2 d-block ">
                             <li class="nav-item dropdown d-md-none">
                                 <a class="nav-link dropdown-toggle ps-0"
                                    href="javascript:" data-toggle="dropdown">
@@ -384,6 +386,8 @@
                                 </ul>
                             </li>
                         </ul>
+                        @endif
+                        
                         <ul class="navbar-nav w-100">
                             <li class="nav-item dropdown d-none d-md-block {{request()->is('/')?'active':''}}">
                                 <a class="nav-link" href="{{route('home')}}">{{ translate('home')}}</a>
