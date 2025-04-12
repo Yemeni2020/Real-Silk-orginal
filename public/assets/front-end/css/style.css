@@ -37,6 +37,8 @@ a {
     
     border: 1px gray solid;
     padding: 6px;
+    margin-left: 3px;
+    margin-right: 3px;
 }
 
 @media screen and (max-width: 575px) {
