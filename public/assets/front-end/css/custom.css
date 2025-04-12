@@ -117,11 +117,17 @@ a {
     /* background: var(--web-primary);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent; */
+color: var(--base) !important;
+
 }
 a:hover{
     color: var(--dark);
 }
-
+.footer-product-ditals{
+    background: var(--web-primary);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
 .text-primary,
 .text-base,
 .active-menu {

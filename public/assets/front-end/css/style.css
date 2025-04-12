@@ -1016,7 +1016,8 @@ padding: 0;
 }
 
 .page-footer {
-    background: #183f56;
+    background: var(--web-primary-footer);
+    /* background: #183f56; */
 }
 
 .page-footer hr {
