@@ -103,6 +103,11 @@ class WebController extends Controller
         return view(VIEW_FILE_NAMES['category-menu-header'], compact('categories'));
 
     }
+    public function getCategoryMenuNav(){
+        $categories_menu = Category::where('menu', 1)->get();
+        return view(VIEW_FILE_NAMES['category-menu-nav'], compact('categories_menu'));
+
+    }
     public function getFlashDealsView(Request $request, $id): View|RedirectResponse
     {
         $userId = Auth::guard('customer')->user() ? Auth::guard('customer')->id() : 0;

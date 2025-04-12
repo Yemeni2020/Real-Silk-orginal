@@ -119,6 +119,7 @@ Route::group(['namespace' => 'Web', 'middleware' => ['maintenance_mode', 'guestC
 
         // Mycode
             Route::get('getCategoryMenu', 'getCategoryMenu')->name('getCategoryMenu');
+            Route::get('getCategoryMenuNav', 'getCategoryMenuNav')->name('getCategoryMenuNav');
         // EndMyCode
 
         Route::post('subscription', 'subscription')->name('subscription');
