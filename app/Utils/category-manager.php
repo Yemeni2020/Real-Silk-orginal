@@ -84,11 +84,14 @@ class CategoryManager
             }])->where('position', 1);
         }, 'childes.childes'])->where('position', 0);
 
-        $categoriesProcessed = self::getPriorityWiseCategorySortQuery(query: $categories->get());
+        // $categoriesProcessed = self::getPriorityWiseCategorySortQuery(query: $categories->get());
         if ($dataLimit) {
-            $categoriesProcessed = $categoriesProcessed->paginate($dataLimit);
+            $categoriesProcessed = $categories->paginate($dataLimit);
+        }else{
+            $categoriesProcessed=$categories->get();
         }
-        return $categoriesProcessed;
+        // return $categoriesProcessed;
+        return self::getPriorityWiseCategorySortQuery(query: $categoriesProcessed);
     }
 
     public static function getCategoriesWithCountingAndPriorityWiseSorting($dataLimit = null)
