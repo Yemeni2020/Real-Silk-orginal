@@ -68,20 +68,20 @@ class HomeController extends Controller
 
         $theme_name = theme_root_path();
         $brand_setting = BusinessSetting::where('type', 'product_brand')->first()->value;
-        $homeCategories = Category::where('home_status', true)->select("id","name")->limit(12)->priority()->get();
+        $homeCategories = Category::where('home_status', true)->select("id","name")->limit(5)->priority()->get();
         $homeCategories->map(function ($data) {
             $id = '"' . $data['id'] . '"';
             $homeCategoriesProducts = Product::active()
                 ->withCount('reviews')
-                ->where('category_ids', 'like', "%{$id}%")->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty")->limit(12);
-            $data['products'] = ProductManager::getPriorityWiseCategoryWiseProductsQuery(query: $homeCategoriesProducts, dataLimit: 25);
+                ->where('category_ids', 'like', "%{$id}%")->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty")->limit(5);
+            $data['products'] = ProductManager::getPriorityWiseCategoryWiseProductsQuery(query: $homeCategoriesProducts, dataLimit: 5);
         });
         $current_date = date('Y-m-d H:i:s');
         // dump($categories);
         // return null;
         $topVendorsList = Shop::active()
             ->withCount(['products' => function ($query) {
-                $query->active();
+                $query->active()->limit(5);;
             }])
             ->with('seller', function ($query) {
                 $query->with('product', function ($query) {
@@ -131,7 +131,7 @@ class HomeController extends Controller
 
         $topVendorsList = ProductManager::getPriorityWiseTopVendorQuery($topVendorsList);
 
-        $featuredProductsList = ProductManager::getPriorityWiseFeaturedProductsQuery(query: $this->product->active(), dataLimit: 12);
+        $featuredProductsList = ProductManager::getPriorityWiseFeaturedProductsQuery(query: $this->product->active(), dataLimit: 5);
 
         $latest_products = $this->product->with(['reviews'])->active()->orderBy('id', 'desc')->take(8)->get();
         $newArrivalProducts = ProductManager::getPriorityWiseNewArrivalProductsQuery(query: $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty")->active(), dataLimit: 8);
@@ -221,7 +221,7 @@ class HomeController extends Controller
                 ->withCount('reviews')
                 ->where('category_id', $data['id']);
 
-            $data['products'] = ProductManager::getPriorityWiseCategoryWiseProductsQuery(query: $homeCategoriesProducts, dataLimit: 12);
+            $data['products'] = ProductManager::getPriorityWiseCategoryWiseProductsQuery(query: $homeCategoriesProducts, dataLimit: 5);
 
             $data['products']?->map(function ($product) use ($current_date) {
                 $flash_deal_status = 0;

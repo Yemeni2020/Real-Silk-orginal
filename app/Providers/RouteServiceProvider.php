@@ -57,6 +57,8 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapBetaVendorRoutes();
         $this->mapBetaOfficeRoutes();
         $this->mapBetaWebRoutes();
+        $this->mapBetaVueRoutes();
+        $this->mapBetaApiVueRoutes();
     }
 
     /**
@@ -143,6 +145,19 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware('web')
             ->namespace($this->namespace)
             ->group(base_path('routes/web/routes.php'));
+    }
+    
+    protected function mapBetaVueRoutes(): void
+    {
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/vue/routes.php'));
+    }
+    protected function mapBetaApiVueRoutes(): void
+    {
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/vue/api.php'));
     }
 
     /**

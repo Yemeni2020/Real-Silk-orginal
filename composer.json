@@ -23,6 +23,7 @@
         "doctrine/dbal": "^3.2",
         "gregwar/captcha": "^1.1",
         "guzzlehttp/guzzle": "^7.2",
+        "inertiajs/inertia-laravel": "^2.0",
         "intervention/image": "^2.7",
         "iyzico/iyzipay-php": "^2.0",
         "laravel/framework": "^10.10",

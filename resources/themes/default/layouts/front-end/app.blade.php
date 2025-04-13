@@ -108,6 +108,8 @@
             </noscript>
         <!-- End Facebook Pixel Code -->
     @endif
+    <script src="{{ asset('public/js/component-app.js') }}" defer></script>
+
 </head>
 
 <body class="toolbar-enabled">

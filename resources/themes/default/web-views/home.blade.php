@@ -97,7 +97,12 @@
 
         @include('web-views.partials._deal-of-the-day', ['decimal_point_settings'=>$decimalPointSettings])
         
-        
+        <div>
+            <h1>RealSilk Platform</h1>
+        </div>
+        <div id="home-categories">
+            <category-component direction="{{ request()->cookie('direction', 'ltr') }}"></category-component>
+        </div>
 
         @if ($homeCategories->count() > 0)
             @foreach($homeCategories as $category)

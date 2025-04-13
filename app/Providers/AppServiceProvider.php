@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Inertia\Inertia;
 
 ini_set('memory_limit', -1);
 ini_set('upload_max_filesize', '180M');
@@ -66,6 +67,14 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // عند طلب /vue أو أي رابط يبدأ بـ vue/
+        if (Request::is('vue') || Request::is('vue/*')) {
+            // حدد مجلد القالب الجديد
+            View::addLocation(resource_path('themes/theme_new'));
+
+            // عيّن الملف الرئيسي لـ Inertia
+            Inertia::setRootView('app'); // يعني app.blade.php في theme_new
+        }
         if (!in_array(request()->ip(), ['127.0.0.1', '::1']) && env('FORCE_HTTPS')) {
             \URL::forceScheme('https');
         }

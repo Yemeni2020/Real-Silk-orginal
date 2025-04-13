@@ -8725,4 +8725,5 @@ return [
 	"Adv" => "Adv",
 	"Adv_List" => "Adv List",
 	"Minimum_order" => "Minimum order",
+	"image_alt_text" => "Image alt text",
 ];
