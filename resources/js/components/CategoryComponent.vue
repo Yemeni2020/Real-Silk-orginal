@@ -1,6 +1,5 @@
 <template>
   <div v-if="categories.length > 0">
-    <h1>ss</h1>
     <section v-for="category in categories" :key="category.id" v-if="category && category.name && category.products"
       class="container rtl pb-4 px-max-sm-0">
       <div class="__shadow-2">
