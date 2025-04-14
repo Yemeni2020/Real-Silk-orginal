@@ -97,9 +97,10 @@
 
         @include('web-views.partials._deal-of-the-day', ['decimal_point_settings'=>$decimalPointSettings])
         
-        <div>
+        <!-- <div>
             <h1>RealSilk Platform</h1>
-        </div>
+        </div> -->
+        
         <div id="home-categories">
             <category-component direction="{{ request()->cookie('direction', 'ltr') }}"></category-component>
         </div>

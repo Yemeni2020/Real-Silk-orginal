@@ -80,6 +80,34 @@ class HomeController extends Controller
 
         $theme_name = theme_root_path();
         $brand_setting = BusinessSetting::where('type', 'product_brand')->first()->value;
+        
+        // $categoryIds = Category::where('home_status', true)
+        //     ->where('parent_id', 0)
+        //     ->has('product', '>', 3)
+        //     ->select('id', 'name')
+        //     ->limit(5)
+        //     ->priority()
+        //     ->get();
+
+        // $categoryProducts = Product::active()
+        //     ->withCount('reviews')
+        //     ->where('min_qty', '!=', 1)
+        //     ->where(function ($q) use ($categoryIds) {
+        //         foreach ($categoryIds as $category) {
+        //             $q->orWhereJsonContains('category_ids', '"' . $category->id . '"');
+        //         }
+        //     })
+        //     ->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty")
+        //     ->get();
+
+        // $homeCategories = $categoryIds->map(function ($category) use ($categoryProducts) {
+        //     $category->products = $categoryProducts
+        //         ->filter(fn($product) => in_array($category->id, json_decode($product->category_ids)))
+        //         ->take(5);
+        //     return $category;
+        // });
+
+        //Old Code
         $homeCategories = Category::where('home_status', true)->select("id","name")->limit(5)->priority()->get();
         $homeCategories->map(function ($data) {
             $id = '"' . $data['id'] . '"';
@@ -88,6 +116,8 @@ class HomeController extends Controller
                 ->where('category_ids', 'like', "%{$id}%")->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty")->limit(5);
             $data['products'] = ProductManager::getPriorityWiseCategoryWiseProductsQuery(query: $homeCategoriesProducts, dataLimit: 5);
         });
+        dump($homeCategories);
+        //End Old Code
         $current_date = date('Y-m-d H:i:s');
         // dump($categories);
         // return null;

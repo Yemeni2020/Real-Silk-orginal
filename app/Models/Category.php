@@ -72,6 +72,7 @@ class Category extends Model
         return $this->hasMany(Product::class, 'category_id', 'id');
     }
 
+
     // Old Relation: sub_category_product
     public function subCategoryProduct(): HasMany
     {

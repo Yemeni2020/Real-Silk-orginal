@@ -43,8 +43,8 @@
         :root {
             --base: {{ $web_config['primary_color'] }};
             --base-2: {{ $web_config['secondary_color'] }};
-            --web-primary: linear-gradient(to right, {{$web_config['secondary_color']}}, {{$web_config['primary_color']}});
-            --web-primary-footer: linear-gradient(to left, {{$web_config['secondary_color']}}, {{$web_config['primary_color']}});
+            --web-primary: {{ $web_config['primary_color'] }};//linear-gradient(to right, {{$web_config['secondary_color']}}, {{$web_config['primary_color']}});
+            --web-primary-footer: {{ $web_config['primary_color'] }};//linear-gradient(to left, {{$web_config['secondary_color']}}, {{$web_config['primary_color']}});
             --web-primary-10: {{ $web_config['primary_color'] }}10;
             --web-primary-20: {{ $web_config['primary_color'] }}20;
             --web-primary-40: {{ $web_config['primary_color'] }}40;
