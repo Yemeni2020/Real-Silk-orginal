@@ -174,8 +174,61 @@
                                 <h6 class="font-semibold fs-15 mb-3">{{ translate('categories') }}</h6>
 
                                 <div class="accordion mt-n1 product-categories-list" id="shop-categories">
-                                    <category-products></category-products>
-
+                                    @foreach($categories as $category)
+                                        <div class="menu--caret-accordion">
+                                            <div class="card-header flex-between">
+                                                <div>
+                                                    <label class="for-hover-label cursor-pointer get-view-by-onclick"
+                                                           data-link="{{ route('products',['category_id'=> $category['id'],'data_from'=>'category','page'=>1]) }}">
+                                                        {{$category['name']}}
+                                                    </label>
+                                                </div>
+                                                <div class="px-2 cursor-pointer menu--caret">
+                                                    <strong class="pull-right for-brand-hover">
+                                                        @if($category->childes->count()>0)
+                                                            <i class="tio-next-ui fs-13"></i>
+                                                        @endif
+                                                    </strong>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="card-body p-0 ms-2 d--none"
+                                                id="collapse-{{$category['id']}}">
+                                                @foreach($category->childes as $child)
+                                                    <div class="menu--caret-accordion">
+                                                        <div class="for-hover-label card-header flex-between">
+                                                            <div>
+                                                                <label class="cursor-pointer get-view-by-onclick"
+                                                                       data-link="{{ route('products',['category_id'=> $child['id'],'data_from'=>'category','page'=>1]) }}">
+                                                                    {{$child['name']}}
+                                                                </label>
+                                                            </div>
+                                                            <div class="px-2 cursor-pointer menu--caret">
+                                                                <strong class="pull-right">
+                                                                    @if($child->childes->count()>0)
+                                                                        <i class="tio-next-ui fs-13"></i>
+                                                                    @endif
+                                                                </strong>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="card-body p-0 ms-2 d--none"
+                                                            id="collapse-{{$child['id']}}">
+                                                            @foreach($child->childes as $ch)
+                                                                <div class="card-header">
+                                                                    <label
+                                                                        class="for-hover-label d-block cursor-pointer text-left get-view-by-onclick"
+                                                                        data-link="{{ route('products',['category_id'=> $ch['id'],'data_from'=>'category','page'=>1]) }}">
+                                                                        {{$ch['name']}}
+                                                                    </label>
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
 

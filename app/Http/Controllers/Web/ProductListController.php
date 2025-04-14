@@ -50,7 +50,7 @@ class ProductListController extends Controller
 
     public function default_theme($request): View|JsonResponse|Redirector|RedirectResponse
     {
-        $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(10);
+        // $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(10);
         $activeBrands = BrandManager::getActiveBrandWithCountingAndPriorityWiseSorting();
 
         $data = self::getProductListRequestData(request: $request);
@@ -81,7 +81,7 @@ class ProductListController extends Controller
             'products' => $products,
             'data' => $data,
             'activeBrands' => $activeBrands,
-            'categories' => $categories,
+            // 'categories' => $categories,
         ]);
     }
 
