@@ -175,7 +175,7 @@ class WebController extends Controller
         session()->put('product_brand', $brandStatus);
         if ($brandStatus == 1) {
             $brandList = Brand::active()->with(['brandProducts' => function ($query) {
-                return $query->withCount(['orderDetails']);
+                return $query->withCount(['orderDetails'])->select("id","name","status","product_type","added_by","user_id","request_status");
             }])
                 ->withCount('brandProducts')
                 ->when($request->has('search'), function ($query) use ($request) {
@@ -255,7 +255,7 @@ class WebController extends Controller
                 $query->with('product', function ($query) {
                     $query->active()->with('reviews', function ($query) {
                         $query->active();
-                    });
+                    })->select("id","name","status","product_type","added_by","user_id","request_status");
                 })->withCount(['orders']);
             })
             ->get()
