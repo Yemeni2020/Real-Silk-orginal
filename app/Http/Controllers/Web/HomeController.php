@@ -26,6 +26,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
@@ -60,11 +61,16 @@ class HomeController extends Controller
     
     public function default_theme(): View|null
     {
-        $categories = Category::limit(30)->get();//CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(50);
+        $cacheTime = 60 * 10; // 10 دقائق
 
+        $categories = Cache::remember('home_categories', $cacheTime, function () {
+            return Category::limit(30)->select('id', 'name')->get();
+        });
         
         $userId = Auth::guard('customer')->user() ? Auth::guard('customer')->id() : 0;
-        $flashDeal = ProductManager::getPriorityWiseFlashDealsProductsQuery(userId: $userId);
+        $flashDeal = Cache::remember("flash_deals_user_{$userId}", $cacheTime, function () use ($userId) {
+            return ProductManager::getPriorityWiseFlashDealsProductsQuery(userId: $userId);
+        });
 
         $theme_name = theme_root_path();
         $brand_setting = BusinessSetting::where('type', 'product_brand')->first()->value;
@@ -79,7 +85,8 @@ class HomeController extends Controller
         $current_date = date('Y-m-d H:i:s');
         // dump($categories);
         // return null;
-        $topVendorsList = Shop::active()
+        $topVendorsList =  Cache::remember('home_top_vendors', $cacheTime, function () {
+           return Shop::active()
             ->withCount(['products' => function ($query) {
                 $query->active()->limit(5);;
             }])
@@ -107,9 +114,11 @@ class HomeController extends Controller
                 $endDate = date('Y-m-d', strtotime($shop['vacation_end_date']));
                 $shop->is_vacation_mode_now = $shop['vacation_status'] && ($currentDate >= $shop['vacation_start_date']) && ($currentDate <= $shop['vacation_end_date']) ? 1 : 0;
             })->take(12);
+        });
 
-
-        $inhouseProducts = Product::active()->with(['reviews', 'rating'])->withCount('reviews')->where(['added_by' => 'admin'])->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty")->limit(25)->get();
+        $inhouseProducts =Cache::remember('home_inhouse_products', $cacheTime, function () {
+            return Product::active()->with(['reviews', 'rating'])->withCount('reviews')->where(['added_by' => 'admin'])->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty")->limit(25)->get();
+            });
         $inhouseProductCount = $inhouseProducts->count();
 
         $inhouseReviewData = Review::active()->whereIn('product_id', $inhouseProducts->pluck('id'));
@@ -131,14 +140,24 @@ class HomeController extends Controller
 
         $topVendorsList = ProductManager::getPriorityWiseTopVendorQuery($topVendorsList);
 
-        $featuredProductsList = ProductManager::getPriorityWiseFeaturedProductsQuery(query: $this->product->active(), dataLimit: 5);
+        $featuredProductsList = Cache::remember('home_featured_products', $cacheTime, function () {
+              return ProductManager::getPriorityWiseFeaturedProductsQuery(query: $this->product->active(), dataLimit: 5);
+        });
 
-        $latest_products = $this->product->with(['reviews'])->active()->orderBy('id', 'desc')->take(8)->get();
+        $latest_products =  Cache::remember('home_latest_products', $cacheTime, function () {
+            return $this->product->with(['reviews'])->active()->orderBy('id', 'desc')->take(8)->get();
+            });
         $newArrivalProducts = ProductManager::getPriorityWiseNewArrivalProductsQuery(query: $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty")->active(), dataLimit: 8);
 
-        $brands = Brand::active()->take(50)->get();
+        $brands = Cache::remember('home_brands', $cacheTime, function () {
+            return Brand::active()
+                ->select('id', 'name') // اجلب فقط ما تحتاجه
+                ->take(50)
+                ->get();
+        });
 
-        $bestSellProduct = $this->order_details->with('product.reviews')
+        $bestSellProduct =Cache::remember('home_best_products_sell', $cacheTime, function () {
+            return $this->order_details->with('product.reviews')
             ->whereHas('product', function ($query) {
                 $query->active();
             })
@@ -147,8 +166,9 @@ class HomeController extends Controller
             ->orderBy("count", 'desc')
             ->take(6)
             ->get();
-
-        $topRated = Review::with('product')
+        });
+        $topRated =Cache::remember('home_topRated_products', $cacheTime, function () {
+            return Review::with('product')
             ->whereHas('product', function ($query) {
                 $query->active();
             })
@@ -157,7 +177,7 @@ class HomeController extends Controller
             ->orderBy("count", 'desc')
             ->take(6)
             ->get();
-
+        });
         if ($bestSellProduct->count() == 0) {
             $bestSellProduct = $latest_products;
         }
@@ -167,11 +187,11 @@ class HomeController extends Controller
         }
         $curnnet_lang = getDefaultLanguage();
 
-        $deal_of_the_day = DealOfTheDay::join('products', 'products.id', '=', 'deal_of_the_days.product_id')->select('deal_of_the_days.*', 'products.unit_price')->where('products.status', 1)->where('deal_of_the_days.status', 1)->first();
-        $main_banner = $this->banner->where(['banner_type' => 'Main Banner', 'theme' => $theme_name, 'published' => 1])->whereJsonContains('language', $curnnet_lang)->latest()->get();
+        $deal_of_the_day =  DealOfTheDay::join('products', 'products.id', '=', 'deal_of_the_days.product_id')->select('deal_of_the_days.*', 'products.unit_price')->where('products.status', 1)->where('deal_of_the_days.status', 1)->first();
+        $main_banner = $this->banner->where(['banner_type' => 'Main Banner', 'theme' => $theme_name, 'published' => 1])->whereJsonContains('language', $curnnet_lang)->latest()->limit(4)->get();
 
 
-        $side_banner = $this->banner->where(['banner_type' => 'Said Banner', 'theme' => $theme_name, 'published' => 1])->whereJsonContains('language', $curnnet_lang)->latest()->get();
+        $side_banner = $this->banner->where(['banner_type' => 'Said Banner', 'theme' => $theme_name, 'published' => 1])->whereJsonContains('language', $curnnet_lang)->latest()->limit(4)->get();
         
 
         $main_section_banner = $this->banner->where(['banner_type' => 'Main Section Banner', 'theme' => $theme_name, 'published' => 1])->whereJsonContains('language', $curnnet_lang)->orderBy('id', 'desc')->latest()->first();

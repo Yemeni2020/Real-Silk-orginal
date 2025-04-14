@@ -78,51 +78,104 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function getWebFirstWhereActive(array $params, array $relations = [], array $withCount = []): ?Model
     {
-        return $this->product->active()
-            ->when(isset($relations['reviews']), function ($query) use ($relations) {
-                return $query->with($relations['reviews']);
-            })
-            ->when(isset($relations['seller.shop']), function ($query) use ($relations) {
-                return $query->with($relations['seller.shop']);
-            })
-            ->when(isset($relations['wishList']), function ($query) use ($relations, $params) {
-                return $query->with([$relations['wishList'] => function ($query) use ($params) {
-                    return $query->when(isset($params['customer_id']), function ($query) use ($params) {
-                        return $query->where('customer_id', $params['customer_id']);
-                    });
-                }]);
-            })
-            ->when(isset($relations['compareList']), function ($query) use ($relations, $params) {
-                return $query->with([$relations['compareList'] => function ($query) use ($params) {
-                    return $query->when(isset($params['customer_id']), function ($query) use ($params) {
-                        return $query->where('user_id', $params['customer_id']);
-                    });
-                }]);
-            })
-            ->when(isset($relations['digitalProductAuthors']), function ($query) use ($relations) {
-                return $query->with($relations['digitalProductAuthors'], function ($query) {
-                    return $query->with('author');
-                });
-            })
-            ->when(isset($relations['digitalProductPublishingHouse']), function ($query) use ($relations) {
-                return $query->with($relations['digitalProductPublishingHouse'], function ($query) {
-                    return $query->with('publishingHouse');
-                });
-            })
-            ->when(isset($params['id']), function ($query) use ($params) {
-                return $query->where('id', $params['id']);
-            })
-            ->when(isset($params['slug']), function ($query) use ($params) {
-                return $query->where('slug', $params['slug']);
-            })
-            ->when(isset($withCount['orderDetails']), function ($query) use ($withCount) {
-                return $query->withCount($withCount['orderDetails']);
-            })
-            ->when(isset($withCount['wishList']), function ($query) use ($withCount) {
-                return $query->withCount($withCount['wishList']);
-            })
-            ->first();
+        $query = $this->product->active();
+
+        if (!empty($relations['reviews'])) {
+            $query->with(['reviews:id,product_id,rating,comment']);
+        }
+
+        if (!empty($relations['seller.shop'])) {
+            $query->with(['seller:id,shop_id', 'seller.shop:id,seller_id,name']);
+        }
+
+        if (!empty($relations['wishList'])) {
+            $query->with([$relations['wishList'] => function ($q) use ($params) {
+                $q->select('id', 'product_id', 'customer_id')
+                ->when(isset($params['customer_id']), fn($q) => $q->where('customer_id', $params['customer_id']));
+            }]);
+        }
+
+        if (!empty($relations['compareList'])) {
+            $query->with([$relations['compareList'] => function ($q) use ($params) {
+                $q->select('id', 'product_id', 'user_id')
+                ->when(isset($params['customer_id']), fn($q) => $q->where('user_id', $params['customer_id']));
+            }]);
+        }
+
+        if (!empty($relations['digitalProductAuthors'])) {
+            $query->with(['digitalProductAuthors' => fn($q) => $q->with('author:id,name')]);
+        }
+
+        if (!empty($relations['digitalProductPublishingHouse'])) {
+            $query->with(['digitalProductPublishingHouse' => fn($q) => $q->with('publishingHouse:id,name')]);
+        }
+
+        if (!empty($params['id'])) {
+            $query->where('id', $params['id']);
+        }
+
+        if (!empty($params['slug'])) {
+            $query->where('slug', $params['slug']);
+        }
+
+        if (!empty($withCount['orderDetails'])) {
+            $query->withCount('orderDetails');
+        }
+
+        if (!empty($withCount['wishList'])) {
+            $query->withCount('wishList');
+        }
+
+        return $query->first();
     }
+
+    // public function getWebFirstWhereActive(array $params, array $relations = [], array $withCount = []): ?Model
+    // {
+    //     return $this->product->active()
+    //         ->when(isset($relations['reviews']), function ($query) use ($relations) {
+    //             return $query->with($relations['reviews']);
+    //         })
+    //         ->when(isset($relations['seller.shop']), function ($query) use ($relations) {
+    //             return $query->with($relations['seller.shop']);
+    //         })
+    //         ->when(isset($relations['wishList']), function ($query) use ($relations, $params) {
+    //             return $query->with([$relations['wishList'] => function ($query) use ($params) {
+    //                 return $query->when(isset($params['customer_id']), function ($query) use ($params) {
+    //                     return $query->where('customer_id', $params['customer_id']);
+    //                 });
+    //             }]);
+    //         })
+    //         ->when(isset($relations['compareList']), function ($query) use ($relations, $params) {
+    //             return $query->with([$relations['compareList'] => function ($query) use ($params) {
+    //                 return $query->when(isset($params['customer_id']), function ($query) use ($params) {
+    //                     return $query->where('user_id', $params['customer_id']);
+    //                 });
+    //             }]);
+    //         })
+    //         ->when(isset($relations['digitalProductAuthors']), function ($query) use ($relations) {
+    //             return $query->with($relations['digitalProductAuthors'], function ($query) {
+    //                 return $query->with('author');
+    //             });
+    //         })
+    //         ->when(isset($relations['digitalProductPublishingHouse']), function ($query) use ($relations) {
+    //             return $query->with($relations['digitalProductPublishingHouse'], function ($query) {
+    //                 return $query->with('publishingHouse');
+    //             });
+    //         })
+    //         ->when(isset($params['id']), function ($query) use ($params) {
+    //             return $query->where('id', $params['id']);
+    //         })
+    //         ->when(isset($params['slug']), function ($query) use ($params) {
+    //             return $query->where('slug', $params['slug']);
+    //         })
+    //         ->when(isset($withCount['orderDetails']), function ($query) use ($withCount) {
+    //             return $query->withCount($withCount['orderDetails']);
+    //         })
+    //         ->when(isset($withCount['wishList']), function ($query) use ($withCount) {
+    //             return $query->withCount($withCount['wishList']);
+    //         })
+    //         ->first();
+    // }
 
     public function getList(array $orderBy = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
     {
