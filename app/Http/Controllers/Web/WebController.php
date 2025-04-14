@@ -278,7 +278,7 @@ class WebController extends Controller
                 return $shop;
             });
 
-        $inhouseProducts = Product::active()->with(['reviews', 'rating'])->withCount('reviews')->where(['added_by' => 'admin'])->get();
+        $inhouseProducts = Product::active()->select("id","name","status","product_type","added_by","user_id","request_status")->with(['reviews', 'rating'])->withCount('reviews')->where(['added_by' => 'admin'])->get();
         $inhouseProductCount = $inhouseProducts->count();
 
         $inhouseReviewData = Review::active()->whereIn('product_id', $inhouseProducts->pluck('id'));
