@@ -151,7 +151,7 @@ class HomeController extends Controller
 
         $brands = Cache::remember('home_brands', $cacheTime, function () {
             return Brand::active()
-                ->select('id', 'name') // اجلب فقط ما تحتاجه
+                ->select('id', 'name','image','image_storage_type','image_alt_text') // اجلب فقط ما تحتاجه
                 ->take(50)
                 ->get();
         });
