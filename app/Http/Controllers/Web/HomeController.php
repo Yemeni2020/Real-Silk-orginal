@@ -64,7 +64,13 @@ class HomeController extends Controller
         $cacheTime = 60 * 10; // 10 دقائق
 
         $categories = Cache::remember('home_categories', $cacheTime, function () {
-            return Category::limit(30)->select('id', 'name')->get();
+            return Category::limit(30)
+                ->where('parent_id', 0)
+                ->select('id', 'name', 'icon', 'image_ad', 'icon_storage_type') // لازم تجيب الأعمدة المستخدمة في accessor
+                ->get()
+                ->each(function ($category) {
+                    $category->append('adv_full_url');
+                });
         });
         
         $userId = Auth::guard('customer')->user() ? Auth::guard('customer')->id() : 0;
