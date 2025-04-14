@@ -322,7 +322,7 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function getWebListWithScope(array $orderBy = [], string $searchValue = null, string $scope = null, array $filters = [], array $whereHas = [], array $whereIn = [], array $whereNotIn = [], array $relations = [], array $withCount = [], array $withSum = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
     {
-        $query = $this->product
+        $query = $this->product->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty")
             ->when(isset($scope) && $scope == 'active', function ($query) {
                 return $query->active();
             })
