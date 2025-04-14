@@ -372,7 +372,7 @@ class Product extends Model
             return $name;
         }
         $curnnet_lang = getDefaultLanguage();
-        $translation = $this->translations->where('locale', $curnnet_lang)->first();
+        $translation = $this->translations->where('locale', $curnnet_lang)->where('key', 'name')->first();
         return $translation->value ?? $name; // إرجاع الترجمة إذا كانت موجودة، وإلا يتم عرض الاسم الأصلي
 
         // return $this->translations[0]->value ?? $name;

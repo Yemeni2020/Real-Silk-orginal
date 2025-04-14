@@ -93,7 +93,7 @@
                         <a href="{{route('home')}}"
                            class="{{ Request::is('/')?'active':'' }}">{{ translate('home') }}</a>
                     </li>
-                    @php($categories = \App\Utils\CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting())
+                    @php($categories = \App\Utils\CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(11))
                     <li>
                         <a href="javascript:">{{ translate('all_categories')}}</a>
                         <ul class="submenu">

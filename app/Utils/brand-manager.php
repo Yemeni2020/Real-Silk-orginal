@@ -31,7 +31,7 @@ class BrandManager
     {
         $brandList = Brand::active()->withCount(['brandProducts'  => function ($query) {
             $query->active();
-        }]);
+        }])->limit(10);
         return self::getPriorityWiseBrandProductsQuery(query: $brandList);
     }
 

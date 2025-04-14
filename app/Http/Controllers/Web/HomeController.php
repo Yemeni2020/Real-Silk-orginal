@@ -116,7 +116,7 @@ class HomeController extends Controller
                 ->where('category_ids', 'like', "%{$id}%")->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty")->limit(5);
             $data['products'] = ProductManager::getPriorityWiseCategoryWiseProductsQuery(query: $homeCategoriesProducts, dataLimit: 5);
         });
-        dump($homeCategories);
+        // dump($homeCategories);
         //End Old Code
         $current_date = date('Y-m-d H:i:s');
         // dump($categories);

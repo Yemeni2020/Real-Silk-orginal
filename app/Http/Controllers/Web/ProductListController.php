@@ -50,7 +50,7 @@ class ProductListController extends Controller
 
     public function default_theme($request): View|JsonResponse|Redirector|RedirectResponse
     {
-        $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting();
+        $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(10);
         $activeBrands = BrandManager::getActiveBrandWithCountingAndPriorityWiseSorting();
 
         $data = self::getProductListRequestData(request: $request);
@@ -87,7 +87,7 @@ class ProductListController extends Controller
 
     public function theme_aster($request): View|JsonResponse|Redirector|RedirectResponse
     {
-        $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting();
+        $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(10);
         $activeBrands = BrandManager::getActiveBrandWithCountingAndPriorityWiseSorting();
 
         $data = self::getProductListRequestData(request: $request);
@@ -141,7 +141,7 @@ class ProductListController extends Controller
 
     public function theme_fashion(Request $request): View|JsonResponse|Redirector|RedirectResponse
     {
-        $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting();
+        $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(10);
         $activeBrands = BrandManager::getActiveBrandWithCountingAndPriorityWiseSorting();
         $banner = BusinessSetting::where(['type' => 'banner_product_list_page'])->whereJsonContains('value', ['status' => '1'])->first();
 
@@ -369,7 +369,7 @@ class ProductListController extends Controller
 
     public function theme_all_purpose(Request $request): View|JsonResponse|Redirector|RedirectResponse
     {
-        $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting();
+        $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(10);
         $banner = BusinessSetting::where('type', 'banner_product_list_page')->whereJsonContains('value', ['status' => '1'])->first();
 
         $data = self::getProductListRequestData(request: $request);
