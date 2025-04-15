@@ -431,7 +431,7 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function getTopRatedList(array $filters = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
     {
-        return $this->product->with($relations)->where($filters)
+        return $this->product->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","featured_status")->with($relations)->where($filters)
             ->with('reviews', function ($query) {
                 return $query->whereHas('product', function ($query) {
                     $query->active();
