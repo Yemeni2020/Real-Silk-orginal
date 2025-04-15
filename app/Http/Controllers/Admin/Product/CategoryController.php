@@ -52,7 +52,7 @@ class CategoryController extends BaseController
 
     public function getAddView(Request $request): View
     {
-        $categories = $this->categoryRepo->getListWhere(orderBy: ['id'=>'desc'], searchValue: $request->get('searchValue'), filters: ['position' => 0], dataLimit: getWebConfig(name: 'pagination_limit'),relations:["product"]);
+        $categories = $this->categoryRepo->getListWhere(orderBy: ['id'=>'desc'], searchValue: $request->get('searchValue'), filters: ['position' => 0], dataLimit: getWebConfig(name: 'pagination_limit'));
         $languages = getWebConfig(name: 'pnc_language') ?? null;
         $brands=$this->brandRepo->getList();
 

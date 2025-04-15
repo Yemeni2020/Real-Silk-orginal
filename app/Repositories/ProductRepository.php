@@ -184,7 +184,7 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function getListWhere(array $orderBy = [], string $searchValue = null, array $filters = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
     {
-        $query = $this->product->with($relations)->when(isset($filters['added_by']) && $this->isAddedByInHouse(addedBy: $filters['added_by']), function ($query) {
+        $query = $this->product->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","featured_status")->with($relations)->when(isset($filters['added_by']) && $this->isAddedByInHouse(addedBy: $filters['added_by']), function ($query) {
             return $query->where(['added_by' => 'admin']);
         })->when(isset($filters['added_by']) && !$this->isAddedByInHouse($filters['added_by']), function ($query) use ($filters) {
             return $query->where(['added_by' => 'seller'])
