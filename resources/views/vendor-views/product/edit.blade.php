@@ -133,7 +133,7 @@ $auto_translate=getWebConfig("auto_translate");
                                         data-element-type="select">
                                     <option value="0" selected disabled>---{{ translate('select') }}---</option>
                                     @foreach($categories as $category)
-                                        <option value="{{ $category['id']}}" {{ $category->id==$product['category_id'] ? 'selected' : ''}}>{{ $category['defaultName']}}</option>
+                                        <option value="{{ $category['id']}}" {{ $category->id==$product['category_id'] ? 'selected' : ''}}>{{ $category['name']}}</option>
                                     @endforeach
                                 </select>
                             </div>
