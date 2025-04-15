@@ -205,7 +205,8 @@ a {
 }
 @media (min-width: 768px) {
     .feature-product:not(:hover) .owl-item:not(.active) {
-        opacity: 0;
+        /* Old Code */
+        /* opacity: 0; */
     }
     
 /* MyCode */
