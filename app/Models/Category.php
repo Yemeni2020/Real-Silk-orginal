@@ -69,7 +69,7 @@ class Category extends Model
 
     public function product(): HasMany
     {
-        return $this->hasMany(Product::class, 'category_id', 'id');
+        return $this->hasMany(Product::class, 'category_id', 'id')->select('id', 'added_by','user_id','name','slug','product_type','category_ids','category_id','sub_category_id','sub_sub_category_id','brand_id','unit','min_qty','production_period','refundable','digital_product_type','digital_file_ready','digital_file_ready_storage_type','images','color_image','thumbnail','thumbnail_storage_type','preview_file','preview_file_storage_type','featured','flash_deal','video_provider','video_url','published','unit_price','purchase_price','tax','tax_type','tax_model','discount','discount_type','current_stock','minimum_order_qty','free_shipping','attachment','created_at','updated_at','status','featured_status','request_status','denied_note','shipping_cost','multiply_qty','temp_shipping_cost','is_shipping_cost_updated','code');
     }
 
 

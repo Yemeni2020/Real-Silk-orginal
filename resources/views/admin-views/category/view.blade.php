@@ -252,8 +252,8 @@
                                             </a>
                                             <a class="btn btn-outline-danger btn-sm square-btn delete-category"
                                                title="{{ translate('delete') }}"
-                                               data-product-count = "{{count($category?->product)}}"
-                                               data-text="{{translate('there_were_').count($category?->product).translate('_products_under_this_category').'.'.translate('please_update_their_category_from_the_below_list_before_deleting_this_one').'.'}}"
+                                               data-product-count = "{{ $category->product_count }}"
+                                               data-text="{{translate('there_were_').$category->product_count.translate('_products_under_this_category').'.'.translate('please_update_their_category_from_the_below_list_before_deleting_this_one').'.'}}"
                                                id="{{ $category['id'] }}">
                                                 <i class="tio-delete"></i>
                                             </a>
