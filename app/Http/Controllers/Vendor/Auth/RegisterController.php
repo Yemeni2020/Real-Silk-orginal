@@ -138,16 +138,23 @@ class RegisterController extends BaseController
     public function checkEmailPhone(VendorCheckRequest $request){
 
 
-        $token=mt_rand(100000, 999999);
-        $this->EmailVerification->updateOrCreate(["phone_or_email"=>$request["email"]],['token'=>$token]);
+        // $token=mt_rand(100000, 999999);
+        // $this->EmailVerification->updateOrCreate(["phone_or_email"=>$request["email"]],['token'=>$token]);
 
-        $data = [
-            'subject' => 'Confirm your Email',
-            'token' => $token,
+        // $data = [
+        //     'subject' => 'Confirm your Email',
+        //     'token' => $token,
             
-        ];
-        Mail::to($request["email"])->send(new EmailSellerVerificationMail($data));
-
+        // ];
+        // try {
+        //     Mail::to($request["email"])->send(new EmailSellerVerificationMail($data));
+        // } catch (\Exception $e) {
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => $e->getMessage(),
+        //         'error' => $e->getMessage()
+        //     ], 500);
+        // }
         return response()->json([
             'status' => true,
             'message' => 'البريد الإلكتروني ورقم الهاتف متاحان للتسجيل.'
