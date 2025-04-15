@@ -40,6 +40,20 @@
     <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/style.css') }}">
 
     <style>
+        @font-face {
+            font-family: 'Cairo';
+            src: url({{ theme_asset(path: 'public/assets/front-end/fonts/Cairo/static/Cairo-Regular.ttf') }}) format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SansSerifFLF';
+            src: url({{ theme_asset(path: 'public/assets/front-end/fonts/sans-serif/SansSerifBookFLF.otf') }}) format('opentype');
+            font-weight: bold;
+            font-style: normal;
+        }
+        
         :root {
             --base: {{ $web_config['primary_color'] }};
             --base-2: {{ $web_config['secondary_color'] }};
@@ -65,6 +79,9 @@
         }
         #footer-slider .disabled{
             display: none !important;
+        }
+        *{
+            font-family: Cairo,sans-serif !important;
         }
     </style>
 
