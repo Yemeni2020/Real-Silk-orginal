@@ -8328,7 +8328,12 @@ span.badge-accent:hover {
     gap: 0.25rem;
     padding-inline: 1.25rem;
 }
-
+.category-menu-wrap .mega_menu_inner h6 a{
+    color: var(--web-primary) !important;
+}
+.category-menu-wrap .mega_menu_inner a{
+    color: var(--web-secondary) !important;
+}
 .category-menu-wrap .mega_menu_inner:not(:nth-child(4n)) {
     border-right: 1px solid #e2e8f0;
 }
