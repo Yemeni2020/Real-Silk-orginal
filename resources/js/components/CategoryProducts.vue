@@ -1,5 +1,7 @@
 <template>
-  <div
+  <CategorySkeleton v-if="isLoading" :rows="8" />
+
+  <div v-else
     v-for="category in categories"
     :key="category.id"
     class="menu--caret-accordion"
@@ -73,10 +75,15 @@
 
 
 <script>
+import CategorySkeleton from "../components/partial/CategorySkeleton.vue";
 export default {
+  components:{
+    CategorySkeleton
+  },
   data() {
     return {
       categories: [],
+      isLoading: true,
     };
   },
   mounted() {
@@ -99,9 +106,11 @@ export default {
           };
 
           this.categories = addShowFlag(data);
+          this.isLoading = false;
         })
         .catch((err) => {
           console.error("Error loading categories", err);
+          this.isLoading = false;
         });
     },
     toggle(item) {
