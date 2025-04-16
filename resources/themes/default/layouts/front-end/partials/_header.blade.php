@@ -582,9 +582,10 @@
             <div class="megamenu-wrap" id="category-menu" hx-get="{{ route('getCategoryMenu') }}" hx-trigger="load" hx-target="#category-menu" hx-swap="innerHTML">
             </div>
         </div>
-        <div class="navbar navbar-expand-md" id="navbar-category" hx-get="{{ route('getCategoryMenuNav') }}" hx-trigger="load" hx-target="#navbar-category" hx-swap="innerHTML">
+
+        <!-- <div class="navbar navbar-expand-md" id="navbar-category" hx-get="{{ route('getCategoryMenuNav') }}" hx-trigger="load" hx-target="#navbar-category" hx-swap="innerHTML">
             
-        </div>
+        </div> -->
         
     </div>
 </header>

@@ -84,7 +84,7 @@ export default {
   },
   methods: {
     fetchCategories() {
-      fetch("/vueAPI/ProductCategories")
+      fetch("/vueAPI/product_categories")
         .then((res) => res.json())
         .then((data) => {
           // أضف خاصية show للتحكم بالفتح/الإغلاق

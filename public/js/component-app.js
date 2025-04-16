@@ -20013,7 +20013,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     fetchCategories: function fetchCategories() {
       var _this = this;
-      fetch("/vueAPI/ProductCategories").then(function (res) {
+      fetch("/vueAPI/product_categories").then(function (res) {
         return res.json();
       }).then(function (data) {
         // أضف خاصية show للتحكم بالفتح/الإغلاق

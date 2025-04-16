@@ -37,7 +37,7 @@ class ProductListController extends Controller
 
     public function getProductCategories(Request $request): JsonResponse
     {
-        $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(2);
+        $categories = CategoryManager::getCategoriesWithCountingAndPriorityWiseSorting(10);
 
 
         return response()->json($categories);
