@@ -8726,4 +8726,7 @@ return [
 	"Adv_List" => "Adv List",
 	"Minimum_order" => "Minimum order",
 	"image_alt_text" => "Image alt text",
+	"select_products" => "Select products",
+	"no_product_select_yet" => "No product select yet",
+	"please_select_at_least_one_product" => "Please select at least one product",
 ];

@@ -61,7 +61,7 @@ class HomeController extends Controller
     
     public function default_theme(): View|null
     {
-        $cacheTime = 60 * 10; // 10 دقائق
+        $cacheTime = 10 ; // 10 دقائق
 
         $categories = Cache::remember('home_categories', $cacheTime, function () {
             return Category::limit(30)
@@ -177,11 +177,11 @@ class HomeController extends Controller
         $topVendorsList = ProductManager::getPriorityWiseTopVendorQuery($topVendorsList);
 
         $featuredProductsList = Cache::remember('home_featured_products', $cacheTime, function () {
-              return ProductManager::getPriorityWiseFeaturedProductsQuery(query: $this->product->active(), dataLimit: 5);
+              return ProductManager::getPriorityWiseFeaturedProductsQuery(query: $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","status")->active(), dataLimit: 5);
         });
 
         $latest_products =  Cache::remember('home_latest_products', $cacheTime, function () {
-            return $this->product->with(['reviews'])->active()->orderBy('id', 'desc')->take(8)->get();
+            return $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","status")->with(['reviews'])->active()->orderBy('id', 'desc')->take(8)->get();
             });
         $newArrivalProducts = ProductManager::getPriorityWiseNewArrivalProductsQuery(query: $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty")->active(), dataLimit: 8);
 
@@ -191,19 +191,27 @@ class HomeController extends Controller
                 ->get();
         });
 
-        $bestSellProduct =Cache::remember('home_best_products_sell', $cacheTime, function () {
-            return $this->order_details->with('product.reviews')
-            ->whereHas('product', function ($query) {
-                $query->active();
-            })
-            ->select('product_id', DB::raw('COUNT(product_id) as count'))
-            ->groupBy('product_id')
-            ->orderBy("count", 'desc')
-            ->take(6)
-            ->get();
+        $bestSellProduct = Cache::remember('home_best_products_sell', $cacheTime, function () {
+            return $this->order_details
+                ->with([
+                    'product' => function ($query) {
+                        $query->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","status") // الأعمدة المطلوبة فقط
+                              ->with('reviews');
+                    }
+                ])
+                ->whereHas('product', function ($query) {
+                    $query->active();
+                })
+                ->select('product_id', DB::raw('COUNT(product_id) as count'))
+                ->groupBy('product_id')
+                ->orderBy("count", 'desc')
+                ->take(6)
+                ->get();
         });
         $topRated =Cache::remember('home_topRated_products', $cacheTime, function () {
-            return Review::with('product')
+            return Review::with(['product'=>function($query){
+                $query->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","status");
+            }])
             ->whereHas('product', function ($query) {
                 $query->active();
             })

@@ -256,7 +256,7 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function getListWithScope(array $orderBy = [], string $searchValue = null, string $scope = null, array $filters = [], array $whereIn = [], array $whereNotIn = [], array $relations = [], array $withCount = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
     {
-        $query = $this->product->with($relations)
+        $query = $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","status","brand_id","category_id")->with($relations)
             ->when(isset($withCount['reviews']), function ($query) use ($withCount) {
                 return $query->withCount($withCount['reviews']);
             })

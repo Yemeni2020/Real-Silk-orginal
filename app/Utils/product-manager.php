@@ -1473,7 +1473,7 @@ class ProductManager
 
         if ($flashDeal) {
             $flashDealProducts = ProductManager::getPriorityWiseFlashDealsProductsQuerySorting(
-                query: Product::active(),
+                query: Product::active()->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","status"),
                 flashDeal: $flashDeal,
                 userId: $userId,
             );
