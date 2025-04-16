@@ -20035,6 +20035,7 @@ __webpack_require__.r(__webpack_exports__);
       item.show = !item.show;
     },
     generateLink: function generateLink(categoryId) {
+      window.location.href = "/products?category_id=".concat(categoryId, "&data_from=category&page=1");
       return "/products?category_id=".concat(categoryId, "&data_from=category&page=1");
     }
   }
@@ -20137,7 +20138,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
 var _hoisted_1 = ["onClick"];
-var _hoisted_2 = ["data-link"];
+var _hoisted_2 = ["onClick"];
 var _hoisted_3 = {
   "class": "px-2 cursor-pointer menu--caret"
 };
@@ -20148,7 +20149,7 @@ var _hoisted_5 = {
   "class": "card-body p-0 ms-2"
 };
 var _hoisted_6 = ["onClick"];
-var _hoisted_7 = ["data-link"];
+var _hoisted_7 = ["onClick"];
 var _hoisted_8 = {
   "class": "px-2 cursor-pointer menu--caret"
 };
@@ -20158,7 +20159,7 @@ var _hoisted_9 = {
 var _hoisted_10 = {
   "class": "card-body p-0 ms-2"
 };
-var _hoisted_11 = ["data-link"];
+var _hoisted_11 = ["onClick"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.categories, function (category) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
@@ -20171,7 +20172,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       }
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
       "class": "for-hover-label cursor-pointer get-view-by-onclick",
-      "data-link": $options.generateLink(category.id)
+      onClick: function onClick($event) {
+        return $options.generateLink(category.id);
+      }
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(category.name), 9 /* TEXT, PROPS */, _hoisted_2), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("strong", _hoisted_4, [category.childes.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", {
       key: 0,
       "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(category.show ? 'tio-chevron-up fs-13' : 'tio-chevron-right fs-13')
@@ -20191,7 +20194,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             }
           }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
             "class": "cursor-pointer get-view-by-onclick",
-            "data-link": $options.generateLink(child.id)
+            onClick: function onClick($event) {
+              return $options.generateLink(child.id);
+            }
           }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(child.name), 9 /* TEXT, PROPS */, _hoisted_7), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("strong", _hoisted_9, [child.childes.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", {
             key: 0,
             "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(child.show ? 'tio-chevron-up fs-13' : 'tio-chevron-right fs-13')
@@ -20206,7 +20211,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                   "class": "card-header"
                 }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
                   "class": "for-hover-label d-block cursor-pointer text-left get-view-by-onclick",
-                  "data-link": $options.generateLink(subChild.id)
+                  onClick: function onClick($event) {
+                    return $options.generateLink(subChild.id);
+                  }
                 }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(subChild.name), 9 /* TEXT, PROPS */, _hoisted_11)]);
               }), 128 /* KEYED_FRAGMENT */))], 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, child.show]])];
             }),

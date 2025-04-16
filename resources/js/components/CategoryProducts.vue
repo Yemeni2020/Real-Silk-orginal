@@ -8,7 +8,7 @@
     <div class="card-header flex-between" @click="toggle(category)">
       <label
         class="for-hover-label cursor-pointer get-view-by-onclick"
-        :data-link="generateLink(category.id)"
+        @click="generateLink(category.id)"
       >
         {{ category.name }}
       </label>
@@ -34,7 +34,7 @@
           <div class="card-header flex-between" @click="toggle(child)">
             <label
               class="cursor-pointer get-view-by-onclick"
-              :data-link="generateLink(child.id)"
+              @click="generateLink(child.id)"
             >
               {{ child.name }}
             </label>
@@ -58,7 +58,7 @@
               >
                 <label
                   class="for-hover-label d-block cursor-pointer text-left get-view-by-onclick"
-                  :data-link="generateLink(subChild.id)"
+                  @click="generateLink(subChild.id)"
                 >
                   {{ subChild.name }}
                 </label>
@@ -108,6 +108,7 @@ export default {
       item.show = !item.show;
     },
     generateLink(categoryId) {
+      window.location.href=`/products?category_id=${categoryId}&data_from=category&page=1`;
       return `/products?category_id=${categoryId}&data_from=category&page=1`;
     },
   },
