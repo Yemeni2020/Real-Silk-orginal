@@ -113,8 +113,8 @@ class HomeController extends Controller
             $id = '"' . $data['id'] . '"';
             $homeCategoriesProducts = Product::active()
                 ->withCount('reviews')
-                ->where('category_ids', 'like', "%{$id}%")->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty")->limit(5);
-            $data['products'] = ProductManager::getPriorityWiseCategoryWiseProductsQuery(query: $homeCategoriesProducts, dataLimit: 5);
+                ->where('category_ids', 'like', "%{$id}%")->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty")->limit(10);
+            $data['products'] = ProductManager::getPriorityWiseCategoryWiseProductsQuery(query: $homeCategoriesProducts, dataLimit: 10);
         });
         // dump($homeCategories);
         //End Old Code
@@ -181,9 +181,9 @@ class HomeController extends Controller
         });
 
         $latest_products =  Cache::remember('home_latest_products', $cacheTime, function () {
-            return $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty","status")->with(['reviews'])->active()->orderBy('id', 'desc')->take(8)->get();
+            return $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty","status")->with(['reviews'])->active()->orderBy('id', 'desc')->take(10)->get();
             });
-        $newArrivalProducts = ProductManager::getPriorityWiseNewArrivalProductsQuery(query: $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty")->active(), dataLimit: 8);
+        $newArrivalProducts = ProductManager::getPriorityWiseNewArrivalProductsQuery(query: $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty")->active(), dataLimit: 10);
 
         $brands = Cache::remember('home_brands', $cacheTime, function () {
             return Brand::active()
@@ -205,7 +205,7 @@ class HomeController extends Controller
                 ->select('product_id', DB::raw('COUNT(product_id) as count'))
                 ->groupBy('product_id')
                 ->orderBy("count", 'desc')
-                ->take(6)
+                ->take(10)
                 ->get();
         });
         $topRated =Cache::remember('home_topRated_products', $cacheTime, function () {
