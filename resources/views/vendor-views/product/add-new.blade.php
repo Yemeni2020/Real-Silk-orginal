@@ -124,7 +124,7 @@ $auto_translate=getWebConfig("auto_translate");
                                     @foreach ($categories as $category)
                                         <option value="{{ $category['id'] }}"
                                             {{ old('name') == $category['id'] ? 'selected' : '' }}>
-                                            {{ $category['name'] }}
+                                            {{ $category['defaultName'] }}
                                         </option>
                                     @endforeach
                                 </select>
