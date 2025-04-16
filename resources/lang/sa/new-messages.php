@@ -8729,4 +8729,8 @@ return [
 	"select_products" => "Select products",
 	"no_product_select_yet" => "No product select yet",
 	"please_select_at_least_one_product" => "Please select at least one product",
+	"By_Turning_On_Vendors_must_sing_contract" => "By Turning On Vendors must sing contract",
+	"By_Turning_Off_Vendors_must_sing_contract" => "By Turning Off Vendors must sing contract",
+	"If_enabled,_vendors_will_be_required_to_sign_the_contract_upon_registration" => "If enabled  vendors will be required to sign the contract upon registration",
+	"If_disabled,_vendors_will_be_able_to_register_without_signing_the_contract" => "If disabled  vendors will be able to register without signing the contract",
 ];

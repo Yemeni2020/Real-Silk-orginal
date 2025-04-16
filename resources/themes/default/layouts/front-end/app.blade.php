@@ -125,7 +125,7 @@
             </noscript>
         <!-- End Facebook Pixel Code -->
     @endif
-    <script src="{{ asset('js/component-app.js') }}" defer></script>
+    <script src="{{ asset('public/js/component-app.js') }}" defer></script>
 
 </head>
 

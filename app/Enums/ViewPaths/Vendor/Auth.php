@@ -21,7 +21,7 @@ enum Auth
         VIEW => 'seller_registration'
     ];
     const VENDOR_CONTRACTS = [
-        URI => 'index',
+        URI => 'contract/index',
         VIEW => 'contract.contract'
     ];
     const VENDOR_STEP1 = [

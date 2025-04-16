@@ -264,7 +264,11 @@ padding: 0;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     width: 100%;
     padding: 20px;
-    min-height: 386px;
+    min-height: 320px;
+}
+#navbar-category .category-wrapper ul>li.nav-item>.mega_menu_parent img{
+    max-height: 300px;
+
 }
 #navbar-category .category-wrapper ul>li.nav-item>.mega_menu_parent h6{
     white-space: nowrap; /* يمنع النص من الانتقال إلى سطر جديد */
@@ -278,7 +282,7 @@ padding: 0;
 }
 
 #navbar-category .category-wrapper ul>li.nav-item>.mega_menu_parent h6 ~ div>a{
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 400;
 }
 /* إظهار القائمة عند التحويم */

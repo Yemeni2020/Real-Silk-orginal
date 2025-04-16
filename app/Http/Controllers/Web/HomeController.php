@@ -61,7 +61,7 @@ class HomeController extends Controller
     
     public function default_theme(): View|null
     {
-        $cacheTime = 10 ; // 10 دقائق
+        $cacheTime = 50 ; // 50 sec
 
         $categories = Cache::remember('home_categories', $cacheTime, function () {
             return Category::limit(30)
