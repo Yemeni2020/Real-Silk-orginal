@@ -80,9 +80,10 @@
         #footer-slider .disabled{
             display: none !important;
         }
-        *{
+        body{
             font-family: Cairo,sans-serif !important;
         }
+        
     </style>
 
     <link rel="stylesheet" href="{{theme_asset(path: 'public/assets/front-end/css/custom.css')}}">
