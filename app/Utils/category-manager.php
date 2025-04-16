@@ -114,7 +114,7 @@ class CategoryManager
     
         $categoriesQuery = Category::withoutGlobalScope('translate')->with([
                 'product' => function ($query) {
-                    $query->select('id', 'name', 'category_id')
+                    $query->select('id', 'name', 'category_id')->limit(1)
                         ->active()
                         ->withCount(['orderDetails']);
                          // تحسين تحميل الترجمات
