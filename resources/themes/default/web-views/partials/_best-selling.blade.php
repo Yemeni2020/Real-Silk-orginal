@@ -75,7 +75,7 @@
                                                 ) !!}
                                             </p>
                                             <p class="footer-product-ditals">
-                                             {{translate('Minimum_order')}}: {{$bestSell?->product->min_qty}}<br>
+                                             {{translate('Minimum_order')}}: {{$bestSell?->product->minimum_order_qty}}<br>
                                              {{translate('Stock')}}: {{$bestSell->product->current_stock	}}
                                             </p>
                                         </div>

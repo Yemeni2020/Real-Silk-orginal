@@ -48,7 +48,7 @@ class HomeController extends Controller{
             $id = '"' . $data['id'] . '"';
             $homeCategoriesProducts = Product::active()
                 ->withCount('reviews')
-                ->where('category_ids', 'like', "%{$id}%")->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty")->limit(12);
+                ->where('category_ids', 'like', "%{$id}%")->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty")->limit(12);
             $data['products'] = ProductManager::getPriorityWiseCategoryWiseProductsQuery(query: $homeCategoriesProducts, dataLimit: 25);
         });
         return response()->json($homeCategories);

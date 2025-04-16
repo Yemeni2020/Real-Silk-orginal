@@ -52,7 +52,7 @@
                         {!! webCurrencyConverter(amount: $product->unit_price - getProductDiscount(product: $product, price: $product->unit_price)) !!}
                         </span>
                         <p class="footer-product-ditals">
-                            {{translate('Minimum_order')}}: {{$product?->min_qty}}<br>
+                            {{translate('Minimum_order')}}: {{$product?->minimum_order_qty}}<br>
                             {{translate('Stock')}}: {{$product->current_stock	}}
                         </p>
                     </div>

@@ -78,7 +78,7 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function getWebFirstWhereActive(array $params, array $relations = [], array $withCount = []): ?Model
     {
-        $query = $this->product->select('id', 'added_by','user_id','name','slug','product_type','category_ids','category_id','sub_category_id','sub_sub_category_id','brand_id','unit','min_qty','production_period','refundable','digital_product_type','digital_file_ready','digital_file_ready_storage_type','images','color_image','thumbnail','thumbnail_storage_type','preview_file','preview_file_storage_type','featured','flash_deal','video_provider','video_url','colors','variant_product','attributes','choice_options','variation','digital_product_file_types','digital_product_extensions','published','unit_price','purchase_price','tax','tax_type','tax_model','discount','discount_type','current_stock','minimum_order_qty','details','free_shipping','attachment','created_at','updated_at','status','featured_status','request_status','denied_note','shipping_cost','multiply_qty','temp_shipping_cost','is_shipping_cost_updated','code')->active();
+        $query = $this->product->select('id', 'added_by','user_id','name','slug','product_type','category_ids','category_id','sub_category_id','sub_sub_category_id','brand_id','unit','minimum_order_qty','production_period','refundable','digital_product_type','digital_file_ready','digital_file_ready_storage_type','images','color_image','thumbnail','thumbnail_storage_type','preview_file','preview_file_storage_type','featured','flash_deal','video_provider','video_url','colors','variant_product','attributes','choice_options','variation','digital_product_file_types','digital_product_extensions','published','unit_price','purchase_price','tax','tax_type','tax_model','discount','discount_type','current_stock','minimum_order_qty','details','free_shipping','attachment','created_at','updated_at','status','featured_status','request_status','denied_note','shipping_cost','multiply_qty','temp_shipping_cost','is_shipping_cost_updated','code')->active();
 
         if (!empty($relations['reviews'])) {
             $query->with(['reviews:id,product_id,rating,comment']);
@@ -184,7 +184,7 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function getListWhere(array $orderBy = [], string $searchValue = null, array $filters = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
     {
-        $query = $this->product->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","featured_status")->with($relations)->when(isset($filters['added_by']) && $this->isAddedByInHouse(addedBy: $filters['added_by']), function ($query) {
+        $query = $this->product->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty","featured_status")->with($relations)->when(isset($filters['added_by']) && $this->isAddedByInHouse(addedBy: $filters['added_by']), function ($query) {
             return $query->where(['added_by' => 'admin']);
         })->when(isset($filters['added_by']) && !$this->isAddedByInHouse($filters['added_by']), function ($query) use ($filters) {
             return $query->where(['added_by' => 'seller'])
@@ -256,7 +256,7 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function getListWithScope(array $orderBy = [], string $searchValue = null, string $scope = null, array $filters = [], array $whereIn = [], array $whereNotIn = [], array $relations = [], array $withCount = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
     {
-        $query = $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","status","brand_id","category_id")->with($relations)
+        $query = $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty","status","brand_id","category_id")->with($relations)
             ->when(isset($withCount['reviews']), function ($query) use ($withCount) {
                 return $query->withCount($withCount['reviews']);
             })
@@ -322,7 +322,7 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function getWebListWithScope(array $orderBy = [], string $searchValue = null, string $scope = null, array $filters = [], array $whereHas = [], array $whereIn = [], array $whereNotIn = [], array $relations = [], array $withCount = [], array $withSum = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
     {
-        $query = $this->product->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty")
+        $query = $this->product->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty")
             ->when(isset($scope) && $scope == 'active', function ($query) {
                 return $query->active();
             })
@@ -431,7 +431,7 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function getTopRatedList(array $filters = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
     {
-        return $this->product->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","featured_status")->with($relations)->where($filters)
+        return $this->product->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty","featured_status")->with($relations)->where($filters)
             ->with('reviews', function ($query) {
                 return $query->whereHas('product', function ($query) {
                     $query->active();

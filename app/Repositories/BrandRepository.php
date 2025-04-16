@@ -40,7 +40,7 @@ class BrandRepository implements BrandRepositoryInterface
     {
         $query = $this->brand
             ->withCount('brandAllProducts')->with(['brandAllProducts'=> function($query){
-                $query->withCount('orderDetails')->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","featured_status");
+                $query->withCount('orderDetails')->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty","featured_status");
             }])->when($searchValue, function ($query) use($searchValue){
                 $query->Where('name', 'like', "%$searchValue%")->orWhere('id', $searchValue);
             })

@@ -91,13 +91,13 @@ class HomeController extends Controller
 
         // $categoryProducts = Product::active()
         //     ->withCount('reviews')
-        //     ->where('min_qty', '!=', 1)
+        //     ->where('minimum_order_qty', '!=', 1)
         //     ->where(function ($q) use ($categoryIds) {
         //         foreach ($categoryIds as $category) {
         //             $q->orWhereJsonContains('category_ids', '"' . $category->id . '"');
         //         }
         //     })
-        //     ->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty")
+        //     ->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty")
         //     ->get();
 
         // $homeCategories = $categoryIds->map(function ($category) use ($categoryProducts) {
@@ -113,7 +113,7 @@ class HomeController extends Controller
             $id = '"' . $data['id'] . '"';
             $homeCategoriesProducts = Product::active()
                 ->withCount('reviews')
-                ->where('category_ids', 'like', "%{$id}%")->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty")->limit(5);
+                ->where('category_ids', 'like', "%{$id}%")->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty")->limit(5);
             $data['products'] = ProductManager::getPriorityWiseCategoryWiseProductsQuery(query: $homeCategoriesProducts, dataLimit: 5);
         });
         // dump($homeCategories);
@@ -153,7 +153,7 @@ class HomeController extends Controller
         });
 
         $inhouseProducts =Cache::remember('home_inhouse_products', $cacheTime, function () {
-            return Product::active()->with(['reviews', 'rating'])->withCount('reviews')->where(['added_by' => 'admin'])->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty")->limit(25)->get();
+            return Product::active()->with(['reviews', 'rating'])->withCount('reviews')->where(['added_by' => 'admin'])->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty")->limit(25)->get();
             });
         $inhouseProductCount = $inhouseProducts->count();
 
@@ -177,13 +177,13 @@ class HomeController extends Controller
         $topVendorsList = ProductManager::getPriorityWiseTopVendorQuery($topVendorsList);
 
         $featuredProductsList = Cache::remember('home_featured_products', $cacheTime, function () {
-              return ProductManager::getPriorityWiseFeaturedProductsQuery(query: $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","status")->active(), dataLimit: 5);
+              return ProductManager::getPriorityWiseFeaturedProductsQuery(query: $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty","status")->active(), dataLimit: 5);
         });
 
         $latest_products =  Cache::remember('home_latest_products', $cacheTime, function () {
-            return $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","status")->with(['reviews'])->active()->orderBy('id', 'desc')->take(8)->get();
+            return $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty","status")->with(['reviews'])->active()->orderBy('id', 'desc')->take(8)->get();
             });
-        $newArrivalProducts = ProductManager::getPriorityWiseNewArrivalProductsQuery(query: $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty")->active(), dataLimit: 8);
+        $newArrivalProducts = ProductManager::getPriorityWiseNewArrivalProductsQuery(query: $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty")->active(), dataLimit: 8);
 
         $brands = Cache::remember('home_brands', $cacheTime, function () {
             return Brand::active()
@@ -195,7 +195,7 @@ class HomeController extends Controller
             return $this->order_details
                 ->with([
                     'product' => function ($query) {
-                        $query->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","status") // الأعمدة المطلوبة فقط
+                        $query->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty","status") // الأعمدة المطلوبة فقط
                               ->with('reviews');
                     }
                 ])
@@ -210,7 +210,7 @@ class HomeController extends Controller
         });
         $topRated =Cache::remember('home_topRated_products', $cacheTime, function () {
             return Review::with(['product'=>function($query){
-                $query->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","status");
+                $query->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty","status");
             }])
             ->whereHas('product', function ($query) {
                 $query->active();

@@ -844,7 +844,7 @@ class WebController extends Controller
         $wishlist_status = Wishlist::where(['product_id' => $product->id, 'customer_id' => auth('customer')->id()])->count();
         $countOrder = count($order_details);
         $countWishlist = count($wishlists);
-        $relatedProducts = Product::with(['reviews'])->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","status")->withCount('reviews')->where('category_ids', $product->category_ids)->where('id', '!=', $product->id)->limit(12)->get();
+        $relatedProducts = Product::with(['reviews'])->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty","status")->withCount('reviews')->where('category_ids', $product->category_ids)->where('id', '!=', $product->id)->limit(12)->get();
         $currentDate = date('Y-m-d');
         $seller_vacation_start_date = ($product->added_by == 'seller' && isset($product->seller->shop->vacation_start_date)) ? date('Y-m-d', strtotime($product->seller->shop->vacation_start_date)) : null;
         $seller_vacation_end_date = ($product->added_by == 'seller' && isset($product->seller->shop->vacation_end_date)) ? date('Y-m-d', strtotime($product->seller->shop->vacation_end_date)) : null;

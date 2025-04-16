@@ -1473,7 +1473,7 @@ class ProductManager
 
         if ($flashDeal) {
             $flashDealProducts = ProductManager::getPriorityWiseFlashDealsProductsQuerySorting(
-                query: Product::active()->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","status"),
+                query: Product::active()->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty","status"),
                 flashDeal: $flashDeal,
                 userId: $userId,
             );
@@ -1869,7 +1869,7 @@ class ProductManager
         $productIdsForUnknownAuthor = Product::active()->where(['product_type' => 'digital'])->whereNotIn('id', $productIdsForAuthor)->pluck('id')->toArray();
 
         $productSortBy = $request->get('sort_by');
-        $productListData = Product::active()->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty")
+        $productListData = Product::active()->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty")
             ->with([
                 'category', 'reviews', 'rating', 'seller.shop',
                 'wishList' => function ($query) {
@@ -2146,7 +2146,7 @@ class ProductManager
 
     public static function getAllProductsData($request, $productUserID = null, $productAddedBy = null): mixed
     {
-        return Product::active()->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","status")->with('rating')->withCount('reviews')
+        return Product::active()->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty","status")->with('rating')->withCount('reviews')
             ->when($productAddedBy == 'admin', function ($query) use ($productAddedBy) {
                 return $query->where(['added_by' => $productAddedBy]);
             })

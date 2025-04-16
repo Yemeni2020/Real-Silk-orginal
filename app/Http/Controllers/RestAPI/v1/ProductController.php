@@ -156,7 +156,7 @@ class ProductController extends Controller
         }
 
         // Products search
-        $products = Product::active()->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","min_qty","featured_status")->with(['rating', 'tags'])
+        $products = Product::active()->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty","featured_status")->with(['rating', 'tags'])
             ->when(!empty($productsIDArray), function ($query) use ($productsIDArray) {
                 return $query->whereIn('id', $productsIDArray);
             })
