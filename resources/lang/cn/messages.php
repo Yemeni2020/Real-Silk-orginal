@@ -9065,7 +9065,9 @@
 "The minimum production period you require is " => "您要求的最短生产周期是 ",
 "production_period" => "最小生产量周期",
 "Complaints" => "投诉",
-"Minimum_order" => "Minimum order",
+"Minimum_order" => "最低订单量",
+"We_will_connect_with_you_for_cost_shipping" => "我们将与您联系，以了解运费",
+"The_price_does_not_include_shipping." => "此价格不含运费。",
 
 );
 ?>

@@ -58,7 +58,10 @@
             <div class="d-flex justify-content-between">
                 <span class="cart_title">{{translate('shipping')}}</span>
                 <span class="cart_value">
+                    {{translate("We_will_connect_with_you_for_cost_shipping")}}
+                @if(1==2)
                 {!! webCurrencyConverter(amount: $totalShippingCost) !!}
+                @endif
                 </span>
             </div>
             <div class="d-flex justify-content-between">

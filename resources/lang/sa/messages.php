@@ -8776,4 +8776,6 @@
 "ReCAPTCHA validation is required." => "مطلوب التحقق من صحة ReCAPTCHA.",
 "Complaints" => "الشكاوى",
 "Minimum_order" => "اقل كمية للطلب",
+"We_will_connect_with_you_for_cost_shipping" => "سوف نتواصل معك بشأن تكلفة الشحن",
+"The_price_does_not_include_shipping." => "السعر غير شامل تكلفة الشحن.",
 );

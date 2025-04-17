@@ -9180,4 +9180,5 @@ return [
 	"adv_Name" => "Adv Name",
 	"advertisement_image_is_required" => "Advertisement image is required",
 	"Minimum_order" => "Minimum order",
+	"The_price_does_not_include_shipping." => "The price does not include shipping.",
 ];

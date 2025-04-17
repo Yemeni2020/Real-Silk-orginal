@@ -812,10 +812,15 @@
                             <div class="shipping-details-bottom-border">
                                 <div class="px-3 py-3">
                                     
-                                    <span>{{translate('The minimum production period you require is ')}} {{$product["production_period"]}} Days</span>
+                                    <span>{{translate('The minimum production period you require is ')}} {{$product["production_period"]}} {{translate('Days')}}</span>
                                 </div>
                             </div>
                             @endif
+                            <div class="shipping-details-bottom-border">
+                                <div class="px-3 py-3">
+                                    <span>{{translate('The_price_does_not_include_shipping.')}} </span>
+                                </div>
+                            </div>
                         </div>
                     @endif
 

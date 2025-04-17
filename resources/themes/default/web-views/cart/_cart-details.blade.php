@@ -309,7 +309,10 @@
                                                             {{ translate('shipping_cost')}}
                                                         </span>:
                                                         <span>
+                                                            {{translate("We_will_connect_with_you_for_cost_shipping")}}
+                                                            @if(1==2)
                                                             {!! webCurrencyConverter(amount: $cartItem['shipping_cost']) !!}
+                                                            @endif
                                                         </span>
                                                     </div>
                                                 @endif
