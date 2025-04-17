@@ -171,10 +171,16 @@ class Product extends Model
     ];
 
     protected $appends = ['is_shop_temporary_close', 'thumbnail_full_url', 'preview_file_full_url', 'color_images_full_url', 'meta_image_full_url', 'images_full_url', 'digital_file_ready_full_url','unit_price'];
+    protected $with = ['Defultetranslations'];
 
     public function translations(): MorphMany
     {
-        return $this->morphMany('App\Models\Translation', 'translationable');
+        return $this->morphMany('App\Models\Translation', 'translationable')->where('locale', getDefaultLanguage())
+        ;
+    }
+    public function Defultetranslations(): MorphMany
+    {
+        return $this->morphMany('App\Models\Translation', 'translationable')->where('locale', getDefaultLanguage())->where('key', 'name');
     }
     public function offers()
     {
@@ -372,7 +378,7 @@ class Product extends Model
             return $name;
         }
         $curnnet_lang = getDefaultLanguage();
-        $translation = $this->translations->where('locale', $curnnet_lang)->where('key', 'name')->first();
+        $translation = $this->Defultetranslations->where('locale', $curnnet_lang)->where('key', 'name')->first();
         return $translation->value ?? $name; // إرجاع الترجمة إذا كانت موجودة، وإلا يتم عرض الاسم الأصلي
 
         // return $this->translations[0]->value ?? $name;

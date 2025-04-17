@@ -29,7 +29,9 @@ class BrandManager
 
     public static function getActiveBrandWithCountingAndPriorityWiseSorting()
     {
-        $brandList = Brand::active()->withCount(['brandProducts'  => function ($query) {
+        $brandList = Brand::active()->with(['translations' => function ($q) {
+            $q->where('locale', getDefaultLanguage());
+        }])->withCount(['brandProducts'  => function ($query) {
             $query->active();
         }])->limit(10);
         return self::getPriorityWiseBrandProductsQuery(query: $brandList);

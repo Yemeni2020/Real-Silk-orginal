@@ -174,7 +174,9 @@ class WebController extends Controller
         $brandStatus = BusinessSetting::where(['type' => 'product_brand'])->value('value');
         session()->put('product_brand', $brandStatus);
         if ($brandStatus == 1) {
-            $brandList = Brand::active()->with(['brandProducts' => function ($query) {
+            $brandList = Brand::active()->with(['translations' => function ($q) {
+                $q->where('locale', getDefaultLanguage());
+            }])->with(['brandProducts' => function ($query) {
                 return $query->withCount(['orderDetails'])->select("id","name","status","product_type","added_by","user_id","request_status");
             }])
                 ->withCount('brandProducts')
