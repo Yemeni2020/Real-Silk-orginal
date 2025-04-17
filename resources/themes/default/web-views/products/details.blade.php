@@ -574,7 +574,7 @@
                                                             </div>
                                                         @endif
                                                         
-                                                        @if ($product['details'] )
+                                                        @if ($product['details'] && 1==2)
                                                             <div class="text-body col-lg-12 col-md-12 overflow-scroll fs-13 text-justify details-text-justify rich-editor-html-content">
                                                                 {!! $product['details'] !!}
                                                             </div>
