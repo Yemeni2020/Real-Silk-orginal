@@ -171,7 +171,6 @@ class Product extends Model
     ];
 
     protected $appends = ['is_shop_temporary_close', 'thumbnail_full_url', 'preview_file_full_url', 'color_images_full_url', 'meta_image_full_url', 'images_full_url', 'digital_file_ready_full_url','unit_price'];
-    protected $with = ['Defultetranslations'];
 
     public function translations(): MorphMany
     {

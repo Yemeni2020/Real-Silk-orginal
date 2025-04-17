@@ -67,7 +67,7 @@
             @endif
             <div class="text-center">
                 <a href="{{route('product',$product->slug)}}">
-                    {{ $product?->name }}
+                    {{ $product['name'] }}
                 </a>
             </div>
             <div class="justify-content-between text-center">
