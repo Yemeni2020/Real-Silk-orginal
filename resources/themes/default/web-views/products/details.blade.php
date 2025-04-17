@@ -574,26 +574,30 @@
                                                             </div>
                                                         @endif
                                                         
-                                                        @if ($product['details'] && 1==2)
-                                                            <div class="text-body col-lg-12 col-md-12 overflow-scroll fs-13 text-justify details-text-justify rich-editor-html-content">
-                                                                {!! $product['details'] !!}
-                                                            </div>
+                                                        @if(1 == 2)
+                                                            @if ($product['details']  )
+                                                                <div class="text-body col-lg-12 col-md-12 overflow-scroll fs-13 text-justify details-text-justify rich-editor-html-content">
+                                                                    {!! $product['details'] !!}
+                                                                </div>
+                                                            @endif
                                                         @endif
                                                         <hr>
                                                         <details-product id="{{$product['id']}}"></details-product>
                                                     </div>
-                                                    @if (!$product['details'] && ($product->video_url == null || !(str_contains($product->video_url, "youtube.com/embed/"))) && 1==2 )
-                                                        <div>
-                                                            <div class="text-center text-capitalize py-5">
-                                                                <img class="mw-90"
-                                                                     src="{{theme_asset(path: 'public/assets/front-end/img/icons/nodata.svg')}}"
-                                                                     alt="">
-                                                                <p class="text-capitalize mt-2">
-                                                                    <small>{{translate('product_details_not_found')}}
-                                                                        !</small>
-                                                                </p>
+                                                    @if(1 == 2)
+                                                        @if (!$product['details'] && ($product->video_url == null || !(str_contains($product->video_url, "youtube.com/embed/"))) &&1!=2 )
+                                                            <div>
+                                                                <div class="text-center text-capitalize py-5">
+                                                                    <img class="mw-90"
+                                                                        src="{{theme_asset(path: 'public/assets/front-end/img/icons/nodata.svg')}}"
+                                                                        alt="">
+                                                                    <p class="text-capitalize mt-2">
+                                                                        <small>{{translate('product_details_not_found')}}
+                                                                            !</small>
+                                                                    </p>
+                                                                </div>
                                                             </div>
-                                                        </div>
+                                                        @endif
                                                     @endif
                                                 </div>
 
