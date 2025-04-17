@@ -132,7 +132,7 @@ class Product extends Model
         'unit' => 'string',
         'digital_product_type' => 'string',
         'product_type' => 'string',
-        'details' => 'string',
+        // 'details' => 'string',
         'min_qty' => 'integer',
         'published' => 'integer',
         'tax' => 'float',

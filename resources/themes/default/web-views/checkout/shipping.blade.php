@@ -234,7 +234,7 @@
                             @php($billingAddresses=\App\Models\ShippingAddress::where(['customer_id'=>auth('customer')->id(), 'is_guest'=>'0'])->get())
                             @if($physical_product_view)
                                 <div class="form-check d-flex gap-3 align-items-center">
-                                    <input type="checkbox" id="same_as_shipping_address" name="same_as_shipping_address"
+                                    <input type="checkbox" id="same_as_shipping_address" checked name="same_as_shipping_address"
                                         class="form-check-input action-hide-billing-address mt-0" {{$billingInputByCustomer==1?'':'checked'}}>
                                     <label class="form-check-label user-select-none" for="same_as_shipping_address">
                                         {{ translate('same_as_shipping_address')}}

@@ -117,8 +117,8 @@ export default {
       item.show = !item.show;
     },
     generateLink(categoryId) {
-      window.location.href=`/products?category_id=${categoryId}&data_from=category&page=1`;
-      return `/products?category_id=${categoryId}&data_from=category&page=1`;
+      window.location.href=this.$getUrl(`/products?category_id=${categoryId}&data_from=category&page=1`);
+      return this.$getUrl(`/products?category_id=${categoryId}&data_from=category&page=1`);
     },
   },
 };

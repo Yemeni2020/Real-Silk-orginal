@@ -20043,8 +20043,8 @@ __webpack_require__.r(__webpack_exports__);
       item.show = !item.show;
     },
     generateLink: function generateLink(categoryId) {
-      window.location.href = "/products?category_id=".concat(categoryId, "&data_from=category&page=1");
-      return "/products?category_id=".concat(categoryId, "&data_from=category&page=1");
+      window.location.href = this.$getUrl("/products?category_id=".concat(categoryId, "&data_from=category&page=1"));
+      return this.$getUrl("/products?category_id=".concat(categoryId, "&data_from=category&page=1"));
     }
   }
 });
@@ -21383,8 +21383,17 @@ __webpack_require__.r(__webpack_exports__);
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         basePath = '/rsbaba'; // اسم مجلدك المحلي
       }
-      var url = "".concat(window.location.origin).concat(basePath, "/vueAPI/").concat(endpoint);
-      url.replace("//", "/");
+      var url = "".concat(basePath, "/vueAPI/").concat(endpoint);
+      url = window.location.origin + url.replace("//", "/");
+      return url;
+    };
+    app.config.globalProperties.$getUrl = function (endpoint) {
+      var basePath = '';
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        basePath = '/rsbaba'; // اسم مجلدك المحلي
+      }
+      var url = "".concat(basePath, "/").concat(endpoint);
+      url = window.location.origin + url.replace("//", "/");
       return url;
     };
   }
