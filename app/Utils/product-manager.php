@@ -1869,9 +1869,7 @@ class ProductManager
         $productIdsForUnknownAuthor = Product::active()->where(['product_type' => 'digital'])->whereNotIn('id', $productIdsForAuthor)->pluck('id')->toArray();
 
         $productSortBy = $request->get('sort_by');
-        $productListData = Product::active()->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty")->with(['translations' => function ($q) {
-            $q->where('locale', getDefaultLanguage());
-        }])
+        $productListData = Product::active()->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty")
             ->with([
                 'category', 'reviews', 'rating', 'seller.shop',
                 'wishList' => function ($query) {
