@@ -113,14 +113,14 @@ p.footer-product-ditals{
 .text-base-2 {
     color: var(--web-secondary);
 }
-a {
+.single-product-details a {
     /* background: var(--web-primary);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent; */
 color: var(--base) !important;
 
 }
-a:hover{
+.single-product-details a:hover{
     color: var(--dark) !important;
 }
 .footer-product-ditals{

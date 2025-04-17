@@ -75,7 +75,7 @@
 
 
 <script>
-import CategorySkeleton from "../components/partial/CategorySkeleton.vue";
+import CategorySkeleton from "./partial/CategorySkeleton.vue";
 export default {
   components:{
     CategorySkeleton
@@ -91,7 +91,7 @@ export default {
   },
   methods: {
     fetchCategories() {
-      fetch("/vueAPI/product_categories")
+      fetch(this.$getApiUrl("product_categories"))
         .then((res) => res.json())
         .then((data) => {
           // أضف خاصية show للتحكم بالفتح/الإغلاق

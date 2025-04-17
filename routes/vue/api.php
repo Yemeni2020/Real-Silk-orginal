@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VueApi\HomeController;
 use App\Http\Controllers\VueApi\ProductListController;
+use App\Http\Controllers\VueApi\ProductDetailsController;
 
 Route::group(['prefix' => 'vueAPI'], function () {
 
@@ -22,6 +23,7 @@ Route::group(['prefix' => 'vueAPI'], function () {
 
     Route::get('/home_categoray', [HomeController::class, 'getHomeCategories']);
     Route::get('/product_categories', [ProductListController::class, 'getProductCategories']);
+    Route::get('/product/details/{id}', [ProductDetailsController::class, 'getDetails']);
 
 });
 

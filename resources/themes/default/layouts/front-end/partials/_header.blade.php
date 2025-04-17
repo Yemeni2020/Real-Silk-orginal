@@ -19,7 +19,6 @@
 
 
 <header class="rtl __inline-10">
-    @if(1==2)
     <div class="topbar  d-lg-none d-md-none d-xlg-none">
         <div class="container">
 
@@ -85,7 +84,6 @@
             </div>
         </div>
     </div>
-    @endif
 
 
     <div class="navbar-sticky bg-light mobile-head">

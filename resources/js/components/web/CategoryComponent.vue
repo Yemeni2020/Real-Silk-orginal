@@ -86,7 +86,7 @@ export default {
         });
     },
     fetchCategories() {
-      fetch('vueAPI/home_categoray')
+      fetch(this.$getApiUrl('home_categoray'))
         .then(res => res.json())
         .then(data => {
           console.log(data);

@@ -573,14 +573,16 @@
                                                                 </iframe>
                                                             </div>
                                                         @endif
-                                                        @if ($product['details'])
+                                                        
+                                                        @if ($product['details'] && 1 == 2)
                                                             <div class="text-body col-lg-12 col-md-12 overflow-scroll fs-13 text-justify details-text-justify rich-editor-html-content">
                                                                 {!! $product['details'] !!}
                                                             </div>
                                                         @endif
-
+                                                        <hr>
+                                                        <details-product id="{{$product['id']}}"></details-product>
                                                     </div>
-                                                    @if (!$product['details'] && ($product->video_url == null || !(str_contains($product->video_url, "youtube.com/embed/"))))
+                                                    @if (!$product['details'] && ($product->video_url == null || !(str_contains($product->video_url, "youtube.com/embed/"))) &&1!=2 )
                                                         <div>
                                                             <div class="text-center text-capitalize py-5">
                                                                 <img class="mw-90"
