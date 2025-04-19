@@ -110,7 +110,10 @@ class HomeController extends Controller
         // });
 
         //Old Code
-        $homeCategories = Category::where('home_status', true)->select("id","name")->limit(5)->priority()->get();
+        $homeCategories = Category::where('home_status', true)->whereHas('product', function ($q) {
+            $q->select("id","name","category_id")->active(); // فقط المنتجات المفعّلة مثلاً
+        })->select("id","name")->limit(5)->priority()->get();
+
         $homeCategories->map(function ($data) {
             $id = '"' . $data['id'] . '"';
             $homeCategoriesProducts = Product::active()

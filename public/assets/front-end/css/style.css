@@ -40,6 +40,7 @@ a {
     padding: 6px;
     margin-left: 3px;
     margin-right: 3px;
+    height: 370px;
 }
 .owl-item.active{
     margin-right: 0 !important;
