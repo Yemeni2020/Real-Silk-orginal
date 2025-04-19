@@ -353,7 +353,7 @@ class ProductManager
         $publishingHouseIds = PublishingHouse::where('name', 'like', "%{$name}%")->pluck('id')->toArray();
         $publishingHouseProductIds = DigitalProductPublishingHouse::whereIn('publishing_house_id', $publishingHouseIds)->pluck('product_id')->toArray();
 
-        $productListData = Product::active()->with(['rating', 'tags'])
+        $productListData = Product::active()->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty")->with(['rating', 'tags'])
             ->where(function ($q) use ($key) {
                 foreach ($key as $value) {
                     $q->orWhere('name', 'like', "%{$value}%")
@@ -1852,7 +1852,7 @@ class ProductManager
             });
         });
 
-        $productIdsForUnknownPublisher = Product::active()->where(['product_type' => 'digital'])->whereNotIn('id', $productIdsForPublisher)->pluck('id')->toArray();
+        $productIdsForUnknownPublisher = Product::active()->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty")->where(['product_type' => 'digital'])->whereNotIn('id', $productIdsForPublisher)->pluck('id')->toArray();
 
         $authorList = Author::withCount(['digitalProductAuthor' => function ($query) {
             return $query->whereHas('product', function ($query) {
@@ -1866,7 +1866,7 @@ class ProductManager
                 $productIdsForAuthor[] = $authorItem->product_id;
             });
         });
-        $productIdsForUnknownAuthor = Product::active()->where(['product_type' => 'digital'])->whereNotIn('id', $productIdsForAuthor)->pluck('id')->toArray();
+        $productIdsForUnknownAuthor = Product::active()->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty")->where(['product_type' => 'digital'])->whereNotIn('id', $productIdsForAuthor)->pluck('id')->toArray();
 
         $productSortBy = $request->get('sort_by');
         $productListData = Product::active()->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty")
