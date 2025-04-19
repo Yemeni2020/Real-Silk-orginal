@@ -9181,4 +9181,5 @@ return [
 	"advertisement_image_is_required" => "Advertisement image is required",
 	"Minimum_order" => "Minimum order",
 	"The_price_does_not_include_shipping." => "The price does not include shipping.",
+	"We_will_connect_with_you_for_cost_shipping" => "We will connect with you for cost shipping",
 ];

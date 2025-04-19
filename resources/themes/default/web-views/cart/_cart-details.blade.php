@@ -194,13 +194,23 @@
                                             <div class="">
                                                 <span class="font-weight-bold">{{ translate('total_shipping_cost')}}</span>
                                                 :
-                                                <span>{!! webCurrencyConverter(amount: $total_shipping_cost)!!}</span>
+                                                <span>
+                                                {{translate("We_will_connect_with_you_for_cost_shipping")}}
+                                                @if(1 == 2)
+                                                {!! webCurrencyConverter(amount: $total_shipping_cost)!!}
+                                                @endif
+                                                </span>
                                             </div>
                                         @elseif($isPhysicalProductExist && $shipping_type == 'order_wise' && $chosenShipping)
                                             <div class="">
                                                 <span class="font-weight-bold">{{ translate('total_shipping_cost')}}</span>
                                                 :
-                                                <span>{!! webCurrencyConverter(amount: $chosenShipping->shipping_cost)!!}</span>
+                                                <span>
+                                                {{translate("We_will_connect_with_you_for_cost_shipping")}}    
+                                                @if(1 == 2)
+                                                {!! webCurrencyConverter(amount: $chosenShipping->shipping_cost)!!}
+                                                @endif
+                                                </span>
                                             </div>
                                         @endif
                                     @endif
@@ -562,12 +572,23 @@
                                     @if ($isPhysicalProductExist && $shipping_type != 'order_wise')
                                         <div class="text-sm-nowrap text-center fs-12">
                                             <span class="font-weight-bold">{{ translate('total_shipping_cost') }}</span> :
-                                            <span>{!! webCurrencyConverter(amount: $total_shipping_cost) !!}</span>
+                                            
+                                            <span>
+                                                {{translate("We_will_connect_with_you_for_cost_shipping")}}
+                                                @if(1==2)
+                                                {!! webCurrencyConverter(amount: $total_shipping_cost) !!}
+                                                @endif
+                                            </span>
                                         </div>
                                     @elseif($isPhysicalProductExist && $shipping_type == 'order_wise' && $chosenShipping)
                                         <div class="text-sm-nowrap text-center fs-12">
                                             <span class="font-weight-bold">{{ translate('total_shipping_cost')}}</span> :
-                                            <span>{!! webCurrencyConverter(amount: isset($chosenShipping['shipping_cost']) ? $chosenShipping['shipping_cost'] : 0)!!}</span>
+                                            <span>
+                                            {{translate("We_will_connect_with_you_for_cost_shipping")}}
+                                            @if(1==2)
+                                                {!! webCurrencyConverter(amount: isset($chosenShipping['shipping_cost']) ? $chosenShipping['shipping_cost'] : 0)!!}
+                                            @endif
+                                            </span>
                                         </div>
                                     @endif
                                 @endif
