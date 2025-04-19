@@ -6454,7 +6454,7 @@
 'go_back' => 'عودة',
 'pay_via_Wallet' => 'الدفع عبر المحفظة',
 'pay_via_online' => 'الدفع عبر الإنترنت',
-'pay_offline' => 'الدفع دون اتصال',
+'pay_offline' => 'طرق دفع اخرى',
 'admin_have_no_permission_for_sellers_digital_product_upload' => 'ليس للمدير صلاحية تحميل المنتجات الرقمية للمصنعين',
 'view_Products' => 'عرض المنتجات',
 'Write_here' => 'اكتب هنا',

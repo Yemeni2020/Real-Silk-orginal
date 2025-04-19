@@ -6455,7 +6455,7 @@
 'go_back' => '返回',
 'pay_via_Wallet' => '通过钱包支付',
 'pay_via_online' => '在线支付',
-'pay_offline' => '线下支付',
+'pay_offline' => '其他付款方式',
 'admin_have_no_permission_for_sellers_digital_product_upload' => '管理员无权限上传卖家数字产品',
 'view_Products' => '查看产品',
 'Write_here' => '在此输入',

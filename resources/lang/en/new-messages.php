@@ -6284,7 +6284,7 @@ return [
 	"go_back" => "Go back",
 	"pay_via_Wallet" => "Pay via Wallet",
 	"pay_via_online" => "Pay via online",
-	"pay_offline" => "Pay offline",
+	"pay_offline" => "Other payment methods",
 	"admin_have_no_permission_for_sellers_digital_product_upload" => "Admin have no permission for sellers digital product upload",
 	"view_Products" => "View Products",
 	"Write_here" => "Write here",
