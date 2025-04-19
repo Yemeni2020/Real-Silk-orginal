@@ -59,7 +59,6 @@ class PageController extends Controller
 
     public function getHelpTopicView(): View
     {
-        echo getDefaultLanguage();
         $robotsMetaContentData = $this->robotsMetaContentRepo->getFirstWhere(params: ['page_name' => 'helpTopic']);
         if (!$robotsMetaContentData) {
             $robotsMetaContentData = $this->robotsMetaContentRepo->getFirstWhere(params: ['page_name' => 'default']);
