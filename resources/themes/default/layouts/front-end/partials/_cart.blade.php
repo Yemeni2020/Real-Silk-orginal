@@ -10,7 +10,7 @@
         <a class="navbar-tool-text ms-2"
            href="{{route('shop-cart')}}"><small>{{translate('my_cart')}}</small>
             <span class="cart-total-price font-bold fs-14">
-                {!! webCurrencyConverter(amount: \App\Utils\CartManager::cart_total_applied_discount(\App\Utils\CartManager::get_cart()))!!}
+                {!! webCurrencyConverter(amount: \App\Utils\CartManager::cart_total_applied_discount($cart))!!}
             </span>
         </a>
     @else

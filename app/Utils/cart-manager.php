@@ -48,10 +48,10 @@ class CartManager
     public static function get_cart($groupId = null, $type = null)
     {
         return Cart::with(['product' => function ($query) {
-                return $query->active();
+                return $query->select("id","name","status","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by","minimum_order_qty")->active();
             }])
             ->whereHas('product', function ($query) {
-                return $query->active();
+                return $query->select("id","name")->active();
             })
             ->when($groupId == null, function ($query) {
                 return $query->whereIn('cart_group_id', CartManager::get_cart_group_ids());

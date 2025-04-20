@@ -174,7 +174,7 @@ class Product extends Model
 
     public function translations(): MorphMany
     {
-        return $this->morphMany('App\Models\Translation', 'translationable')->where('locale', getDefaultLanguage())
+        return $this->morphMany('App\Models\Translation', 'translationable')
         ;
     }
     public function Defultetranslations(): MorphMany
