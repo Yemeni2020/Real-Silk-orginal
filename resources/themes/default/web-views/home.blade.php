@@ -29,6 +29,12 @@
         @endif
 
         @if ($featuredProductsList->count() > 0 )
+
+        
+
+
+
+
             <div class="container py-4 rtl px-0 px-md-3">
                 <div class="__inline-62 pt-3">
                     <div class="feature-product-title mt-0 web-text-primary">

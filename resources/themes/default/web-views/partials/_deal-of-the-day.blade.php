@@ -143,6 +143,70 @@
                 </div>
             </div>
 
+
+
+
+
+
+
+
+
+
+<!-- 
+
+            <div class="col-xl-9 col-md-8">
+                <section class="container rtl pb-4 px-max-sm-0">
+                    <div class="__shadow-2">
+                        <div class="__p-20px rounded bg-white overflow-hidden">
+                            <div class="d-flex __gap-6px flex-between px-sm-3">
+                                <div class="category-product-view-title">
+                                <span class="for-feature-title font-bold __text-20px text-uppercase">
+                                        {{ translate('latest_products')}}
+                                </span>
+                                </div>
+                                <div class="category-product-view-all">
+                                    <a class="text-capitalize view-all-text text-nowrap web-text-primary"
+                                    href="{{route('products',['data_from'=>'latest'])}}">
+                                        {{ translate('view_all')}}
+                                        <i class="czi-arrow-{{request()->cookie('direction', 'ltr') === "rtl" ? 'left mr-1 ml-n1 mt-1 float-left' : 'right ml-1 mr-n1'}}"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="mt-2">
+                                <div class="carousel-wrap-2 d-none d-sm-block">
+                                    <div class="owl-carousel owl-theme category-wise-product-slider">
+                                        @foreach($latest_products as $key => $product)
+                                            @include('web-views.partials._category-single-product',['product'=>$product,'decimal_point_settings'=>$decimal_point_settings])
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <div class="d-sm-none">
+                                    <div class="row g-2">
+                                        @foreach($latest_products as $key=>$product)
+                                            @if($key < 4)
+                                                <div class="col-6">
+                                                    @include('web-views.partials._category-single-product',['product'=>$product,'decimal_point_settings'=>$decimal_point_settings])
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+ -->
+
+
+
+
+
+
+
+
             <div class="col-xl-9 col-md-8">
                 <div class="latest-product-margin">
                     <div class="d-flex justify-content-between mb-14px">
@@ -160,17 +224,75 @@
                         </div>
                     </div>
 
-                    <div class="row mt-0 g-2">
-                        @foreach($latest_products as $product)
-                            <div class="col-xl-3 col-sm-4 col-md-6 col-lg-4 col-6">
-                                <div>
-                                    @include('web-views.partials._inline-single-product',['product'=>$product,'decimal_point_settings'=>$decimal_point_settings])
+                    <div>
+                        <div  id="autoScroll" class="row mt-0 g-2 auto-scroll-container" >
+                            @foreach($latest_products as $product)
+                                <div class="col-xl-3 col-sm-4 col-md-6 col-lg-4 col-6">
+                                    <div>
+                                        @include('web-views.partials._inline-single-product',['product'=>$product,'decimal_point_settings'=>$decimal_point_settings])
+                                    </div>
                                 </div>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        </div>
+
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 @endif
+@push('script')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const container = document.getElementById('autoScroll');
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  // ✅ دعم السحب بالماوس
+  container.addEventListener('mousedown', (e) => {
+    isDown = true;
+    container.classList.add('dragging');
+    startX = e.pageX - container.offsetLeft;
+    scrollLeft = container.scrollLeft;
+  });
+
+  container.addEventListener('mouseleave', () => {
+    isDown = false;
+    container.classList.remove('dragging');
+  });
+
+  container.addEventListener('mouseup', () => {
+    isDown = false;
+    container.classList.remove('dragging');
+  });
+
+  container.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - container.offsetLeft;
+    const walk = (x - startX) * 2; // سرعة السحب
+    container.scrollLeft = scrollLeft - walk;
+  });
+
+  // ✅ التقليب التلقائي
+  let scrollAmount = 0;
+  setInterval(() => {
+    const cardWidth = container.querySelector('div.col-6')?.offsetWidth || 220;
+    scrollAmount += cardWidth;
+
+    if (scrollAmount >= container.scrollWidth - container.clientWidth) {
+      scrollAmount = 0;
+    }
+
+    container.scrollTo({
+      left: scrollAmount,
+      behavior: 'smooth'
+    });
+  }, 4000); // كل ثانيتين
+});
+</script>
+
+@endpush
+

@@ -42,12 +42,44 @@ a {
     margin-right: 3px;
     height: 355px;
 }
+/* My Code */
 .owl-item.active{
     margin-right: 0 !important;
 }
+
+.auto-scroll-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 12px;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .auto-scroll-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .auto-scroll-container.dragging {
+    cursor: grabbing;
+    scroll-behavior: auto !important;
+  }
+  .auto-scroll-container.dragging {
+    cursor: grabbing;
+    scroll-behavior: auto !important;
+    user-select: none; /* ✅ هذا يمنع التحديد */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+  /* End MyCode */
+
+
 @media screen and (max-width: 575px) {
     .product-single-hover {
         box-shadow: 0px 0px 5px rgba(0, 113, 220, 0.15) !important;
+        height: auto;
+
     }
     .product-single-hover .quick-view,
     .product-single-hover .single-product-details {
