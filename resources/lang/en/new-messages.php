@@ -2011,7 +2011,7 @@ return [
 	"auto_translate" => "Auto translate",
 	"refund_policy" => "Refund policy",
 	"return_policy" => "Return policy",
-	"cancellation_policy" => "Cancellation policy",
+	"cancellation_policy" => "Cancellation & Return policy",
 	"Sorry  the minimum order quantity does not match" => "Sorry  the minimum order quantity does not match",
 	"Total Stores" => "Total Stores",
 	"Total Products" => "Total Products",
@@ -2561,7 +2561,7 @@ return [
 	"whatsapp_phone_number" => "Whatsapp phone number",
 	"Refund_Policy" => "Refund Policy",
 	"Return_Policy" => "Return Policy",
-	"Cancellation_Policy" => "Cancellation Policy",
+	"Cancellation_Policy" => "Cancellation & Return Policy",
 	"return-policy" => "Return-policy",
 	"refund-policy" => "Refund-policy",
 	"cancellation-policy" => "Cancellation-policy",
@@ -9182,4 +9182,5 @@ return [
 	"Minimum_order" => "Minimum order",
 	"The_price_does_not_include_shipping." => "The price does not include shipping.",
 	"We_will_connect_with_you_for_cost_shipping" => "We will connect with you for cost shipping",
+	"contract_show" => "Contract show",
 ];
