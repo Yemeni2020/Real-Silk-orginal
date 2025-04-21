@@ -9183,4 +9183,7 @@ return [
 	"The_price_does_not_include_shipping." => "The price does not include shipping.",
 	"We_will_connect_with_you_for_cost_shipping" => "We will connect with you for cost shipping",
 	"contract_show" => "Contract show",
+	"Visa" => "Visa",
+	"Master_card" => "Master card",
+	"mada" => "Mada",
 ];
