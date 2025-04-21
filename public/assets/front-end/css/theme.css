@@ -14238,8 +14238,12 @@ a.nav-link:hover .media-tab-media {
 }
 /* MyCode */
 i{
-    fill: var(--web-secondary) !important;
-    color: var(--web-secondary) !important;
+    fill: var(--web-secondary);
+    color: var(--web-secondary) ;
+}
+svg{
+    fill: var(--web-secondary) ;
+    color: var(--web-secondary) ;  
 }
 /* End MyCode */
 .navbar-tool-text {
