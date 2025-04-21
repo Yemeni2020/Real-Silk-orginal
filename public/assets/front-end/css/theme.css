@@ -14233,8 +14233,15 @@ a.nav-link:hover .media-tab-media {
 .navbar-tool-icon {
     font-size: 1.25rem;
     line-height: 2.875rem;
+    fill: var(--web-secondary) !important;
+    color: var(--web-secondary) !important;
 }
-
+/* MyCode */
+i{
+    fill: var(--web-secondary) !important;
+    color: var(--web-secondary) !important;
+}
+/* End MyCode */
 .navbar-tool-text {
     display: none;
     -ms-flex-positive: 0;
