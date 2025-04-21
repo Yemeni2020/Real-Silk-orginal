@@ -97,13 +97,13 @@
                    href="{{route('home')}}" style="padding: 0;">
                     <img class="__inline-11"
                          src="{{ getStorageImages(path: $web_config['web_logo'], type: 'logo') }}"
-                         alt="{{$web_config['name']->value}}" style="width:200px !important;height:auto !important;">
+                         alt="{{$web_config['name']->value}}" style="width:300px !important;height:auto !important;">
                 </a>
                 <a class="navbar-brand d-sm-none"
                    href="{{route('home')}}" style="padding: 0;">
                     <img class="mobile-logo-img __inline-12"
                          src="{{ getStorageImages(path: $web_config['mob_logo'], type: 'logo') }}"
-                         style="width:200px !important;height:auto !important;" alt="{{$web_config['name']->value}}"/>
+                         style="width:300px !important;height:auto !important;" alt="{{$web_config['name']->value}}"/>
                 </a>
 
                 <div class="input-group-overlay mx-lg-4 search-form-mobile text-align-direction">
