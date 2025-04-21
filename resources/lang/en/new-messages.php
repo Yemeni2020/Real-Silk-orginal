@@ -9188,4 +9188,8 @@ return [
 	"mada" => "Mada",
 	"Alnasirit@2024" => "Alnasirit@2024",
 	"All Right Reserved © 2024 For RealSilk || Develop by Alnasirit" => "All Right Reserved © 2024 For RealSilk || Develop by Alnasirit",
+	"if_you don’t_want_to
+            see_the_information_in_the_mail" => "If you don’t want to see the information in the mail",
+	"For configuring OTP in the Firebase, you must create a Firebase project first.
+                        If you haven’t created any project for your application yet, please create a project first." => "For configuring OTP in the Firebase  you must create a Firebase project first. If you haven’t created any project for your application yet  please create a project first.",
 ];

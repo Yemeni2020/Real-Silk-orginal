@@ -11,7 +11,7 @@
                                     <img alt="" class="object-contain" width="88" height="88" src="{{ getStorageImages(path: imagePathProcessing(imageData: $value['image'],path: 'company-reliability'), type: 'source', source: 'public/assets/front-end/img'.'/'.$value['item'].'.png') }}">
                                 </div>
                                 <div class="w-100 text-center">
-                                    <p class="m-0">{{ $value['title'] }}</p>
+                                    <p class="m-0">{{translate( $value['title'] ?? '' ) }}</p>
                                 </div>
                             </div>
                         </div>
