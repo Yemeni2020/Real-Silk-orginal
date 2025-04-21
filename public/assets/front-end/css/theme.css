@@ -14233,17 +14233,21 @@ a.nav-link:hover .media-tab-media {
 .navbar-tool-icon {
     font-size: 1.25rem;
     line-height: 2.875rem;
-    fill: var(--web-secondary) !important;
-    color: var(--web-secondary) !important;
+    fill: var(--web-primary) !important;
+    color: var(--web-primary) !important;
 }
 /* MyCode */
 i{
-    fill: var(--web-secondary);
-    color: var(--web-secondary) ;
+    fill: var(--web-primary);
+    color: var(--web-primary) ;
 }
 svg{
-    fill: var(--web-secondary) ;
-    color: var(--web-secondary) ;  
+    fill: var(--web-primary) ;
+    color: var(--web-primary) ;  
+}
+.btn-scroll-top i,.social-media i,.social-media svg{
+    fill: white;
+    color: white ;
 }
 /* End MyCode */
 .navbar-tool-text {

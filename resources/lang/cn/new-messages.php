@@ -8655,5 +8655,8 @@ return [
 	"production_period" => "Production period",
 	"Complaints" => "Complaints",
 	"Minimum_order" => "Minimum order",
-
+	"Visa" => "Visa",
+	"Master_card" => "Master card",
+	"mada" => "Mada",
+	"All Right Reserved © 2024 For RealSilk || Develop by Alnasirit" => "All Right Reserved © 2024 For RealSilk || Develop by Alnasirit",
 ];

@@ -9186,4 +9186,6 @@ return [
 	"Visa" => "Visa",
 	"Master_card" => "Master card",
 	"mada" => "Mada",
+	"Alnasirit@2024" => "Alnasirit@2024",
+	"All Right Reserved © 2024 For RealSilk || Develop by Alnasirit" => "All Right Reserved © 2024 For RealSilk || Develop by Alnasirit",
 ];

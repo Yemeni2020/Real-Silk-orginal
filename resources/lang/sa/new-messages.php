@@ -8737,4 +8737,8 @@ return [
 	"category_Adv" => "Category Adv",
 	"We_will_connect_with_you_for_cost_shipping" => "We will connect with you for cost shipping",
 	"The_price_does_not_include_shipping." => "The price does not include shipping.",
+	"All Right Reserved © 2024 For RealSilk || Develop by Alnasirit" => "All Right Reserved © 2024 For RealSilk || Develop by Alnasirit",
+	"Visa" => "Visa",
+	"Master_card" => "Master card",
+	"mada" => "Mada",
 ];

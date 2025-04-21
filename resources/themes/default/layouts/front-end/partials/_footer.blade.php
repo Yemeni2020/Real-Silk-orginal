@@ -172,6 +172,16 @@
                                         </a>
                                     </li>
                                     @endif
+                                    <li class="widget-list-item">
+                                        <a class="widget-list-link" href="{{route('shipping-policy')}}">
+                                            {{ translate('terms_&_conditions')}}
+                                        </a>
+                                    </li>
+                                    <li class="widget-list-item">
+                                        <a class="widget-list-link" href="{{route('shipping-policy')}}">
+                                            {{ translate('privacy_policy')}}
+                                        </a>
+                                    </li>
                                 </ul>
                                 @else
                                 <ul class="widget-list __pb-10px">
@@ -217,6 +227,16 @@
                                         </a>
                                     </li>
                                     @endif
+                                    <li class="widget-list-item">
+                                        <a class="widget-list-link" href="{{route('shipping-policy')}}">
+                                            {{ translate('terms_&_conditions')}}
+                                        </a>
+                                    </li>
+                                    <li class="widget-list-item">
+                                        <a class="widget-list-link" href="{{route('shipping-policy')}}">
+                                            {{ translate('privacy_policy')}}
+                                        </a>
+                                    </li>
                                 </ul>
                                 @endif
                             </div>
@@ -290,6 +310,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-2">
                         <div
                             class="d-flex align-items-center mobile-view-center-align text-start justify-content-between">
@@ -348,6 +369,7 @@
                             @endif
                         </div>
                     </div>
+                    
                     <div class="col-md-3 footer-web-logo text-center text-md-start ">
                         
 
@@ -406,14 +428,14 @@
             </div>
         </div>
 
-        <div class="bg-white-overlay-50">
-            <div class="container">
-                <div class="d-flex flex-wrap end-footer footer-end last-footer-content-align text-center pt-3 pb-4 py-md-0">
-                    <div class="mt-3">
-                        <p class="__text-16px">{{ $web_config['copyright_text']->value }}</p>
+        <div class="custom-light-primary-color-20">
+            <div class="">
+                <div class="d-flex flex-wrap end-footer footer-end last-footer-content-align text-center  py-md-0 mr-5 ml-5">
+                    <div class="">
+                        <p class="__text-16px">{{ translate($web_config['copyright_text']?->value) }}</p>
                     </div>
                     <div
-                        class="max-sm-100 justify-content-center d-flex flex-wrap mt-md-3 mt-0 mb-md-3">
+                        class="max-sm-100 justify-content-center d-flex flex-wrap  mt-0 ">
                         @if($web_config['social_media'])
                         @foreach ($web_config['social_media'] as $item)
                         <span class="social-media ">
@@ -461,6 +483,7 @@
                         @endforeach
                         @endif
                     </div>
+                    @if(1 == 2)
                     <div class="d-flex __text-14px justify-content-center">
                         <div class="me-3">
                             <a class="widget-list-link"
@@ -472,6 +495,7 @@
                             </a>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>

@@ -357,7 +357,7 @@
 "Become a" => "كن",
 "login" => "تسجيل الدخول",
 "download_our_app" => "تحميل تطبيقنا",
-"special" => "خاص",
+"special" => "روابط سريعة",
 "best_selling_product" => "المنتجات الأكثر مبيعًا",
 "top_rated_product" => "المنتجات الأعلى تقييمًا",
 "all_brand" => "جميع العلامات التجارية",
@@ -1906,7 +1906,7 @@
 "Last Updated" => "آخر تحديث",
 "Submit message" => "إرسال رسالة",
 "subscribe to our new channel to get latest updates" => "اشترك في قناتنا الجديدة للحصول على آخر التحديثات",
-"account_&_shipping_info" => "معلومات الحساب والشحن",
+"account_&_shipping_info" => "المساعدة والشروط",
 "default language can not be deleted!to delete change the default language first!" => "لا يمكن حذف اللغة الافتراضية! لحذفها، قم بتغيير اللغة الافتراضية أولاً!",
 "default language can not be deleted! to delete change the default language first!" => "لا يمكن حذف اللغة الافتراضية! لحذفها، قم بتغيير اللغة الافتراضية أولاً!",
 "billing_input_by_customer" => "إدخال الفواتير بواسطة العميل",
@@ -8778,4 +8778,5 @@
 "Minimum_order" => "اقل كمية للطلب",
 "We_will_connect_with_you_for_cost_shipping" => "سوف نتواصل معك بشأن تكلفة الشحن",
 "The_price_does_not_include_shipping." => "السعر غير شامل تكلفة الشحن.",
+"All Right Reserved © 2024 For RealSilk || Develop by Alnasirit" => "جميع الحقوق محفوظة © 2024 لشركة حرير حقيقي || تمت البرمجة بواسطة شركة الناصر لتقنية المعلومات",
 );
