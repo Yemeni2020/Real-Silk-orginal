@@ -121,16 +121,27 @@
             <div class="modal-body">
                 <iframe id="contract-frame" src="{{route('admin.business-settings.View_contract',['type'=>$type])}}" width="100%" height="500px"></iframe>
 
-                <div class="form-check mt-3">
-                    <input type="checkbox" id="agree-checkbox" class="form-check-input">
-                    
-                </div>
+                
             </div>
             <div class="modal-footer">
+                <form action="{{route('admin.business-settings.sign_contracts')}}" id="save" method="post">
+                    @csrf
+                    <div class="form-check mt-3 w-100">
+                        <button type="button" class="btn btn-danger form-control" id="clear-signature">{{translate('clear')}}</button>
+                        <canvas id="signature-pad"  height="200" style="border: 1px solid #000;width: 100%;"></canvas>
+                        <input type="hidden" id="signature-data" name="signature">
+                        
+                    </div>
+                    <div style="display: block;" class="w-100">
+                        <button type="submit" class="btn btn-primary" >
+                            {{translate("Save")}}
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        {{translate("cancel")}}
+                        </button>
+                    </div>
+                </form>
                 
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                {{translate("cancel")}}
-                </button>
             </div>
         </div>
     </div>
@@ -138,6 +149,8 @@
 @endsection
 
 @push('script')
+<script src="{{ theme_asset(path: 'public/js/signature_pad.umd.min.js') }}"></script>
+
     <script src="{{ dynamicAsset(path: 'public/assets/back-end/plugins/summernote/summernote.min.js') }}"></script>
     <script>
         'use strict';
@@ -171,5 +184,36 @@
             $("#contract-modal").modal("hide"); // إغلاق النافذة
             document.getElementById("submit-btn").disabled = false; // تفعيل زر التسجيل
         });
+    </script>
+    
+<script>
+
+var canvas = document.getElementById("signature-pad");
+var signaturePad = new SignaturePad(canvas);
+
+document.getElementById("save").addEventListener("submit", function () {
+    if (!signaturePad.isEmpty()) {
+        document.getElementById("signature-data").value = signaturePad.toDataURL();
+        document.getElementById("terms-checkbox").checked = true;
+        document.getElementById("agree-checkbox").checked = true;
+        document.getElementById("terms-checkbox").disabled = false;
+        document.getElementById("agree-checkbox").disabled = false;
+        $('#vendor-apply-submit').removeAttr('disabled');
+        $("#closemodel").click();
+    }
+});
+document.getElementById("clear-signature").addEventListener("click", function () {
+    signaturePad.clear()
+    document.getElementById("terms-checkbox").checked = false;
+    document.getElementById("agree-checkbox").checked = false;
+    document.getElementById("terms-checkbox").disabled = true;
+    document.getElementById("agree-checkbox").disabled = true;
+    $('#vendor-apply-submit').attr('disabled');
+
+});
+    document.getElementById("agree-btn").addEventListener("click", function() {
+        $("#contract-modal").modal("hide"); // إغلاق النافذة
+        document.getElementById("submit-btn").disabled = false; // تفعيل زر التسجيل
+    });
     </script>
 @endpush

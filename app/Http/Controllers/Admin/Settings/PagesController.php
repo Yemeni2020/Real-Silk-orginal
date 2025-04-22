@@ -12,11 +12,13 @@ use App\Http\Requests\Admin\AboutUsRequest;
 use App\Http\Requests\Admin\PageUpdateRequest;
 use App\Http\Requests\Admin\PrivacyPolicyRequest;
 use App\Http\Requests\Admin\TermsConditionRequest;
+use App\Http\Requests\Admin\SignContractRequest;
 use App\Http\Requests\Admin\ContractRequest;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use App\Models\SignatureAdmin;
 
 class PagesController extends BaseController
 {
@@ -40,7 +42,22 @@ class PagesController extends BaseController
     }
 
     
-   
+   public function sign_contracts(SignContractRequest $request):RedirectResponse{
+    $signatureData = [
+        'signature_path' => $request->input('signature'),
+        'code_change'    => bin2hex(random_bytes(16)), // كود فريد لتأكيد التعديل
+    ];
+
+    // ✅ تحديث أو إنشاء سجل واحد فقط (نفترض أنه يوجد سجل واحد دائمًا)
+    SignatureAdmin::updateOrCreate(
+        ['id' => 1], // الشرط (وجود سجل برقم 1 مثلًا)
+        $signatureData
+    );
+    Toastr::success(translate('Signature_Updated_successfully'));
+    return back();
+   }
+
+
     public function getTermsConditionView(): View
     {
         $curnnet_lang = getDefaultLanguage();
@@ -102,7 +119,13 @@ class PagesController extends BaseController
         $fullname="";
         if($request->has("fullname"))
             $fullname = $request->query('fullname', translate("not_selected"));
-        $contract = $this->businessSettingRepo->getFirstWhere(params: ['type' => "contract_$type"])?->value;
+        // $contract = $this->businessSettingRepo->getFirstWhere(params: ['type' => "contract_$type"])?->value;
+        $contractModel = $this->businessSettingRepo->getFirstWhere(params: ['type' => "contract_$type"]);
+        
+        $contract = $contractModel?->translations()
+        ->where('locale', getDefaultLanguage())
+        ->where('key', 'value') // إذا كان المفتاح المخزن في الترجمة بهذا الاسم
+        ->first()?->value ??$contractModel?->value;
         return view("contract.contract", compact('contract','fullname'));
         
     }

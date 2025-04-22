@@ -100,7 +100,7 @@ class RegisterController extends BaseController
         $address="";
         if($request->has("fullname"))
             $fullname = $request->query('fullname', translate("not_selected"));
-        if($request->has("shopName")){}
+        if($request->has("shopName"))
             $shopName = $request->query('shopName', translate("not_selected"));
         if($request->has("number_cr"))
             $number_cr = $request->query('number_cr', translate("not_selected"));

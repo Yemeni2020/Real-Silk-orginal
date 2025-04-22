@@ -27,7 +27,10 @@ class ContractPdfMail extends Mailable
     public function build()
     {
         return $this->subject("عقد جديد - {$this->vendor->shop->name}")
-                    ->view('contract.contract');
+                    ->view('contract.contract') ->attach($this->pdfPath, [
+                            'as' => "contract_{$this->vendor->id}.pdf",
+                            'mime' => 'application/pdf',
+                        ]);
                     // ->attach($this->pdfPath, [
                     //     'as' => "contract_{$this->vendor->id}.pdf",
                     //     'mime' => 'application/pdf',

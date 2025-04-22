@@ -18,6 +18,9 @@ enum Pages
         URI => 'contracts',
         VIEW => 'admin-views.business-settings.page.contracts'
     ];
+    const SIGN = [
+        URI => 'sign',
+    ];
 
     const PRIVACY_POLICY = [
         URI => 'privacy-policy',

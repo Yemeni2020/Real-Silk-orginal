@@ -101,6 +101,7 @@ class ContractsService{
         ->where('locale', "sa")
         ->where('key', 'value') // إذا كان المفتاح المخزن في الترجمة بهذا الاسم
         ->first()?->value ??$contractData?->value;
+        
         if (!$contractData) {
             abort(404, "$type العقد غير متوفر");
         }

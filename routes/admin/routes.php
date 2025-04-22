@@ -846,6 +846,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
 
 
                 Route::get(Pages::CONTRACTS[URI]."/{type}", 'getcontract')->name('contracts');
+                Route::post(Pages::SIGN[URI], 'sign_contracts')->name('sign_contracts');
                 Route::post(Pages::CONTRACTS[URI]."/{type}", 'updateContract');
                 Route::get(Pages::CONTRACTS[URI]."/download/{type}", 'DownloadTemplate')->name('download_contract');
                 Route::get(Pages::CONTRACTS[URI]."/View/{type}", 'ViewTemplate')->name('View_contract');
