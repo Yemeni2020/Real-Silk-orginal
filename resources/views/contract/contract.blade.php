@@ -1,5 +1,7 @@
 <?php
     use Illuminate\Support\Facades\Session;
+    use App\Models\SignatureAdmin;
+
     $direction = empty($lang)?"rtl":request()->cookie('direction', 'ltr');
     $lang=empty($lang)?"ar":$lang;
     $currencyCode = getCurrencyCode(type: 'default');
@@ -27,6 +29,22 @@
         $address=$address??"";
         $date_signature=date('Y-m-d H:i');
     }
+    if(isset($admin_sign)){
+        $admin_sign=SignatureAdmin::firstOrFail()?->signature_path;
+        $admin_signature_img=!empty($signaturePath)?"<img src='$admin_sign' style='width: 100px; height:100px;' >":"";
+
+        $placeholders = [
+            '{{@full_name}}' => $fullname ?? '',
+            '{{@shopName}}' => $shopName ?? '',
+            '{{@signature}}' => $signature_img ?? '',
+            '{{@date_signature}}' => $date_signature ?? '',
+            '{{@number_cr}}' => $number_cr ?? '',
+            '{{@country}}' => $country ?? '',
+            '{{@city}}' => $city ?? '',
+            '{{@address}}' => $address ?? '',
+            '{{@admin_sign}}' => $admin_signature_img ?? '',
+        ];
+    }
     $placeholders = [
         '{{@full_name}}' => $fullname ?? '',
         '{{@shopName}}' => $shopName ?? '',
@@ -36,6 +54,8 @@
         '{{@country}}' => $country ?? '',
         '{{@city}}' => $city ?? '',
         '{{@address}}' => $address ?? '',
+        '{{@admin_sign}}' => '',
+
     ];
     
     foreach ($placeholders as $key => $value) {
