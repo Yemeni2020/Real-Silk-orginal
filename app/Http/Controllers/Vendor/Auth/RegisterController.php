@@ -85,10 +85,38 @@ class RegisterController extends BaseController
     public function ViewContract(Request $request,$type = "factory")
     {
         $fullname="";
+        $type=str_replace("fictory","factory",$type);
+
+        $lang=getDefaultLanguage();
+        $contractModel = $this->businessSettingRepo->getFirstWhere(params: ['type' => "contract_$type"]);
+        $contract = $contractModel?->translations()
+    ->where('locale', getDefaultLanguage())
+    ->where('key', 'value') // إذا كان المفتاح المخزن في الترجمة بهذا الاسم
+    ->first()?->value ??$contractModel?->value;
+        $shopName="";
+        $number_cr="";
+        $country="";
+        $city="";
+        $address="";
         if($request->has("fullname"))
             $fullname = $request->query('fullname', translate("not_selected"));
-        $contract = $this->businessSettingRepo->getFirstWhere(params: ['type' => "contract_$type"])?->value;
-        return view("contract.contract", compact('contract','fullname'));
+        if($request->has("shopName")){}
+            $shopName = $request->query('shopName', translate("not_selected"));
+        if($request->has("number_cr"))
+            $number_cr = $request->query('number_cr', translate("not_selected"));
+        if($request->has("country"))
+            $country = $request->query('country', translate("not_selected"));
+        if($request->has("city"))
+            $city = $request->query('city', translate("not_selected"));
+        if($request->has("address"))
+            $address = $request->query('address', translate("not_selected"));
+
+        if(auth("seller")->user() && !$request->has("shopName")){
+            $vendor=auth("seller")->user();
+            return view("contract.contract", compact('contract','fullname','vendor','lang'));
+        }else{
+            return view("contract.contract", compact('contract','fullname',"shopName","number_cr","country","city","address",'lang'));
+        }
         
     }
     public function add(VendorAddRequest $request): JsonResponse
@@ -115,6 +143,9 @@ class RegisterController extends BaseController
             ]);
             // $this->ContractsService->DownloadContract($vendor);
             $this->ContractsService->SaveContract($vendor);
+
+
+            $this->vendorRepo->update($vendor->id,["signatures"=>true]);
             //End signature
         }
 

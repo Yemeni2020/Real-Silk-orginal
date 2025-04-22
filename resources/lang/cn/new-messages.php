@@ -8659,4 +8659,6 @@ return [
 	"Master_card" => "Master card",
 	"mada" => "Mada",
 	"All Right Reserved © 2024 For RealSilk || Develop by Alnasirit" => "All Right Reserved © 2024 For RealSilk || Develop by Alnasirit",
+	"number_CR" => "Number CR",
+
 ];

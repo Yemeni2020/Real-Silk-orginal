@@ -8741,4 +8741,14 @@ return [
 	"Visa" => "Visa",
 	"Master_card" => "Master card",
 	"mada" => "Mada",
+	"number_CR" => "Number CR",
+	"CR_number_is_required" => "CR number is required",
+	"country_is_required" => "Country is required",
+	"city_is_required" => "City is required",
+	"City is required" => "City is required",
+	"Invalid_country_format" => "Invalid country format",
+	"Invalid_city_format" => "Invalid city format",
+	"if_you don’t_want_to
+            see_the_information_in_the_mail" => "If you don’t want to see the information in the mail",
+	"يجب أن تكون كلمة المرور مكونة من 8 أحرف على الأقل وتحتوي على حرف كبير واحد على الأقل, حرف صغير واحد, رقم واحد , رمز خاص واحد, وبدون مسافات." => "يجب أن تكون كلمة المرور مكونة من 8 أحرف على الأقل وتحتوي على حرف كبير واحد على الأقل  حرف صغير واحد  رقم واحد   رمز خاص واحد  وبدون مسافات.",
 ];

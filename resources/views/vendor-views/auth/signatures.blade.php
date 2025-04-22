@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ request()->cookie('direction', 'ltr') }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="{{ dynamicAsset(path: 'public/assets/back-end/css/toastr.css') }}">
     <link rel="stylesheet" href="{{dynamicAsset(path: 'public/assets/back-end/css/custom.css')}}">
 </head>
-<body>
+<body id="bdy" lang="{{app()->getLocale()}}" dir="{{ request()->cookie('direction', 'ltr') }}">
 <main id="content" role="main" class="main">
     <div class="row">
         <div class="col-12 position-fixed z-9999 mt-10rem">
@@ -72,7 +72,9 @@
                         </span>
 
                     </div>
+                    
                     <div class="row">
+                    
                         <div class="col-6">
                             <canvas id="signature-pad" width="400" height="200" style="border: 1px solid #000;"></canvas>
                         </div>
@@ -93,11 +95,61 @@
                         <form class="row" method="post" action="{{route('vendor.dashboard.signatures')}}">
                             @csrf
                             <input type="hidden" id="signature-data" name="signature">
-    
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                        <label for="country" class="text-capitalize">{{ translate("Select_Country") }} <span class="text-danger">*</span></label>
+                                        <select id="country" name="country" class="form-control" required>
+                                            <option value="">{{ translate("Choose_Country") }}</option>
+                                            <option value="china">{{ translate("China") }}</option>
+                                            <option value="saudi" >{{ translate("Saudi Arabia") }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group mb-4">
+                                    <label for="city" class="text-capitalize">المدينة <span class="text-danger">*</span></label>
+                                    <select class="form-control" name="city" id="city" required></select>
+                                    </div>
+                                </div>
+                            </div>
                             <button type="submit" class="btn btn-primary form-control" name="submit" disabled="true" id="agree-btn">{{translate('submit')}} </button>
 
                         </form>
+                        <div class="col-6">
+                            
+                            <a href="{{route('vendor.auth.logout')}}" class="btn btn-primary form-control">{{translate('logout')}}</a>
 
+                        </div>
+                        <div class="col-6">
+                            <div class="topbar-text dropdown col-6 disable-autohide  __language-bar text-capitalize">
+                                <a class="topbar-link dropdown-toggle" href="#" data-toggle="dropdown">
+                                    @foreach(json_decode($language['value'],true) as $data)
+                                        @if($data['code'] == getDefaultLanguage())
+                                            <img class="mr-2" width="20"
+                                                    src="{{theme_asset(path: 'public/assets/front-end/img/flags/'.$data['code'].'.png')}}"
+                                                    alt="{{$data['name']}}">
+                                            {{$data['name']}}
+                                        @endif
+                                    @endforeach
+                                </a>
+                                <ul class="text-align-direction dropdown-menu dropdown-menu-{{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}}">
+                                    @foreach(json_decode($language['value'],true) as $key =>$data)
+                                        @if($data['status']==1)
+                                            <li class="change-language" data-action="{{route('change-language')}}" data-language-code="{{$data['code']}}">
+                                                <a class="dropdown-item pb-1" href="javascript:">
+                                                    <img class="mr-2"
+                                                            width="20"
+                                                            src="{{theme_asset(path: 'public/assets/front-end/img/flags/'.$data['code'].'.png')}}"
+                                                            alt="{{$data['name']}}"/>
+                                                    <span class="text-capitalize">{{$data['name']}}</span>
+                                                </a>
+                                            </li>
+                                        @endif
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- End My Code -->
@@ -164,6 +216,78 @@ document.getElementById("clear-signature").addEventListener("click", function ()
         @endforeach
     </script>
 @endif
+<script>
+const jsonPath = "{{ theme_asset(path: 'public/assets/front-end/json/country-cn.json') }}";
+document.addEventListener("DOMContentLoaded", function () {
+    const countrySelect = document.getElementById("country");
+    const citySelect = document.getElementById("city");
+
+    const selectedCountry = "china";
+    const selectedCity = "";
+    const currentLang = window.bdy.lang || 'en';
+
+    fetch(jsonPath)
+  .then(response => response.json())
+  .then(data => {
+    const countries = data.country;
+    const currentLang = window.bdy.lang || 'en';
+    // تعبئة قائمة الدول
+    countrySelect.innerHTML = '<option value="">{{ __("Choose_Country") }}</option>';
+    Object.entries(countries).forEach(([code, country]) => {
+        console.log(country.country_code);
+      const option = document.createElement("option");
+      option.value = country.country_code;
+      option.textContent = country.country_data[currentLang] || country.country_data.en;
+      if (country.country_code === selectedCountry) {
+        option.selected = true;
+      }
+      countrySelect.appendChild(option);
+    });
+
+    // تعبئة المدن إذا كانت الدولة محددة
+    if (selectedCountry && countries[selectedCountry]) {
+      updateCities(countries[selectedCountry].country_data.cities);
+    }
+
+    // عند تغيير الدولة
+    countrySelect.addEventListener("change", () => {
+      const code = countrySelect.value;
+      if (countries[code]) {
+        updateCities(countries[code].country_data.cities);
+      }
+    });
+
+    // دالة تعبئة المدن
+    function updateCities(citiesByLang) {
+        const citiesEn = citiesByLang.en || [];
+        const citiesCurrentLang = citiesByLang[currentLang] || citiesEn;
+
+        citySelect.innerHTML = '<option value="">{{ __("Choose_City") }}</option>';
+
+        citiesCurrentLang.forEach((city, index) => {
+            if (!citiesEn[index]) return; // حماية من mismatch في الطول
+
+            const option = document.createElement("option");
+
+            // استخدام الاسم الإنجليزي في value (ثابت)
+            option.value = citiesEn[index].toLowerCase().replace(/\s+/g, "-");
+
+            // عرض الاسم حسب اللغة الحالية
+            option.textContent = city;
+
+            if (option.value === selectedCity) {
+            option.selected = true;
+            }
+
+            citySelect.appendChild(option);
+        });
+        }
+  })
+  .catch(error => {
+    console.error("خطأ في تحميل بيانات الدول والمدن:", error);
+  });
+});
+</script>
 </body>
 </html>
 

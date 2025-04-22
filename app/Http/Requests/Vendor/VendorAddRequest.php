@@ -41,7 +41,9 @@ class VendorAddRequest extends FormRequest
             'password' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)(?!.*\s).{8,}$/|same:confirm_password',
             'shop_name' => 'required',
             'shop_address' => 'required',
-
+            'country' => 'required',
+            'city' => 'required',
+            'number_cr' => 'required',
             // 'logo' => 'required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff',
             // 'banner' => 'required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff',
             // 'bottom_banner' => 'mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff',
@@ -77,6 +79,9 @@ class VendorAddRequest extends FormRequest
             'logo.mimes' => translate('The_logo_type_must_be') . '.jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff,.webp',
             'banner.mimes' => translate('The_banner_type_must_be') . '.jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff,.webp',
             'bottom_banner.mimes' => translate('The_bottom_banner_type_must_be') . '.jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff,.webp',
+            'number_cr.required' => translate('CR_number_is_required'),
+            'country.required' => translate('country_is_required'),
+            'city.required' => translate('city_is_required'),
         ];
     }
 

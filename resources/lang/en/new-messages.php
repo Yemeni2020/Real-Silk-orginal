@@ -9192,4 +9192,6 @@ return [
             see_the_information_in_the_mail" => "If you don’t want to see the information in the mail",
 	"For configuring OTP in the Firebase, you must create a Firebase project first.
                         If you haven’t created any project for your application yet, please create a project first." => "For configuring OTP in the Firebase  you must create a Firebase project first. If you haven’t created any project for your application yet  please create a project first.",
+	"number_CR" => "CR Number",
+
 ];

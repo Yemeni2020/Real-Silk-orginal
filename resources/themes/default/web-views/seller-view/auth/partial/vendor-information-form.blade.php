@@ -71,6 +71,29 @@
 
                             </div>
 
+
+
+                            <div class="form-group mb-4">
+                                <label for="number_cr" class="text-capitalize">{{$isoffice?translate('office_name'):translate('number_CR')}} <span class="text-danger">*</span></label>
+                                <input class="form-control" type="text" id="number_cr"  name="number_cr" placeholder="{{translate('number_CR')}}" required>
+                                <span error="number_cr" class="text-danger fs-12"></span>
+
+                            </div>
+                            <div class="form-group mb-4">
+                            <label for="country" class="text-capitalize">{{ translate("Select_Country") }} <span class="text-danger">*</span></label>
+                            <select id="country" name="country" class="form-control" required>
+                                <option value="">{{ translate("Choose_Country") }}</option>
+                                <option value="china">{{ translate("China") }}</option>
+                                <option value="saudi" >{{ translate("Saudi Arabia") }}</option>
+                            </select>
+                            </div>
+
+                            <div class="form-group mb-4">
+                            <label for="city" class="text-capitalize">المدينة <span class="text-danger">*</span></label>
+                            <select class="form-control" name="city" id="city" required></select>
+                            </div>
+
+
                             <div class="border p-3 p-xl-4 rounded mb-4 ">
                                 <div class="d-flex flex-column gap-3 align-items-center upload-file-control">
                                     <div class="upload-file">
@@ -217,3 +240,83 @@
         </div>
     </div>
 </div>
+@push('script')
+
+<script>
+const jsonPath = "{{ theme_asset(path: 'public/assets/front-end/json/country-cn.json') }}";
+document.addEventListener("DOMContentLoaded", function () {
+    const countrySelect = document.getElementById("country");
+    const citySelect = document.getElementById("city");
+
+    const selectedCountry = "china";
+    const selectedCity = "";
+    const currentLang = document.documentElement.lang || 'en';
+
+    fetch(jsonPath)
+  .then(response => response.json())
+  .then(data => {
+    const countries = data.country;
+    const currentLang = document.documentElement.lang || 'en';
+
+    // تعبئة قائمة الدول
+    countrySelect.innerHTML = '<option value="">{{ __("Choose_Country") }}</option>';
+    Object.entries(countries).forEach(([code, country]) => {
+        console.log(country.country_code);
+      const option = document.createElement("option");
+      option.value = country.country_code;
+      option.textContent = country.country_data[currentLang] || country.country_data.en;
+      if (country.country_code === selectedCountry) {
+        option.selected = true;
+      }
+      countrySelect.appendChild(option);
+    });
+
+    // تعبئة المدن إذا كانت الدولة محددة
+    if (selectedCountry && countries[selectedCountry]) {
+      updateCities(countries[selectedCountry].country_data.cities);
+    }
+
+    // عند تغيير الدولة
+    countrySelect.addEventListener("change", () => {
+      const code = countrySelect.value;
+      if (countries[code]) {
+        updateCities(countries[code].country_data.cities);
+      }
+    });
+
+    // دالة تعبئة المدن
+    function updateCities(citiesByLang) {
+        const citiesEn = citiesByLang.en || [];
+        const citiesCurrentLang = citiesByLang[currentLang] || citiesEn;
+
+        citySelect.innerHTML = '<option value="">{{ __("Choose_City") }}</option>';
+
+        citiesCurrentLang.forEach((city, index) => {
+            if (!citiesEn[index]) return; // حماية من mismatch في الطول
+
+            const option = document.createElement("option");
+
+            // استخدام الاسم الإنجليزي في value (ثابت)
+            option.value = citiesEn[index].toLowerCase().replace(/\s+/g, "-");
+
+            // عرض الاسم حسب اللغة الحالية
+            option.textContent = city;
+
+            if (option.value === selectedCity) {
+            option.selected = true;
+            }
+
+            citySelect.appendChild(option);
+        });
+        }
+  })
+  .catch(error => {
+    console.error("خطأ في تحميل بيانات الدول والمدن:", error);
+  });
+});
+</script>
+
+
+
+
+@endpush

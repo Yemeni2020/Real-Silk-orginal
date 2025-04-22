@@ -9068,6 +9068,7 @@
 "Minimum_order" => "最低订单量",
 "We_will_connect_with_you_for_cost_shipping" => "我们将与您联系，以了解运费",
 "The_price_does_not_include_shipping." => "此价格不含运费。",
+"number_CR" => "商业注册号码",
 
 );
 ?>

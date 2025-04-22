@@ -44,6 +44,7 @@ class Shop extends Model
         'name',
         'slug',
         'address',
+        'number_cr',
         'contact',
         'country',
         'city',

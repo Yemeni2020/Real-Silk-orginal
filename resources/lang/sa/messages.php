@@ -8779,4 +8779,6 @@
 "We_will_connect_with_you_for_cost_shipping" => "سوف نتواصل معك بشأن تكلفة الشحن",
 "The_price_does_not_include_shipping." => "السعر غير شامل تكلفة الشحن.",
 "All Right Reserved © 2024 For RealSilk || Develop by Alnasirit" => "جميع الحقوق محفوظة © 2024 لشركة حرير حقيقي || تمت البرمجة بواسطة شركة الناصر لتقنية المعلومات",
+"number_CR" => "رقم السجل التجاري",
+
 );

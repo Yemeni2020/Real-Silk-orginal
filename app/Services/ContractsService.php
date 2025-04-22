@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Contracts\Repositories\BusinessSettingRepositoryInterface;
 use App\Contracts\Repositories\VendorRepositoryInterface;
+use Illuminate\Support\Facades\Mail;
 
 class ContractsService{
     public function __construct(
@@ -94,12 +95,15 @@ class ContractsService{
 
         $type=str_replace("fictory","factory",$type);
         // ✅ **جلب بيانات العقد**
+
         $contractData = $this->businessSettingRepo->getFirstWhere(params: ['type' => "contract_$type"]);
+        $contract = $contractData?->translations()
+        ->where('locale', "sa")
+        ->where('key', 'value') // إذا كان المفتاح المخزن في الترجمة بهذا الاسم
+        ->first()?->value ??$contractData?->value;
         if (!$contractData) {
             abort(404, "$type العقد غير متوفر");
         }
-
-        $contract = $contractData->value;
 
         // ✅ **تحميل الـ View كـ HTML**
         $html = view("contract.contract", compact('contract', "fullname", "vendor"))->render();
@@ -144,6 +148,13 @@ class ContractsService{
 
         // ✅ **حفظ العقد كملف PDF داخل `storage`**
         $mpdf->Output($filePath, "F");
+        try
+        {
+            Mail::to('info@realsilk.sa')->send(new \App\Mail\ContractPdfMail($vendor, $storagePath,$contract));
+
+        }catch(\Exception $ex){
+
+        }
 
         // ✅ **إرجاع رابط الوصول إلى العقد**
         return response()->json([

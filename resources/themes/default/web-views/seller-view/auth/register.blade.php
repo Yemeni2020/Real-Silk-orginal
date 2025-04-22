@@ -275,13 +275,19 @@
 <script src="{{ theme_asset(path: 'public/assets/front-end/js/vendor-registration.js') }}"></script>
 <script src="{{ theme_asset(path: 'public/js/signature_pad.umd.min.js') }}"></script>
 
+
 <script>
 
 document.getElementById("show-contract-btn").addEventListener("click", function() {
     var _fullname = encodeURIComponent(window.f_name.value + " " + window.l_name.value);
+    var shopName = encodeURIComponent(window.shop_name.value);
+    var number_cr = encodeURIComponent(window.number_cr.value);
+    var country = encodeURIComponent(window.country.value);
+    var city = encodeURIComponent(window.city.value);
+    var address = encodeURIComponent(window.shop_address.value);
 
     // تكوين الرابط وإضافة الاسم الكامل كـ query parameter
-    var contractUrl = "{{ route('vendor.auth.registration.contract', ['type' => $type]) }}" + "?fullname=" + _fullname;
+    var contractUrl = "{{ route('vendor.auth.registration.contract', ['type' => $type]) }}" + "?fullname=" + _fullname + "&"+"shopName=" +shopName +"&number_cr="+number_cr+"&country="+country+"&city="+city+"&address="+address;
 
     // تحديث iframe لعرض العقد مع الاسم
     document.getElementById("contract-frame").src = contractUrl;
@@ -325,8 +331,6 @@ document.getElementById("clear-signature").addEventListener("click", function ()
     $('#vendor-apply-submit').attr('disabled');
 
 });
-
-
     document.getElementById("agree-btn").addEventListener("click", function() {
         $("#contract-modal").modal("hide"); // إغلاق النافذة
         document.getElementById("submit-btn").disabled = false; // تفعيل زر التسجيل

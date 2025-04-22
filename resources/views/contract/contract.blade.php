@@ -1,9 +1,48 @@
-@php
+<?php
     use Illuminate\Support\Facades\Session;
+    $direction = empty($lang)?"rtl":request()->cookie('direction', 'ltr');
+    $lang=empty($lang)?"ar":$lang;
     $currencyCode = getCurrencyCode(type: 'default');
-    $direction = "rtl";//request()->cookie('direction', 'ltr');
     $lang = getDefaultLanguage();
-@endphp
+    if(isset($vendor)){
+
+        $latestSignature = $vendor->signatures()->latest()->first();
+
+        $signaturePath = $latestSignature?->signature_path??'';
+        $date_signature = $latestSignature?->created_at?->format('Y-m-d H:i');
+        // dump($vendor->f_name);
+        $fullname=!empty($fullname)?$fullname:($vendor?->f_name ?? "")." ".($vendor?->l_name??"");
+        $shopName = $vendor?->shop?->name??"";
+        $number_cr = $vendor?->shop?->number_cr??"";
+        $country = $vendor?->shop?->country??"";
+        $city = $vendor?->shop?->city??"";
+        $address = $vendor?->shop?->address??"";
+        $signature_img=!empty($signaturePath)?"<img src='$signaturePath' style='width: 100px; height:100px;' >":"";
+    }else{
+        $fullname=$fullname??"";
+        $shopName =$shopName??"";
+        $number_cr=$number_cr??"";
+        $country=$country??"";
+        $city=$city??"";
+        $address=$address??"";
+        $date_signature=date('Y-m-d H:i');
+    }
+    $placeholders = [
+        '{{@full_name}}' => $fullname ?? '',
+        '{{@shopName}}' => $shopName ?? '',
+        '{{@signature}}' => $signature_img ?? '',
+        '{{@date_signature}}' => $date_signature ?? '',
+        '{{@number_cr}}' => $number_cr ?? '',
+        '{{@country}}' => $country ?? '',
+        '{{@city}}' => $city ?? '',
+        '{{@address}}' => $address ?? '',
+    ];
+    
+    foreach ($placeholders as $key => $value) {
+        $contract = str_replace($key, $value, $contract);
+    }
+
+?>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{$direction}}"
       style="text-align: {{$direction === "rtl" ? 'right' : 'left'}};"
       xmlns="http://www.w3.org/1999/html">
@@ -450,8 +489,11 @@
 </head>
 
 <body>
+    
     <div class="first content-position" style="width:595px;margin: 0 auto; margin-bottom:140px;">
-        {!!$contract!!}
+        <?php
+        echo $contract;
+        ?>
     </div>
     <div class="footer">
         <div class="row">
@@ -465,15 +507,11 @@
                         <td>
                             <h4>{{$fullname??''}}</h4>
                             @if(isset($vendor))
-                                @php($signature = $vendor->signatures()->latest()->first()->signature_path)
-                                <img src="{{$signature}}" style="width: 100px; height:100px;" alt="" srcset="">
+                                {!!$signature_img!!}
                             @endif
                         </td>
                     </tr>
                 </table>
-            </div>
-            <div class="col-6">
-
             </div>
         </div>
     </div>

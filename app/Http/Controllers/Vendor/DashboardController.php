@@ -34,6 +34,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EmailSellerVerificationMail;
+use App\Models\Shop;
 use Illuminate\Support\Facades\Validator;
 
 class DashboardController extends BaseController
@@ -304,9 +305,13 @@ class DashboardController extends BaseController
        
         $validator = Validator::make($request->all(), [
             'signature' => ['required', 'string', 'starts_with:data:image/png;base64,'],
+            'country' => ['required', 'string'],
+            'city' => ['required', 'string'],
         ], [
             'signature.required' => translate("You_must_enter_your_signature_in_box"),
             'signature.starts_with' => translate("Invalid_signature_format"),
+            'country.required' => translate("Invalid_country_format"),
+            'city.required' => translate("Invalid_city_format"),
         ]);
 
         if ($validator->fails()) {
@@ -316,6 +321,8 @@ class DashboardController extends BaseController
         
         $signatureBase64 = $request->input('signature'); // ✅ استلام التوقيع كنص
         
+        Shop::where("seller_id", auth("seller")->id())->update(["country"=>$request["country"],"city"=>$request["city"]]);
+
         $this->signatureRepo->add([
             'seller' => $seller->id,
             'signature_path' => $signatureBase64, // ✅ حفظ المسار فقط
@@ -324,7 +331,7 @@ class DashboardController extends BaseController
         
         // ✅ إذا تم التوقيع بنجاح، حفظ العقد
         $this->ContractsService->SaveContract($seller);
-        Seller::where("id", auth("seller")->id())->update(["email" => $request["email"],"signatures"=>true]);
+        Seller::where("id", auth("seller")->id())->update(["signatures"=>true]);
         
         Toastr::success(translate('Signature saved and contract generated successfully'));
         return redirect(route("vendor.dashboard.index"));
