@@ -312,7 +312,7 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
             });
             Route::group(['prefix' => 'shop', 'as' => 'shop.'], function () {
                 Route::controller(ShopController::class)->group(function () {
-                    Route::get('contract/download/{id}',  'DownloadContract')->name('contract.download');
+                    Route::get('contract/download/{id}',  'DownloadContract')->name('contract.download')->withoutMiddleware("seller");
                     Route::get(Shop::INDEX[URI], 'index')->name('index');
                     Route::get(Shop::UPDATE[URI] . '/{id}', 'getUpdateView')->name('update');
                     Route::post(Shop::UPDATE[URI] . '/{id}', 'update');

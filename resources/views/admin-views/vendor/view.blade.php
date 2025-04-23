@@ -173,6 +173,19 @@
                             </form>
                         </div>
                     @endif
+                    @if($seller['signatures'])
+                        @php
+
+                            $url = route('vendor.shop.contract.download',[$seller['id']]);
+                        @endphp
+                        <div class="d-flex justify-content-sm-end flex-wrap gap-2 mb-3">
+                            <div class="d-inline-block" id="active-form" method="POST">
+
+                                <a href="{{ $url }}" class="btn btn-success " download="true">{{ translate("download_contract") }}</a>
+                            </div>
+
+                        </div>
+                    @endif
                 </div>
                 <hr>
                 <div class="d-flex gap-3 flex-wrap flex-lg-nowrap">

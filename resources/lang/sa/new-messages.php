@@ -8751,4 +8751,7 @@ return [
 	"يجب أن تكون كلمة المرور مكونة من 8 أحرف على الأقل وتحتوي على حرف كبير واحد على الأقل, حرف صغير واحد, رقم واحد , رمز خاص واحد, وبدون مسافات." => "يجب أن تكون كلمة المرور مكونة من 8 أحرف على الأقل وتحتوي على حرف كبير واحد على الأقل  حرف صغير واحد  رقم واحد   رمز خاص واحد  وبدون مسافات.",
 	"Signature_Updated_successfully" => "Signature Updated successfully",
 	"AlfrasGroup@2024" => "AlfrasGroup@2024",
+	"download_contract" => "Download contract",
+	"want_to_reject_this_office" => "Want to reject this office",
+	"want_to_approve_this_office" => "Want to approve this office",
 ];

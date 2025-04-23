@@ -8,6 +8,7 @@ use App\Enums\ViewPaths\Vendor\Shop;
 use App\Http\Requests\Vendor\ShopRequest;
 use App\Http\Requests\Vendor\ShopVacationRequest;
 use App\Http\Controllers\BaseController;
+use App\Models\Seller;
 use App\Services\ShopService;
 use App\Services\VendorService;
 use Brian2694\Toastr\Facades\Toastr;
@@ -47,25 +48,34 @@ class ShopController extends BaseController
      */
     public function DownloadContract($id)
     {
-        $vendor = auth('seller')->user(); // السماح فقط للتاجر المسجل بالدخول
+        // جلب معلومات المستخدم الحالي (سواء كان seller أو admin)
+        $vendor = auth('seller')->user();
+        $admin = auth('admin')->user();
 
-        
-
-        if ($vendor->id != $id) {
+        // إذا كان المستخدم Seller: تحقق أن لديه صلاحية تحميل عقده فقط
+        if ($vendor && $vendor->id != $id) {
             abort(403, "ليس لديك صلاحية لتنزيل هذا العقد!");
         }
-        $type=str_replace("fictory","factory",$vendor->type_account);
+
+        // إذا لم يكن seller وتم الدخول كـ admin:
+        if (!$vendor && !$admin) {
+            abort(403, "ليس لديك صلاحية لتنزيل هذا العقد!");
+        }
+
+        // جلب معلومات البائع
+        $seller = Seller::findOrFail($id);
+        $type = str_replace("fictory", "factory", $seller->type_account);
+
+        // تحديد مسار العقد
         $filePath = storage_path("app/private/contracts/{$type}/contract_{$id}.pdf");
-        
-        // dump($filePath);
-        // dump(file_exists($filePath));
-        // return null;
+
         if (!file_exists($filePath)) {
             abort(404, "العقد غير موجود!");
         }
 
         return response()->download($filePath);
     }
+
     public function getView(?Request $request, string $type = null): View|Collection|LengthAwarePaginator|null|callable
     {
         
