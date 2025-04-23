@@ -75,7 +75,7 @@
                                 <div class="{{ $language != $curnnet_lang? 'd-none':''}} form-system-language-form" id="{{ $language}}-form">
                                     <div class="form-group">
                                         <textarea class="form-control summernote {{ $language == $curnnet_lang ? 'product-description-default-language' : '' }}" id="editor"
-                                            name="value[]">{!!  $translate[$language]['value']??$contract["value"] !!}</textarea>
+                                            name="value[]">{!!  $translate[$language]['value']??$contract?->value !!}</textarea>
                                     </div>
 
                                     <input type="hidden" name="lang[]" value="{{ $language}}">
