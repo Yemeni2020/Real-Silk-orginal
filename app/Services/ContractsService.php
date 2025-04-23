@@ -24,7 +24,7 @@ class ContractsService{
         $mpdf = new \Mpdf\Mpdf([
             'mode' => 'utf-8',
             'format' => 'A4',
-            'margin_top' => 40, // هامش علوي
+            'margin_top' => 50, // هامش علوي
             'margin_bottom' => 50, // هامش سفلي
         ]);
 
@@ -107,13 +107,14 @@ class ContractsService{
         }
 
         // ✅ **تحميل الـ View كـ HTML**
-        $html = view("contract.contract", compact('contract', "fullname", "vendor"))->render();
+        $admin_sign=true;
+        $html = view("contract.contract", compact('contract', "fullname", "vendor","admin_sign"))->render();
 
         // ✅ **إنشاء ملف PDF باستخدام mPDF**
         $mpdf = new \Mpdf\Mpdf([
             'mode' => 'utf-8',
             'format' => 'A4',
-            'margin_top' => 40,
+            'margin_top' => 50,
             'margin_bottom' => 50,
         ]);
 

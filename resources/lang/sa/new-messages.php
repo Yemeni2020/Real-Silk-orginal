@@ -8748,8 +8748,7 @@ return [
 	"City is required" => "City is required",
 	"Invalid_country_format" => "Invalid country format",
 	"Invalid_city_format" => "Invalid city format",
-	"if_you don’t_want_to
-            see_the_information_in_the_mail" => "If you don’t want to see the information in the mail",
 	"يجب أن تكون كلمة المرور مكونة من 8 أحرف على الأقل وتحتوي على حرف كبير واحد على الأقل, حرف صغير واحد, رقم واحد , رمز خاص واحد, وبدون مسافات." => "يجب أن تكون كلمة المرور مكونة من 8 أحرف على الأقل وتحتوي على حرف كبير واحد على الأقل  حرف صغير واحد  رقم واحد   رمز خاص واحد  وبدون مسافات.",
 	"Signature_Updated_successfully" => "Signature Updated successfully",
+	"AlfrasGroup@2024" => "AlfrasGroup@2024",
 ];

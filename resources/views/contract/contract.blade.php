@@ -44,19 +44,19 @@
             '{{@address}}' => $address ?? '',
             '{{@admin_sign}}' => $admin_signature_img ?? '',
         ];
+    }else{
+        $placeholders = [
+            '{{@full_name}}' => $fullname ?? '',
+            '{{@shopName}}' => $shopName ?? '',
+            '{{@signature}}' => $signature_img ?? '',
+            '{{@date_signature}}' => $date_signature ?? '',
+            '{{@number_cr}}' => $number_cr ?? '',
+            '{{@country}}' => $country ?? '',
+            '{{@city}}' => $city ?? '',
+            '{{@address}}' => $address ?? '',
+            '{{@admin_sign}}' => '',
+        ];
     }
-    $placeholders = [
-        '{{@full_name}}' => $fullname ?? '',
-        '{{@shopName}}' => $shopName ?? '',
-        '{{@signature}}' => $signature_img ?? '',
-        '{{@date_signature}}' => $date_signature ?? '',
-        '{{@number_cr}}' => $number_cr ?? '',
-        '{{@country}}' => $country ?? '',
-        '{{@city}}' => $city ?? '',
-        '{{@address}}' => $address ?? '',
-        '{{@admin_sign}}' => '',
-
-    ];
     
     foreach ($placeholders as $key => $value) {
         $contract = str_replace($key, $value, $contract);
