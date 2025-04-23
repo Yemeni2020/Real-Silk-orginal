@@ -64,9 +64,7 @@ class HomeController extends Controller
         $cacheTime = 50 ; // 50 sec
 
         $categories = Cache::remember('home_categories', $cacheTime, function () {
-            return Category::limit(30)->with(['translations' => function ($q) {
-                $q->where('locale', getDefaultLanguage());
-            }])
+            return Category::limit(30)->with(['translations'])
                 ->where('parent_id', 0)
                 ->select('id', 'name', 'icon', 'image_ad', 'icon_storage_type') // لازم تجيب الأعمدة المستخدمة في accessor
                 ->get()
