@@ -166,7 +166,6 @@
                             </div>
                         @endif
                         <span error="g-recaptcha-response" class="text-danger fs-12"></span>
-                        @php($vendors_must_sing_contract = getWebConfig('vendors_must_sing_contract') ?? 0)
                         <div class="d-flex justify-content-start mt-2">
                             <label class="custom-checkbox align-items-center">
                                 

@@ -11,6 +11,8 @@
 
 
 @section('content')
+@php($vendors_must_sing_contract = getWebConfig('vendors_must_sing_contract') ?? 0)
+
     <div id="seller-registration-step1" class="d-none" action="{{route('vendor.auth.registration.check')}}"></div>
     <form id="seller-registration" action="{{route('vendor.auth.registration.index')}}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -254,23 +256,25 @@
 <script>
     $('#vendor-apply-submit').on('click', function(){
         @if($web_config['recaptcha']['status'] == '1')
-        alert("dds");
         var response = grecaptcha.getResponse($('#recaptcha-element-vendor-register').attr('data-reg-id'));
         if (response.length === 0) {
             $("[error='g-recaptcha-response']").html("{{translate('please_check_the_recaptcha')}}");
             toastr.error("{{translate('please_check_the_recaptcha')}}");
         }else{
+            @if($vendors_must_sing_contract)
             if (!signaturePad.isEmpty()){
                 document.getElementById("signature-data").value = signaturePad.toDataURL();
-
             }
+            @endif
             submitRegistration();
         }
         @else
         if ($('#default-recaptcha-id-vendor-register').val() != '') {
+            @if($vendors_must_sing_contract)
             if (!signaturePad.isEmpty()){
                 document.getElementById("signature-data").value = signaturePad.toDataURL();
             }
+            @endif
             submitRegistration();
         } else {
             $("[error='g-recaptcha-response']").html("{{translate('please_check_the_recaptcha')}}");
