@@ -111,7 +111,7 @@ class PagesController extends BaseController
 
     public function DownloadTemplate($type = "factory")
     {
-        $this->ContractsService->DownloadTemplate($type);// إنهاء التنفيذ بعد الإخراج
+        return $this->ContractsService->DownloadTemplate($type);// إنهاء التنفيذ بعد الإخراج
     }
 
     public function ViewTemplate(Request $request,$type = "factory")

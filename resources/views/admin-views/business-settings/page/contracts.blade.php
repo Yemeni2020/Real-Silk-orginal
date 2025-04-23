@@ -60,11 +60,9 @@
                     </div>
 
                     <div class="card-body">
-                        <form action="{{route('admin.business-settings.update-terms')}}" method="post">
-                            @csrf
                             @foreach($languages as $language)
                                     <?php
-                                    if (count($contract['translations'])) {
+                                    if (isset($contract) && isset($contract->translations) && $contract->translations->count()) {
                                         $translate = [];
                                         foreach ($contract['translations'] as $translation) {
                                             if ($translation->locale == $language && $translation->key == "value") {
@@ -77,7 +75,7 @@
                                 <div class="{{ $language != $curnnet_lang? 'd-none':''}} form-system-language-form" id="{{ $language}}-form">
                                     <div class="form-group">
                                         <textarea class="form-control summernote {{ $language == $curnnet_lang ? 'product-description-default-language' : '' }}" id="editor"
-                                            name="value[]">{!!  $translate[$language]['value']??$contract?->value !!}</textarea>
+                                            name="value[]">{!!  $translate[$language]['value']??$contract["value"] !!}</textarea>
                                     </div>
 
                                     <input type="hidden" name="lang[]" value="{{ $language}}">
@@ -88,7 +86,6 @@
                             <div class="form-group">
                                 <input class="form-control btn--primary" type="submit" value="{{translate('submit')}}" name="btn">
                             </div>
-                        </form>
 
                     </div>
 

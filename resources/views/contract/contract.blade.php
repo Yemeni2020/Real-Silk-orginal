@@ -6,6 +6,7 @@
     $lang=empty($lang)?"ar":$lang;
     $currencyCode = getCurrencyCode(type: 'default');
     $lang = getDefaultLanguage();
+
     if(isset($vendor)){
 
         $latestSignature = $vendor->signatures()->latest()->first();
@@ -509,11 +510,9 @@
 </head>
 
 <body>
-    
     <div class="first content-position" style="width:595px;margin: 0 auto; margin-bottom:140px;">
-        <?php
-        echo $contract;
-        ?>
+    {!! $contract ?? "Not Found Contracts" !!}
+
     </div>
     <div class="footer">
         <div class="row">

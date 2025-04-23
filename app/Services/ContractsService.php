@@ -15,10 +15,20 @@ class ContractsService{
     public function DownloadTemplate($type = "factory")
     {
         // **1️⃣ جلب بيانات العقد من الإعدادات**
-        $contract = $this->businessSettingRepo->getFirstWhere(params: ['type' => "contract_$type"])?->value;
+        // $contract = $this->businessSettingRepo->getFirstWhere(params: ['type' => "contract_$type"])?->value;
+        $contractData = $this->businessSettingRepo->getFirstWhere(params: ['type' => "contract_$type"]);
+        $contract = $contractData?->translations()
+        ->where('locale', "sa")
+        ->where('key', 'value') // إذا كان المفتاح المخزن في الترجمة بهذا الاسم
+        ->first()?->value ??$contractData?->value;
 
+        
+       
+        // dump($contract);
+        // return view("contract.contract", compact('contract','type'));
+        // return null;
         // **2️⃣ تحميل عرض الـ View في متغير (HTML)**
-        $html = \View::make("contract.contract", compact('contract'))->render();
+        $html = view("contract.contract", compact('contract','type'))->render();
 
         // **3️⃣ إنشاء كائن mPDF مع ضبط إعدادات الهوامش**
         $mpdf = new \Mpdf\Mpdf([
