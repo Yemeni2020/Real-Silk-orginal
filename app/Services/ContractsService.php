@@ -119,7 +119,6 @@ class ContractsService{
         // ✅ **تحميل الـ View كـ HTML**
         $admin_sign=true;
         $html = view("contract.contract", compact('contract', "fullname", "vendor","admin_sign"))->render();
-
         // ✅ **إنشاء ملف PDF باستخدام mPDF**
         $mpdf = new \Mpdf\Mpdf([
             'mode' => 'utf-8',

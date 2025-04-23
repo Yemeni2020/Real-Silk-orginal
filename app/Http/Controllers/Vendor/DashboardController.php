@@ -307,22 +307,23 @@ class DashboardController extends BaseController
             'signature' => ['required', 'string', 'starts_with:data:image/png;base64,'],
             'country' => ['required', 'string'],
             'city' => ['required', 'string'],
+            'number_cr' => ['required', 'string'],
         ], [
             'signature.required' => translate("You_must_enter_your_signature_in_box"),
             'signature.starts_with' => translate("Invalid_signature_format"),
             'country.required' => translate("Invalid_country_format"),
             'city.required' => translate("Invalid_city_format"),
+            'number_cr.required' => translate("Invalid_number_cr_format"),
         ]);
 
         if ($validator->fails()) {
             Toastr::error($validator->errors()->first('signature'));
             return back()->withErrors($validator)->withInput();
         }
-        
         $signatureBase64 = $request->input('signature'); // ✅ استلام التوقيع كنص
         
-        Shop::where("seller_id", auth("seller")->id())->update(["country"=>$request["country"],"city"=>$request["city"]]);
-
+        Shop::where("seller_id", auth("seller")->id())->update(["country"=>$request["country"],"city"=>$request["city"],"number_cr"=>$request["number_cr"]]);
+        
         $this->signatureRepo->add([
             'seller' => $seller->id,
             'signature_path' => $signatureBase64, // ✅ حفظ المسار فقط
@@ -331,6 +332,7 @@ class DashboardController extends BaseController
         
         // ✅ إذا تم التوقيع بنجاح، حفظ العقد
         $this->ContractsService->SaveContract($seller);
+
         Seller::where("id", auth("seller")->id())->update(["signatures"=>true]);
         
         Toastr::success(translate('Signature saved and contract generated successfully'));

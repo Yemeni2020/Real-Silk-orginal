@@ -108,8 +108,14 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group mb-4">
-                                    <label for="city" class="text-capitalize">المدينة <span class="text-danger">*</span></label>
+                                    <label for="city" class="text-capitalize">{{ translate("Select_city") }} <span class="text-danger">*</span></label>
                                     <select class="form-control" name="city" id="city" required></select>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group mb-4">
+                                    <label for="number_cr" class="text-capitalize">{{translate('number_CR')}} <span class="text-danger">*</span></label>
+                                    <input class="form-control" name="number_cr" id="number_cr" required/>
                                     </div>
                                 </div>
                             </div>

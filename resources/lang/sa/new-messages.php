@@ -8754,4 +8754,13 @@ return [
 	"download_contract" => "Download contract",
 	"want_to_reject_this_office" => "Want to reject this office",
 	"want_to_approve_this_office" => "Want to approve this office",
+	"Your maintenance mode is activated " => "Your maintenance mode is activated ",
+	"from " => "From ",
+	"Selected_Systems" => "Selected Systems",
+	"All_Systems" => "All Systems",
+	"Maintenance_Mode_End" => "Maintenance Mode End",
+	"Maintenance_mode_turned_off" => "Maintenance mode turned off",
+	"contract" => "Contract",
+	"Select_city" => "Select city",
+	"Invalid_number_cr_format" => "Invalid number cr format",
 ];

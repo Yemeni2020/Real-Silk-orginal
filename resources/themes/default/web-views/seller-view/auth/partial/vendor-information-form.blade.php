@@ -74,7 +74,7 @@
 
 
                             <div class="form-group mb-4">
-                                <label for="number_cr" class="text-capitalize">{{$isoffice?translate('office_name'):translate('number_CR')}} <span class="text-danger">*</span></label>
+                                <label for="number_cr" class="text-capitalize">{{translate('number_CR')}} <span class="text-danger">*</span></label>
                                 <input class="form-control" type="text" id="number_cr"  name="number_cr" placeholder="{{translate('number_CR')}}" required>
                                 <span error="number_cr" class="text-danger fs-12"></span>
 
@@ -89,7 +89,7 @@
                             </div>
 
                             <div class="form-group mb-4">
-                            <label for="city" class="text-capitalize">المدينة <span class="text-danger">*</span></label>
+                            <label for="city" class="text-capitalize">{{ translate("Select_city") }} <span class="text-danger">*</span></label>
                             <select class="form-control" name="city" id="city" required></select>
                             </div>
 

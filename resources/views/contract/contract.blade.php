@@ -31,9 +31,13 @@
         $date_signature=date('Y-m-d H:i');
     }
     if(isset($admin_sign)){
-        $admin_sign=SignatureAdmin::firstOrFail()?->signature_path;
-        $admin_signature_img=!empty($signaturePath)?"<img src='$admin_sign' style='width: 100px; height:100px;' >":"";
-
+        if(SignatureAdmin::count() > 0){
+            $admin_sign=SignatureAdmin::firstOrFail()?->signature_path??'';
+            $admin_signature_img=!empty($signaturePath)?"<img src='$admin_sign' style='width: 100px; height:100px;' >":"";
+        }
+        else{
+            $admin_signature_img="";
+        }
         $placeholders = [
             '{{@full_name}}' => $fullname ?? '',
             '{{@shopName}}' => $shopName ?? '',
