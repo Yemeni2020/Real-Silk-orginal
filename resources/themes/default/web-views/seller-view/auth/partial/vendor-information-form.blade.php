@@ -171,12 +171,12 @@
                             <label class="custom-checkbox align-items-center">
                                 
                                 @if($vendors_must_sing_contract)    
-                                <input type="checkbox" class="" disabled id="terms-checkbox" >
+                                <!-- <input type="checkbox" class="" disabled id="terms-checkbox" >
                                 <span class="form-check-label">{{ translate('i_agree_with_the') }}
                                 <a
-                                        href="#" data-toggle="modal" id="show-contract-btn" data-target="#contract-modal" class="text-underline color-bs-primary-force">
+                                        href="#" data-toggle="modal" id="show-contract-btn" onclick="show_contract()" data-target="#contract-modal" class="text-underline color-bs-primary-force">
                                         {{ translate('terms_&_conditions') }}
-                                    </a>
+                                    </a> -->
                                 @else
                                 <input type="checkbox" class=""  id="terms-checkbox" >
                                 <span class="form-check-label">{{ translate('i_agree_with_the') }}
@@ -190,7 +190,11 @@
                         </div>
                         <div class="d-flex justify-content-end mb-2 gap-2">
                             <button type="button" class="btn btn-secondary back-to-main-page"> {{translate('back')}} </button>
+                            @if($vendors_must_sing_contract)    
+                            <button type="button" class="btn btn--primary" id="btn_show_contract"  data-toggle="modal" data-target="#contract-modal"> {{translate('submit')}} </button>
+                            @else
                             <button type="button" class="btn btn--primary"  id="vendor-apply-submit" disabled="disabled"> {{translate('submit')}} </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -203,6 +207,7 @@
 
 
 
+@if($vendors_must_sing_contract)    
 
 <div id="contract-modal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
@@ -217,10 +222,10 @@
 
                 <!-- ✅ مربع الموافقة -->
                 <div class="form-check mt-3">
-                    <input type="checkbox" disabled id="agree-checkbox" class="form-check-input">
+                    <input type="checkbox" disabled id="agree-checkbox" checked class="form-check-input">
                     <span class="form-check-label">{{ translate('i_agree_with_the') }} <a
                             href="#" >
-                            {{ translate('terms_&_conditions') }}
+                            {{ translate('contract') }}
                         </a>
                     </span>
                 </div>
@@ -229,10 +234,11 @@
                     <button type="button" class="btn btn-danger" id="clear-signature">{{translate('clear')}}</button>
                     
                     <input type="hidden" id="signature-data" name="signature">
+                    <label for="" class="error" id="signature-error"></label>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" id="save-signature">{{translate('save')}} </button>
+                <button type="button" class="btn btn-success"  id="vendor-apply-submit" data-dismiss="modal">{{translate('send')}} </button>
                 <button type="button" class="btn btn-secondary" id="closemodel" data-dismiss="modal">
                     {{translate("close")}}
                 </button>
@@ -240,6 +246,8 @@
         </div>
     </div>
 </div>
+@endif
+
 @push('script')
 
 <script>

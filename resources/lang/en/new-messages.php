@@ -9190,4 +9190,11 @@ return [
 	"All Right Reserved © 2024 For RealSilk || Develop by Alnasirit" => "All Right Reserved © 2024 For RealSilk || Develop by Alnasirit",
 	"number_CR" => "CR Number",
 	"download_contract" => "Download contract",
+	"CR_number_is_required" => "CR number is required",
+	"country_is_required" => "Country is required",
+	"city_is_required" => "City is required",
+	"City is required" => "City is required",
+	"contract" => "Contract",
+	"CR number is required" => "CR number is required",
+	"The signature must start with one of the following: data:image/png;base64." => "The signature must start with one of the following: data:image/png base64.",
 ];

@@ -48,8 +48,9 @@ class VendorAddRequest extends FormRequest
             // 'banner' => 'required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff',
             // 'bottom_banner' => 'mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff',
         ];
-        if(getWebConfig('vendors_must_sing_contract'))
-            $rules["signature"]=['required', 'string', 'starts_with:data:image/png;base64,'];
+        if (getWebConfig('vendors_must_sing_contract')) {
+            $rules['signature'] = "required|string|starts_with:data:image/png;base64";
+        }
         if($this->account_type!="office"){
             $rules["image"]="required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff";
             $rules["logo"]="required|mimes: jpg,jpeg,png,webp,gif,bmp,tif,tiff";

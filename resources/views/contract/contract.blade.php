@@ -514,6 +514,7 @@
     {!! $contract ?? "Not Found Contracts" !!}
 
     </div>
+    @if( 1 == 2)
     <div class="footer">
         <div class="row">
                 <table>
@@ -534,5 +535,6 @@
             </div>
         </div>
     </div>
+    @endif
 </body>
 </html>

@@ -254,16 +254,26 @@
 <script>
     $('#vendor-apply-submit').on('click', function(){
         @if($web_config['recaptcha']['status'] == '1')
+        alert("dds");
         var response = grecaptcha.getResponse($('#recaptcha-element-vendor-register').attr('data-reg-id'));
         if (response.length === 0) {
+            $("[error='g-recaptcha-response']").html("{{translate('please_check_the_recaptcha')}}");
             toastr.error("{{translate('please_check_the_recaptcha')}}");
         }else{
+            if (!signaturePad.isEmpty()){
+                document.getElementById("signature-data").value = signaturePad.toDataURL();
+
+            }
             submitRegistration();
         }
         @else
         if ($('#default-recaptcha-id-vendor-register').val() != '') {
+            if (!signaturePad.isEmpty()){
+                document.getElementById("signature-data").value = signaturePad.toDataURL();
+            }
             submitRegistration();
         } else {
+            $("[error='g-recaptcha-response']").html("{{translate('please_check_the_recaptcha')}}");
             toastr.error("{{translate('please_check_the_recaptcha')}}");
         }
         @endif
@@ -277,8 +287,7 @@
 
 
 <script>
-
-document.getElementById("show-contract-btn").addEventListener("click", function() {
+function show_contract(){
     var _fullname = encodeURIComponent(window.f_name.value + " " + window.l_name.value);
     var shopName = encodeURIComponent(window.shop_name.value);
     var number_cr = encodeURIComponent(window.number_cr.value);
@@ -291,49 +300,44 @@ document.getElementById("show-contract-btn").addEventListener("click", function(
 
     // تحديث iframe لعرض العقد مع الاسم
     document.getElementById("contract-frame").src = contractUrl;
-});
-document.getElementById("agree-checkbox").addEventListener("change", function() {
-        document.getElementById("terms-checkbox").checked = this.checked;
-        document.getElementById("agree-btn").disabled = !this.checked;
-        this.disabled=true;
-        if (!$(this).is(':checked')) {
-            $('#vendor-apply-submit').attr('disabled');
-        }
-    });
-    document.getElementById("terms-checkbox").addEventListener("change", function() {
-        document.getElementById("agree-checkbox").checked = this.checked;
-        document.getElementById("agree-btn").disabled = !this.checked;
-        if (!$(this).is(':checked')) {
-            $('#vendor-apply-submit').attr('disabled');
-        }
-    });
+}
+
+// document.getElementById("agree-checkbox").addEventListener("change", function() {
+//         document.getElementById("terms-checkbox").checked = this.checked;
+//         document.getElementById("agree-btn").disabled = !this.checked;
+//         this.disabled=true;
+//         if (!$(this).is(':checked')) {
+//             $('#vendor-apply-submit').attr('disabled');
+//         }
+//     });
+    // document.getElementById("terms-checkbox").addEventListener("change", function() {
+    //     document.getElementById("agree-checkbox").checked = this.checked;
+    //     document.getElementById("agree-btn").disabled = !this.checked;
+    //     if (!$(this).is(':checked')) {
+    //         $('#vendor-apply-submit').attr('disabled');
+    //     }
+    // });
 
 var canvas = document.getElementById("signature-pad");
 var signaturePad = new SignaturePad(canvas);
 
-document.getElementById("save-signature").addEventListener("click", function () {
-    if (!signaturePad.isEmpty()) {
-        document.getElementById("signature-data").value = signaturePad.toDataURL();
-        document.getElementById("terms-checkbox").checked = true;
-        document.getElementById("agree-checkbox").checked = true;
-        document.getElementById("terms-checkbox").disabled = false;
-        document.getElementById("agree-checkbox").disabled = false;
-        $('#vendor-apply-submit').removeAttr('disabled');
-        $("#closemodel").click();
-    }
+document.getElementById("btn_show_contract").addEventListener("click", function () {
+    show_contract();
 });
 document.getElementById("clear-signature").addEventListener("click", function () {
     signaturePad.clear()
-    document.getElementById("terms-checkbox").checked = false;
-    document.getElementById("agree-checkbox").checked = false;
-    document.getElementById("terms-checkbox").disabled = true;
-    document.getElementById("agree-checkbox").disabled = true;
-    $('#vendor-apply-submit').attr('disabled');
+    document.getElementById("signature-data").value = "";
+
+    // document.getElementById("terms-checkbox").checked = false;
+    // document.getElementById("agree-checkbox").checked = false;
+    // document.getElementById("terms-checkbox").disabled = true;
+    // document.getElementById("agree-checkbox").disabled = true;
+    // $('#vendor-apply-submit').attr('disabled');
 
 });
-    document.getElementById("agree-btn").addEventListener("click", function() {
-        $("#contract-modal").modal("hide"); // إغلاق النافذة
-        document.getElementById("submit-btn").disabled = false; // تفعيل زر التسجيل
-    });
+document.getElementById("agree-btn").addEventListener("click", function() {
+    $("#contract-modal").modal("hide"); // إغلاق النافذة
+    document.getElementById("submit-btn").disabled = false; // تفعيل زر التسجيل
+});
     </script>
 @endpush
