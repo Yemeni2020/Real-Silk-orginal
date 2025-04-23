@@ -94,9 +94,7 @@ class PagesController extends BaseController
     }
     public function updateContract(TermsConditionRequest $request,$type): RedirectResponse|null
     {
-        $businessSetting = BusinessSetting::where("type","contract_$type")->firstOrFail();
-    
-        $this->translationRepo->CreateOrUpdate(request: $request, model: 'App\Models\BusinessSetting', id: $businessSetting->id);
+
         $value=$request['value'][array_search('en', $request['lang'])];
         if($type=="office" || $type=="factory"){
             $this->businessSettingRepo->updateOrInsert(type: "contract_$type", value: $value);
@@ -104,6 +102,10 @@ class PagesController extends BaseController
             Toastr::success(translate("contract_Updated_successfully"));
         }else
             Toastr::error(translate('Cannot_saved'));
+        $businessSetting = BusinessSetting::where("type","contract_$type")->firstOrFail();
+    
+        $this->translationRepo->CreateOrUpdate(request: $request, model: 'App\Models\BusinessSetting', id: $businessSetting->id);
+        
 
         return back();
         
