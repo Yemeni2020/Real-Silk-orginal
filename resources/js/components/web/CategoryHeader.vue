@@ -76,6 +76,7 @@ export default {
       .then(res => res.json())
       .then(data => {
         this.categories = data;
+        console.log(this.categories);
         this.$nextTick(() => {
           $('.brands-slider').owlCarousel({ items: 5 });
         });
@@ -89,7 +90,7 @@ export default {
       return `/products?brand_id=${id}&data_from=brand&page=1`;
     },
     getImageUrl(path, type) {
-      return `/storage/images/${type}/${path}`;
+      return `${path.path}`;
     },
     translate(key) {
       // استخدم دالة ترجمة JS هنا أو استورد من config

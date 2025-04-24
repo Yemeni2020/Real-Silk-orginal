@@ -20019,6 +20019,7 @@ __webpack_require__.r(__webpack_exports__);
       return res.json();
     }).then(function (data) {
       _this.categories = data;
+      console.log(_this.categories);
       _this.$nextTick(function () {
         $('.brands-slider').owlCarousel({
           items: 5
@@ -20034,7 +20035,7 @@ __webpack_require__.r(__webpack_exports__);
       return "/products?brand_id=".concat(id, "&data_from=brand&page=1");
     },
     getImageUrl: function getImageUrl(path, type) {
-      return "/storage/images/".concat(type, "/").concat(path);
+      return "".concat(path.path);
     },
     translate: function translate(key) {
       // استخدم دالة ترجمة JS هنا أو استورد من config
