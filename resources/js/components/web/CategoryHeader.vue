@@ -1,8 +1,9 @@
 <template>
-  <CategorySkeleton v-if="isLoading" :rows="8" />
   <div class="container">
     <div class="category-menu-wrap">
       <ul class="category-menu">
+        <CategorySkeleton v-if="isLoading" :rows="8" />
+
         <li v-for="category in categories" :key="category.id" class="has-sub-item">
           <a :href="getProductLink(category.id)">
             <span>{{ category.name }}</span>
@@ -69,6 +70,7 @@ export default {
   data() {
     return {
       categories: [],
+      isLoading:true,
     };
   },
   mounted() {
@@ -76,7 +78,7 @@ export default {
       .then(res => res.json())
       .then(data => {
         this.categories = data;
-        console.log(this.categories);
+        this.isLoading=false;
         this.$nextTick(() => {
           $('.brands-slider').owlCarousel({ items: 5 });
         });
