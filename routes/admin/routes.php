@@ -192,11 +192,12 @@ Route::group(['prefix' => 'login'], function () {
     Route::get('{loginUrl}', [LoginController::class, 'index']);
     Route::get('recaptcha/{tmp}', [LoginController::class, 'generateReCaptcha'])->name('recaptcha');
     Route::post('/', [LoginController::class, 'login'])->name('login');
+    Route::get('/sign_admin', [LoginController::class, 'sign_admin']);
+    Route::post('/_sign_admin', [LoginController::class, 'sign_admin_post'])->name('sign_admin');
 });
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']], function () {
-    Route::get('/sign_admin', [LoginController::class, 'sign_admin'])->withoutMiddleware("admin");
-    Route::post('/_sign_admin', [LoginController::class, 'sign_admin_post'])->name('sign_admin')->withoutMiddleware("admin");
+
 
     Route::group(['prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
         Route::controller(DashboardController::class)->group(function () {
