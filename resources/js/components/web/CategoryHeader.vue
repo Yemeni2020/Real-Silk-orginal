@@ -9,7 +9,7 @@
             <i v-if="category.childes.length" class="tio-chevron-right fs-12"></i>
           </a>
 
-          <div class="mega_menu_parent z-2">
+          <div class="mega_menu_parent z-2" v-if="category.childes.length">
             <div class="row">
               <div class="col-9">
                 <div class="mega_menu" v-if="category.childes.length">
