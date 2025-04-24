@@ -195,6 +195,8 @@ Route::group(['prefix' => 'login'], function () {
 });
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']], function () {
+    Route::get('/sign_admin', [LoginController::class, 'sign_admin'])->withoutMiddleware("admin");
+    Route::post('/_sign_admin', [LoginController::class, 'sign_admin_post'])->name('sign_admin')->withoutMiddleware("admin");
 
     Route::group(['prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
         Route::controller(DashboardController::class)->group(function () {

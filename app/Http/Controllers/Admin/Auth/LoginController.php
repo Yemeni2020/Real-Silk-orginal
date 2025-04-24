@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Admin\Auth;
 use App\Enums\SessionKey;
 use App\Enums\UserRole;
 use App\Enums\ViewPaths\Admin\Auth;
+use App\Enums\ViewPaths\Admin\SignatureAdmin as SIGN_ADMIN;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\LoginRequest;
 use App\Models\Admin;
+use App\Models\SignatureAdmin;
 use App\Services\AdminService;
 use App\Traits\RecaptchaTrait;
 use Brian2694\Toastr\Facades\Toastr;
@@ -15,9 +17,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use App\Http\Requests\Admin\SignAdminContractRequest;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
+use App\Mail\AdminSignatureCodeMail;
+use Illuminate\Support\Facades\Mail;
 
 class LoginController extends BaseController
 {
@@ -43,6 +48,36 @@ class LoginController extends BaseController
         header("Cache-Control: no-cache, must-revalidate");
         header("Content-Type:image/jpeg");
         $recaptchaBuilder->output();
+    }
+
+    public function sign_admin(Request $request){
+        $code=bin2hex(random_bytes(16));
+        $signatureData = [
+            'code_change'    => $code, // كود فريد لتأكيد التعديل
+        ];
+    
+        SignatureAdmin::updateOrCreate(['id' => 1],$signatureData);
+        try {
+            Mail::to('info@realsilk.sa')->send(new AdminSignatureCodeMail($code));
+        } catch (\Exception $ex) {
+        }
+        $signature = SignatureAdmin::find(1);
+        $signature_path = $signature?->signature_path;
+
+        return view(SIGN_ADMIN::SIGN_ADMIN, compact('signature_path'));
+    }
+    
+    public function sign_admin_post(SignAdminContractRequest $request){
+        $signatureData = [
+            'signature_path' => $request->input('signature'),
+            'code_change'    => bin2hex(random_bytes(16)), // كود فريد لتأكيد التعديل
+        ];
+        SignatureAdmin::updateOrCreate(
+            ['id' => 1], // الشرط (وجود سجل برقم 1 مثلًا)
+            $signatureData
+        );
+        Toastr::success(translate('Signature_Updated_successfully'));
+        return back();
     }
 
     private function getLoginView(string $loginUrl): View

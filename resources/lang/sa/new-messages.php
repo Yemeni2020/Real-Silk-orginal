@@ -8763,4 +8763,6 @@ return [
 	"contract" => "Contract",
 	"Select_city" => "Select city",
 	"Invalid_number_cr_format" => "Invalid number cr format",
+	"Reast" => "Reast",
+	"Code Admin" => "Code Admin",
 ];

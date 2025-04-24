@@ -9198,4 +9198,6 @@ return [
 	"CR number is required" => "CR number is required",
 	"The signature must start with one of the following: data:image/png;base64." => "The signature must start with one of the following: data:image/png base64.",
 	"Select_city" => "Select city",
+	"Reast" => "Reast",
+	"Code Admin" => "Code Admin",
 ];

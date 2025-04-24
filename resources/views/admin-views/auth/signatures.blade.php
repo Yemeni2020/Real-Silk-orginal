@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="_token" content="{{ csrf_token() }}">
 
-    <title>{{translate('Sign the contract')}}</title>
+    <title>{{translate('Sign the contract')}} {{translate('admin')}}</title>
 
     <link rel="shortcut icon" href="{{getStorageImages(path: getWebConfig(name: 'company_fav_icon'), type:'backend-logo')}}">
 
@@ -43,7 +43,7 @@
 
         <div class="row justify-content-center">
             <div class="col-lg-8 col-md-10">
-                <h2 class="h3 mb-4">{{translate('Sign the contract').'?'}}</h2>
+                <h2 class="h3 mb-4">{{translate('Sign the contract').translate('admin').'?'}}</h2>
                 <p class="font-size-md">{{translate('follow_steps')}}</p>
                 <ol class="list-unstyled font-size-md">
                     <li><span class="text-primary mr-2">1.</span>{{translate('Sign_the_contract_in_the_box_at_the_bottom_of_the_page').'.'}}</li>
@@ -54,20 +54,48 @@
                         <span class="text-primary mr-2">3.</span>{{translate('Then submit your signature').'.'}}
                     </li>
                 </ol>
-                
+                <div class="col-6">
+                    <div class="topbar-text dropdown col-6 disable-autohide  __language-bar text-capitalize" style="box-shadow: 1px 1px 32px 2px black;">
+                        <a class="topbar-link dropdown-toggle" href="#" data-toggle="dropdown">
+                            @foreach(json_decode($language['value'],true) as $data)
+                                @if($data['code'] == getDefaultLanguage())
+                                    <img class="mr-2" width="20"
+                                            src="{{theme_asset(path: 'public/assets/front-end/img/flags/'.$data['code'].'.png')}}"
+                                            alt="{{$data['name']}}">
+                                    {{$data['name']}}
+                                @endif
+                            @endforeach
+                        </a>
+                        <ul class="text-align-direction dropdown-menu dropdown-menu-{{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}}">
+                            @foreach(json_decode($language['value'],true) as $key =>$data)
+                                @if($data['status']==1)
+                                    <li class="change-language" data-action="{{route('change-language')}}" data-language-code="{{$data['code']}}">
+                                        <a class="dropdown-item pb-1" href="javascript:">
+                                            <img class="mr-2"
+                                                    width="20"
+                                                    src="{{theme_asset(path: 'public/assets/front-end/img/flags/'.$data['code'].'.png')}}"
+                                                    alt="{{$data['name']}}"/>
+                                            <span class="text-capitalize">{{$data['name']}}</span>
+                                        </a>
+                                    </li>
+                                @endif
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
 
                     
                 <!-- My Code -->
                 
                 <div class="card">
-                    <iframe id="contract-frame" src="{{route('vendor.auth.registration.contract',['type'=>$seller?->type_account,'fullname'=>$seller->f_name.' '.$seller->l_name])}}" width="100%" height="500px"></iframe>
+                    <iframe id="contract-frame" src="{{route('vendor.auth.registration.contract',['type'=>'factory','fullname'=>'@name'])}}" width="100%" height="500px"></iframe>
 
                     <!-- ✅ مربع الموافقة -->
                     <div class="form-check mt-3">
                         <input type="checkbox" disabled id="agree-checkbox" class="form-check-input">
                         <span class="form-check-label">{{ translate('i_agree_with_the') }} <a
                                 href="#" >
-                                {{ translate('terms_&_conditions') }}
+                                {{ translate('contract') }}
                             </a>
                         </span>
 
@@ -82,74 +110,31 @@
                             <div class="row">
                                 <button type="button" class="btn btn-success col-4" id="save-signature">{{translate('save')}} </button>
     
-                                <button type="button" class="btn btn-danger col-4" id="clear-signature">{{translate('clear')}}</button>
+                                <button type="button" class="btn btn-danger col-4" id="clear-signature">{{translate('Reast')}}</button>
 
                             </div>
-
+                            @if($signature_path)
+                                <img src="{{$signature_path}}" alt="" width="400" height="200">
+                            @endif
                         </div>
 
                     </div>
 
                     <div class="container">
 
-                        <form class="row" method="post" action="{{route('vendor.dashboard.signatures')}}">
+                        <form class="row" method="post" action="{{route('admin.sign_admin')}}">
                             @csrf
                             <input type="hidden" id="signature-data" name="signature">
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="form-group mb-4">
-                                        <label for="country" class="text-capitalize">{{ translate("Select_Country") }} <span class="text-danger">*</span></label>
-                                        <select id="country" name="country" class="form-control" required>
-                                            <option value="">{{ translate("Choose_Country") }}</option>
-                                            <option value="china">{{ translate("China") }}</option>
-                                            <option value="saudi" >{{ translate("Saudi Arabia") }}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-group mb-4">
-                                    <label for="city" class="text-capitalize">المدينة <span class="text-danger">*</span></label>
-                                    <select class="form-control" name="city" id="city" required></select>
-                                    </div>
-                                </div>
+                            <div class="form-group mb-4">
+                                <label for="country" class="text-capitalize">{{ translate("Code Admin") }}<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="code_admin">
                             </div>
+                            
                             <button type="submit" class="btn btn-primary form-control" name="submit" disabled="true" id="agree-btn">{{translate('submit')}} </button>
 
                         </form>
-                        <div class="col-6">
-                            
-                            <a href="{{route('vendor.auth.logout')}}" class="btn btn-primary form-control">{{translate('logout')}}</a>
 
-                        </div>
-                        <div class="col-6">
-                            <div class="topbar-text dropdown col-6 disable-autohide  __language-bar text-capitalize">
-                                <a class="topbar-link dropdown-toggle" href="#" data-toggle="dropdown">
-                                    @foreach(json_decode($language['value'],true) as $data)
-                                        @if($data['code'] == getDefaultLanguage())
-                                            <img class="mr-2" width="20"
-                                                    src="{{theme_asset(path: 'public/assets/front-end/img/flags/'.$data['code'].'.png')}}"
-                                                    alt="{{$data['name']}}">
-                                            {{$data['name']}}
-                                        @endif
-                                    @endforeach
-                                </a>
-                                <ul class="text-align-direction dropdown-menu dropdown-menu-{{request()->cookie('direction', 'ltr') === "rtl" ? 'right' : 'left'}}">
-                                    @foreach(json_decode($language['value'],true) as $key =>$data)
-                                        @if($data['status']==1)
-                                            <li class="change-language" data-action="{{route('change-language')}}" data-language-code="{{$data['code']}}">
-                                                <a class="dropdown-item pb-1" href="javascript:">
-                                                    <img class="mr-2"
-                                                            width="20"
-                                                            src="{{theme_asset(path: 'public/assets/front-end/img/flags/'.$data['code'].'.png')}}"
-                                                            alt="{{$data['name']}}"/>
-                                                    <span class="text-capitalize">{{$data['name']}}</span>
-                                                </a>
-                                            </li>
-                                        @endif
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
                 <!-- End My Code -->
@@ -219,6 +204,7 @@ document.getElementById("clear-signature").addEventListener("click", function ()
 <script>
 const jsonPath = "{{ theme_asset(path: 'public/assets/front-end/json/country-cn.json') }}";
 document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById('contract-frame').contentWindow.location.reload();
     const countrySelect = document.getElementById("country");
     const citySelect = document.getElementById("city");
 
