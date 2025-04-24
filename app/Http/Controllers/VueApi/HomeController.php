@@ -54,4 +54,46 @@ class HomeController extends Controller{
         return response()->json($homeCategories);
 
     }
+    public function getMenuData()
+    {
+        $categories = Category::with(['childes.childes'])
+            ->where('position', 0)
+            ->get()
+            ->map(function ($category) {
+                $brandsList = is_array($category->brands)
+                    ? $category->brands
+                    : json_decode($category->brands, true);
+
+                // نضيف البيانات الجديدة على شكل مصفوفة وليس Object
+                return [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                    'image_ad' => $category->image_ad,
+                    'adv_full_url' => $category->adv_full_url,
+                    'childes' => $category->childes->map(function ($child) {
+                        return [
+                            'id' => $child->id,
+                            'name' => $child->name,
+                            'childes' => $child->childes->map(function ($sub) {
+                                return [
+                                    'id' => $sub->id,
+                                    'name' => $sub->name
+                                ];
+                            })
+                        ];
+                    }),
+                    'brands' => Brand::whereIn('id', $brandsList ?? [])->get()->map(function ($brand) {
+                        return [
+                            'id' => $brand->id,
+                            'name' => $brand->name,
+                            'image_full_url' => $brand->image_full_url,
+                            'image_alt_text' => $brand->image_alt_text
+                        ];
+                    })
+                ];
+            });
+
+        return response()->json($categories);
+    }
+
 }

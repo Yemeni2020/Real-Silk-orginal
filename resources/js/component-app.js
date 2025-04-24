@@ -3,6 +3,7 @@ import { createApp } from 'vue'
 import CategoryComponent from './components/web/CategoryComponent.vue'
 import CategoryProducts from './components/web/CategoryProducts.vue'
 import DetailsProduct from './components/web/products/detailsProduct.vue'
+import CategoryHeader from './components/web/CategoryHeader.vue'
 import ApiPlugin from './plugins/api';
 
 
@@ -18,4 +19,9 @@ if (document.getElementById('shop-categories')) {
 }
 if (document.getElementById('overview')) {
     app.component('DetailsProduct', DetailsProduct).mount('#overview')
+}
+if (document.getElementById('category-menu-header')) {
+    const app2 = createApp(CategoryHeader);
+    app2.use(ApiPlugin);
+    app2.mount('#category-menu-header');
 }

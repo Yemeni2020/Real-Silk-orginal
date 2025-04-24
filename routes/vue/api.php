@@ -22,6 +22,7 @@ Route::group(['prefix' => 'vueAPI'], function () {
     });
 
     Route::get('/home_categoray', [HomeController::class, 'getHomeCategories']);
+    Route::get('/menu_categories', [HomeController::class, 'getMenuData']);
     Route::get('/product_categories', [ProductListController::class, 'getProductCategories']);
     Route::get('/product/details/{id}', [ProductDetailsController::class, 'getDetails']);
 

@@ -577,7 +577,10 @@
             </div>
 
 
-            <div class="megamenu-wrap" id="category-menu" hx-get="{{ route('getCategoryMenu') }}" hx-trigger="load" hx-target="#category-menu" hx-swap="innerHTML">
+            <!-- <div class="megamenu-wrap" id="category-menu" hx-get="{{ route('getCategoryMenu') }}" hx-trigger="load" hx-target="#category-menu" hx-swap="innerHTML">
+            </div> -->
+            <div class="megamenu-wrap" id="category-menu-header">
+                <category-menu-header></category-menu-header>
             </div>
         </div>
 
