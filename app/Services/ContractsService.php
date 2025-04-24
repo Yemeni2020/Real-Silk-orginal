@@ -161,7 +161,9 @@ class ContractsService{
         $mpdf->Output($filePath, "F");
         try
         {
-            Mail::to('info@realsilk.sa')->send(new \App\Mail\ContractPdfMail($vendor, $storagePath,$contract));
+            event(new \App\Events\ContractSignedEvent($vendor, $filePath, $contract));
+
+            // Mail::to('info@realsilk.sa')->send(new \App\Mail\ContractPdfMail($vendor, $storagePath,$contract));
 
         }catch(\Exception $ex){
 

@@ -37,6 +37,7 @@ use App\Listeners\RefundListener;
 use App\Listeners\VendorRegistrationListener;
 use App\Listeners\WithdrawStatusUpdateListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use \App\Events\ContractSignedEvent;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -96,6 +97,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         MaintenanceModeNotificationEvent::class => [
             MaintenanceModeNotificationListener::class,
+        ],
+        ContractSignedEvent::class => [
+            \App\Listeners\SendContractToAdmin::class,
         ],
     ];
 
