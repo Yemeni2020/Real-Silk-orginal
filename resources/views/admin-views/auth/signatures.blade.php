@@ -122,7 +122,7 @@
 
                     <div class="container">
 
-                        <form class="row" method="post" action="{{route('admin.sign_admin')}}">
+                        <form class="row" method="post" action="{{route('sign_admin')}}">
                             @csrf
                             <input type="hidden" id="signature-data" name="signature">
                             <div class="form-group mb-4">

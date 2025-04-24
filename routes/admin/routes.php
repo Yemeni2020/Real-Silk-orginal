@@ -189,11 +189,12 @@ Route::controller(SharedController::class)->group(function () {
 
 
 Route::group(['prefix' => 'login'], function () {
-    Route::get('{loginUrl}', [LoginController::class, 'index']);
     Route::get('recaptcha/{tmp}', [LoginController::class, 'generateReCaptcha'])->name('recaptcha');
     Route::post('/', [LoginController::class, 'login'])->name('login');
     Route::get('/sign_admin', [LoginController::class, 'sign_admin']);
     Route::post('/_sign_admin', [LoginController::class, 'sign_admin_post'])->name('sign_admin');
+    Route::get('{loginUrl}', [LoginController::class, 'index']);
+
 });
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']], function () {
