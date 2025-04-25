@@ -20,6 +20,7 @@ use App\Enums\ViewPaths\Admin\Product;
 use App\Enums\ViewPaths\Admin\Profile;
 use App\Enums\ViewPaths\Admin\SiteMap;
 use App\Enums\ViewPaths\Admin\Category;
+use App\Enums\ViewPaths\Admin\CategoryPost;
 use App\Enums\ViewPaths\Admin\Chatting;
 use App\Enums\ViewPaths\Admin\Currency;
 use App\Enums\ViewPaths\Admin\Customer;
@@ -106,6 +107,7 @@ use App\Http\Controllers\Admin\Settings\ThemeController;
 use App\Http\Controllers\Admin\Product\ProductController;
 use App\Http\Controllers\Admin\ThirdParty\MailController;
 use App\Http\Controllers\Admin\Product\CategoryController;
+use App\Http\Controllers\Admin\Post\CategoryController as CategoryPostController;
 use App\Http\Controllers\Admin\Promotion\BannerController;
 use App\Http\Controllers\Admin\Promotion\AdvController;
 use App\Http\Controllers\Admin\Promotion\CategoryAdvController;
@@ -371,6 +373,21 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
         });
     });
 
+    //category_post
+    Route::group(['prefix' => 'post', 'as' => 'post.', 'middleware' => ['module:product_management']], function () {
+
+        Route::group(['prefix' => 'category', 'as' => 'category.', 'middleware' => ['module:product_management']], function () {
+            Route::controller(CategoryPostController::class)->group(function () {
+                Route::get(CategoryPost::LIST[URI], 'index')->name('view');
+                Route::post(CategoryPost::ADD[URI], 'add')->name('store');
+                Route::get(CategoryPost::UPDATE[URI], 'getUpdateView')->name('update');
+                Route::post(CategoryPost::UPDATE[URI], 'update');
+                Route::post(CategoryPost::DELETE[URI], 'delete')->name('delete');
+                Route::post(CategoryPost::STATUS[URI], 'updateStatus')->name('status');
+                Route::get(CategoryPost::EXPORT[URI], 'getExportList')->name('export');
+            });
+        });
+    });
     // Banner
     Route::group(['prefix' => 'banner', 'as' => 'banner.', 'middleware' => ['module:promotion_management']], function () {
         Route::controller(BannerController::class)->group(function () {

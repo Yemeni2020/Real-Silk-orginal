@@ -13,7 +13,21 @@ return new class extends Migration
     {
         Schema::create('post', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
+            
+            $table->integer("user_id");
+            $table->string("title");
+            $table->string("slug");
+            $table->longText("details");
+            $table->integer("category_id");
+            $table->longText("images");
+            $table->string("thumbnail");
+            $table->string("thumbnail_storage_type",10);
+            $table->string("video_provider",30);
+            $table->string("video_url");
+            $table->string("meta_title");
+            $table->text("meta_description");
+            $table->text("meta_keywords");
+            $table->string("meta_image");
             $table->timestamps();
         });
     }

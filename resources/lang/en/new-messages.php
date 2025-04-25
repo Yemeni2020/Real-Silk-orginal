@@ -9200,4 +9200,8 @@ return [
 	"Select_city" => "Select city",
 	"Reast" => "Reast",
 	"Code Admin" => "Code Admin",
+	"post_management" => "Post management",
+	"posts" => "Posts",
+	"AlfrasGroup@2024" => "AlfrasGroup@2024",
+	"post_Setup" => "Post Setup",
 ];
