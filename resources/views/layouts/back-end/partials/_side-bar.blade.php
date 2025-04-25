@@ -288,7 +288,7 @@
                                        title="">{{translate('post_management')}}</small>
                                 <small class="tio-more-horizontal nav-subtitle-replacer"></small>
                             </li>
-                            <li class="navbar-vertical-aside-has-menu {{(Request::is('admin/category*') || Request::is('admin/sub-category*') || Request::is('admin/sub-sub-category*')) ?'active':''}}">
+                            <li class="navbar-vertical-aside-has-menu {{(Request::is('admin/post*')) ?'active':''}}">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link nav-link-toggle"
                                    href="javascript:" title="{{translate('post_Setup')}}">
                                     <i class="tio-filter-list nav-icon"></i>
@@ -297,7 +297,7 @@
                                     </span>
                                 </a>
                                 <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
-                                    style="display: {{(Request::is('admin/post/category*') ||Request::is('admin/sub*'))?'block':''}}">
+                                    style="display: {{(Request::is('admin/post/*')) ?'block':''}}">
                                     <li class="nav-item {{Request::is('admin/post/category/'.Category::LIST[URI])?'active':''}}">
                                         <a class="nav-link " href="{{route('admin.post.category.view')}}"
                                            title="{{translate('categories')}}">
@@ -305,8 +305,8 @@
                                             <span class="text-truncate">{{translate('categories')}}</span>
                                         </a>
                                     </li>
-                                    <li class="nav-item {{Request::is('admin/sub-category/'.SubCategory::LIST[URI])?'active':''}}">
-                                        <a class="nav-link " href="{{route('admin.sub-category.view')}}"
+                                    <li class="nav-item {{Request::is('admin/post/*')?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.post.list',['type'=>'in_house'])}}"
                                            title="{{translate('sub_Categories')}}">
                                             <span class="tio-circle nav-indicator-icon"></span>
                                             <span class="text-truncate">{{translate('posts')}}</span>

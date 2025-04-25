@@ -44,4 +44,8 @@ class CategoryPost extends Model
         return $translation->value ?? $this->name;
         // return  $this->name;
     }
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'category_id');
+    }
 }

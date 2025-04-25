@@ -7,6 +7,7 @@ use App\Traits\StorageTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -134,4 +135,8 @@ class Admin extends Authenticatable
         });
     }
 
+    public function posts():HasMany
+    {
+        return $this->hasMany(Post::class, 'user_id');
+    }
 }

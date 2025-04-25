@@ -9204,4 +9204,11 @@ return [
 	"posts" => "Posts",
 	"AlfrasGroup@2024" => "AlfrasGroup@2024",
 	"post_Setup" => "Post Setup",
+	"post_List" => "Post List",
+	"in_House_post_List" => "In House post List",
+	"filter_post" => "Filter post",
+	"add_new_post" => "Add new post",
+	"post Name" => "Post Name",
+	"post Type" => "Post Type",
+	"search_by_post_Name" => "Search by post Name",
 ];

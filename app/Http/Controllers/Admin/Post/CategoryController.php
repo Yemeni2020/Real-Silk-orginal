@@ -31,9 +31,6 @@ class CategoryController extends BaseController
 
     public function __construct(
         private readonly CategoryPostRepositoryInterface        $categoryRepo,
-        private readonly BrandRepositoryInterface           $brandRepo,
-        private readonly ProductRepositoryInterface        $productRepo,
-        private readonly ProductService        $productService,
         private readonly TranslationRepositoryInterface     $translationRepo,
     )
     {
