@@ -56,7 +56,7 @@ class PostListController extends Controller
     public function default_theme(Request $request): View|JsonResponse|Redirector|RedirectResponse
     {
         $filters = $request->only('search', 'category_id');
-        $posts = $this->postService->listPosts($filters,perPage:1); // 10 بوستات بكل صفحة
+        $posts = $this->postService->listPosts($filters,perPage:5); // 10 بوستات بكل صفحة
         $categories = CategoryPost::all(); // لو عندك تصنيفات جاهزة للعرض
 
         if(request()->ajax()){
@@ -68,5 +68,22 @@ class PostListController extends Controller
         
         return view(VIEW_FILE_NAMES['posts_view_page'], compact('posts','categories','filters'));
     }
+    public function postDetails(Request $request, $slug): View|JsonResponse|Redirector|RedirectResponse
+    {
+        $post = $this->postService->getPostBySlug($slug);
+        if ($post == null) {
+            Toastr::error(translate('Post not found!'));
+            return redirect()->route('home');
+        }
+        $relatedPosts = $this->postService->getRelatedPosts($post->id,5);
+        $categories = CategoryPost::all(); // لو عندك تصنيفات جاهزة للعرض
 
+        if(request()->ajax()){
+            return response()->json([
+                'view' => view('web-views.posts.post-details', compact('post','relatedPosts'))->render(),
+            ]);
+        }
+
+        return view(VIEW_FILE_NAMES['post_details_view_page'], compact('post','relatedPosts','categories'));
+    }
 }

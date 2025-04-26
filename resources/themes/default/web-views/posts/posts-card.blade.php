@@ -1,4 +1,4 @@
-<div class="list-group">
+<div class="list-group w-100">
         @foreach($posts as $post)
             <a href="{{ route('posts.show', $post->slug) }}" class="list-group-item list-group-item-action mb-3 shadow-sm">
                 <div class="d-flex align-items-center">
@@ -15,5 +15,8 @@
     </div>
 
     <div class="mt-4">
-        {{ $posts->withQueryString()->links() }}
+        @if ($posts instanceof \Illuminate\Pagination\Paginator || $posts instanceof \Illuminate\Pagination\LengthAwarePaginator)
+            {{ $posts->withQueryString()->links() }}
+        @endif
+
     </div>

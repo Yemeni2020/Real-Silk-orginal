@@ -15,6 +15,7 @@ class PostSeo extends Model
         'post_id',
         'title',
         'description',
+        'meta_keywords',
         'index',
         'no_follow',
         'no_image_index',

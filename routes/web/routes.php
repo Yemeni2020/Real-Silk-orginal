@@ -160,7 +160,7 @@ Route::group(['namespace' => 'Web', 'middleware' => ['maintenance_mode', 'guestC
 
     Route::controller(PostListController::class)->group(function () {
         Route::get('posts', 'posts')->name('posts');
-        Route::get('post/{slug}', 'posts')->name('posts.show');
+        Route::get('post/{slug}', 'postDetails')->name('posts.show');
     });
 
     Route::controller(ShopViewController::class)->group(function () {

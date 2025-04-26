@@ -238,7 +238,8 @@ class PostController extends BaseController
         
         $seodata=$service->getProductSEOData(request: $request, post: $post, action: 'update');
 
-        
+        // dump($seodata);
+        // return null;
         $this->postSeoRepo->updateOrInsert(
             params: ['post_id' => $post['id']],
             data: $seodata
@@ -248,82 +249,6 @@ class PostController extends BaseController
         return redirect()->route(Post::VIEW[ROUTE], ['addedBy' => 'admin', 'id' => $post['id']]);
     }
 
-    public function getDigitalProductUpdateProcess($request, $product): void
-    {
-        if ($request->has('digital_product_variant_key') && !$request->hasFile('digital_file_ready')) {
-            $getAllVariation = $this->digitalProductVariationRepo->getListWhere(filters: ['product_id' => $product['id']]);
-            $getAllVariationKey = $getAllVariation->pluck('variant_key')->toArray();
-            $getRequestVariationKey = $request['digital_product_variant_key'];
-            $differenceFromDB = array_diff($getAllVariationKey, $getRequestVariationKey);
-            $differenceFromRequest = array_diff($getRequestVariationKey, $getAllVariationKey);
-            $newCombinations = array_merge($differenceFromDB, $differenceFromRequest);
-
-            foreach ($newCombinations as $newCombination) {
-                if (in_array($newCombination, $request['digital_product_variant_key'])) {
-                    $uniqueKey = strtolower(str_replace('-', '_', $newCombination));
-
-                    $fileItem = null;
-                    if ($request['digital_product_type'] == 'ready_product') {
-                        $fileItem = $request->file('digital_files.' . $uniqueKey);
-                    }
-                    $uploadedFile = '';
-                    if ($fileItem) {
-                        $uploadedFile = $this->fileUpload(dir: 'product/digital-product/', format: $fileItem->getClientOriginalExtension(), file: $fileItem);
-                    }
-                    $this->digitalProductVariationRepo->add(data: [
-                        'product_id' => $product['id'],
-                        'variant_key' => $request->input('digital_product_variant_key.' . $uniqueKey),
-                        'sku' => $request->input('digital_product_sku.' . $uniqueKey),
-                        'price' => currencyConverter(amount: $request->input('digital_product_price.' . $uniqueKey)),
-                        'file' => $uploadedFile,
-                    ]);
-                }
-            }
-
-            foreach ($differenceFromDB as $variation) {
-                $variation = $this->digitalProductVariationRepo->getFirstWhere(params: ['product_id' => $product['id'], 'variant_key' => $variation]);
-                if ($variation) {
-                    // $this->deleteFile(filePath: '/product/digital-product/' . $variation['file']);
-                    $this->digitalProductVariationRepo->delete(params: ['id' => $variation['id']]);
-                }
-            }
-
-            foreach ($getAllVariation as $variation) {
-                if (in_array($variation['variant_key'], $request['digital_product_variant_key'])) {
-                    $uniqueKey = strtolower(str_replace('-', '_', $variation['variant_key']));
-
-                    $fileItem = null;
-                    if ($request['digital_product_type'] == 'ready_product') {
-                        $fileItem = $request->file('digital_files.' . $uniqueKey);
-                    }
-                    $uploadedFile = $variation['file'] ?? '';
-                    $variation = $this->digitalProductVariationRepo->getFirstWhere(params: ['product_id' => $product['id'], 'variant_key' => $variation['variant_key']]);
-                    if ($fileItem) {
-                        $uploadedFile = $this->fileUpload(dir: 'product/digital-product/', format: $fileItem->getClientOriginalExtension(), file: $fileItem);
-                    }
-                    $this->digitalProductVariationRepo->updateByParams(params: ['product_id' => $product['id'], 'variant_key' => $variation['variant_key']], data: [
-                        'variant_key' => $request->input('digital_product_variant_key.' . $uniqueKey),
-                        'sku' => $request->input('digital_product_sku.' . $uniqueKey),
-                        'price' => currencyConverter(amount: $request->input('digital_product_price.' . $uniqueKey)),
-                        'file' => $uploadedFile,
-                    ]);
-                }
-
-                if ($request['product_type'] == 'physical' || $request['digital_product_type'] == 'ready_after_sell') {
-                    $variation = $this->digitalProductVariationRepo->getFirstWhere(params: ['product_id' => $product['id'], 'variant_key' => $variation['variant_key']]);
-                    if ($variation && $variation['file']) {
-                        // $this->deleteFile(filePath: '/product/digital-product/' . $variation['file']);
-                        $this->digitalProductVariationRepo->updateByParams(params: ['id' => $variation['id']], data: ['file' => '']);
-                    }
-                    if ($request['product_type'] == 'physical') {
-                        $variation->delete();
-                    }
-                }
-            }
-        } else {
-            $this->digitalProductVariationRepo->delete(params: ['product_id' => $product['id']]);
-        }
-    }
 
     public function getView(string $addedBy, string|int $id): View|RedirectResponse
     {
@@ -338,39 +263,7 @@ class PostController extends BaseController
         return view(Post::VIEW[VIEW], compact('product'));
     }
 
-    public function getSkuCombinationView(Request $request, PostService $service): JsonResponse
-    {
-        $product = $this->postRepo->getFirstWhere(params: ['id' => $request['product_id']], relations: ['digitalVariation', 'seoInfo']);
-        $combinationView = $service->getSkuCombinationView(request: $request, product: $product);
-        return response()->json(['view' => $combinationView]);
-    }
 
-    public function getDigitalVariationCombinationView(Request $request, PostService $service): JsonResponse
-    {
-        $product = $this->postRepo->getFirstWhere(params: ['id' => $request['product_id']], relations: ['digitalVariation', 'seoInfo']);
-        $combinationView = $service->getDigitalVariationCombinationView(request: $request, product: $product);
-        return response()->json(['view' => $combinationView]);
-    }
-
-    public function updateStatus(Request $request): JsonResponse
-    {
-        $status = $request->get('status', 0);
-        $productId = $request['id'];
-        $product = $this->postRepo->getFirstWhere(params: ['id' => $productId]);
-
-        $success = 1;
-        if ($status == 1) {
-            $success = $product->added_by == 'seller' && ($product['request_status'] == 0 || $product['request_status'] == 2) ? 0 : 1;
-        }
-        $updateData = ['status' => $status];
-        $data = $success ? $this->postRepo->update(id: $productId, data: $updateData) : null;
-
-        return response()->json([
-            'success' => $success,
-            'data' => $data,
-            'message' => $success ? translate("status_updated_successfully") : translate("status_updated_failed") . ' ' . translate("Product_must_be_approved"),
-        ], 200);
-    }
 
     public function deleteImage(Request $request, PostService $service): RedirectResponse
     {
@@ -413,80 +306,8 @@ class PostController extends BaseController
         ]);
     }
 
-    public function exportList(Request $request, string $type): BinaryFileResponse
-    {
-        $filters = [
-            'added_by' => $type == 'in-house' ? 'in_house' : $type,
-            'request_status' => $request['status'],
-            'seller_id' => $request['seller_id'],
-            'brand_id' => $request['brand_id'],
-            'category_id' => $request['category_id'],
-            'sub_category_id' => $request['sub_category_id'],
-            'sub_sub_category_id' => $request['sub_sub_category_id'],
-        ];
 
-        $products = $this->postRepo->getListWhere(orderBy: ['id' => 'desc'], searchValue: $request['searchValue'], filters: $filters, dataLimit: 'all');
 
-        //export from product
-        $category = (!empty($request['category_id']) && $request->has('category_id')) ? $this->categoryRepo->getFirstWhere(params: ['id' => $request['category_id']]) : 'all';
-        $subCategory = (!empty($request->sub_category_id) && $request->has('sub_category_id')) ? $this->categoryRepo->getFirstWhere(params: ['id' => $request['sub_category_id']]) : 'all';
-        $subSubCategory = (!empty($request->sub_sub_category_id) && $request->has('sub_sub_category_id')) ? $this->categoryRepo->getFirstWhere(params: ['id' => $request['sub_sub_category_id']]) : 'all';
-        $brand = (!empty($request->brand_id) && $request->has('brand_id')) ? $this->brandRepo->getFirstWhere(params: ['id' => $request->brand_id]) : 'all';
-        $seller = (!empty($request->seller_id) && $request->has('seller_id')) ? $this->sellerRepo->getFirstWhere(params: ['id' => $request->seller_id]) : '';
-        $data = [
-            'products' => $products,
-            'category' => $category,
-            'sub_category' => $subCategory,
-            'sub_sub_category' => $subSubCategory,
-            'brand' => $brand,
-            'searchValue' => $request['searchValue'],
-            'type' => $request->type ?? '',
-            'seller' => $seller,
-            'status' => $request->status ?? '',
-        ];
-        return Excel::download(new ProductListExport($data), ucwords($request['type']) . '-' . 'product-list.xlsx');
-    }
-
-    public function getBarcodeView(Request $request, string|int $id): View|RedirectResponse
-    {
-        if ($request['limit'] > 270) {
-            Toastr::warning(translate('you_can_not_generate_more_than_270_barcode'));
-            return back();
-        }
-        $product = $this->postRepo->getFirstWhere(params: ['id' => $id]);
-        $rangeData = range(1, $request->limit ?? 4);
-        $barcodes = array_chunk($rangeData, 24);
-        return view(Product::BARCODE_VIEW[VIEW], compact('product', 'barcodes'));
-    }
-
-    public function getStockLimitListView(Request $request, string $type): View
-    {
-        $stockLimit = getWebConfig(name: 'stock_limit');
-        $sortOrderQty = $request['sortOrderQty'];
-        $searchValue = $request['searchValue'];
-        $withCount = ['orderDetails'];
-        $status = $request['status'];
-        $filters = [
-            'added_by' => $type,
-            'product_type' => 'physical',
-            'request_status' => $request['status'],
-        ];
-
-        $orderBy = [];
-        if ($sortOrderQty == 'quantity_asc') {
-            $orderBy = ['current_stock' => 'asc'];
-        } else if ($sortOrderQty == 'quantity_desc') {
-            $orderBy = ['current_stock' => 'desc'];
-        } elseif ($sortOrderQty == 'order_asc') {
-            $orderBy = ['order_details_count' => 'asc'];
-        } elseif ($sortOrderQty == 'order_desc') {
-            $orderBy = ['order_details_count' => 'desc'];
-        } elseif ($sortOrderQty == 'default') {
-            $orderBy = ['id' => 'asc'];
-        }
-        $products = $this->postRepo->getStockLimitListWhere(orderBy: $orderBy, searchValue: $searchValue, filters: $filters, withCount: $withCount, dataLimit: getWebConfig(name: WebConfigKey::PAGINATION_LIMIT));
-        return view(Product::STOCK_LIMIT[VIEW], compact('products', 'searchValue', 'status', 'sortOrderQty', 'stockLimit'));
-    }
 
     public function delete(string|int $id, PostService $service): RedirectResponse
     {
@@ -505,101 +326,12 @@ class PostController extends BaseController
         return back();
     }
 
-    public function getVariations(Request $request): JsonResponse
-    {
-        $product = $this->postRepo->getFirstWhere(params: ['id' => $request['id']]);
-        return response()->json([
-            'view' => view(Product::GET_VARIATIONS[VIEW], compact('product'))->render()
-        ]);
-    }
 
-    public function updateQuantity(Request $request): RedirectResponse
-    {
-        $variations = [];
-        $stockCount = $request['current_stock'];
-        if ($request->has('type')) {
-            foreach ($request['type'] as $key => $str) {
-                $item = [];
-                $item['type'] = $str;
-                $item['price'] = currencyConverter(amount: abs($request['price_' . str_replace('.', '_', $str)]));
-                $item['sku'] = $request['sku_' . str_replace('.', '_', $str)];
-                $item['qty'] = abs($request['qty_' . str_replace('.', '_', $str)]);
-                $variations[] = $item;
-            }
-        }
-        $dataArray = [
-            'current_stock' => $stockCount,
-            'variation' => json_encode($variations),
-        ];
 
-        if ($stockCount >= 0) {
-            $this->postRepo->update(id: $request['product_id'], data: $dataArray);
-            Toastr::success(translate('product_quantity_updated_successfully'));
-            return back();
-        }
-        Toastr::warning(translate('product_quantity_can_not_be_less_than_0_'));
-        return back();
-    }
 
-    public function getBulkImportView(): View
-    {
-        return view(Product::BULK_IMPORT[VIEW]);
-    }
 
-    public function importBulkProduct(Request $request, PostService $service): RedirectResponse
-    {
-        $dataArray = $service->getImportBulkProductData(request: $request, addedBy: 'admin');
-        if (!$dataArray['status']) {
-            Toastr::error($dataArray['message']);
-            return back();
-        }
 
-        $this->postRepo->addArray(data: $dataArray['products']);
-        Toastr::success($dataArray['message']);
-        return back();
-    }
 
-    public function updatedProductList(Request $request): View
-    {
-        $filters = [
-            'added_by' => 'seller',
-            'is_shipping_cost_updated' => 0,
-        ];
-        $searchValue = $request['searchValue'];
-
-        $products = $this->postRepo->getListWhere(orderBy: ['id' => 'desc'], searchValue: $searchValue, filters: $filters, dataLimit: getWebConfig(name: WebConfigKey::PAGINATION_LIMIT));
-        return view(Product::UPDATED_PRODUCT_LIST[VIEW], compact('products', 'searchValue'));
-    }
-
-    public function updatedShipping(Request $request): JsonResponse
-    {
-        $product = $this->postRepo->getFirstWhere(params: ['id' => $request['id']]);
-        $dataArray = ['is_shipping_cost_updated' => $request['status']];
-        if ($request['status'] == 1) {
-            $dataArray += [
-                'shipping_cost' => $product['temp_shipping_cost']
-            ];
-        }
-        $this->postRepo->update(id: $request['id'], data: $dataArray);
-
-        return response()->json(['message' => translate('status_updated_successfully')], 200);
-    }
-
-    public function deny(ProductDenyRequest $request): JsonResponse
-    {
-        $dataArray = [
-            'request_status' => 2,
-            'status' => 0,
-            'denied_note' => $request['denied_note'],
-        ];
-        $this->postRepo->update(id: $request['id'], data: $dataArray);
-        $product = $this->postRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $request['id']]);
-        $vendor = $this->sellerRepo->getFirstWhere(params: ['id' => $product['user_id']]);
-        if ($vendor['cm_firebase_token']) {
-            ProductRequestStatusUpdateEvent::dispatch('product_request_rejected_message', 'seller', $vendor['app_language'] ?? getDefaultLanguage(), $vendor['cm_firebase_token']);
-        }
-        return response()->json(['message' => translate('product_request_denied') . '.']);
-    }
 
     public function approveStatus(Request $request): JsonResponse
     {

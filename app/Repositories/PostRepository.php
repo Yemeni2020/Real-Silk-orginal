@@ -196,6 +196,16 @@ class PostRepository implements PostRepositoryInterface
 
         return $query->latest()->paginate($perPage);
     }
+    public function getRelatedPosts(int $postId, int $limit = 5): Collection
+    {
+        return $this->product->where('id', '!=', $postId)->inRandomOrder()->limit($limit)->get();
+    }
+    
+    public function getPostBySlug(string $slug): ?Model
+    {
+        return $this->product->where('slug', $slug)->first();
+    }
+
     public function getList(array $orderBy = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
     {
         // TODO: Implement getList() method.

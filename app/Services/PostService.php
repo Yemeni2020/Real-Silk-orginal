@@ -32,6 +32,14 @@ class PostService
     {
         return $this->postRepo->getAllPostsPaginated($filters, $perPage);
     }
+    public function getRelatedPosts($postId, int $limit = 5)
+    {
+        return $this->postRepo->getRelatedPosts($postId, $limit);
+    }
+    public function getPostBySlug($slug): ?object
+    {
+        return $this->postRepo->getPostBySlug($slug);
+    }
     
     public function getProcessedImages(object $request): array
     {

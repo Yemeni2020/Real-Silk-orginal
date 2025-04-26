@@ -57,6 +57,7 @@ return [
     'products_mobile_nav_partials' => 'layouts.front-end.partials._cart',
     'products_view_page' => 'web-views.products.view',
     'posts_view_page' => 'web-views.posts.view',
+    'post_details_view_page' => 'web-views.posts.details',
     'products__ajax_partials' => 'web-views.products._ajax-products',
     'all_brands' => 'web-views.products.brands',
     'contacts' => 'web-views.pages.contact-us',
@@ -76,4 +77,5 @@ return [
     'digital_product_download' => 'web-views.order.digital-product-download',
     'robots_meta_content_partials' => 'web-views.partials._robotsMetaContentData',
     'product_seo_meta_content_partials' => 'web-views.partials._productSEOMetaContentData',
+    'post_seo_meta_content_partials' => 'web-views.partials._postSEOMetaContentData',
 ];
