@@ -77,6 +77,18 @@ class Post extends Model
         $translation = $this->translations->where('locale', $curnnet_lang)->first();
         return $translation->value ?? $title; // إرجاع الترجمة إذا كانت موجودة، وإلا يتم عرض الاسم الأصلي
     }
+
+    public function getDetailsAttribute($detail): string|null
+    {
+        if (strpos(url()->current(), '/admin') || strpos(url()->current(), '/vendor') || strpos(url()->current(), '/seller')) {
+            return $detail;
+        }
+        $curnnet_lang = getDefaultLanguage();
+        $translation = $this->translations->where('locale', $curnnet_lang)->where('key', 'description')->first();
+        return $translation->value ?? $detail; 
+        // return $this->translations[1]->value ?? $detail;
+    }
+
     public function getNameAttribute(){
         return $this->getTitleAttribute($this->title);
     }

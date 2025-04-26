@@ -56,6 +56,7 @@ return [
     'order_complete' => 'web-views.checkout.complete',
     'products_mobile_nav_partials' => 'layouts.front-end.partials._cart',
     'products_view_page' => 'web-views.products.view',
+    'posts_view_page' => 'web-views.posts.view',
     'products__ajax_partials' => 'web-views.products._ajax-products',
     'all_brands' => 'web-views.products.brands',
     'contacts' => 'web-views.pages.contact-us',

@@ -8797,4 +8797,6 @@ return [
 	"this_description_will_be_seen_on_Search_Engine_Results_Pages_and_while_sharing_the_posts_link_on_social_platforms" => "This description will be seen on Search Engine Results Pages and while sharing the posts link on social platforms",
 	"want_to_add_this_post" => "Want to add this post",
 	"post_added_successfully" => "Post added successfully",
+	"Search posts..." => "Search posts...",
+	"All_Posts" => "All Posts",
 ];

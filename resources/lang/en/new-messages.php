@@ -9235,4 +9235,6 @@ return [
 	"meta_keywords" => "Meta keywords",
 	"post_updated_successfully" => "Post updated successfully",
 	"post_image_removed_successfully" => "Post image removed successfully",
+	"All_Posts" => "All Posts",
+	"Search posts..." => "Search posts...",
 ];

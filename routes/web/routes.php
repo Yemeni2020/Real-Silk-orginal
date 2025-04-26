@@ -18,6 +18,7 @@ use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\ProductCompareController;
 use App\Http\Controllers\Web\ProductDetailsController;
 use App\Http\Controllers\Web\ProductListController;
+use App\Http\Controllers\Web\PostListController;
 use App\Http\Controllers\Web\Shop\ShopFollowerController;
 use App\Http\Controllers\Web\ShopViewController;
 use App\Http\Controllers\Web\UserProfileController;
@@ -155,6 +156,11 @@ Route::group(['namespace' => 'Web', 'middleware' => ['maintenance_mode', 'guestC
 
     Route::controller(ProductListController::class)->group(function () {
         Route::get('products', 'products')->name('products');
+    });
+
+    Route::controller(PostListController::class)->group(function () {
+        Route::get('posts', 'posts')->name('posts');
+        Route::get('post/{slug}', 'posts')->name('posts.show');
     });
 
     Route::controller(ShopViewController::class)->group(function () {

@@ -176,7 +176,26 @@ class PostRepository implements PostRepositoryInterface
     //         })
     //         ->first();
     // }
+    public function getAllPostsPaginated(array $filters,int $perPage = 10): LengthAwarePaginator
+    {
+        $query = Post::query();
 
+        // تصفية بالكلمة المفتاحية
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'LIKE', "%$search%")
+                  ->orWhere('details', 'LIKE', "%$search%");
+            });
+        }
+
+        // تصفية بالتصنيف
+        if (!empty($filters['category_id'])) {
+            $query->where('category_id', $filters['category_id']);
+        }
+
+        return $query->latest()->paginate($perPage);
+    }
     public function getList(array $orderBy = [], array $relations = [], int|string $dataLimit = DEFAULT_DATA_LIMIT, int $offset = null): Collection|LengthAwarePaginator
     {
         // TODO: Implement getList() method.

@@ -442,6 +442,12 @@
                                         {{ translate('All_Products')}}
                                     </a>
                             </li>
+                            <li class="nav-item dropdown {{request()->is('/')?'active':''}}">
+                                    <a class="nav-link text-capitalize"
+                                       href="{{ route('posts') }}">
+                                        {{ translate('All_Posts')}}
+                                    </a>
+                            </li>
                             
                             @if ($web_config['digital_product_setting'] && count($web_config['publishing_houses']) == 1)
                                 <li class="nav-item dropdown d-none d-md-block {{request()->is('/')?'active':''}}">

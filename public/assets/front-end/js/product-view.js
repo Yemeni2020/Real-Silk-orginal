@@ -39,6 +39,28 @@ function getProductListFilterRender() {
         },
     });
 }
+function getPostListFilterRender() {
+    const baseUrl = document.getElementById("form-filter-post").action;
+    const queryParams = 'category_id='+$("#category_id").val();
+    const newUrl = baseUrl + '?' + queryParams;
+    history.pushState(null, null, newUrl);
+
+    $.get({
+        url: baseUrl,
+        dataType: 'json',
+        beforeSend: function () {
+            $('#loading').show();
+        },
+        success: function (response) {
+            $('#ajax-products').html(response.view);
+            $(".view-page-item-count").html(response.total_product);
+            renderQuickViewFunction()
+        },
+        complete: function () {
+            $('#loading').hide();
+        },
+    });
+}
 
 $('.product-list-filter-on-viewpage').on('change', function (){
     productListPageData.sort_by = $(this).val();
@@ -48,6 +70,10 @@ $('.product-list-filter-on-viewpage').on('change', function (){
 $('.filter-on-product-filter-change').on('change', function () {
     productListPageData.data_from = $(this).val();
     getProductListFilterRender();
+});
+$('.filter-on-post-filter-change').on('change', function () {
+    productListPageData.data_from = $(this).val();
+    getPostListFilterRender();
 });
 
 $('.filter-on-product-type-change').on('change', function () {

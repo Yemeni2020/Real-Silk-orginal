@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 use PhpParser\JsonDecoder;
 use App\Services\OpenAIService;
 use App\Services\DeepSeekAIService;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use App\Repositories\PostRepository;
 
 use function React\Promise\all;
 
@@ -23,10 +25,14 @@ class PostService
 {
     use FileManagerTrait;
 
-    public function __construct(private readonly Color $color,private readonly OpenAIService $OpenAIService,private readonly DeepSeekAIService $DeepSeekAIService)
+    public function __construct(private readonly Color $color,private readonly OpenAIService $OpenAIService,private readonly DeepSeekAIService $DeepSeekAIService,private readonly PostRepository $postRepo)
     {
     }
-
+    public function listPosts($filters,int $perPage = 10): LengthAwarePaginator
+    {
+        return $this->postRepo->getAllPostsPaginated($filters, 10);
+    }
+    
     public function getProcessedImages(object $request): array
     {
         $colorImageSerial = [];
