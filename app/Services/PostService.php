@@ -30,7 +30,7 @@ class PostService
     }
     public function listPosts($filters,int $perPage = 10): LengthAwarePaginator
     {
-        return $this->postRepo->getAllPostsPaginated($filters, 10);
+        return $this->postRepo->getAllPostsPaginated($filters, $perPage);
     }
     
     public function getProcessedImages(object $request): array

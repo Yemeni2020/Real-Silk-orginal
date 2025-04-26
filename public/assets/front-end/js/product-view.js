@@ -46,15 +46,15 @@ function getPostListFilterRender() {
     history.pushState(null, null, newUrl);
 
     $.get({
-        url: baseUrl,
+        url: newUrl,
         dataType: 'json',
         beforeSend: function () {
             $('#loading').show();
         },
         success: function (response) {
-            $('#ajax-products').html(response.view);
-            $(".view-page-item-count").html(response.total_product);
-            renderQuickViewFunction()
+            console.log(response.total_posts);
+            $('#ajax-posts').html(response.view);
+            $(".view-page-item-count").html(response.total_posts);
         },
         complete: function () {
             $('#loading').hide();

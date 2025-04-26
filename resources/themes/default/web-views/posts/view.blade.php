@@ -1,4 +1,5 @@
 @extends('layouts.front-end.app')
+@section('title',translate('posts'))
 
 
 @push('css_or_js')
@@ -9,7 +10,7 @@
     content="{{ substr(strip_tags(str_replace('&nbsp;', ' ', $web_config['about']->value)), 0, 160) }}">
 
 <meta property="twitter:card" content="{{$web_config['web_logo']['path']}}" />
-<meta property="twitter:title" content="Products of {{$web_config['name']}}" />
+<meta property="twitter:title" content="posts of {{$web_config['name']}}" />
 <meta property="twitter:url" content="{{env('APP_URL')}}">
 <meta property="twitter:description"
     content="{{ substr(strip_tags(str_replace('&nbsp;', ' ', $web_config['about']->value)),0,160) }}">
@@ -29,7 +30,6 @@
 
 </div>
 <div class="container">
-    <h1 class="mb-4">{{ translate('posts') }}</h1>
 
     <form method="GET" action="{{ route('posts') }}" id="form-filter-post" class="mb-4">
         <div class="row g-2">
@@ -54,25 +54,9 @@
             </div>
         </div>
     </form>
+    <div id="ajax-posts">
+        @include('web-views.posts.posts-card', ['posts' => $posts])
 
-    <div class="list-group">
-        @foreach($posts as $post)
-            <a href="{{ route('posts.show', $post->slug) }}" class="list-group-item list-group-item-action mb-3 shadow-sm">
-                <div class="d-flex align-items-center">
-                    @if($post->thumbnail)
-                        <img src="{{ getStorageImages(path: $post->thumbnail_full_url, type: 'product') }}" class="img-thumbnail me-3" style="width: 100px; height: 100px;" alt="{{ $post->title }}">
-                    @endif
-                    <div>
-                        <h5 class="mb-1">{{ $post->title }}</h5>
-                        <p class="mb-1 text-muted small">{{ Str::limit(strip_tags($post->details), 100, '...') }}</p>
-                    </div>
-                </div>
-            </a>
-        @endforeach
-    </div>
-
-    <div class="mt-4">
-        {{ $posts->withQueryString()->links() }}
     </div>
 </div>
 @endsection

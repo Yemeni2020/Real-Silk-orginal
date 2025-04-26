@@ -53,14 +53,20 @@ class PostListController extends Controller
         };
     }
 
-    public function default_theme($request): View|JsonResponse|Redirector|RedirectResponse
+    public function default_theme(Request $request): View|JsonResponse|Redirector|RedirectResponse
     {
         $filters = $request->only('search', 'category_id');
-        $posts = $this->postService->listPosts($filters,5); // 10 بوستات بكل صفحة
+        $posts = $this->postService->listPosts($filters,perPage:1); // 10 بوستات بكل صفحة
         $categories = CategoryPost::all(); // لو عندك تصنيفات جاهزة للعرض
 
-        return view(VIEW_FILE_NAMES['posts_view_page'], compact('posts','categories'));
+        if(request()->ajax()){
+            return response()->json([
+                'view' => view('web-views.posts.posts-card', compact('posts'))->render(),
+                'total_posts' => count($posts),
+            ]);
+        }
+        
+        return view(VIEW_FILE_NAMES['posts_view_page'], compact('posts','categories','filters'));
     }
-
 
 }
