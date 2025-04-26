@@ -22,7 +22,7 @@ enum Post
     const VIEW = [
         URI => 'view',
         VIEW => 'admin-views.post.product.view',
-        ROUTE => 'admin.products.view'
+        ROUTE => 'admin.post.view'
     ];
     const SKU_COMBINATION = [
         URI => 'sku-combination',

@@ -27,7 +27,7 @@ $auto_translate=getWebConfig("auto_translate");
             </h2>
         </div>
 
-        <form class="product-form text-start" action="{{ request('product-gallery')==1? route('admin.products.add') : route('admin.products.update',$product->id) }}" method="post"
+        <form class="product-form text-start" action="{{ request('product-gallery')==1? route('admin.products.add') : route('admin.post.update',$post->id) }}" method="post"
               enctype="multipart/form-data" id="product_form">
             @csrf
 
@@ -45,9 +45,9 @@ $auto_translate=getWebConfig("auto_translate");
                 <div class="card-body">
                     @foreach($languages as $language)
                             <?php
-                            if (count($product['translations'])) {
+                            if (count($post['translations'])) {
                                 $translate = [];
-                                foreach ($product['translations'] as $translation) {
+                                foreach ($post['translations'] as $translation) {
                                     if ($translation->locale == $language && $translation->key == "name") {
                                         $translate[$language]['name'] = $translation->value;
                                     }
@@ -72,7 +72,7 @@ $auto_translate=getWebConfig("auto_translate");
                                 @endif
                                 <input type="text" {{ $language == $curnnet_lang? 'required':''}} name="name[]"
                                        id="{{ $language}}_name"
-                                       value="{{ $translate[$language]['name']??$product['name']}}"
+                                       value="{{ $translate[$language]['name']??$post['name']}}"
                                        class="form-control {{ $language == $curnnet_lang ? 'product-title-default-language' : '' }}" placeholder="{{ translate('new_Product') }}" required>
                             </div>
                             <input type="hidden" name="lang[]" value="{{ $language}}">
@@ -84,7 +84,7 @@ $auto_translate=getWebConfig("auto_translate");
                                     @endif
                                 </label>
                                 <textarea id="{{ $language }}_description" name="description[]" class="summernote {{ $language == $curnnet_lang ? 'product-description-default-language' : '' }}"
-                                >{!! $translate[$language]['description']??$product['details'] !!}</textarea>
+                                >{!! $translate[$language]['description']??$post['details'] !!}</textarea>
                             </div>
                         </div>
                     @endforeach
@@ -134,608 +134,16 @@ $auto_translate=getWebConfig("auto_translate");
                                     data-element-type="select">
                                     <option value="0" selected disabled>---{{ translate('select') }}---</option>
                                     @foreach($categories as $category)
-                                        <option value="{{ $category['id']}}" {{ $category->id==$product['category_id'] ? 'selected' : ''}}>{{ $category['defaultName']}}</option>
+                                        <option value="{{ $category['id']}}" {{ $category->id==$post['category_id'] ? 'selected' : ''}}>{{ $category['defaultName']}}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
 
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <div class="form-group">
-                                <label class="title-color">{{ translate('sub_Category') }}</label>
-                                <select
-                                    class="js-example-basic-multiple js-states js-example-responsive form-control action-get-request-onchange"
-                                    name="sub_category_id" id="sub-category-select"
-                                    data-id="{{ $product['sub_category_id'] }}"
-                                    data-url-prefix="{{ url('/admin/products/get-categories?parent_id=') }}"
-                                    data-element-id="sub-sub-category-select"
-                                    data-element-type="select">
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <div class="form-group">
-                                <label class="title-color">{{ translate('sub_Sub_Category') }}</label>
-                                <select
-                                    class="js-example-basic-multiple js-states js-example-responsive form-control"
-                                    data-id="{{ $product['sub_sub_category_id'] }}"
-                                    name="sub_sub_category_id" id="sub-sub-category-select">
-                                </select>
-                            </div>
-                        </div>
-                        @if($brandSetting)
-                            <div class="col-md-6 col-lg-4 col-xl-3 physical_product_show">
-                                <div class="form-group">
-                                    <label class="title-color">
-                                        {{ translate('brand') }}
-                                        <span class="input-required-icon">*</span>
-                                    </label>
-                                    <select
-                                        class="js-example-basic-multiple js-states js-example-responsive form-control"
-                                        name="brand_id">
-                                        <option value="{{null}}" selected disabled>---{{ translate('select') }}---
-                                        </option>
-                                        @foreach($brands as $brand)
-                                            <option
-                                                value="{{ $brand['id']}}" {{ $brand['id']==$product->brand_id ? 'selected' : ''}} >{{ $brand['defaultName']}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        @endif
-
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <div class="form-group">
-                                <label class="title-color">
-                                    {{ translate('product_type') }}
-                                    <span class="input-required-icon">*</span>
-                                </label>
-                                <select name="product_type" id="product_type" class="form-control" required>
-                                    <option value="physical" {{ $product->product_type=='physical' ? 'selected' : ''}}>
-                                        {{ translate('physical') }}
-                                    </option>
-                                    @if($digitalProductSetting)
-                                        <option value="digital" {{ $product->product_type=='digital' ? 'selected' : ''}}>
-                                            {{ translate('digital') }}
-                                        </option>
-                                    @endif
-                                    <option value="Service" {{ $product->product_type=='Service' ? 'selected' : ''}}>
-                                        {{ translate('Service') }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 col-lg-4 col-xl-3 digital-product-sections-show">
-                            <label class="title-color">
-                                {{ translate("Author") }}/{{ translate("Creator") }}/{{ translate("Artist") }}
-                            </label>
-                            <select class="multiple-select2 form-control" name="authors[]" multiple="multiple" id="mySelect">
-                                @foreach($digitalProductAuthors as $authors)
-                                    <option value="{{ $authors['name'] }}" {{ in_array($authors['id'], $productAuthorIds) ? 'selected' : '' }}>{{ $authors['name'] }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-md-6 col-lg-4 col-xl-3 digital-product-sections-show">
-                            <label class="title-color">{{ translate("Publishing_House") }}</label>
-                            <select class="multiple-select2 form-control" name="publishing_house[]" multiple="multiple">
-                                @foreach($publishingHouseList as $publishingHouse)
-                                    <option value="{{ $publishingHouse['name'] }}"
-                                        {{ in_array($publishingHouse['id'], $productPublishingHouseIds) ? 'selected' : '' }}>{{ $publishingHouse['name'] }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-md-6 col-lg-4 col-xl-3" id="digital_product_type_show">
-                            <div class="form-group">
-                                <label for="digital_product_type"
-                                       class="title-color">{{ translate("delivery_type") }}</label>
-                                <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                      title="{{ translate('for_Ready_Product_deliveries,_customers_can_pay_&_instantly_download_pre-uploaded_digital_products._For_Ready_After_Sale_deliveries,_customers_pay_first,_then_admin_uploads_the_digital_products_that_become_available_to_customers_for_download') }}">
-                                    <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
-                                </span>
-                                <select name="digital_product_type" id="digital_product_type" class="form-control"
-                                        required>
-                                    <option value="{{ old('category_id') }}"
-                                            {{ !$product->digital_product_type ? 'selected' : ''}} disabled>
-                                        ---{{ translate('select') }}---
-                                    </option>
-                                    <option
-                                        value="ready_after_sell" {{ $product->digital_product_type=='ready_after_sell' ? 'selected' : ''}}>{{ translate("ready_After_Sell") }}</option>
-                                    <option
-                                        value="ready_product" {{ $product->digital_product_type=='ready_product' ? 'selected' : ''}}>{{ translate("ready_Product") }}</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <div class="form-group">
-                                <label class="title-color d-flex justify-content-between gap-2">
-                                    <span class="d-flex align-items-center gap-2">
-                                        {{ translate('product_SKU') }}
-                                        <span class="input-required-icon">*</span>
-                                        <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                              title="{{ translate('create_a_unique_product_code_by_clicking_on_the_Generate_Code_button') }}">
-                                            <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
-                                        </span>
-                                    </span>
-                                    <span class="style-one-pro cursor-pointer user-select-none text--primary action-onclick-generate-number" data-input="#generate_number">
-                                        {{ translate('generate_code') }}
-                                    </span>
-                                </label>
-
-                                <input type="text" id="generate_number" name="code" class="form-control"
-                                       value="{{request('product-gallery') ? ' ':$product->code}}" placeholder="{{ translate('ex').': YU62TN'}}" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4 col-xl-3 physical_product_show">
-                            <div class="form-group">
-                                <label class="title-color">{{ translate('unit') }}</label>
-                                <select
-                                    class="js-example-basic-multiple js-states js-example-responsive form-control"
-                                    name="unit">
-                                    @foreach(units() as $unit)
-                                        <option
-                                            value={{ $unit}} {{ $product->unit==$unit ? 'selected' : ''}}>{{ $unit}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="form-group">
-                                <label class="title-color d-flex align-items-center gap-2">
-                                    {{ translate('search_tags') }}
-                                    <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                          title="{{ translate('add_the_product_search_tag_for_this_product_that_customers_can_use_to_search_quickly') }}">
-                                        <img width="16" src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}"
-                                             alt="">
-                                    </span>
-                                </label>
-                                <input type="text" class="form-control" name="tags"
-                                       value="@foreach($product->tags as $c) {{ $c->tag.','}} @endforeach"
-                                       data-role="tagsinput">
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card mt-3 rest-part">
-                <div class="card-header">
-                    <div class="d-flex gap-2">
-                        <i class="tio-user-big"></i>
-                        <h4 class="mb-0">{{ translate('Pricing_&_others') }}</h4>
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    <div class="row align-items-end">
-                        <div class="col-md-6 col-lg-4 col-xl-3 d-none">
-                            <div class="form-group">
-                                <div class="d-flex gap-2">
-                                    <label class="title-color">{{ translate('purchase_price') }}
-                                        ({{ getCurrencySymbol(currencyCode: getCurrencyCode()) }}
-                                        ) </label>
-
-                                    <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                          title="{{ translate('add_the_purchase_price_for_this_product') }}.">
-                                        <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
-                                    </span>
-                                </div>
-
-                                <input type="number" min="0" step="0.01"
-                                       placeholder="{{ translate('purchase_price') }}"
-                                       name="purchase_price" class="form-control"
-                                       value={{ usdToDefaultCurrency($product->purchase_price) }} required>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <div class="form-group">
-                                <div class="d-flex gap-2">
-                                    <label class="title-color">
-                                        {{ translate('unit_price') }}
-                                        <span class="input-required-icon">*</span>
-                                        ({{ getCurrencySymbol(currencyCode: getCurrencyCode()) }})
-                                    </label>
-
-                                    <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                          title="{{ translate('set_the_selling_price_for_each_unit_of_this_product.') }} {{ translate('this_Unit_Price_section_won’t_be_applied_if_you_set_a_variation_wise_price.') }}">
-                                        <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
-                                    </span>
-                                </div>
-
-                                <input type="number" min="0" step="0.01"
-                                       placeholder="{{ translate('unit_price') }}" {{CalcCurrency('main_price')}}
-                                       name="unit_price" class="form-control"
-                                       value={{usdToDefaultCurrency($product->unit_price) }} required>
-
-                                <span id="main_price"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4 col-xl-3" id="minimum_order_qty">
-                            <div class="form-group">
-                                <div class="d-flex gap-2">
-                                    <label class="title-color" for="minimum_order_qty">
-                                        {{ translate('minimum_order_qty') }}
-                                        <span class="input-required-icon">*</span>
-                                    </label>
-
-                                    <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                          title="{{ translate('set_the_minimum_order_quantity_that_customers_must_choose._Otherwise,_the_checkout_process_won’t_start') }}.">
-                                        <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
-                                    </span>
-                                </div>
-
-                                <input type="number" min="1" value={{ $product->minimum_order_qty }} step="1"
-                                       placeholder="{{ translate('minimum_order_quantity') }}"
-                                       name="minimum_order_qty" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4 col-xl-3 physical_product_show" id="quantity">
-                            <div class="form-group">
-                                <div class="d-flex gap-2">
-                                    <label class="title-color" for="current_stock">
-                                        {{ translate('current_stock_qty') }}
-                                        <span class="input-required-icon">*</span>
-                                    </label>
-
-                                    <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                          title="{{ translate('add_the_Stock_Quantity_of_this_product_that_will_be_visible_to_customers') }}.">
-                                        <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
-                                    </span>
-                                </div>
-                                <input type="number" min="0" value={{ $product->current_stock }} step="1"
-                                       placeholder="{{ translate('quantity') }}"
-                                       name="current_stock" id="current_stock" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <div class="form-group">
-                                <div class="d-flex gap-2">
-                                    <label class="title-color" for="discount_Type">
-                                        {{ translate('discount_Type') }}
-                                    </label>
-
-                                    <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                          title="{{ translate('if_Flat_discount_amount_will_be_set_as_fixed_amount.') }} {{ translate('if_Percentage_discount_amount_will_be_set_as_percentage.') }}">
-                                        <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
-                                    </span>
-                                </div>
-
-                                <select class="form-control" name="discount_type" id="discount_type">
-                                    <option value="percent" {{ $product['discount_type']=='percent'?'selected':''}}>
-                                        {{ translate('percent') }}
-                                    </option>
-                                    <option value="flat" {{ $product['discount_type']=='flat'?'selected':''}}>
-                                        {{ translate('flat') }}
-                                    </option>
-                                    
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <div class="form-group">
-                                <div class="d-flex gap-2">
-                                    <label class="title-color" for="discount">
-                                        {{ translate('discount_amount') }}
-                                        <span class="discount_amount_symbol">({{ $product->discount_type=='flat'? getCurrencySymbol(currencyCode: getCurrencyCode()) : '%' }})</span>
-                                    </label>
-
-                                    <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                          title="{{ translate('add_the_discount_amount_in_percentage_or_a_fixed_value_here') }}.">
-                                        <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
-                                    </span>
-                                </div>
-
-                                <input type="number" min="0"
-                                       value="{{ $product->discount_type=='flat'?usdToDefaultCurrency($product->discount): $product->discount}}" step="0.01"
-                                       placeholder="{{ translate('ex: 5') }}" name="discount" id="discount"
-                                       class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <div class="form-group">
-                                <div class="d-flex gap-2">
-                                    <label class="title-color" for="tax">
-                                        {{ translate('tax_amount') }}(%)
-                                        <span class="input-required-icon">*</span>
-                                    </label>
-
-                                    <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                          title="{{ translate('set_the_Tax_Amount_in_percentage_here') }}">
-                                        <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
-                                    </span>
-                                </div>
-
-                                <input type="number" min="0" value={{ $product->tax ?? 15 }} step="0.01"
-                                       placeholder="{{ translate('tax') }}" name="tax" id="tax"
-                                       class="form-control" required>
-                                <input name="tax_type" value="percent" class="d-none">
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <div class="form-group">
-                                <div class="d-flex gap-2">
-                                    <label class="title-color" for="tax_model">
-                                        {{ translate('tax_calculation') }}
-                                        <span class="input-required-icon">*</span>
-                                    </label>
-
-                                    <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                          title="{{ translate('set_the_tax_calculation_method_from_here.').' '.translate('select_Include_with_product_to_combine_product_price_and_tax_on_the_checkout.').' '.translate('pick_Exclude_from_product_to_display_product_price_and_tax_amount_separately.') }}">
-                                        <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
-                                    </span>
-                                </div>
-                                <select name="tax_model" id="tax_model" class="form-control" required>
-                                    <option
-                                        value="include" {{ $product->tax_model == 'include' ? 'selected':'' }}>{{ translate("include_with_product") }}</option>
-                                    <option
-                                        value="exclude" {{ $product->tax_model == 'exclude' ? 'selected':'' }}>{{ translate("exclude_with_product") }}</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4 col-xl-3 physical_product_show" id="shipping_cost">
-                            <div class="form-group">
-                                <div class="d-flex gap-2">
-                                    <label class="title-color">
-                                        {{ translate('shipping_cost') }}
-                                        ({{ getCurrencySymbol(currencyCode: getCurrencyCode()) }})
-                                        <span class="input-required-icon">*</span>
-                                    </label>
-
-                                    <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                          title="{{ translate('set_the_shipping_cost_for_this_product_here._Shipping_cost_will_only_be_applicable_if_product-wise_shipping_is_enabled.') }}">
-                                        <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
-                                    </span>
-
-                                    
-                                </div>
-
-                                <input type="number" min="0" value="{{usdToDefaultCurrency($product->shipping_cost) }}"
-                                       step="1" {{CalcCurrency('main_price_shipping')}}
-                                       placeholder="{{ translate('shipping_cost') }}" 
-                                       name="shipping_cost" class="form-control" required>
-                                       <span id="main_price_shipping"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6 physical_product_show" id="shipping_cost_multy">
-                            <div class="form-group">
-                                <div
-                                    class="form-control h-auto min-form-control-height d-flex align-items-center flex-wrap justify-content-between gap-2">
-                                    <div class="d-flex gap-2">
-                                        <label class="title-color text-capitalize"
-                                               for="shipping_cost">{{ translate('shipping_cost_multiply_with_quantity') }}</label>
-
-                                        <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                              title="{{ translate('if_enabled,_the_shipping_charge_will_increase_with_the_product_quantity') }}">
-                                            <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <label class="switcher">
-                                            <input class="switcher_input" type="checkbox" name="multiply_qty"
-                                                   id="" {{ $product['multiply_qty'] == 1?'checked':''}}>
-                                            <span class="switcher_control"></span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 physical_product_show" id="shipping_cost_multy2">
-                            <div class="form-group">
-                                <div
-                                    class="form-control h-auto min-form-control-height d-flex align-items-center flex-wrap justify-content-between gap-2">
-                                    <fieldset>
-                                        <legend>{{translate("Production period")}}:</legend>
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <input type="radio" name="period" @if($product['production_period']=="1-3") checked @endif value="1-3" id="period">
-                                                <span>{{translate("1-3 dayes")}}</span>
-                                            </div>
-                                            <div class="col-6">
-                                                <input type="radio" name="period" @if($product['production_period']=="4-7") checked @endif value="4-7" id="period">
-                                                <span>{{translate("4-7 dayes")}}</span>
-                                            </div>
-                                            <div class="col-6">
-                                                <input type="radio" name="period" @if($product['production_period']=="8-11") checked @endif value="8-11" id="period">
-                                                <span>{{translate("8-11 dayes")}}</span>
-                                            </div>
-                                            <div class="col-6">
-                                                <input type="radio" name="period" @if($product['production_period']=="12-16") checked @endif value="12-16" id="period">
-                                                <span>{{translate("12-16 dayes")}}</span>
-                                            </div>
-                                            <div class="col-6">
-                                                <input type="radio" name="period" @if($product['production_period']!="1-3" && $product['production_period']!="4-7" && $product['production_period']!="8-11" && $product['production_period']!="12-16" && isset($product['production_period']) ) checked @endif value="custom" id="period">
-                                                <input type="number" style="width: 80px;" @if($product['production_period']!="1-3" && $product['production_period']!="4-7" && $product['production_period']!="8-11" && $product['production_period']!="12-16" && isset($product['production_period']) ) value="{{$product['production_period']}}" @endif name="custom_period" min=1 >
-                                                <span>{{translate("dayes")}}</span>
-                                            </div>
-                                        </div>
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
- 
-                                    </fieldset>
-                                   
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card mt-3 rest-part physical_product_show">
-                <div class="card-header">
-                    <div class="d-flex gap-2">
-                        <i class="tio-user-big"></i>
-                        <h4 class="mb-0">{{ translate('Add_Offers') }}</h4>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row align-items-end">
-                        <div class="col-md-6">
-                            <div class="mb-3 d-flex align-items-center gap-2">
-                                <label for="colors" class="title-color mb-0">
-                                    {{ translate('Add_Offers') }} :
-                                </label>
-                                
-                            </div>
-                            
-                            <button type="button" class="btn btn--primary px-5 " from="{{ translate('qty_from') }}" to="{{ translate('qty_to') }}" price="{{ translate('Price_Unit') }}" id="add_Offers">+</button>
-
-                            <!-- <select
-                                class="js-example-basic-multiple js-states js-example-responsive form-control color-var-select"
-                                name="colors[]" multiple="multiple" id="colors-selector" disabled>
-                                @foreach ($colors as $key => $color)
-                                    <option value="{{ $color->code }}">
-                                        {{ $color['name'] }}
-                                    </option>
-                                @endforeach
-                            </select> -->
-                        </div>
-
-                        <div class="col-md-12 mt-2 mb-2">
-                            <div class="row customer_choice_options mt-2" id="offers_options">
-                            @include('admin-views.product.partials.offers_options', ['offers'=>json_decode($product->offers,true)])
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card mt-3 rest-part digitalProductVariationSetupSection">
-                <div class="card-header">
-                    <div class="d-flex gap-2">
-                        <i class="tio-user-big"></i>
-                        <h4 class="mb-0">{{ translate('product_variation_setup') }}</h4>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="row g-2" id="digital-product-type-choice-section">
-                        <div class="col-sm-6 col-md-4 col-xxl-3">
-                            <div class="multi--select">
-                                <label class="title-color">{{ translate('File_Type') }}</label>
-                                <select class="js-example-basic-multiple js-select2-custom form-control" name="file-type" multiple id="digital-product-type-select">
-                                    @foreach($digitalProductFileTypes as $FileType)
-                                        @if($product->digital_product_file_types)
-                                            <option value="{{ $FileType }}" {{ in_array($FileType, $product->digital_product_file_types) ? 'selected':'' }}>
-                                                {{ translate($FileType) }}
-                                            </option>
-                                        @else
-                                            <option value="{{ $FileType }}">{{ translate($FileType) }}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        @if($product->digital_product_file_types && count($product->digital_product_file_types) > 0)
-                            @foreach($product->digital_product_file_types as $digitalProductFileTypes)
-                                <div class="col-sm-6 col-md-4 col-xxl-3 extension-choice-section">
-                                    <div class="form-group">
-                                        <input type="hidden" name="extensions_type[]" value="{{ $digitalProductFileTypes }}">
-                                        <label class="title-color">
-                                            {{ $digitalProductFileTypes }}
-                                        </label>
-                                        <input type="text" name="extensions[]" value="{{ $digitalProductFileTypes }}" hidden>
-                                        <div class="">
-                                            @if($product->digital_product_extensions && isset($product->digital_product_extensions[$digitalProductFileTypes]))
-                                                <input type="text" class="form-control" name="extensions_options_{{ $digitalProductFileTypes }}[]"
-                                                       placeholder="{{ translate('enter_choice_values') }}" data-role="tagsinput"
-                                                       value="@foreach($product->digital_product_extensions[$digitalProductFileTypes] as $extensions){{ $extensions.','}}@endforeach"
-                                                       onchange="getUpdateDigitalVariationFunctionality()"
-                                                >
-                                            @else
-                                                <input type="text" class="form-control" name="extensions_options_{{ $digitalProductFileTypes }}[]"
-                                                       placeholder="{{ translate('enter_choice_values') }}" data-role="tagsinput"
-                                                       onchange="getUpdateDigitalVariationFunctionality()"
-                                                >
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        @endif
-                    </div>
-                </div>
-            </div>
-
-            <div class="card mt-3 rest-part" id="digital-product-variation-section"></div>
-
-            <div class="card mt-3 rest-part physical_product_show">
-                <div class="card-header">
-                    <div class="d-flex gap-2">
-                        <i class="tio-user-big"></i>
-                        <h4 class="mb-0">{{ translate('product_variation_setup') }}</h4>
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    <div class="row align-items-end">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <div class="mb-3 d-flex align-items-center gap-2">
-                                    <label class="mb-0 title-color">
-                                        {{ translate('select_colors') }} :
-                                    </label>
-                                    <label class="switcher">
-                                        <input type="checkbox" class="switcher_input" id="product-color-switcher"
-                                               name="colors_active" {{count($product['colors'])>0?'checked':''}}>
-                                        <span class="switcher_control"></span>
-                                    </label>
-                                </div>
-
-                                <select
-                                    class="js-example-basic-multiple js-states js-example-responsive form-control color-var-select"
-                                    name="colors[]" multiple="multiple"
-                                    id="colors-selector" {{count($product['colors'])>0?'':'disabled'}}>
-                                    @foreach ($colors as $key => $color)
-                                        <option
-                                            value={{ $color->code }} {{in_array($color->code,$product['colors'])?'selected':''}}>
-                                            {{ $color['name']}}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="choice_attributes" class="pb-1 title-color">
-                                    {{ translate('select_attributes') }} :
-                                </label>
-                                <select
-                                    class="js-example-basic-multiple js-states js-example-responsive form-control"
-                                    name="choice_attributes[]" id="choice_attributes" multiple="multiple">
-                                    @foreach ($attributes as $key => $attribute)
-                                        @if($product['attributes']!='null')
-                                            <option value="{{ $attribute['id'] }}" {{ in_array($attribute->id,json_decode($product['attributes'], true))? 'selected':'' }}>
-                                                {{ $attribute['name']}}
-                                            </option>
-                                        @else
-                                            <option value="{{ $attribute['id']}}">{{ $attribute['name']}}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12 mt-2 mb-2">
-                            <div class="sku_combination table-responsive form-group mt-2" id="sku_combination">
-                                @include('admin-views.product.partials._edit_sku_combinations',['combinations' => json_decode($product['variation'], true),'load'=>true])
-                            </div>    
-                            <div class="row customer_choice_options mt-2" id="customer_choice_options">
-                                @include('admin-views.product.partials._choices',['choice_no'=>json_decode($product['attributes']),'choice_options'=>json_decode($product['choice_options'],true)])
-                            </div>
-                            
-                            
-                        </div>
-
-                    </div>
-                </div>
-            </div>
 
             <div class="mt-3 rest-part">
                 <div class="product-image-wrapper">
@@ -763,7 +171,7 @@ $auto_translate=getWebConfig("auto_translate");
                                                data-imgpreview="pre_img_viewer"
                                                accept=".jpg, .webp, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*">
 
-                                        @if ($product->thumbnail_full_url['path'])
+                                        @if ($post->thumbnail_full_url['path'])
                                             <span class="delete_file_input btn btn-outline-danger btn-sm square-btn d-flex">
                                                 <i class="tio-delete"></i>
                                             </span>
@@ -775,7 +183,7 @@ $auto_translate=getWebConfig("auto_translate");
 
                                         <div class="img_area_with_preview position-absolute z-index-2">
                                             <img id="pre_img_viewer" class="h-auto aspect-1 bg-white onerror-add-class-d-none" alt=""
-                                                 src="{{ getStorageImages(path: $product->thumbnail_full_url, type:'backend-product') }}">
+                                                 src="{{ getStorageImages(path: $post->thumbnail_full_url, type:'backend-product') }}">
                                         </div>
                                         <div
                                             class="position-absolute h-100 top-0 w-100 d-flex align-content-center justify-content-center">
@@ -843,9 +251,7 @@ $auto_translate=getWebConfig("auto_translate");
                                 <div class="coba-area">
 
                                     <div class="row g-2" id="additional_Image_Section">
-
-                                        @if(count($product->colors) == 0)
-                                            @foreach ($product->images_full_url as $key => $photo)
+                                    @foreach ($post->images_full_url as $key => $photo)
                                                 @php($unique_id = rand(1111,9999))
                                                 <div class="col-sm-12 col-md-4" id="addition-image-section-{{$key}}">
                                                     <div
@@ -856,7 +262,7 @@ $auto_translate=getWebConfig("auto_translate");
                                                             </button>
                                                         @else
                                                         <a class="delete_file_input_css btn btn-outline-danger btn-sm square-btn"
-                                                           href="{{ route('admin.products.delete-image',['id'=>$product['id'],'name'=>$photo['key']]) }}">
+                                                           href="{{ route('admin.post.delete-image',['id'=>$post['id'],'name'=>$photo['key']]) }}">
                                                             <i class="tio-delete"></i>
                                                         </a>
                                                         @endif
@@ -866,6 +272,7 @@ $auto_translate=getWebConfig("auto_translate");
                                                             <img id="additional_Image_{{ $unique_id }}" alt=""
                                                                  class="h-auto aspect-1 bg-white onerror-add-class-d-none"
                                                                  src="{{ getStorageImages(path: $photo, type:'backend-product') }}">
+                                                                 
                                                             @if(request('product-gallery'))
                                                                 <input type="text" name="existing_images[]" value="{{$photo['key']}}" hidden>
                                                             @endif
@@ -883,89 +290,6 @@ $auto_translate=getWebConfig("auto_translate");
                                                     </div>
                                                 </div>
                                             @endforeach
-                                        @else
-                                            @if($product->color_image)
-                                                @foreach ($product->color_images_full_url as $photo)
-                                                    @if($photo['color'] == null)
-                                                        @php($unique_id = rand(1111,9999))
-                                                        <div class="col-sm-12 col-md-4" id="addition-image-section-{{$key}}">
-                                                            <div
-                                                                class="custom_upload_input custom-upload-input-file-area position-relative border-dashed-2">
-                                                                @if(request('product-gallery'))
-                                                                    <button class="delete_file_input_css btn btn-outline-danger btn-sm square-btn remove-addition-image-for-product-gallery" data-section-remove-id="addition-image-section-{{$key}}">
-                                                                        <i class="tio-delete"></i>
-                                                                    </button>
-                                                                @else
-                                                                <a class="delete_file_input_css btn btn-outline-danger btn-sm square-btn"
-                                                                   href="{{ route('admin.products.delete-image',['id'=>$product['id'],'name'=>$photo['image_name']['key'],'color'=>'null']) }}">
-                                                                    <i class="tio-delete"></i>
-                                                                </a>
-                                                                @endif
-
-                                                                <div
-                                                                    class="img_area_with_preview position-absolute z-index-2 border-0">
-                                                                    <img id="additional_Image_{{ $unique_id }}" alt=""
-                                                                         class="h-auto aspect-1 bg-white onerror-add-class-d-none"
-                                                                         src="{{ getStorageImages(path: $photo['image_name'], type: 'backend-product') }}">
-                                                                    @if(request('product-gallery'))
-                                                                        <input type="text" name="existing_images[]" value="{{$photo['image_name']['key']}}" hidden>
-                                                                    @endif
-                                                                </div>
-                                                                <div
-                                                                    class="position-absolute h-100 top-0 w-100 d-flex align-content-center justify-content-center">
-                                                                    <div
-                                                                        class="d-flex flex-column justify-content-center align-items-center">
-                                                                        <img alt=""
-                                                                            src="{{ dynamicAsset(path: 'public/assets/back-end/img/icons/product-upload-icon.svg') }}"
-                                                                            class="w-75">
-                                                                        <h3 class="text-muted">{{ translate('Upload_Image') }}</h3>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    @endif
-                                                @endforeach
-                                            @else
-                                                @foreach ($product->images_full_url as $key => $photo)
-                                                    @php($unique_id = rand(1111,9999))
-
-                                                    <div class="col-sm-12 col-md-4" id="addition-image-section-{{$key}}">
-                                                        <div class="custom_upload_input custom-upload-input-file-area position-relative border-dashed-2">
-                                                            @if(request('product-gallery'))
-                                                                <button class="delete_file_input_css btn btn-outline-danger btn-sm square-btn remove-addition-image-for-product-gallery" data-section-remove-id="addition-image-section-{{$key}}">
-                                                                    <i class="tio-delete"></i>
-                                                                </button>
-                                                            @else
-                                                                <a class="delete_file_input_css btn btn-outline-danger btn-sm square-btn"
-                                                                   href="{{ route('admin.products.delete-image',['id'=>$product['id'],'name'=>$photo['key']]) }}">
-                                                                    <i class="tio-delete"></i>
-                                                                </a>
-                                                            @endif
-
-                                                            <div
-                                                                class="img_area_with_preview position-absolute z-index-2 border-0">
-                                                                <img id="additional_Image_{{ $unique_id }}" alt=""
-                                                                     class="h-auto aspect-1 bg-white onerror-add-class-d-none"
-                                                                     src="{{ getStorageImages(path: $photo, type:'backend-product' ) }}">
-                                                                @if(request('product-gallery'))
-                                                                    <input type="text" name="existing_images[]" value="{{$photo['key']}}" hidden>
-                                                                @endif
-                                                            </div>
-                                                            <div
-                                                                class="position-absolute h-100 top-0 w-100 d-flex align-content-center justify-content-center">
-                                                                <div
-                                                                    class="d-flex flex-column justify-content-center align-items-center">
-                                                                    <img alt="" class="w-75"
-                                                                        src="{{ dynamicAsset(path: 'public/assets/back-end/img/icons/product-upload-icon.svg') }}">
-                                                                    <h3 class="text-muted">{{ translate('Upload_Image') }}</h3>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            @endif
-                                        @endif
-
                                         <div class="col-sm-12 col-md-4">
                                             <div class="custom_upload_input position-relative border-dashed-2">
                                                 <input type="file" name="images[]" class="custom-upload-input-file action-add-more-image"
@@ -999,174 +323,15 @@ $auto_translate=getWebConfig("auto_translate");
                         </div>
                     </div>
 
-                    <div class="item-1 digital-product-sections-show">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <div class="form-group">
-                                    <div class="d-flex align-items-center justify-content-between gap-2 mb-1">
-                                        <div>
-                                            <label for="name" class="title-color text-capitalize font-weight-bold mb-0">{{ translate('Product_Preview_File') }}</label>
-                                            <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                                  title="{{ translate('upload_a_suitable_file_for_a_short_product_preview.') }} {{ translate('this_preview_will_be_common_for_all_variations.') }}">
-                                                <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <p class="text-muted">{{ translate('Upload_a_short_preview') }}.</p>
-                                </div>
-                                <div class="image-uploader">
-                                    <input type="file" name="preview_file" class="image-uploader__zip" id="input-file">
-                                    <div class="image-uploader__zip-preview">
-                                        <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/icons/product-upload-icon.svg') }}" class="mx-auto" width="50" alt="">
-                                        <div class="image-uploader__title line--limit-2" data-default="{{ translate('Upload_File') }}">
-                                            @if ($product->preview_file_full_url['path'])
-                                                {{ $product->preview_file }}
-                                            @elseif(request('product-gallery') && $product?->preview_file)
-                                                {{ translate('Upload_File') }}
-                                            @else
-                                                {{ translate('Upload_File') }}
-                                            @endif
-
-                                            @if(request('product-gallery'))
-                                                <input type="hidden" name="existing_preview_file" value="{{ $product?->preview_file }}">
-                                                <input type="hidden" name="existing_preview_file_storage_type" value="{{ $product?->preview_file_storage_type }}">
-                                            @endif
-
-                                        </div>
-                                    </div>
-
-                                    @if ($product->preview_file_full_url['path'])
-                                        <span class="btn btn-outline-danger btn-sm square-btn collapse show zip-remove-btn delete_preview_file_input"
-                                        data-route="{{ route('admin.products.delete-preview-file') }}">
-                                            <i class="tio-delete"></i>
-                                        </span>
-                                    @else
-                                        <span class="btn btn-outline-danger btn-sm square-btn collapse zip-remove-btn">
-                                            <i class="tio-delete"></i>
-                                        </span>
-                                    @endif
-                                </div>
-                                <p class="text-muted mt-2 fz-12">
-                                    {{ translate('Format') }} : {{ " pdf, mp4, mp3" }}
-                                    <br>
-                                    {{ translate('image_size') }} : {{ translate('max') }} {{ "10 MB" }}</p>
-                            </div>
-                        </div>
-                    </div>
+                   
                 </div>
-                <input type="hidden" id="color_image" value="{{ json_encode($product->color_images_full_url) }}">
-                <input type="hidden" id="images" value="{{ json_encode($product->images_full_url) }}">
-                <input type="hidden" id="product_id" name="product_id" value="{{ $product->id }}">
+                <input type="hidden" id="color_image" value="{{ json_encode($post->color_images_full_url) }}">
+                <input type="hidden" id="images" value="{{ json_encode($post->images_full_url) }}">
+                <input type="hidden" id="product_id" name="product_id" value="{{ $post->id }}">
                 <input type="hidden" id="remove_url" value="{{ route('admin.products.delete-image') }}">
             </div>
 
             
-
-
-            <div class="card mt-3 rest-part " id="service_form">
-                <div class="card-header">
-                    <div class="d-flex gap-2">
-                        <i class="tio-user-big"></i>
-                        <h4 class="mb-0">{{ translate('Service_Form') }}</h4>
-                    </div>
-                </div>
-                
-                <div class="card-body">
-                    <div class="row align-items-end">
-                        <div class="col-md-6">
-                            <div class="mb-3 d-flex align-items-center gap-2">
-                                <label for="colors" class="title-color mb-0">
-                                    {{ translate('Service_Form') }} :
-                                </label>
-                                
-                            </div>
-                            <span>{{translate('Add_Faild')}}  </span>
-                            <button type="button" class="btn btn-primary px-5" onclick="$('#btn-edit').hide();$('#btn-add').show();$('#itemName').val('');" id="service_form" data-toggle="modal" data-target="#ServiceNowModal">
-                                +
-                            </button>
-
-                            <table class="table table-hover table-borderless table-thead-bordered table-nowrap table-align-middle card-table w-100 text-start">
-                                <thead class="thead-light thead-50 text-capitalize">
-                                    <tr>
-                                        <th>{{translate('Name')}}</th>
-                                        <th>{{translate('Type')}}</th>
-                                        <th>{{translate('Action')}}</th>
-                                    </tr>
-                                    
-                                </thead>
-                                <tbody id="faild_form">
-
-                                @if(isset($failds))
-                                    @foreach($failds as $faild)
-
-                                        <tr id='faild00{{$faild->id}}'>
-                                        <?php
-                                        
-                                        
-                                        $options = is_array($faild->select_options) ? $faild->select_options : explode(',', $faild->select_options);
-                                        $options=str_replace("[","",$options);
-                                        $options=str_replace("]","",$options);
-                                        $options=str_replace('"',"",$options);
-                                        $select_options = implode(', ', $options); // تحويل المصفوفة إلى سلسلة نصوص
-                                        $item_name=$faild->item_name;
-
-                                        ?>
-
-                                            <td>{{$faild->item_name}}</td>
-                                            <td>{{$faild->item_type}}</td>
-                                            @foreach($languages as $language)
-
-                                            <?php
-                                                $options2 = is_array($faild->getTranslation("select_options",$language)) ? $faild->getTranslation("select_options",$language) : explode(',', $faild->getTranslation("select_options",$language));
-                                                $options2=str_replace("[","",$options2);
-                                                $options2=str_replace("]","",$options2);
-                                                $options2=str_replace('"',"",$options2);
-
-                                                $select_options2 = implode(', ', $options2);
-                                                if($language!="en"){
-                                                    $item_name.=",".$faild->getTranslation("item_name",$language);
-                                                }
-                                                
-
-
-                                            ?>
-
-                                            @if($language!="en")
-                                                <input type='hidden' name='item[selectName{{$language}}][][]' value="{{$select_options2}}" />
-                                            @else
-                                                <input type='hidden' name='item[selectName{{$language}}][][]' value="{{$select_options}}" />
-                                            @endif
-
-                                            @endforeach
-                                            <input type="hidden" name="item[Name][]" value="{{$item_name}}" />
-                                            <td>
-                                                <button onclick="openformedit('00{{$faild->id}}','{{$item_name}}','{{$faild->item_type}}','{{$faild->item_order}}','{{$faild->is_required}}','{{$faild->item_length}}','{{$faild->default_value}}','{{$select_options}}');" type="button" class="btn btn-primary" data-toggle="modal" data-target="#ServiceNowModal"><i class="tio-edit"></i></button>
-                                                <button onclick='deleteFaildItem("00{{$faild->id}}")' type="button" class="btn btn-danger"><i class="tio-delete"></i></button>
-                                            </td>
-                                        
-                                            <input type="hidden" name="item[Type][]" value="{{$faild->item_type}}" />
-                                            <input type="hidden" name="item[Order][]" value="{{$faild->item_order}}" />
-                                            <input type="hidden" name="item[isRequired][]" value="{{$faild->is_required}}" />
-                                            <input type="hidden" name="item[Length][]" value="{{$faild->item_length}}" />
-                                            <input type="hidden" name="item[defaultValue][]" value="{{$faild->default_value}}"/>
-                                            
-                                            
-
-                                        </tr>
-                                    @endforeach
-                                @endif
-                                </tbody>
-                            </table>
-                            
-                        </div>
-
-                        
-
-                        
-                    </div>
-                </div>
-            </div>
-
 
 
 
@@ -1186,7 +351,7 @@ $auto_translate=getWebConfig("auto_translate");
                         <label class="title-color mb-0">{{ translate('youtube_video_link') }}</label>
                         <span class="text-info"> ( {{ translate('optional_please_provide_embed_link_not_direct_link') }}. )</span>
                     </div>
-                    <input type="text" value="{{ $product['video_url']}}" name="video_url"
+                    <input type="text" value="{{ $post['video_url']}}" name="video_url"
                            placeholder="{{ translate('ex').': https://www.youtube.com/embed/5R06LRdUCSE' }}"
                            class="form-control" required>
                 </div>
@@ -1218,15 +383,38 @@ $auto_translate=getWebConfig("auto_translate");
                                         <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
                                     </span>
                                 </label>
-                                <input type="text" name="meta_title" value="{{ $product?->seoInfo?->title ?? $product->meta_title}}" placeholder=""
+                                <input type="text" name="meta_title" value="{{ $post?->seoInfo?->title ?? $post->meta_title}}" placeholder=""
                                        class="form-control">
                             </div>
+                            
+                            <!-- KayWords -->
+                            <div class="form-group">
+                                <label class="title-color">
+                                    {{ translate('meta_kay_words') }}
+                                    <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="{{ translate('add_the_posts_title_name_taglines_etc_here').' '.translate('this_title_will_be_seen_on_Search_Engine_Results_Pages_and_while_sharing_the_posts_link_on_social_platforms') .' [ '. translate('character_Limit') }} : 100 ]">
+                                        <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
+                                    </span>
+                                </label>
+
+                                <input type="text" id="meta_keywords_input" class="form-control" placeholder="{{ translate('meta_keywords') }}">
+                                <small id="meta_keywords_limit" class="text-muted"></small>
+
+                                <!-- hidden input فيه القيم الحقيقية -->
+                                <input type="hidden" name="meta_keywords" id="meta_keywords" value="{{ old('meta_keywords', $post?->meta_keywords) }}">
+
+                                <div id="meta_keywords_tags" class="mt-2" style="display: flex; flex-wrap: wrap; gap: 5px;">
+                                </div>
+                            </div>
+                            <!-- End Input KayWords -->
+
                             <div class="form-group">
                                 <label class="title-color">
                                     {{ translate('meta_Description') }}
                                     <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
                                           data-placement="top"
-                                          @if($product['added_by'] == 'admin')
+                                          @if($post['added_by'] == 'admin')
                                             title="{{ translate('write_a_short_description_of_the_InHouse_shops_product').' '.translate('this_description_will_be_seen_on_Search_Engine_Results_Pages_and_while_sharing_the_products_link_on_social_platforms') .' [ '. translate('character_Limit') }} : 100 ]"
                                           @else
                                             title="{{ translate('write_a_short_description_of_this_shop_product').' '.translate('this_description_will_be_seen_on_Search_Engine_Results_Pages_and_while_sharing_the_products_link_on_social_platforms') .' [ '. translate('character_Limit') }} : 100 ]"
@@ -1237,7 +425,7 @@ $auto_translate=getWebConfig("auto_translate");
                                 </label>
 
                                 <textarea rows="4" type="text" name="meta_description" id="meta_description"
-                                          class="form-control">{{ $product?->seoInfo?->description ??  $product->meta_description}}</textarea>
+                                          class="form-control">{{ $post?->seoInfo?->description ??  $post->meta_description}}</textarea>
                             </div>
                         </div>
 
@@ -1267,7 +455,7 @@ $auto_translate=getWebConfig("auto_translate");
                                                    data-imgpreview="pre_meta_image_viewer"
                                                    accept=".jpg, .webp, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*">
 
-                                            @if($product?->seoInfo?->image_full_url['path'] || $product->meta_image_full_url['path'])
+                                            @if($post?->seoInfo?->image_full_url['path'] || $post->meta_image_full_url['path'])
                                                 <span class="delete_file_input btn btn-outline-danger btn-sm square-btn d-flex">
                                                     <i class="tio-delete"></i>
                                                 </span>
@@ -1276,9 +464,10 @@ $auto_translate=getWebConfig("auto_translate");
                                                     <i class="tio-delete"></i>
                                                 </span>
                                             @endif
+
                                             <div class="img_area_with_preview position-absolute z-index-2 d-flex">
                                                 <img id="pre_meta_image_viewer" class="h-auto aspect-1 bg-white onerror-add-class-d-none" alt=""
-                                                     src="{{ getStorageImages(path: $product?->seoInfo?->image_full_url['path'] ? $product?->seoInfo?->image_full_url : $product->meta_image_full_url, type: 'backend-banner') }}">
+                                                     src="{{ getStorageImages(path: $post?->seoInfo?->image_full_url['path'] ? $post?->seoInfo?->image_full_url : $post->meta_image_full_url, type: 'backend-banner') }}">
                                             </div>
                                             <div
                                                 class="position-absolute h-100 top-0 w-100 d-flex align-content-center justify-content-center">
@@ -1297,14 +486,14 @@ $auto_translate=getWebConfig("auto_translate");
                         </div>
                     </div>
 
-                    @include('admin-views.product.partials._seo-update-section')
+                    @include('admin-views.post.product.partials._seo-update-section')
 
                 </div>
             </div>
 
             <div class="d-flex justify-content-end mt-3">
                 <button type="button" class="btn btn--primary px-5 product-add-requirements-check">
-                    @if($product->request_status == 2)
+                    @if($post->request_status == 2)
                         {{ translate('update_&_Publish') }}
                     @else
                         {{ translate(request('product-gallery') ? 'submit' : 'update') }}
@@ -1312,13 +501,11 @@ $auto_translate=getWebConfig("auto_translate");
                 </button>
             </div>
             @if(request('product-gallery'))
-                <input hidden name="existing_thumbnail" value="{{$product->thumbnail_full_url['key']}}">
-                <input hidden name="existing_meta_image" value="{{$product?->seoInfo?->image_full_url['key'] ?? $product->meta_image_full_url['key']}}">
+                <input hidden name="existing_thumbnail" value="{{$post->thumbnail_full_url['key']}}">
+                <input hidden name="existing_meta_image" value="{{$post?->seoInfo?->image_full_url['key'] ?? $post->meta_image_full_url['key']}}">
             @endif
         </form>
     </div>
-    @include('admin-views.product.partials.FormServiceModel')
-
     <span id="route-admin-products-sku-combination" data-url="{{ route('admin.products.sku-combination') }}"></span>
     <span id="route-admin-products-digital-variation-combination" data-url="{{ route('admin.products.digital-variation-combination') }}"></span>
     <span id="route-admin-products-digital-variation-file-delete" data-url="{{ route('admin.products.digital-variation-file-delete') }}"></span>
@@ -1348,45 +535,60 @@ $auto_translate=getWebConfig("auto_translate");
     <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/admin/formservice.js') }}"></script>
 
     <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('meta_keywords_input');
+    const hiddenInput = document.getElementById('meta_keywords');
+    const tagsContainer = document.getElementById('meta_keywords_tags');
+    const limitInfo = document.getElementById('meta_keywords_limit');
+    let keywords = [];
+
+    // ✅ قراءة الكلمات القديمة الموجودة بالفعل
+    const oldKeywords = hiddenInput.value;
+    if (oldKeywords) {
+        keywords = oldKeywords.split(',').map(k => k.trim()).filter(k => k.length > 0);
+    }
+
+    function renderTags() {
+        tagsContainer.innerHTML = '';
+        keywords.forEach((word, index) => {
+            const tag = document.createElement('span');
+            tag.className = 'badge badge-primary';
+            tag.style.cursor = 'pointer';
+            tag.innerText = word;
+            tag.onclick = function () {
+                keywords.splice(index, 1);
+                renderTags();
+            };
+            tagsContainer.appendChild(tag);
+        });
+        hiddenInput.value = keywords.join(',');
+        limitInfo.textContent = `عدد الكلمات: ${keywords.length}/20`;
+    }
+
+    input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const value = input.value.trim();
+            if (value && keywords.length < 20 && !keywords.includes(value)) {
+                keywords.push(value);
+                input.value = '';
+                renderTags();
+            }
+        }
+    });
+
+    renderTags();
+});
+</script>
+
+    <script>
         "use strict";
 
-        let colors = {{ count($product->colors) }};
-        let imageCount = {{15-count(json_decode($product->images)) }};
-        let thumbnail = '{{ productImagePath('thumbnail').'/'.$product->thumbnail ?? dynamicAsset(path: 'public/assets/back-end/img/400x400/img2.jpg') }}';
+        let imageCount = {{15-count(json_decode($post->images)) }};
+        let thumbnail = '{{ productImagePath('thumbnail').'/'.$post->thumbnail ?? dynamicAsset(path: 'public/assets/back-end/img/400x400/img2.jpg') }}';
         $(function () {
             if (imageCount > 0) {
-                $("#coba").spartanMultiImagePicker({
-                    fieldName: 'images[]',
-                    maxCount: colors === 0 ? 15 : imageCount,
-                    rowHeight: 'auto',
-                    groupClassName: 'col-6 col-md-4 col-xl-3 col-xxl-2',
-                    maxFileSize: '',
-                    placeholderImage: {
-                        image: '{{ dynamicAsset(path: "public/assets/back-end/img/400x400/img2.jpg") }}',
-                        width: '100%',
-                    },
-                    dropFileLabel: "Drop Here",
-                    onAddRow: function (index, file) {
-                    },
-                    onRenderedPreview: function (index) {
-                    },
-                    onRemoveRow: function (index) {
-                    },
-                    onExtensionErr: function () {
-                        toastr.error(messagePleaseOnlyInputPNGOrJPG, {
-                            CloseButton: true,
-                            ProgressBar: true
-                        });
-                    },
-                    onSizeErr: function () {
-                        toastr.error(messageFileSizeTooBig, {
-                            CloseButton: true,
-                            ProgressBar: true
-                        });
-                    }
-                });
-            }
-
+              
             $("#thumbnail").spartanMultiImagePicker({
                 fieldName: 'image',
                 maxCount: 1,
@@ -1394,7 +596,7 @@ $auto_translate=getWebConfig("auto_translate");
                 groupClassName: 'col-12',
                 maxFileSize: '',
                 placeholderImage: {
-                    image: '{{ productImagePath('thumbnail').'/'. $product->thumbnail ?? dynamicAsset(path: 'public/assets/back-end/img/400x400/img2.jpg') }}',
+                    image: '{{ productImagePath('thumbnail').'/'. $post->thumbnail ?? dynamicAsset(path: 'public/assets/back-end/img/400x400/img2.jpg') }}',
                     width: '100%',
                 },
                 dropFileLabel: "Drop Here",

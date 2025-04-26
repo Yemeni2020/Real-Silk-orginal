@@ -1415,6 +1415,8 @@ class ProductManager
         return $query->orderBy('id', 'desc')->get();
     }
 
+
+
     public static function getPriorityWiseSearchedProductQuery($query, $keyword, $dataLimit = 'all', $offset = 1, $appends = null, $type = null)
     {
         $searchedProductListSortBy = getWebConfig(name: 'searched_product_list_priority');
@@ -1432,6 +1434,7 @@ class ProductManager
         }
         $searchKeyword = str_ireplace(['\'', '"', ',', ';', '<', '>', '?'], ' ', preg_replace('/\s\s+/', ' ', $keyword));
         $query = $query->orderByRaw("CASE WHEN name LIKE '%$searchKeyword%' THEN 1 ELSE 2 END, LOCATE('$searchKeyword', name), name")->get();
+
 
         if ($searchedProductListSortBy && ($searchedProductListSortBy['custom_sorting_status'] == 1 && $searchedProductListSortBy['out_of_stock_product'] == 'desc')) {
             $query = self::mergeStockAndOutOfStockProduct(query: $query);

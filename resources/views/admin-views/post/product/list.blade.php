@@ -113,7 +113,7 @@
                                 <tr>
                                     <th scope="row">{{ $posts->firstItem()+$key}}</th>
                                     <td style="white-space: normal; word-wrap: break-word; max-width: 200px;">
-                                        <a href="{{ route('admin.products.view',['addedBy'=>($post['added_by']=='seller'?'vendor' : 'in-house'),'id'=>$post['id']]) }}"
+                                        <a href="{{ route('admin.post.view',['addedBy'=>($post['added_by']=='seller'?'vendor' : 'in-house'),'id'=>$post['id']]) }}"
                                            class="media align-items-center gap-2">
                                             <img src="{{ getStorageImages(path: $post->thumbnail_full_url, type: 'backend-product') }}"
                                                  class="avatar border" alt="">
@@ -148,7 +148,7 @@
                                             </a>
                                             <a class="btn btn-outline--primary btn-sm square-btn"
                                                title="{{ translate('edit') }}"
-                                               href="{{ route('admin.products.update',[$post['id']]) }}">
+                                               href="{{ route('admin.post.update',[$post['id']]) }}">
                                                 <i class="tio-edit"></i>
                                             </a>
                                             <span class="btn btn-outline-danger btn-sm square-btn delete-data"
@@ -157,7 +157,7 @@
                                                 <i class="tio-delete"></i>
                                             </span>
                                         </div>
-                                        <form action="{{ route('admin.products.delete',[$post['id']]) }}"
+                                        <form action="{{ route('admin.post.delete',[$post['id']]) }}"
                                               method="post" id="product-{{ $post['id']}}">
                                             @csrf @method('delete')
                                         </form>

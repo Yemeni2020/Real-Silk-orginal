@@ -186,11 +186,11 @@ class PostRepository implements PostRepositoryInterface
     {
         $query = $this->product->select("id","title","slug","thumbnail","user_id")->with($relations)->when($searchValue, function ($query) use ($filters, $searchValue) {
             $product_ids = $this->translation->where('translationable_type', 'App\Models\Post')
-                ->where('key', 'name')
+                ->where('key', 'title')
                 ->where('value', 'like', "%{$searchValue}%")
                 ->pluck('translationable_id');
 
-            return $query->where('name', 'like', "%{$searchValue}%")
+            return $query->where('title', 'like', "%{$searchValue}%")
                 ->orWhere(function ($query) use ($filters) {
                     if (isset($filters['code'])) {
                         $query->where('code', 'like', "%{$filters['code']}%");

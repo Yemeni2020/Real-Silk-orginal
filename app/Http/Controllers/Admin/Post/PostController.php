@@ -14,7 +14,7 @@ use App\Contracts\Repositories\DigitalProductAuthorRepositoryInterface;
 use App\Contracts\Repositories\DigitalProductVariationRepositoryInterface;
 use App\Contracts\Repositories\FlashDealProductRepositoryInterface;
 use App\Contracts\Repositories\PostRepositoryInterface;
-use App\Contracts\Repositories\ProductSeoRepositoryInterface;
+use App\Contracts\Repositories\PostSeoRepositoryInterface;
 use App\Contracts\Repositories\PublishingHouseRepositoryInterface;
 use App\Contracts\Repositories\ReviewRepositoryInterface;
 use App\Contracts\Repositories\TranslationRepositoryInterface;
@@ -26,10 +26,10 @@ use App\Events\ProductRequestStatusUpdateEvent;
 use App\Exports\ProductListExport;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\ProductDenyRequest;
-use App\Http\Requests\ProductAddRequest;
-use App\Http\Requests\ProductUpdateRequest;
+use App\Http\Requests\PostAddRequest;
+use App\Http\Requests\PostUpdateRequest;
 use App\Repositories\DigitalProductPublishingHouseRepository;
-use App\Services\ProductService;
+use App\Services\PostService;
 use App\Services\OpenAIService;
 use App\Services\DeepSeekAIService;
 use App\Traits\FileManagerTrait;
@@ -61,7 +61,7 @@ class PostController extends BaseController
         private readonly BrandRepositoryInterface                   $brandRepo,
         private readonly PostRepositoryInterface                 $postRepo,
         private readonly DigitalProductVariationRepositoryInterface $digitalProductVariationRepo,
-        private readonly ProductSeoRepositoryInterface              $productSeoRepo,
+        private readonly PostSeoRepositoryInterface              $postSeoRepo,
         private readonly VendorRepositoryInterface                  $sellerRepo,
         private readonly ColorRepositoryInterface                   $colorRepo,
         private readonly AttributeRepositoryInterface               $attributeRepo,
@@ -72,7 +72,7 @@ class PostController extends BaseController
         private readonly DealOfTheDayRepositoryInterface            $dealOfTheDayRepo,
         private readonly ReviewRepositoryInterface                  $reviewRepo,
         private readonly BannerRepositoryInterface                  $bannerRepo,
-        private readonly ProductService                             $productService,
+        private readonly PostService                                $postService,
         private readonly OpenAIService                              $OpenAIService,
         private readonly DeepSeekAIService                          $DeepSeekAIService,
     )
@@ -93,13 +93,15 @@ class PostController extends BaseController
     public function getAddView(): View
     {
 
+        $categories = $this->categoryRepo->getListWhere( dataLimit: 'all');
+
         $languages = getWebConfig(name: 'pnc_language') ?? null;
         $defaultLanguage = $languages[0];
      
-        return view(Product::ADD[VIEW], compact( 'languages', 'defaultLanguage'));
+        return view(Post::ADD[VIEW], compact( 'languages', 'defaultLanguage','categories'));
     }
 
-    public function add(ProductAddRequest $request, ProductService $service): JsonResponse|RedirectResponse|null
+    public function add(PostAddRequest $request, PostService $service): JsonResponse|RedirectResponse|null
     {
         
         // dump($request);
@@ -122,40 +124,12 @@ class PostController extends BaseController
         
         $savedProduct = $this->postRepo->add(data: $dataArray);
 
-        if($request->product_type=="Service")
-            $service->BuildForm($request,$savedProduct->id);
-
-        //MyCode
-        if(isset($request->offers_price)){
-
-            $len=count($request->offers_price);
-            for ($i=0; $i < $len; $i++) { 
-                $productOffer = new ProductOffer();
-                $productOffer->product_id = $savedProduct['id'];
-                $productOffer->q_from = $request->offers_from[$i];
-                $productOffer->q_to = $request->offers_to[$i];
-                $productOffer->price_unit = currencyConverter($request->offers_price[$i]);
-                $productOffer->save();
-            }
-        }
-        //EndMyCode
-
-
-        $this->postRepo->addRelatedTags(request: $request, product: $savedProduct);
-        $this->translationRepo->add(request: $request, model: 'App\Models\Product', id: $savedProduct->id);
+        $this->translationRepo->add(request: $request, model: 'App\Models\Post', id: $savedProduct->id);
         
-        $this->updateProductAuthorAndPublishingHouse(request: $request, product: $savedProduct);
-
-        // Digital Product Variation
-        $digitalFileArray = $service->getAddProductDigitalVariationData(request: $request, product: $savedProduct);
-        foreach ($digitalFileArray as $digitalFile) {
-            $this->digitalProductVariationRepo->add(data: $digitalFile);
-        }
-
-        $this->productSeoRepo->add(data: $service->getProductSEOData(request: $request, product: $savedProduct, action: 'add'));
+        $this->postSeoRepo->add(data: $service->getProductSEOData(request: $request, post: $savedProduct, action: 'add'));
 
         Toastr::success(translate('product_added_successfully'));
-        return redirect()->route('admin.products.list', ['in_house']);
+        return redirect()->route('admin.post.list', ['in_house']);
     }
 
     public function updateProductAuthorAndPublishingHouse(object|array $request, object|array $product): void
@@ -225,108 +199,53 @@ class PostController extends BaseController
 
     public function getUpdateView(string|int $id): View|RedirectResponse
     {
-        $product = $this->postRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $id], relations: ['translations', 'seoInfo', 'digitalProductAuthors.author', 'digitalProductPublishingHouse.publishingHouse']);
-        if (!$product) {
+        $post = $this->postRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $id], relations: ['translations', 'seoInfo']);
+        if (!$post) {
             Toastr::error(translate('product_not_found') . '!');
             return redirect()->route('admin.products.list', ['in_house']);
         }
-        $productAuthorIds = $this->productService->getProductAuthorsInfo(product: $product)['ids'];
-        $productPublishingHouseIds = $this->productService->getProductPublishingHouseInfo(product: $product)['ids'];
 
-        $product['colors'] = json_decode($product['colors']);
-        $categories = $this->categoryRepo->getListWhere(filters: ['position' => 0], dataLimit: 'all');
-        $brands = $this->brandRepo->getListWhere(dataLimit: 'all');
-        $brandSetting = getWebConfig(name: 'product_brand');
-        $digitalProductSetting = getWebConfig(name: 'digital_product');
+        $categories = $this->categoryRepo->getListWhere( dataLimit: 'all');
         $languages = getWebConfig(name: 'pnc_language') ?? null;
-        $colors = $this->colorRepo->getList(orderBy: ['name' => 'desc'], dataLimit: 'all');
-        $attributes = $this->attributeRepo->getList(orderBy: ['name' => 'desc'], dataLimit: 'all');
         $defaultLanguage = $languages[0];
-        $digitalProductFileTypes = ['audio', 'video', 'document', 'software'];
-        $digitalProductAuthors = $this->authorRepo->getListWhere(dataLimit: 'all');
-        $publishingHouseList = $this->publishingHouseRepo->getListWhere(dataLimit: 'all');
 
         $failds=null;
-        if($product->product_type=="Service"){
-            $failds=$this->productService->getfaildservice($product->id);
+        if($post->product_type=="Service"){
+            $failds=$this->postService->getfaildservice($post->id);
         }
 
-
-        return view(Product::UPDATE[VIEW], compact('product', 'categories', 'brands', 'brandSetting', 'digitalProductSetting', 'colors', 'attributes', 'languages', 'defaultLanguage', 'digitalProductFileTypes', 'digitalProductAuthors', 'publishingHouseList', 'productAuthorIds', 'productPublishingHouseIds',"failds"));
+        return view(Post::UPDATE[VIEW], compact('post', 'categories', 'languages', 'defaultLanguage'));
     }
-    protected function update_offers(ProductUpdateRequest $request):void{
-        $offers = ProductOffer::where('product_id', $request->product_id)->get()->toArray();
-        $i=0;
-        if(isset($request->offers_price)){
-            for ($i; $i < count($request->offers_from); $i++) { 
-                # code...
-                if($i<count($offers)){
-                    $id=$offers[$i]["id"];
-                    // dump( $id);
-                        // البحث عن العرض باستخدام الـ ID
-                    $offer = ProductOffer::findOrFail($id);
 
-                    // تحديث الحقل بالقيمة الجديدة
-                    $offer->update([
-                        "q_from" => $request->offers_from[$i],
-                        "q_to" => $request->offers_to[$i],
-                        "price_unit" => currencyConverter($request->offers_price[$i])
-                    ]);
-                }else{
-                    $productOffer = new ProductOffer();
-                    $productOffer->product_id = $request->product_id;
-                    $productOffer->q_from = $request->offers_from[$i];
-                    $productOffer->q_to = $request->offers_to[$i];
-                    $productOffer->price_unit = currencyConverter($request->offers_price[$i]);
-                    $productOffer->save();
-                }
-                // echo count($offers);
-            }
-        }
-
-        //Delete Other حذف الزائد
-        if(isset($offers)){
-            if($i<count($offers)){
-                for ($i; $i < count($offers); $i++) { 
-                    $id=$offers[$i]["id"];
-                    $offer = ProductOffer::findOrFail($id);
-                    $offer->delete();
-                }
-            }
-        }
-    }
-    public function update(ProductUpdateRequest $request, ProductService $service, string|int $id): JsonResponse|RedirectResponse|null
+    public function update(PostUpdateRequest $request, PostService $service, string|int $id): JsonResponse|RedirectResponse|null
     {
         // dump($request);
         // $service->UpdateForm($request,$id);
 
-        // return null;
         if ($request->ajax()) {
             return response()->json([], 200);
         }
 
-        $product = $this->postRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $id], relations: ['digitalVariation', 'seoInfo']);
-        $dataArray = $service->getUpdateProductData(request: $request, product: $product, updateBy: 'admin');
-        $this->updateProductAuthorAndPublishingHouse(request: $request, product: $product);
+        
+        $post = $this->postRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $id], relations: [ 'seoInfo']);
+        $dataArray = $service->getUpdateProductData(request: $request, product: $post, updateBy: 'admin');
 
+        // dump($dataArray);
+        // return null;
         $this->postRepo->update(id: $id, data: $dataArray);
-        $this->postRepo->addRelatedTags(request: $request, product: $product);
-        $this->translationRepo->update(request: $request, model: 'App\Models\Product', id: $id);
+        $this->translationRepo->update(request: $request, model: 'App\Models\Post', id: $id);
+        
+        
+        $seodata=$service->getProductSEOData(request: $request, post: $post, action: 'update');
 
-        if($request->product_type=="Service")
-            $service->UpdateForm($request,$id);
-
-        self::getDigitalProductUpdateProcess($request, $product);
-
-        $this->productSeoRepo->updateOrInsert(
-            params: ['product_id' => $product['id']],
-            data: $service->getProductSEOData(request: $request, product: $product, action: 'update')
+        
+        $this->postSeoRepo->updateOrInsert(
+            params: ['post_id' => $post['id']],
+            data: $seodata
         );
-        
-        $this->update_offers($request);
-        
-        Toastr::success(translate('product_updated_successfully'));
-        return redirect()->route(Product::VIEW[ROUTE], ['addedBy' => $product['added_by'], 'id' => $product['id']]);
+
+        Toastr::success(translate('post_updated_successfully'));
+        return redirect()->route(Post::VIEW[ROUTE], ['addedBy' => 'admin', 'id' => $post['id']]);
     }
 
     public function getDigitalProductUpdateProcess($request, $product): void
@@ -408,75 +327,29 @@ class PostController extends BaseController
 
     public function getView(string $addedBy, string|int $id): View|RedirectResponse
     {
-        $productActive = $this->postRepo->getFirstWhere(params: ['id' => $id], relations: ['digitalVariation', 'seoInfo']);
+        $productActive = $this->postRepo->getFirstWhere(params: ['id' => $id], relations: [ 'seoInfo']);
 
-        if (!$productActive) {
-            Toastr::error(translate('product_not_found') . '!');
-            return redirect()->route('admin.products.list', ['in_house']);
-        }
-        $isActive = $this->postRepo->getWebFirstWhereActive(params: ['id' => $id]);
+        
 
-        $relations = ['category', 'brand', 'reviews', 'rating', 'orderDetails', 'orderDelivered', 'digitalVariation', 'seoInfo'];
+        $relations = ['category', 'seoInfo'];
         $product = $this->postRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $id], relations: $relations);
-        $product['priceSum'] = $product?->orderDelivered->sum('price');
-        $product['qtySum'] = $product?->orderDelivered->sum('qty');
-        $product['discountSum'] = $product?->orderDelivered->sum('discount');
-        $productColors = [];
-        $colors = json_decode($product['colors']);
-        foreach ($colors as $color) {
-            $getColor = $this->colorRepo->getFirstWhere(params: ['code' => $color]);
-            if ($getColor) {
-                $productColors[$getColor['name']] = $colors;
-            }
-        }
 
         $reviews = $this->reviewRepo->getListWhere(filters: ['product_id' => ['product_id' => $id], 'whereNull' => ['column' => 'delivery_man_id']], relations: ['customer', 'reply'], dataLimit: getWebConfig(name: 'pagination_limit'));
-        return view(Product::VIEW[VIEW], compact('product', 'reviews', 'productActive', 'productColors', 'addedBy', 'isActive'));
+        return view(Post::VIEW[VIEW], compact('product'));
     }
 
-    public function getSkuCombinationView(Request $request, ProductService $service): JsonResponse
+    public function getSkuCombinationView(Request $request, PostService $service): JsonResponse
     {
         $product = $this->postRepo->getFirstWhere(params: ['id' => $request['product_id']], relations: ['digitalVariation', 'seoInfo']);
         $combinationView = $service->getSkuCombinationView(request: $request, product: $product);
         return response()->json(['view' => $combinationView]);
     }
 
-    public function getDigitalVariationCombinationView(Request $request, ProductService $service): JsonResponse
+    public function getDigitalVariationCombinationView(Request $request, PostService $service): JsonResponse
     {
         $product = $this->postRepo->getFirstWhere(params: ['id' => $request['product_id']], relations: ['digitalVariation', 'seoInfo']);
         $combinationView = $service->getDigitalVariationCombinationView(request: $request, product: $product);
         return response()->json(['view' => $combinationView]);
-    }
-
-    public function deleteDigitalVariationFile(Request $request, ProductService $service): JsonResponse
-    {
-        $variation = $this->digitalProductVariationRepo->getFirstWhere(params: ['product_id' => $request['product_id'], 'variant_key' => $request['variant_key']]);
-        if ($variation) {
-            $this->deleteFile(filePath: '/product/digital-product/' . $variation['file']);
-            $this->digitalProductVariationRepo->updateByParams(params: ['id' => $variation['id']], data: ['file' => null]);
-            return response()->json([
-                'status' => 1,
-                'message' => translate('delete_successful')
-            ]);
-        }
-        return response()->json([
-            'status' => 0,
-            'message' => translate('delete_unsuccessful')
-        ]);
-    }
-
-    public function updateFeaturedStatus(Request $request): JsonResponse
-    {
-        $status = $request['status'];
-
-        $productId = $request['id'];
-        $product = $this->postRepo->getFirstWhere(params: ['id' => $productId]);
-        $updateData = [
-            'featured' => is_null($product['featured']) || $product['featured'] == 0 ? 1 : 0
-        ];
-        $this->postRepo->update(id: $productId, data: $updateData);
-
-        return response()->json($status);
     }
 
     public function updateStatus(Request $request): JsonResponse
@@ -499,9 +372,9 @@ class PostController extends BaseController
         ], 200);
     }
 
-    public function deleteImage(Request $request, ProductService $service): RedirectResponse
+    public function deleteImage(Request $request, PostService $service): RedirectResponse
     {
-        $this->deleteFile(filePath: '/product/' . $request['image']);
+        $this->deleteFile(filePath: '/post/' . $request['image']);
         $product = $this->postRepo->getFirstWhere(params: ['id' => $request['id']]);
 
         if (count(json_decode($product['images'])) < 2) {
@@ -517,11 +390,11 @@ class PostController extends BaseController
         ];
         $this->postRepo->update(id: $request['id'], data: $updateData);
 
-        Toastr::success(translate('product_image_removed_successfully'));
+        Toastr::success(translate('post_image_removed_successfully'));
         return back();
     }
 
-    public function getCategories(Request $request, ProductService $service): JsonResponse
+    public function getCategories(Request $request, PostService $service): JsonResponse
     {
         $parentId = $request['parent_id'];
         $filter = ['parent_id' => $parentId];
@@ -615,22 +488,15 @@ class PostController extends BaseController
         return view(Product::STOCK_LIMIT[VIEW], compact('products', 'searchValue', 'status', 'sortOrderQty', 'stockLimit'));
     }
 
-    public function delete(string|int $id, ProductService $service): RedirectResponse
+    public function delete(string|int $id, PostService $service): RedirectResponse
     {
         $product = $this->postRepo->getFirstWhere(params: ['id' => $id]);
 
         if ($product) {
-            $this->translationRepo->delete(model: 'App\Models\Product', id: $id);
-            $this->cartRepo->delete(params: ['product_id' => $id]);
-            $this->wishlistRepo->delete(params: ['product_id' => $id]);
-            $this->flashDealpostRepo->delete(params: ['product_id' => $id]);
-            $this->dealOfTheDayRepo->delete(params: ['product_id' => $id]);
+            $this->translationRepo->delete(model: 'App\Models\Post', id: $id);
             $service->deleteImages(product: $product);
             $this->postRepo->delete(params: ['id' => $id]);
-            $bannerIds = $this->bannerRepo->getListWhere(filters: ['resource_type' => 'product', 'resource_id' => $product['id']])->pluck('id');
-            $bannerIds->map(function ($bannerId) {
-                $this->bannerRepo->update(id: $bannerId, data: ['published' => 0, 'resource_id' => null]);
-            });
+
             Toastr::success(translate('product_removed_successfully'));
         } else {
             Toastr::error(translate('invalid_product'));
@@ -680,7 +546,7 @@ class PostController extends BaseController
         return view(Product::BULK_IMPORT[VIEW]);
     }
 
-    public function importBulkProduct(Request $request, ProductService $service): RedirectResponse
+    public function importBulkProduct(Request $request, PostService $service): RedirectResponse
     {
         $dataArray = $service->getImportBulkProductData(request: $request, addedBy: 'admin');
         if (!$dataArray['status']) {
@@ -831,7 +697,7 @@ class PostController extends BaseController
     public function deletePreviewFile(Request $request): JsonResponse
     {
         $product = $this->postRepo->getFirstWhereWithoutGlobalScope(params: ['id' => $request['product_id']]);
-        $this->productService->deletePreviewFile(product: $product);
+        $this->postService->deletePreviewFile(product: $product);
         $this->postRepo->update(id: $request['product_id'], data: ['preview_file' => null]);
         return response()->json([
             'status' => 1,
@@ -859,14 +725,14 @@ class PostController extends BaseController
         // $translatedName = $this->OpenAIService->translateText($productName, $targetLanguage,"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");
         // $translatedName=$this->translateText($productName, $targetLanguage);
         // if($request->has("description")){
-        //     $translatedDescription=$this->productService->translate($translate_ai,$request->input('description'), $targetLanguage);
+        //     $translatedDescription=$this->postService->translate($translate_ai,$request->input('description'), $targetLanguage);
 
         // }else{
             $translatedDescription='';
         // }
 
         if(isset($productName)){
-            $translatedName=$this->productService->translate($translate_ai,$productName, $targetLanguage);
+            $translatedName=$this->postService->translate($translate_ai,$productName, $targetLanguage);
 
         }else{
             $translatedName='';

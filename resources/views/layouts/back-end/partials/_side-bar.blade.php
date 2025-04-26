@@ -297,7 +297,7 @@
                                     </span>
                                 </a>
                                 <ul class="js-navbar-vertical-aside-submenu nav nav-sub"
-                                    style="display: {{(Request::is('admin/post/*')) ?'block':''}}">
+                                    style="display: {{(Request::is('admin/post/category*')) ?'block':''}}">
                                     <li class="nav-item {{Request::is('admin/post/category/'.Category::LIST[URI])?'active':''}}">
                                         <a class="nav-link " href="{{route('admin.post.category.view')}}"
                                            title="{{translate('categories')}}">

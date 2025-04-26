@@ -10,7 +10,7 @@ $auto_translate=getWebConfig("auto_translate");
 @endphp
 @extends('layouts.back-end.app')
 
-@section('title', translate('product_Add'))
+@section('title', translate('post_Add'))
 
 @push('css_or_js')
     <link href="{{ dynamicAsset(path: 'public/assets/back-end/css/tags-input.min.css') }}" rel="stylesheet">
@@ -23,11 +23,11 @@ $auto_translate=getWebConfig("auto_translate");
         <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
             <h2 class="h1 mb-0 d-flex gap-2">
                 <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/inhouse-product-list.png') }}" alt="">
-                {{ translate('add_New_Product') }}
+                {{ translate('add_New_Post') }}
             </h2>
         </div>
 
-        <form class="product-form text-start" action="{{ route('admin.products.store') }}" method="POST"
+        <form class="product-form text-start" action="{{ route('admin.post.store') }}" method="POST"
               enctype="multipart/form-data" id="product_form">
             @csrf
             <div class="card">
@@ -54,7 +54,7 @@ $auto_translate=getWebConfig("auto_translate");
                              id="{{ $lang }}-form">
                             <div class="form-group">
                                 <label class="title-color"
-                                       for="{{ $lang }}_name">{{ translate('product_name') }}
+                                       for="{{ $lang }}_name">{{ translate('post_name') }}
                                     ({{ strtoupper($lang) }})
                                     @if($lang == $curnnet_lang)
                                         <span class="input-required-icon">*</span>
@@ -65,7 +65,7 @@ $auto_translate=getWebConfig("auto_translate");
                                 @endif
                                 
                                 <input type="text"  {{ $lang == $curnnet_lang ? 'required' : '' }} name="name[]"
-                                       id="{{ $lang }}_name" class="form-control  {{ $lang == $curnnet_lang ? 'product-title-default-language' : '' }} " placeholder="{{ translate('new_Product') }}">
+                                       id="{{ $lang }}_name" class="form-control  {{ $lang == $curnnet_lang ? 'product-title-default-language' : '' }} " placeholder="{{ translate('new_post') }}">
                             </div>
                             <input type="hidden" name="lang[]" value="{{ $lang }}">
                             <div class="form-group pt-2">
@@ -109,7 +109,31 @@ $auto_translate=getWebConfig("auto_translate");
                         <h4 class="mb-0">{{ translate('general_setup') }}</h4>
                     </div>
                 </div>
-                
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4 col-xl-3">
+                            <div class="form-group">
+                                <label for="name" class="title-color">
+                                    {{ translate('category') }}
+                                    <span class="input-required-icon">*</span>
+                                </label>
+                                <select class="js-select2-custom form-control action-get-request-onchange" name="category_id"
+                                        data-url-prefix="{{ url('/admin/products/get-categories?parent_id=') }}"
+                                        data-element-id="sub-category-select"
+                                        data-element-type="select"
+                                        required>
+                                    <option value="{{ old('category_id') }}" selected
+                                            disabled>{{ translate('select_category') }}</option>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category['id'] }}"
+                                            {{ old('name') == $category['id'] ? 'selected' : '' }}>
+                                            {{ $category['defaultName'] }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
             </div>
 
 
@@ -121,13 +145,13 @@ $auto_translate=getWebConfig("auto_translate");
                                 <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
                                     <div>
                                         <label for="name" class="title-color text-capitalize font-weight-bold mb-0">
-                                            {{ translate('product_thumbnail') }}
+                                            {{ translate('post_thumbnail') }}
                                             <span class="input-required-icon">*</span>
                                         </label>
                                         <span
                                             class="badge badge-soft-info">{{ THEME_RATIO[theme_root_path()]['Product Image'] }}</span>
                                         <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                                title="{{ translate('add_your_product’s_thumbnail_in') }} JPG, PNG or JPEG {{ translate('format_within') }} 2MB">
+                                                title="{{ translate('add_your_post’s_thumbnail_in') }} JPG, PNG or JPEG {{ translate('format_within') }} 2MB">
                                             <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}"
                                                     alt="">
                                         </span>
@@ -175,11 +199,11 @@ $auto_translate=getWebConfig("auto_translate");
                                     <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
                                         <div>
                                             <label for="name"
-                                                   class="title-color text-capitalize font-weight-bold mb-0">{{ translate('colour_wise_product_image') }}</label>
+                                                   class="title-color text-capitalize font-weight-bold mb-0">{{ translate('colour_wise_post_image') }}</label>
                                             <span
                                                 class="badge badge-soft-info">{{ THEME_RATIO[theme_root_path()]['Product Image'] }}</span>
                                             <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                                  title="{{ translate('add_color-wise_product_images_here') }}.">
+                                                  title="{{ translate('add_color-wise_post_images_here') }}.">
                                                 <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}"
                                                      alt="">
                                             </span>
@@ -206,13 +230,13 @@ $auto_translate=getWebConfig("auto_translate");
                                             class="badge badge-soft-info">{{ THEME_RATIO[theme_root_path()]['Product Image'] }}</span>
                                             
                                         <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                              title="{{ translate('upload_any_additional_images_for_this_product_from_here') }}.">
+                                              title="{{ translate('upload_any_additional_images_for_this_post_from_here') }}.">
                                             <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
                                         </span>
                                     </div>
 
                                 </div>
-                                <p class="text-muted">{{ translate('upload_additional_product_images') }}</p>
+                                <p class="text-muted">{{ translate('upload_additional_post_images') }}</p>
                                 <div class="row g-2 mt-1" id="additional_Image_Section">
                                     <div class="col-sm-12 col-md-4">
                                         <div class="custom_upload_input position-relative border-dashed-2">
@@ -243,41 +267,6 @@ $auto_translate=getWebConfig("auto_translate");
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="item-1 digital-product-sections-show">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <div class="form-group">
-                                    <div class="d-flex align-items-center justify-content-between gap-2 mb-1">
-                                        <div>
-                                            <label for="name" class="title-color text-capitalize font-weight-bold mb-0">{{ translate('Product_Preview_File') }}</label>
-                                            <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                                  title="{{ translate('upload_a_suitable_file_for_a_short_product_preview.') }} {{ translate('this_preview_will_be_common_for_all_variations.') }}">
-                                                <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <p class="text-muted">{{ translate('Upload_a_short_preview') }}.</p>
-                                </div>
-                                <div class="image-uploader">
-                                    <input type="file" name="preview_file" class="image-uploader__zip" id="input-file">
-                                    <div class="image-uploader__zip-preview">
-                                        <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/icons/product-upload-icon.svg') }}" class="mx-auto" width="50" alt="">
-                                        <div class="image-uploader__title line--limit-2">
-                                            {{ translate('Upload_File') }}
-                                        </div>
-                                    </div>
-                                    <span class="btn btn-outline-danger btn-sm square-btn collapse zip-remove-btn">
-                                        <i class="tio-delete"></i>
-                                    </span>
-                                </div>
-                                <p class="text-muted mt-2 fz-12">
-                                    {{ translate('Format') }} : {{ " pdf, mp4, mp3" }}
-                                    <br>
-                                    {{ translate('image_size') }} : {{ translate('max') }} {{ "10 MB" }}</p>
                             </div>
                         </div>
                     </div>
@@ -317,7 +306,7 @@ $auto_translate=getWebConfig("auto_translate");
                             {{ translate('seo_section') }}
                             <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
                                   data-placement="top"
-                                  title="{{ translate('add_meta_titles_descriptions_and_images_for_products').', '.translate('this_will_help_more_people_to_find_them_on_search_engines_and_see_the_right_details_while_sharing_on_other_social_platforms') }}">
+                                  title="{{ translate('add_meta_titles_descriptions_and_images_for_posts').', '.translate('this_will_help_more_people_to_find_them_on_search_engines_and_see_the_right_details_while_sharing_on_other_social_platforms') }}">
                                 <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
                             </span>
                         </h4>
@@ -331,31 +320,37 @@ $auto_translate=getWebConfig("auto_translate");
                                     {{ translate('meta_Title') }}
                                     <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
                                           data-placement="top"
-                                          title="{{ translate('add_the_products_title_name_taglines_etc_here').' '.translate('this_title_will_be_seen_on_Search_Engine_Results_Pages_and_while_sharing_the_products_link_on_social_platforms') .' [ '. translate('character_Limit') }} : 100 ]">
+                                          title="{{ translate('add_the_posts_title_name_taglines_etc_here').' '.translate('this_title_will_be_seen_on_Search_Engine_Results_Pages_and_while_sharing_the_posts_link_on_social_platforms') .' [ '. translate('character_Limit') }} : 100 ]">
                                         <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
                                     </span>
                                 </label>
                                 <input type="text" name="meta_title" placeholder="{{ translate('meta_Title') }}"
                                        class="form-control" id="meta_title">
                             </div>
+                            <!-- KayWords -->
                             <div class="form-group">
                                 <label class="title-color">
                                     {{ translate('meta_kay_words') }}
                                     <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
-                                          data-placement="top"
-                                          title="{{ translate('add_the_products_title_name_taglines_etc_here').' '.translate('this_title_will_be_seen_on_Search_Engine_Results_Pages_and_while_sharing_the_products_link_on_social_platforms') .' [ '. translate('character_Limit') }} : 100 ]">
+                                        data-placement="top"
+                                        title="{{ translate('add_the_posts_title_name_taglines_etc_here').' '.translate('this_title_will_be_seen_on_Search_Engine_Results_Pages_and_while_sharing_the_posts_link_on_social_platforms') .' [ '. translate('character_Limit') }} : 100 ]">
                                         <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
                                     </span>
                                 </label>
-                                <input type="text" name="meta_title" placeholder="{{ translate('meta_Title') }}"
-                                       class="form-control" id="meta_title">
+                                <input type="text" id="meta_keywords_input" class="form-control" placeholder="{{ translate('meta_keywords') }}">
+                                <small id="meta_keywords_limit" class="text-muted"></small>
+                                <input type="hidden" name="meta_keywords" id="meta_keywords">
+                                
+                                <div id="meta_keywords_tags" class="mt-2" style="display: flex; flex-wrap: wrap; gap: 5px;"></div>
                             </div>
+                            <!-- End Input KayWords -->
+
                             <div class="form-group">
                                 <label class="title-color">
                                     {{ translate('meta_Description') }}
                                     <span class="input-label-secondary cursor-pointer" data-toggle="tooltip"
                                           data-placement="top"
-                                          title="{{ translate('write_a_short_description_of_the_InHouse_shops_product').' '.translate('this_description_will_be_seen_on_Search_Engine_Results_Pages_and_while_sharing_the_products_link_on_social_platforms') .' [ '. translate('character_Limit') }} : 160 ]">
+                                          title="{{ translate('write_a_short_description_of_the_InHouse_shops_post').' '.translate('this_description_will_be_seen_on_Search_Engine_Results_Pages_and_while_sharing_the_posts_link_on_social_platforms') .' [ '. translate('character_Limit') }} : 160 ]">
                                         <img src="{{ dynamicAsset(path: 'public/assets/back-end/img/info-circle.svg') }}" alt="">
                                     </span>
                                 </label>
@@ -440,9 +435,9 @@ $auto_translate=getWebConfig("auto_translate");
     <span id="message-are-you-sure" data-text="{{ translate('are_you_sure') }}"></span>
     <span id="message-yes-word" data-text="{{ translate('yes') }}"></span>
     <span id="message-no-word" data-text="{{ translate('no') }}"></span>
-    <span id="message-want-to-add-or-update-this-product" data-text="{{ translate('want_to_add_this_product') }}"></span>
+    <span id="message-want-to-add-or-update-this-product" data-text="{{ translate('want_to_add_this_post') }}"></span>
     <span id="message-please-only-input-png-or-jpg" data-text="{{ translate('please_only_input_png_or_jpg_type_file') }}"></span>
-    <span id="message-product-added-successfully" data-text="{{ translate('product_added_successfully') }}"></span>
+    <span id="message-product-added-successfully" data-text="{{ translate('post_added_successfully') }}"></span>
     <span id="message-discount-will-not-larger-then-variant-price" data-text="{{ translate('the_discount_price_will_not_larger_then_Variant_Price') }}"></span>
     <span id="system-currency-code" data-value="{{ getCurrencySymbol(currencyCode: getCurrencyCode()) }}"></span>
     <span id="system-session-direction" data-value="{{ request()->cookie('direction', 'ltr') }}"></span>
@@ -456,8 +451,45 @@ $auto_translate=getWebConfig("auto_translate");
     <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/admin/product-add-colors-img.js') }}"></script>
     <script src="{{ dynamicAsset(path: 'public/assets/back-end/js/admin/formservice.js') }}"></script>
     <script>
-         
-        // document.getElementById('addItemSelectButton').addEventListener('click',addItemSelectButton2());
+        document.addEventListener('DOMContentLoaded', function () {
+            const input = document.getElementById('meta_keywords_input');
+            const hiddenInput = document.getElementById('meta_keywords');
+            const tagsContainer = document.getElementById('meta_keywords_tags');
+            const limitInfo = document.getElementById('meta_keywords_limit');
+            let keywords = [];
+
+            function renderTags() {
+                tagsContainer.innerHTML = '';
+                keywords.forEach((word, index) => {
+                    const tag = document.createElement('span');
+                    tag.className = 'badge badge-primary';
+                    tag.style.cursor = 'pointer';
+                    tag.innerText = word;
+                    tag.onclick = function () {
+                        keywords.splice(index, 1);
+                        renderTags();
+                    };
+                    tagsContainer.appendChild(tag);
+                });
+                hiddenInput.value = keywords.join(',');
+                limitInfo.textContent = `عدد الكلمات: ${keywords.length}/20`;
+            }
+
+            input.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const value = input.value.trim();
+                    if (value && keywords.length < 20 && !keywords.includes(value)) {
+                        keywords.push(value);
+                        input.value = '';
+                        renderTags();
+                    }
+                }
+            });
+
+            renderTags();
+        });
     </script>
+
 
 @endpush

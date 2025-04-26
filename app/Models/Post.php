@@ -4,11 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Traits\StorageTrait;
 
 class Post extends Model
 {
     use HasFactory;
+    use StorageTrait;
+
     protected $fillable = [
+        'id',
         'user_id',
         'title',
         'slug',
@@ -29,6 +36,7 @@ class Post extends Model
      * @var string[]
      */
     protected $casts = [
+        'id' => 'integer',
         'user_id' => 'integer',
         'title' => 'string',
         'slug' => 'string',
@@ -40,15 +48,16 @@ class Post extends Model
         'meta_title' => 'string',
         'meta_description' => 'string',
         'meta_image' => 'string',
-        'meta_keywords' => 'integer',
+        'meta_keywords' => 'string',
         'video_provider' => 'array',
         'video_url' => 'array',
     ];
     protected $table = 'post';
+    protected $appends = [ 'thumbnail_full_url', 'meta_image_full_url', 'images_full_url'];
+
     public function translations(): MorphMany
     {
-        return $this->morphMany('App\Models\Translation', 'translationable')
-        ;
+        return $this->morphMany('App\Models\Translation', 'translationable');
     }
     public function admins(): BelongsTo
     {
@@ -70,5 +79,34 @@ class Post extends Model
     }
     public function getNameAttribute(){
         return $this->getTitleAttribute($this->title);
+    }
+
+    public function seoInfo(): HasOne
+    {
+        return $this->hasOne(PostSeo::class, 'post_id', 'id');
+        // post_id هو المفتاح الموجود بجدول post_seo
+        // id هو المفتاح الأساسي بجدول posts
+    }
+    public function getThumbnailFullUrlAttribute(): string|null|array
+    {
+        $value = $this->thumbnail;
+        return $this->storageLink('post/thumbnail', $value, $this->thumbnail_storage_type ?? 'public');
+    }
+    public function getMetaImageFullUrlAttribute(): array
+    {
+        $value = $this->meta_image;
+        return $this->storageLink('post/meta', $value, 'public');
+    }
+    public function getImagesFullUrlAttribute(): array
+    {
+        $images = [];
+        $value = json_decode($this->images);
+         if ($value){
+             foreach ($value as $item){
+                 $item = isset($item->image_name) ? (array)$item : ['image_name' => $item, 'storage' => 'public'];
+                 $images[] =  $this->storageLink('post',$item['image_name'],$item['storage'] ?? 'public');
+             }
+         }
+        return $images;
     }
 }
