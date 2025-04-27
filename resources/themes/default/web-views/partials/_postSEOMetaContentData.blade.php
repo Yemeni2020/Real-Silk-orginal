@@ -11,7 +11,10 @@
 
     @if($metaContentData?->description)
         <meta name="description" content="{!! Str::limit($metaContentData?->description, 160) !!}">
+        @if(1 == 2)
         <meta property="description" content="{!! Str::limit($metaContentData?->description, 160) !!}">
+        @endif
+
         <meta property="og:description" content="{!! Str::limit($metaContentData?->description, 160) !!}">
         <meta property="twitter:description" content="{!! Str::limit($metaContentData?->description, 160) !!}">
     @else
@@ -22,8 +25,10 @@
     @if(1 == 2)
     <meta property="keywords" content="@foreach(explode(' ',$post['name']) as $keyword) {{$keyword.' , '}} @endforeach">
     @endif
-    
-    <meta property="keywords" content="{{$metaContentData?->meta_keywords}}">
+    @if($metaContentData?->meta_keywords)
+
+    <meta name="keywords" content="{{$metaContentData?->meta_keywords}}">
+    @endif
 
 
     @if($post->added_by == 'seller')
