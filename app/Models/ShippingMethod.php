@@ -52,4 +52,32 @@ class ShippingMethod extends Model
     {
         return $this->belongsTo(Seller::class,'creator_id');
     }
+
+    public function option(): array
+    {
+        $option1 = new \stdClass();
+        $option2 = new \stdClass();
+
+        $options = [];
+
+        if ($this->title == "kasu") {
+
+            $option1->name = translate("Shipping Type");
+            $option1->options = [
+                translate("By Sea"),
+                translate("By Air")
+            ];
+
+            // الخيار الثاني: طريقة التوصيل
+            $option2->name = translate("Delivery Method");
+            $option2->options = [
+                translate("To Port"),
+                translate("To Address")
+            ];
+
+            $options = [$option1, $option2];
+        }
+
+        return $options;
+    }
 }

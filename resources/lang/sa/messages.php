@@ -8828,4 +8828,13 @@
 "post_image_removed_successfully" => "تمت إزالة صورة المنشور بنجاح",
 "All_Posts" => "جميع المنشورات",
 "Search posts..." => "ابحث في المنشورات...",
+"Please_verify_your_email" => "الرجاء التحقق من بريدك الإلكتروني",
+"Successfully_Update" => "تم التحديث بنجاح",
+"the_title_field_is_required" => "حقل العنوان مطلوب",
+"the_duration_field_is_required" => "حقل المدة مطلوب", 
+"the_cost_must_be_a_number" => "يجب أن تكون التكلفة رقماً",
+"select_shipping_method" => "اختر طريقة الشحن",
+"Please_select_shipping_method" => "الرجاء اختيار طريقة الشحن",
+"Choose_Shipping_Method" => "اختر طريقة الشحن",
+"Proceed_to_Checkout" => "المتابعة إلى الدفع"
 );

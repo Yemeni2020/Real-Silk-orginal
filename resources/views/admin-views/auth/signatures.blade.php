@@ -113,7 +113,7 @@
                                 <button type="button" class="btn btn-danger col-4" id="clear-signature">{{translate('Reast')}}</button>
 
                             </div>
-                            @if($signature_path)
+                            @if($signature_path && 1 == 2)
                                 <img src="{{$signature_path}}" alt="" width="400" height="200">
                             @endif
                         </div>

@@ -548,7 +548,7 @@
                                                         <option
                                                             value="{{$shipping['id']}}" {{$chosenShipping['shipping_method_id']==$shipping['id']?'selected':''}}>
                                                             {{ translate('shipping_method')}}
-                                                            : {!!$shipping['title'].' ( '.$shipping['duration'].' ) '.webCurrencyConverter(amount: $shipping['cost'])!!}
+                                                            : {!!$shipping['title'].' ( '.$shipping['duration'].' ) '!!} {{ webCurrencyConverter($shippingMethod['cost'])<=0?translate("We_will_connect_with_you_for_cost_shipping"):webCurrencyConverter($shippingMethod['cost']) }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -819,7 +819,7 @@
                                     <option
                                         value="{{$shipping['id']}}" {{$chosenShipping['shipping_method_id']==$shipping['id']?'selected':''}}>
                                         {{ translate('shipping_method')}}
-                                        : {!!$shipping['title'].' ( '.$shipping['duration'].' ) '.webCurrencyConverter(amount: $shipping['cost'])!!}
+                                        : {!!$shipping['title'].' ( '.$shipping['duration'].' ) '.translate("We_will_connect_with_you_for_cost_shipping")!!}
                                     </option>
                                 @endforeach
                             </select>

@@ -19,7 +19,7 @@
             <div class="d-flex gap-2 align-items-center">
                 <input type="radio" class="show" name="shipping_method_id" id="shipping_method_id-{{ $shippingMethod['id'] }}" value="{{ $shippingMethod['id'] }}" {{ $shippingMethodKey == 0 ? 'checked':'' }}>
                 <label class="mb-0" for="shipping_method_id-{{ $shippingMethod['id'] }}">
-                    {{ ucfirst($shippingMethod['title']) }} ({{ $shippingMethod['duration'] }}) {!! webCurrencyConverter($shippingMethod['cost']) !!}
+                    {{ ucfirst($shippingMethod['title']) }} ({{ $shippingMethod['duration'] }}) {!! translate("We_will_connect_with_you_for_cost_shipping") !!}
                 </label>
             </div>
             @endforeach

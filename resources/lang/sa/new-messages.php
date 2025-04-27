@@ -8799,4 +8799,13 @@ return [
 	"post_added_successfully" => "Post added successfully",
 	"Search posts..." => "Search posts...",
 	"All_Posts" => "All Posts",
+	"Please_verify_your_email" => "Please verify your email",
+	"Successfully_Update" => "Successfully Update",
+	"the_title_field_is_required" => "The title field is required",
+	"the_duration_field_is_required" => "The duration field is required",
+	"the_cost_must_be_a_number" => "The cost must be a number",
+	"select_shipping_method" => "Select shipping method",
+	"Please_select_shipping_method" => "Please select shipping method",
+	"Choose_Shipping_Method" => "Choose Shipping Method",
+	"Proceed_to_Checkout" => "Proceed to Checkout",
 ];
