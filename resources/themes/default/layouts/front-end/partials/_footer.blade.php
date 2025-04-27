@@ -228,7 +228,7 @@
                                     </li>
                                     @endif
                                     <li class="widget-list-item">
-                                        <a class="widget-list-link" href="{{route('route('terms')')}}">
+                                        <a class="widget-list-link" href="{{route('terms')}}">
                                             {{ translate('terms_&_conditions')}}
                                         </a>
                                     </li>
