@@ -228,12 +228,12 @@
                                     </li>
                                     @endif
                                     <li class="widget-list-item">
-                                        <a class="widget-list-link" href="{{route('shipping-policy')}}">
+                                        <a class="widget-list-link" href="{{route('route('terms')')}}">
                                             {{ translate('terms_&_conditions')}}
                                         </a>
                                     </li>
                                     <li class="widget-list-item">
-                                        <a class="widget-list-link" href="{{route('shipping-policy')}}">
+                                        <a class="widget-list-link" href="{{route('privacy-policy')}}">
                                             {{ translate('privacy_policy')}}
                                         </a>
                                     </li>
