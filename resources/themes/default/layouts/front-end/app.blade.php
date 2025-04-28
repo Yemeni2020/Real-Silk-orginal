@@ -127,7 +127,15 @@
         <!-- End Facebook Pixel Code -->
     @endif
     <script src="{{ asset('public/js/component-app.js') }}" defer></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17031039279"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'AW-17031039279');
+</script>
 </head>
 
 <body class="toolbar-enabled" id="app-web">

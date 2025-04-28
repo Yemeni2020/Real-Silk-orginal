@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Seller;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -53,6 +54,10 @@ class ShippingMethod extends Model
         return $this->belongsTo(Seller::class,'creator_id');
     }
 
+    public function options_shipping():HasMany{
+        return $this->hasMany(OptionsShipping::class,"shipping_method","id");
+    }
+    
     public function option(): array
     {
         $option1 = new \stdClass();
