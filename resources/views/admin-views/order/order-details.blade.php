@@ -177,8 +177,8 @@
                                                         <h6 class="title-color">{{substr($productDetails->name, 0, 30)}}{{strlen($productDetails->name)>10?'...':''}}</h6>
                                                         <div><strong>{{translate('qty')}} :</strong> {{$detail['qty']}}
                                                         </div>
-                                                        @if(isset(isset($productDetails->production_period))
-                                                            <div><strong>{{translate('production_period')}} :</strong> {{$productDetails->production_period}} {{translate("Days")}}
+														@if(isset($productDetails) && property_exists($productDetails, 'production_period') && $productDetails->production_period)
+                                                            <div><strong>{{translate('production_period')}} :</strong> {{$productDetails?->production_period}} {{translate("Days")}}
                                                             </div>
                                                         @endif
                                                         <div>
