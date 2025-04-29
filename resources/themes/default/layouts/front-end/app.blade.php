@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <title>@yield('title')</title>
     <meta name="_token" content="{{csrf_token()}}">
-    <meta name="robots" content="nofollow, noindex ">
+    <meta name="robots" content="index, follow">
 
     <meta name="google-site-verification" content="{{getWebConfig('google_search_console_code')}}">
     <meta name="msvalidate.01" content="{{getWebConfig('bing_webmaster_code')}}">
