@@ -166,10 +166,10 @@ class CartController extends Controller
         $cart = CartManager::add_to_cart($request);
 
         if ($cart['status'] == 2) {
-            // mycode
-            $cart['redirect_to_url'] = route('checkout-details');
-            return request()->ajax() ? response()->json($cart) : redirect()->route('checkout-details');
-            // end mycode
+            // // mycode
+            // $cart['redirect_to_url'] = route('checkout-details');
+            // return request()->ajax() ? response()->json($cart) : redirect()->route('checkout-details');
+            // // end mycode
 
             $cart['shippingMethodHtmlView'] = view(VIEW_FILE_NAMES['product_shipping_method_modal_view_partials'], [
                 'shipping_method_list' => $cart['shipping_method_list'],
