@@ -107,10 +107,10 @@ class TapPaymentSettingsController extends Controller
                 'time' => 100,
             ],
             'post' => [
-                'url' => "http://localhost:8080/"//route('checkout-complete')
+                'url' => route('checkout-complete')
             ],
             'redirect' => [
-                'url' => 'http://localhost:8080/'//route('checkout-complete')
+                'url' => route('checkout-complete')
             ]
         ];
 

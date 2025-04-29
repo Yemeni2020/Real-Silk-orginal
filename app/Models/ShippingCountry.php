@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ShippingCountry extends Model
 {
@@ -20,4 +21,7 @@ class ShippingCountry extends Model
         'name' => 'string',
         'shipping_method' => 'integer',
     ];
+    public function Countries():BelongsTo{
+        return $this->belongsTo(ShippingMethod::class,"shipping_method","id");
+    }
 }

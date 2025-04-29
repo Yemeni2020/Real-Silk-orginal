@@ -85,4 +85,7 @@ class ShippingMethod extends Model
 
         return $options;
     }
+    public function Countries():HasMany{
+        return $this->hasMany(ShippingCountry::class,"shipping_method","id");
+    }
 }
