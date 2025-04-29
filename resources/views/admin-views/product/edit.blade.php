@@ -469,9 +469,9 @@ $auto_translate=getWebConfig("auto_translate");
                                 </div>
                                 <select name="tax_model" id="tax_model" class="form-control" required>
                                     <option
-                                        value="include" {{ $product->tax_model == 'include' ? 'selected':'' }}>{{ translate("include_with_product") }}</option>
-                                    <option
                                         value="exclude" {{ $product->tax_model == 'exclude' ? 'selected':'' }}>{{ translate("exclude_with_product") }}</option>
+                                    <option
+                                        value="include" {{ $product->tax_model == 'include' ? 'selected':'' }}>{{ translate("include_with_product") }}</option>
                                 </select>
                             </div>
                         </div>
