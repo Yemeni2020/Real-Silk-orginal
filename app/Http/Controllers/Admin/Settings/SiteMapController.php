@@ -179,6 +179,15 @@ class SiteMapController extends BaseController
                 ->setPriority(0.8);
             $generator->getSitemap()->add($urlObject);
         }
+        // 🔹 روابط المقالات (Posts)
+        $postsUrl = \App\Models\Post::pluck('slug'); // ✅ أو حسب اسم موديل الـ posts عندك
+        foreach ($postsUrl as $postSingleUrl) {
+            $urlObject = Url::create(route('posts.show', ['slug' => $postSingleUrl]))
+                ->setLastModificationDate($currentTime)
+                ->setChangeFrequency('weekly')
+                ->setPriority(0.7); // أقل من المنتجات والمتاجر قليلاً
+            $generator->getSitemap()->add($urlObject);
+        }
 
         $generator->hasCrawled(function (Url $url) use ($currentTime) {
             $url->setPriority(0.8)

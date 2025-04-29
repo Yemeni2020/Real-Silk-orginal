@@ -8808,4 +8808,10 @@ return [
 	"Please_select_shipping_method" => "Please select shipping method",
 	"Choose_Shipping_Method" => "Choose Shipping Method",
 	"Proceed_to_Checkout" => "Proceed to Checkout",
+	"Webmaster_Tools" => "Webmaster Tools",
+	"optimize_websites_performance,_indexing_status,_and_search_visibility." => "Optimize websites performance  indexing status  and search visibility.",
+	"Learn_more." => "Learn more.",
+	"a_sitemap_is_an_xml_file_that_contains_all_the_web_pages_of_a_website." => "A sitemap is an xml file that contains all the web pages of a website.",
+	"here_we_list_and_organize_all_the_default_pages_in_a_hierarchical_structure_of_your_website_through_xml_sitemap." => "Here we list and organize all the default pages in a hierarchical structure of your website through xml sitemap.",
+	"loading" => "Loading",
 ];
