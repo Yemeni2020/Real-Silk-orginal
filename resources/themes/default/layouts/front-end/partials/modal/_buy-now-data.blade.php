@@ -1,3 +1,4 @@
+
 <form action="{{ route('cart.add') }}" method="POST">
     @csrf
     <div class="d-flex align-items-center justify-content-between mb-4">

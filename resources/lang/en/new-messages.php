@@ -9237,4 +9237,5 @@ return [
 	"post_image_removed_successfully" => "Post image removed successfully",
 	"All_Posts" => "All Posts",
 	"Search posts..." => "Search posts...",
+	"buy_now2" => "Buy now2",
 ];
