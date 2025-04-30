@@ -506,11 +506,28 @@ class CartManager
                         'message' => translate('successfully_added!'),
                     ];
                 }
+
+                // Start Code
+                $cart->update([
+                    'is_checked' => 1,
+                    'shipping_cost' => 0,
+                ]);
+
+                $cart['free_delivery_order_amount'] = 0;
+
                 return [
-                    'status' => $sellerShippingList && count($sellerShippingList) > 0 ? 2 : 0,
-                    'message' => $sellerShippingList && count($sellerShippingList) > 0 ? translate('Please_select_shipping_method') : translate('Shipping_Not_Available_for_this_Shop'),
-                    'shipping_method_list' => $sellerShippingList,
+                    'status' => 1,
+                    'redirect_to' => 'checkout',
+                    'cart' => $cart,
+                    'cart_shipping_cost' => $getShippingCost->cost ?? 0,
+                    'message' => translate('successfully_added!'),
                 ];
+                // EndCode
+                // return [
+                //     'status' => $sellerShippingList && count($sellerShippingList) > 0 ? 2 : 0,
+                //     'message' => $sellerShippingList && count($sellerShippingList) > 0 ? translate('Please_select_shipping_method') : translate('Shipping_Not_Available_for_this_Shop'),
+                //     'shipping_method_list' => $sellerShippingList,
+                // ];
             } elseif ($product['product_type'] == 'physical' && ($shippingType == 'category_wise' || $shippingType == 'product_wise')) {
                 $cart->update([
                     'is_checked' => 1,

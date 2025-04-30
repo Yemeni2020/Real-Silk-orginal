@@ -522,6 +522,76 @@ class WebController extends Controller
         return back();
     }
 
+    public function shipping_methods(Request $request): View|RedirectResponse
+    {
+        $response = self::checkValidationForCheckoutPages($request);
+        if ($response['status'] == 0) {
+            foreach ($response['message'] as $message) {
+                Toastr::error($message);
+            }
+            return $response['redirect'] ? redirect($response['redirect']) : redirect('/');
+        }
+
+        $cartItemGroupIDs = CartManager::get_cart_group_ids(type: 'checked');
+        $cartGroupList = Cart::whereHas('product', function ($query) {
+            return $query->active();
+        })->whereIn('cart_group_id', $cartItemGroupIDs)->where(['is_checked' => 1])->get()->groupBy('cart_group_id');
+        $isPhysicalProductExistArray = [];
+        foreach ($cartGroupList as $groupId => $cartGroup) {
+            $isPhysicalProductExist = false;
+            foreach ($cartGroup as $cart) {
+                if ($cart->product_type == 'physical') {
+                    $isPhysicalProductExist = true;
+                }
+            }
+            $isPhysicalProductExistArray[$groupId] = $isPhysicalProductExist;
+        }
+
+        $cashOnDeliveryBtnShow = !in_array(false, $isPhysicalProductExistArray);
+
+        $order = Order::find(session('order_id'));
+        $couponDiscount = session()->has('coupon_discount') ? session('coupon_discount') : 0;
+        $orderWiseShippingDiscount = CartManager::order_wise_shipping_discount();
+        $getShippingCostSavedForFreeDelivery = CartManager::get_shipping_cost_saved_for_free_delivery(type: 'checked');
+        $amount = CartManager::cart_grand_total(type: 'checked') - $couponDiscount - $orderWiseShippingDiscount - $getShippingCostSavedForFreeDelivery;
+        $inr = Currency::where(['symbol' => '₹'])->first();
+        $usd = Currency::where(['code' => 'USD'])->first();
+        $myr = Currency::where(['code' => 'MYR'])->first();
+
+        $offlinePaymentMethods = OfflinePaymentMethod::where('status', 1)->get();
+        $paymentPublishedStatus = config('get_payment_publish_status');
+        $paymentGatewayPublishedStatus = isset($paymentPublishedStatus[0]['is_published']) ? $paymentPublishedStatus[0]['is_published'] : 0;
+
+        $shippingType = isset($adminShipping) == true ? $adminShipping->shipping_type : 'order_wise';
+        $sellerShippingList = $shippingType == 'order_wise' ? ShippingMethod::where(['status' => 1])->where(['creator_type' => 'admin'])->get() : null;
+
+        $arr=[
+            'cashOnDeliveryBtnShow' => $cashOnDeliveryBtnShow,
+            'order' => $order,
+            'cash_on_delivery' => getWebConfig(name: 'cash_on_delivery'),
+            'digital_payment' => getWebConfig(name: 'digital_payment'),
+            'wallet_status' => getWebConfig(name: 'wallet_status'),
+            'offline_payment' => getWebConfig(name: 'offline_payment'),
+            'coupon_discount' => $couponDiscount,
+            'amount' => $amount,
+            'inr' => $inr,
+            'usd' => $usd,
+            'myr' => $myr,
+            'paymentGatewayPublishedStatus' => $paymentGatewayPublishedStatus,
+            'payment_gateways_list' => payment_gateways(),
+            'offline_payment_methods' => $offlinePaymentMethods
+        ];
+
+        if($sellerShippingList->count() > 0 && $sellerShippingList && isset($sellerShippingList))
+            $arr["sellerShippingList"]=$sellerShippingList;
+
+        if (session()->has('address_id') && session()->has('billing_address_id')) {
+            return view(VIEW_FILE_NAMES['shipping_methods'], $arr);
+        }
+
+        Toastr::error(translate('incomplete_info'));
+        return back();
+    }
     public function getCashOnDeliveryCheckoutComplete(Request $request): View|RedirectResponse|null
     {
         if ($request['payment_method'] != 'cash_on_delivery') {
@@ -1365,13 +1435,14 @@ class WebController extends Controller
                             }
                         }
 
-                        if ($sellerShippingCount > 0 && $shippingMethod == 'inhouse_shipping' && $inhouseShippingMsgCount < 1) {
+                        // this for code shipping
+                        if ($sellerShippingCount > 0 && $shippingMethod == 'inhouse_shipping' && $inhouseShippingMsgCount < 1 && 2 == 3) {
                             $cartShipping = CartShipping::where('cart_group_id', $cart->cart_group_id)->first();
                             if (!isset($cartShipping)) {
                                 $response['status'] = 0;
                                 $response['errorType'] = 'empty-shipping';
                                 $response['redirect'] = route('shop-cart');
-                                $message[] = translate('select_shipping_method');
+                                $message[] = translate('select_shipping_method')." dd";
                             }
                             $inhouseShippingMsgCount++;
                         } elseif ($sellerShippingCount > 0 && $shippingMethod != 'inhouse_shipping') {

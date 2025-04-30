@@ -225,6 +225,7 @@
 <span id="route-quick-view" data-url="{{ route('quick-view') }}"></span>
 <span id="route-checkout-details" data-url="{{ route('checkout-details') }}"></span>
 <span id="route-checkout-payment" data-url="{{ route('checkout-payment') }}"></span>
+<span id="route-shipping-method" data-url="{{ route('checkout-shipping-method') }}"></span>
 <span id="route-set-shipping-id" data-url="{{ route('customer.set-shipping-method') }}"></span>
 <span id="route-order-note" data-url="{{ route('order_note') }}"></span>
 <span id="route-get-session-recaptcha-code"

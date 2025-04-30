@@ -98,6 +98,7 @@ Route::group(['namespace' => 'Web', 'middleware' => ['maintenance_mode', 'guestC
         Route::get('checkout-details', 'checkout_details')->name('checkout-details');
         Route::get('checkout-shipping', 'checkout_shipping')->name('checkout-shipping');
         Route::get('checkout-payment', 'checkout_payment')->name('checkout-payment');
+        Route::get('checkout-shipping-method', 'shipping_methods')->name('checkout-shipping-method');
         Route::get('checkout-review', 'checkout_review')->name('checkout-review');
         Route::get('checkout-complete', 'getCashOnDeliveryCheckoutComplete')->name('checkout-complete');
         Route::post('offline-payment-checkout-complete', 'getOfflinePaymentCheckoutComplete')->name('offline-payment-checkout-complete');

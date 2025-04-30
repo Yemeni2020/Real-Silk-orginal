@@ -371,7 +371,7 @@ function checkoutFromShipping() {
                     });
                 }
             } else {
-                location.href = $('#route-checkout-payment').data('url');
+                location.href = $('#route-shipping-method').data('url');
             }
         },
         complete: function () {

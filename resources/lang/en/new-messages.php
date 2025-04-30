@@ -9238,4 +9238,5 @@ return [
 	"All_Posts" => "All Posts",
 	"Search posts..." => "Search posts...",
 	"buy_now2" => "Buy now2",
+	"Kasu" => "Kasu",
 ];
