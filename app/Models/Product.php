@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * @property int $user_id
@@ -223,7 +224,13 @@ class Product extends Model
             ->SellerApproved()
             ->whereIn('product_type', $productType);
     }
-
+    public function scopeWithoutDetails($query)
+    {
+        $columns = Schema::getColumnListing($this->getTable());
+        $columns = array_diff($columns, ['details']);
+    
+        return $query->select($columns);
+    }
     public function scopeSellerApproved($query): void
     {
         $query->whereHas('seller', function ($query) {

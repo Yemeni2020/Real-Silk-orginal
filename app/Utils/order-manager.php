@@ -30,6 +30,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Schema;
 
 
 class OrderManager
@@ -608,9 +609,11 @@ class OrderManager
         // confirmed
         DB::table('orders')->insertGetId($or);
         self::add_order_status_history($order_id, $getCustomerID, $data['payment_status'] == 'paid' ? 'confirmed' : 'pending', 'customer');
-        
+
+
+
         foreach (CartManager::get_cart(groupId: $data['cart_group_id'], type: 'checked') as $cartSingleItem) {
-            $product = Product::where(['id' => $cartSingleItem['product_id']])->with('digitalVariation')->first()->toArray();
+            $product = Product::where(['id' => $cartSingleItem['product_id']])->with('digitalVariation')->withoutDetails()->first()->toArray();
             unset($product['is_shop_temporary_close']);
             unset($product['thumbnail_full_url']);
             unset($product['color_images_full_url']);
