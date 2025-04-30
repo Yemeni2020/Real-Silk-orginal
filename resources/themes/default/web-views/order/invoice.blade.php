@@ -21,7 +21,7 @@
             font-style: normal;
             font-display: swap;
         }
-        .Rial-SA{
+         .Rial-SA{
             font-family: 'RealSilkIcon' !important;
         }
         .Rial-SA::before{
@@ -527,7 +527,7 @@ $orderTotalPriceSummary = \App\Utils\OrderManager::getOrderTotalPriceSummary(ord
                         <span class="font-bold">{{translate('invoice_of')}}</span> <span class="font-normal">{{' ( '.$currencyCode.' )'}}</span>
                     </div>
                     <div class="fz-17 text-primary text-right">
-                    {!! webCurrencyConverter(amount: $orderTotalPriceSummary['totalAmount']) !!}
+                    {!! webCurrencyConverter(amount: $orderTotalPriceSummary['totalAmount'],img:true) !!}
                     </div>
                 </td>
             </tr>
@@ -650,7 +650,7 @@ $orderTotalPriceSummary = \App\Utils\OrderManager::getOrderTotalPriceSummary(ord
                         {{translate('invoice_of')}}
                         <span>{{' ( '.$currencyCode.' )'}}</span>
                     </div>
-                    <div class="fz-17 text-primary text-right">{!! webCurrencyConverter(amount: $orderTotalPriceSummary['totalAmount']) !!}</div>
+                    <div class="fz-17 text-primary text-right">{!! webCurrencyConverter(amount: $orderTotalPriceSummary['totalAmount'],img:true) !!}</div>
                 </td>
             </tr>
         @endif
@@ -707,11 +707,11 @@ $orderTotalPriceSummary = \App\Utils\OrderManager::getOrderTotalPriceSummary(ord
                                 <div class="fz-10 text-dark" style="margin:0 15px">{{$details->qty}}</div>
                             </td>
                             <td class="text-right">
-                                <div class="fz-10 text-dark">{!! webCurrencyConverter(amount: $details['price']) !!}</div>
+                                <div class="fz-10 text-dark">{!! webCurrencyConverter(amount: $details['price'],img:true) !!}</div>
                             </td>
                             <td class="text-right">
                                 <div class="fz-10 text-dark">
-                                {!! webCurrencyConverter(amount: $details['price'] * $details['qty']) !!}
+                                {!! webCurrencyConverter(amount: $details['price'] * $details['qty'],img:true) !!}
                                 </div>
                             </td>
                         </tr>
@@ -739,45 +739,45 @@ $orderTotalPriceSummary = \App\Utils\OrderManager::getOrderTotalPriceSummary(ord
                                 <tr>
                                     <td class="text-left font-bold">{{ translate('total_Item_Price')}}</td>
                                     <td class="text-right">
-                                    {!! webCurrencyConverter(amount: $orderTotalPriceSummary['itemPrice']) !!}
+                                    {!! webCurrencyConverter(amount: $orderTotalPriceSummary['itemPrice'],img:true) !!}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="text-left font-bold">{{ translate('product_Discount')}}</td>
                                     <td class="text-right">
-                                        - {!! webCurrencyConverter(amount: $orderTotalPriceSummary['itemDiscount']) !!}</td>
+                                        - {!! webCurrencyConverter(amount: $orderTotalPriceSummary['itemDiscount'],img:true) !!}</td>
                                 </tr>
                                 <tr>
                                     <td class="text-left font-bold">{{ translate('sub_Total')}}</td>
-                                    <td class="text-right">{!! webCurrencyConverter(amount: $orderTotalPriceSummary['subTotal']) !!}</td>
+                                    <td class="text-right">{!! webCurrencyConverter(amount: $orderTotalPriceSummary['subTotal'],img:true) !!}</td>
                                 </tr>
                                 @if($order->order_type == 'default_type')
                                     <tr>
                                         <td class="text-left font-bold">{{ translate('shipping')}}</td>
-                                        <td class="text-right">{!!webCurrencyConverter(amount: $orderTotalPriceSummary['shippingTotal']) !!}</td>
+                                        <td class="text-right">{!!webCurrencyConverter(amount: $orderTotalPriceSummary['shippingTotal'],img:true) !!}</td>
                                     </tr>
                                 @endif
                                 <tr>
                                     <td class="text-left font-bold">{{ translate('coupon_Discount')}}</td>
                                     <td class="text-right">
-                                        - {!! webCurrencyConverter(amount: $orderTotalPriceSummary['couponDiscount']) !!}</td>
+                                        - {!! webCurrencyConverter(amount: $orderTotalPriceSummary['couponDiscount'],img:true) !!}</td>
                                 </tr>
                                 <tr>
                                     <td class="text-left font-bold">{{ translate('tax')}}</td>
-                                    <td class="text-right">{!! webCurrencyConverter(amount: $orderTotalPriceSummary['taxTotal']) !!}</td>
+                                    <td class="text-right">{!! webCurrencyConverter(amount: $orderTotalPriceSummary['taxTotal'],img:true) !!}</td>
                                 </tr>
                                 @if ($order->order_type != 'default_type')
                                     <tr>
                                         <td class="text-left font-bold">{{ translate('extra_Discount')}}</td>
                                         <td class="text-right">
-                                            - {!! webCurrencyConverter(amount: $orderTotalPriceSummary['extraDiscount']) !!}</td>
+                                            - {!! webCurrencyConverter(amount: $orderTotalPriceSummary['extraDiscount'],img:true) !!}</td>
                                     </tr>
                                 @endif
                                 <tr>
                                     <td class="border-dashed-top font-weight-bold text-left fz-14 font-bold">
                                         {{ translate('total')}}</td>
                                     <td class="border-dashed-top font-weight-bold text-right fz-14">
-                                    {!! webCurrencyConverter(amount: $orderTotalPriceSummary['totalAmount']) !!}
+                                    {!! webCurrencyConverter(amount: $orderTotalPriceSummary['totalAmount'],img:true) !!}
                                     </td>
                                 </tr>
                                 </tbody>

@@ -113,7 +113,7 @@ if (!function_exists('webCurrencyConverter')) {
      * @param string|int|float|null $amount
      * @return float|string
      */
-    function webCurrencyConverter(string|int|float|null $amount = 0,bool $img=true): float|string
+    function webCurrencyConverter(string|int|float|null $amount = 0,bool $img=false): float|string
     {
         loadCurrency();
         $currencyModel = getWebConfig('currency_model');
@@ -183,6 +183,8 @@ if (!function_exists('getCurrencySymbol')) {
     {
         $SAR_IMAGE_PATH = asset('public/images/Saudi_Riyal_Symbol-2.svg'); // تأكد من وضع المسار الصحيح للصورة
         $defaultSymbol = '<span class="Rial-SA"></span> ';
+        if($img)
+            $defaultSymbol = $img?'<img loading="lazy" src="'.$SAR_IMAGE_PATH.'" alt="SAR" style="width: 1em; height: 1em;display:inline;">':'';
     
         
         loadCurrency();
@@ -248,7 +250,7 @@ if (!function_exists('setCurrencySymbol')) {
      * @param string $type
      * @return string
      */
-    function setCurrencySymbol(string|int|float $amount, string $currencyCode = USD, string $type = 'default', bool $img=true): string
+    function setCurrencySymbol(string|int|float $amount, string $currencyCode = USD, string $type = 'default', bool $img=false): string
     {
         $decimalPointSettings = getWebConfig('decimal_point_settings');
         $position = getWebConfig('currency_symbol_position');
