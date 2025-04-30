@@ -4,7 +4,7 @@
 
 
     $SAR_IMAGE_PATH = asset('public/images/Saudi_Riyal_Symbol-2.svg'); // تأكد من وضع المسار الصحيح للصورة
-    $defaultSymbol_Svg = '<img src="'.$SAR_IMAGE_PATH.'" alt="SAR" style="width: 20px; height: 20px;display:inline;">';
+    $defaultSymbol_Svg = '<span class="Rial-SA"></span>';
 
 @endphp
 @php($announcement=getWebConfig(name: 'announcement'))

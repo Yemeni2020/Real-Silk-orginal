@@ -6,6 +6,41 @@ use Illuminate\Support\Facades\Storage;
 
 trait  PdfGenerator
 {
+    
+    // MyCode For Real Mark
+    // public static function generatePdf($view, $filePrefix, $filePostfix, $pdfType = null, $requestFrom = 'admin'): string
+    // {
+    //     $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+    //     $fontDirs = $defaultConfig['fontDir'];
+
+    //     $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+    //     $fontData = $defaultFontConfig['fontdata'];
+
+    //     $mpdf = new \Mpdf\Mpdf([
+    //         'mode' => 'utf-8',
+    //         'format' => [190, 250],
+    //         'autoLangToFont' => true,
+    //         'autoScriptToLang' => true,
+    //         'default_font' => 'realsilkicon',
+    //         'fontDir' => array_merge($fontDirs, [resource_path('fonts')]),
+    //         'fontdata' => $fontData + [
+    //             'realsilkicon' => [
+    //                 'R' => 'realsilkicon.ttf',
+    //                 'useKashida' => 75, // اختياري لدعم الكشيدة
+    //             ],
+    //         ],
+    //     ]);
+
+    //     if ($pdfType == 'invoice') {
+    //         $footerHtml = self::footerHtml($requestFrom);
+    //         $mpdf->SetHTMLFooter($footerHtml);
+    //     }
+
+    //     $mpdf_view = $view->render();
+    //     $mpdf->WriteHTML($mpdf_view);
+    //     $mpdf->Output($filePrefix . $filePostfix . '.pdf', 'D');
+    // }
+    // End Code
     public static function generatePdf($view, $filePrefix, $filePostfix, $pdfType = null, $requestFrom = 'admin'): string
     {
         $mpdf = new \Mpdf\Mpdf(['default_font' => 'FreeSerif', 'mode' => 'utf-8', 'format' => [190, 250], 'autoLangToFont' => true]);

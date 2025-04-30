@@ -182,7 +182,7 @@ if (!function_exists('getCurrencySymbol')) {
     function getCurrencySymbol(string $currencyCode = USD, string $type = 'default',bool $img=false): float|int|string
     {
         $SAR_IMAGE_PATH = asset('public/images/Saudi_Riyal_Symbol-2.svg'); // تأكد من وضع المسار الصحيح للصورة
-        $defaultSymbol = $img?'<img loading="lazy" src="'.$SAR_IMAGE_PATH.'" alt="SAR" style="width: 20px; height: 20px;display:inline;">':'';
+        $defaultSymbol = '<span class="Rial-SA"></span> ';
     
         
         loadCurrency();

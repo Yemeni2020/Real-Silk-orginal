@@ -40,6 +40,20 @@
 
     <style>
         @font-face {
+            font-family: 'RealSilkIcon';
+            src: url({{ theme_asset(path: 'public/assets/front-end/fonts/realsilkicon.ttf') }}) format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        .Rial-SA{
+            font-family: 'RealSilkIcon' !important;
+        }
+        .Rial-SA::before{
+            content: "\e9bc";
+        }
+
+        @font-face {
             font-family: 'Cairo';
             src: url({{ theme_asset(path: 'public/assets/front-end/fonts/Cairo/static/Cairo-Regular.ttf') }}) format('opentype');
             font-weight: normal;
