@@ -323,6 +323,7 @@ class CartManager
 
     public static function addToCartPhysicalProduct($request, $product, $shippingType, $sellerShippingList): array
     {
+        $shippingMethod = getWebConfig(name: 'shipping_method');
         $price = 0;
         $string = '';
         $variations = [];
@@ -474,7 +475,7 @@ class CartManager
                 ];
             }
 
-            if ($product['product_type'] == 'physical' && $shippingType == 'order_wise') {
+            if($product['product_type'] == 'physical' && $shippingType == 'order_wise' && $shippingMethod == "sellerOrhouse_wise_shipping"){
                 if ($request['shipping_method_exist'] && $request['shipping_method_id'] && count($sellerShippingList) > 0) {
                     $cart->update(['is_checked' => 1]);
                     $cartGroupIds = Cart::where(['customer_id' => ($user == 'offline' ? $guestId : $user->id), 'is_guest' => ($user == 'offline' ? 1 : 0)])
@@ -506,7 +507,7 @@ class CartManager
                         'message' => translate('successfully_added!'),
                     ];
                 }
-
+                
                 // Start Code
                 $cart->update([
                     'is_checked' => 1,
@@ -528,6 +529,62 @@ class CartManager
                 //     'message' => $sellerShippingList && count($sellerShippingList) > 0 ? translate('Please_select_shipping_method') : translate('Shipping_Not_Available_for_this_Shop'),
                 //     'shipping_method_list' => $sellerShippingList,
                 // ];
+            }
+            elseif ($product['product_type'] == 'physical' && $shippingType == 'order_wise') {
+                if ($request['shipping_method_exist'] && $request['shipping_method_id'] && count($sellerShippingList) > 0) {
+                    $cart->update(['is_checked' => 1]);
+                    $cartGroupIds = Cart::where(['customer_id' => ($user == 'offline' ? $guestId : $user->id), 'is_guest' => ($user == 'offline' ? 1 : 0)])
+                        ->pluck('cart_group_id');
+                    if (count($cartGroupIds) > 0) {
+                        CartShipping::whereIn('cart_group_id', $cartGroupIds)->delete();
+                    }
+
+                    $shipping = CartShipping::where(['cart_group_id' => $cart['cart_group_id']])->first();
+                    if (!isset($shipping)) {
+                        $shipping = new CartShipping();
+                    }
+                    $getShippingCost = ShippingMethod::find($request['shipping_method_id']);
+                    if (!$getShippingCost) {
+                        return ['status' => 0, 'message' => translate('Selected_shipping_method_not_found')];
+                    }
+                    $shipping['cart_group_id'] = $cart['cart_group_id'];
+                    $shipping['shipping_method_id'] = $request['shipping_method_id'];
+                    $shipping['shipping_cost'] = $getShippingCost->cost ?? 0;
+                    $shipping->save();
+
+                    $cart['free_delivery_order_amount'] = OrderManager::free_delivery_order_amount($cart['cart_group_id']);
+
+                    return [
+                        'status' => 1,
+                        'redirect_to' => 'checkout',
+                        'cart' => $cart,
+                        'cart_shipping_cost' => $getShippingCost->cost ?? 0,
+                        'message' => translate('successfully_added!'),
+                    ];
+                }
+                
+                // Start Code
+                $cart->update([
+                    'is_checked' => 1,
+                    'shipping_cost' => 0,
+                ]);
+
+                $cart['free_delivery_order_amount'] = 0;
+
+                // return [
+                //     'status' => 1,
+                //     'redirect_to' => 'checkout',
+                //     'cart' => $cart,
+                //     'cart_shipping_cost' => $getShippingCost->cost ?? 0,
+                //     'message' => translate('successfully_added!'),
+                // ];
+                // EndCode
+                
+                return [
+                    'status' => $sellerShippingList && count($sellerShippingList) > 0 ? 2 : 0,
+                    'message' => $sellerShippingList && count($sellerShippingList) > 0 ? translate('Please_select_shipping_method') : translate('Shipping_Not_Available_for_this_Shop'),
+                    'shipping_method_list' => $sellerShippingList,
+                ];
             } elseif ($product['product_type'] == 'physical' && ($shippingType == 'category_wise' || $shippingType == 'product_wise')) {
                 $cart->update([
                     'is_checked' => 1,
@@ -561,6 +618,7 @@ class CartManager
 
     public static function addToCartDigitalProduct($request, $product, $shippingType, $sellerShippingList): array
     {
+        $shippingMethod = getWebConfig(name: 'shipping_method');
         if ($product['minimum_order_qty'] > $request['quantity']) {
             return ['status' => 0, 'message' => translate('Minimum_order_quantity').' '. $product['minimum_order_qty']];
         }
@@ -684,7 +742,20 @@ class CartManager
         if ($shippingMethod == 'inhouse_shipping') {
             $shippingType = isset($adminShipping) == true ? $adminShipping->shipping_type : 'order_wise';
             $sellerShippingList = $shippingType == 'order_wise' ? ShippingMethod::where(['status' => 1])->where(['creator_type' => 'admin'])->get() : null;
-        } else {
+        }elseif($shippingMethod == 'sellerOrhouse_wise_shipping'){
+            if ($product->added_by == 'admin') {
+                $shippingType = isset($adminShipping) == true ? $adminShipping->shipping_type : 'order_wise';
+                $sellerShippingList = $shippingType == 'order_wise' ? ShippingMethod::where(['status' => 1])->where(['creator_type' => 'admin'])->get() : null;
+            }
+            else{
+                $shippingType = isset($adminShipping) == true ? $adminShipping->shipping_type : 'order_wise';
+                $sellerShippingList = $shippingType == 'order_wise' ? ShippingMethod::where(['status' => $product->user_id])->where(['creator_type' => 'admin'])->get() : null;
+                if($sellerShippingList->count() == 0){
+                    $sellerShippingList = $shippingType == 'order_wise' ? ShippingMethod::where(['status' => 1])->where(['creator_type' => 'admin'])->get() : null;
+                }
+            }
+        } 
+        else {
             if ($product->added_by == 'admin') {
                 $shippingType = isset($adminShipping) == true ? $adminShipping->shipping_type : 'order_wise';
                 $sellerShippingList = $shippingType == 'order_wise' ? ShippingMethod::where(['status' => 1])->where(['creator_type' => 'admin'])->get() : null;

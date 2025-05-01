@@ -9239,4 +9239,9 @@ return [
 	"Search posts..." => "Search posts...",
 	"buy_now2" => "Buy now2",
 	"Kasu" => "Kasu",
+	"Shipping will be handled by the factory" => "Shipping will be handled by the factory",
+	"Shipping will be handled by admin" => "Shipping will be handled by admin",
+	"Factory has a shipping method defined. Shipping will be handled by factory." => "Factory has a shipping method defined. Shipping will be handled by factory.",
+	"No shipping method found for factory. Shipping will be handled by admin." => "No shipping method found for factory. Shipping will be handled by admin.",
+	"undefined" => "Undefined",
 ];

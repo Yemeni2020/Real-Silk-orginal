@@ -21,6 +21,7 @@ use App\Models\OrderDetail;
 use App\Models\Product;
 use App\Models\Seller;
 use App\Models\Review;
+use App\Models\OptionsShipping;
 use App\Utils\ProductManager;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Arr;
@@ -96,4 +97,9 @@ class HomeController extends Controller{
         return response()->json($categories);
     }
 
+    public function getOptionsShippingMethod($id){
+        $OptionsShipping = OptionsShipping::where("shipping_method",$id)->with("options")->get();
+        return response()->json($OptionsShipping);
+
+    }
 }

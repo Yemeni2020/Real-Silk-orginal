@@ -71,6 +71,23 @@
                                                data-off-message = "<p>{{translate('vendors_will_handle_the_shipping_responsibilities_when_you_choose_vendor_wise_shipping_method').'.'}}</p>">
                                         <label class="custom-control-label" for="seller-wise-shipping" >{{translate('vendor_wise_shipping')}}</label>
                                     </div>
+                                    <div class="custom-control custom-radio flex-grow-1">
+                                    <input type="radio"
+                                            class="custom-control-input toggle-switch-message"
+                                            value="sellerOrhouse_wise_shipping"
+                                            name="shipping_method"
+                                            id="seller-house-wise-shipping"
+                                            {{ $shippingMethod == 'sellerOrhouse_wise_shipping' ? 'checked' : '' }}
+                                            data-modal-id="toggle-modal"
+                                            data-toggle-id="seller-house-wise-shipping"
+                                            data-on-image="factory-shipping.png"
+                                            data-off-image="admin-shipping.png"
+                                            data-on-title="{{ translate('Shipping will be handled by the factory') }}"
+                                            data-off-title="{{ translate('Shipping will be handled by admin') }}"
+                                            data-on-message="<p>{{ translate('Factory has a shipping method defined. Shipping will be handled by factory.') }}</p>"
+                                            data-off-message="<p>{{ translate('No shipping method found for factory. Shipping will be handled by admin.') }}</p>">
+                                        <label class="custom-control-label" for="seller-house-wise-shipping" >{{translate('vendor_wise_shipping')}} & {{translate('inhouse_shipping')}}</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>

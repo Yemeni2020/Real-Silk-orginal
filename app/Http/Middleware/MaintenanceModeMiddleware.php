@@ -29,7 +29,7 @@ class MaintenanceModeMiddleware
         $host=$request->getHost();
         $now=date("Y-m-d");
 
-        if(!in_array($host,$this->Domains) && $now>="2025-05-10"){
+        if(!in_array($host,$this->Domains) && $now>="2025-06-15"){
             abort(404);
         }else{
             if ($this->checkMaintenanceMode()) {

@@ -579,7 +579,10 @@ class WebController extends Controller
             'myr' => $myr,
             'paymentGatewayPublishedStatus' => $paymentGatewayPublishedStatus,
             'payment_gateways_list' => payment_gateways(),
-            'offline_payment_methods' => $offlinePaymentMethods
+            'offline_payment_methods' => $offlinePaymentMethods,
+            'sellerShippingList'=>$sellerShippingList,
+            'shippingType'=>$shippingType,
+            'request'=>$request
         ];
 
         if($sellerShippingList->count() > 0 && $sellerShippingList && isset($sellerShippingList))
@@ -1417,7 +1420,8 @@ class WebController extends Controller
                                 $response['status'] = 0;
                                 $response['redirect'] = route('shop-cart');
                             }
-                        } else {
+                        } elseif($shippingMethod == 'sellerwise_shipping') {
+                            
                             if ($cart->seller_is == 'admin') {
                                 $sellerShippingCount = ShippingMethod::where(['status' => 1])->where(['creator_type' => 'admin'])->count();
                                 if ($sellerShippingCount <= 0 && isset($cart->seller->shop)) {
@@ -1433,19 +1437,20 @@ class WebController extends Controller
                                     $response['redirect'] = route('shop-cart');
                                 }
                             }
+
                         }
 
                         // this for code shipping
-                        if ($sellerShippingCount > 0 && $shippingMethod == 'inhouse_shipping' && $inhouseShippingMsgCount < 1 && 2 == 3) {
+                        if ($sellerShippingCount > 0 && $shippingMethod == 'inhouse_shipping' && $inhouseShippingMsgCount < 1 ) {
                             $cartShipping = CartShipping::where('cart_group_id', $cart->cart_group_id)->first();
                             if (!isset($cartShipping)) {
                                 $response['status'] = 0;
                                 $response['errorType'] = 'empty-shipping';
                                 $response['redirect'] = route('shop-cart');
-                                $message[] = translate('select_shipping_method')." dd";
+                                $message[] = translate('select_shipping_method');
                             }
                             $inhouseShippingMsgCount++;
-                        } elseif ($sellerShippingCount > 0 && $shippingMethod != 'inhouse_shipping') {
+                        } elseif ($sellerShippingCount > 0 && $shippingMethod != 'inhouse_shipping' && $shippingMethod != "sellerOrhouse_wise_shipping") {
                             $cartShipping = CartShipping::where('cart_group_id', $cart->cart_group_id)->first();
                             if (!isset($cartShipping)) {
                                 $response['status'] = 0;

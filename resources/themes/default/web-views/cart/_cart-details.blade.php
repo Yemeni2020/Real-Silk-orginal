@@ -802,7 +802,7 @@
                 $admin_shipping = \App\Models\ShippingType::where('seller_id', 0)->first();
                 $shipping_type = isset($admin_shipping) == true ? $admin_shipping->shipping_type : 'order_wise';
                 ?>
-            @if ($shipping_type == 'order_wise' && 2 == 3 && $isPhysicalProductExist)
+            @if ($shipping_type == 'order_wise' && $isPhysicalProductExist && $shippingMethod != "sellerOrhouse_wise_shipping")
                 @php($shippings=\App\Utils\Helpers::getShippingMethods(1,'admin'))
                 @php($chosenShipping=\App\Models\CartShipping::where(['cart_group_id'=>$cartItem['cart_group_id']])->first())
 
