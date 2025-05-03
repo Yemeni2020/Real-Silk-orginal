@@ -246,7 +246,7 @@ $currencyModel = getWebConfig('currency_model');
                                             @endif
                                         @endforeach
                                         @if($shipping_type == 'order_wise')
-                                            <div class="row shipping-method-vue" :methods='@json($Shipping_methods)' style="border:1px var(--web-primary) solid;">
+                                            <div class="row shipping-method-vue" :methods='@json($Shipping_methods)' style="border:1px var(--web-primary) solid;" id="shipping-method-vue">
                                                 <div class="col-12">
                                                     <div class="">
                                                         <h6 class="font-semibold d-inline-block fs-15 mb-2">{{translate('shipping_method')}}</h6>
@@ -262,7 +262,6 @@ $currencyModel = getWebConfig('currency_model');
                                                     </div>
                                                     
                                                 </div>
-                                                <shippingMethod />
                                             </div>
                                         @endif
                                         <table
@@ -746,5 +745,7 @@ $currencyModel = getWebConfig('currency_model');
 
 @push('script')
 <script src="{{ theme_asset(path: 'public/assets/front-end/js/payment.js') }}"></script>
-
+<script>
+    
+</script>
 @endpush

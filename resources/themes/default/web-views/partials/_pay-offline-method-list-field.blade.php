@@ -1,29 +1,54 @@
 @if ($method)
+@php($shippingMethod=getWebConfig(name: 'shipping_method'))
+            @php($subTotal=0)
+            @php($totalTax=0)
+            @php($totalShippingCost=0)
+            @php($orderWiseShippingDiscount=\App\Utils\CartManager::order_wise_shipping_discount())
+            @php($totalDiscountOnProduct=0)
+            @php($cart=\App\Utils\CartManager::get_cart(type: 'checked'))
+            @php($cartGroupIds=\App\Utils\CartManager::get_cart_group_ids())
+            @php($getShippingCost=\App\Utils\CartManager::get_shipping_cost(type: 'checked'))
+            @php($getShippingCostSavedForFreeDelivery=\App\Utils\CartManager::get_shipping_cost_saved_for_free_delivery(type: 'checked'))
+            @if($cart->count() > 0)
+                @foreach($cart as $key => $cartItem)
+                    @php($subTotal+=$cartItem['price']*$cartItem['quantity'])
+                    @php($totalTax+=$cartItem['tax_model']=='exclude' ? ($cartItem['tax']*$cartItem['quantity']):0)
+                    @php($totalDiscountOnProduct+=$cartItem['discount']*$cartItem['quantity'])
+                @endforeach
+
+                @if(session()->missing('coupon_type') || session('coupon_type') !='free_delivery')
+                    @php($totalShippingCost=$getShippingCost - $getShippingCostSavedForFreeDelivery)
+                @else
+                    @php($totalShippingCost=$getShippingCost)
+                @endif
+            @endif
+            @php($coupon_dis = session()->has('coupon_discount') ? session('coupon_discount') : 0)
+            @php($totalOfflineAmount = $subTotal+$totalTax+$totalShippingCost-$coupon_dis-$totalDiscountOnProduct-$orderWiseShippingDiscount)
         <?php
-        $productPriceTotal = 0;
-        $totalTax = 0;
-        $totalShippingCost = 0;
-        $orderWiseShippingDiscount = \App\Utils\CartManager::order_wise_shipping_discount();
-        $totalDiscountOnProduct = 0;
-        $cart = \App\Utils\CartManager::get_cart();
-        $shippingCost = \App\Utils\CartManager::get_shipping_cost(type: 'checked');
-        $getShippingCostSavedForFreeDelivery = \App\Utils\CartManager::get_shipping_cost_saved_for_free_delivery();
-        $couponDiscount = session()->has('coupon_discount') ? session('coupon_discount') : 0;
-        if ($cart->count() > 0) {
-            foreach ($cart as $key => $cartItem) {
-                $productPriceTotal += $cartItem['price'] * $cartItem['quantity'];
-                $totalTax += $cartItem['tax_model'] == 'exclude' ? ($cartItem['tax'] * $cartItem['quantity']) : 0;
-                $totalDiscountOnProduct += $cartItem['discount'] * $cartItem['quantity'];
-            }
+        // $productPriceTotal = 0;
+        // $totalTax = 0;
+        // $totalShippingCost = 0;
+        // $orderWiseShippingDiscount = \App\Utils\CartManager::order_wise_shipping_discount();
+        // $totalDiscountOnProduct = 0;
+        // $cart = \App\Utils\CartManager::get_cart();
+        // $shippingCost = \App\Utils\CartManager::get_shipping_cost(type: 'checked');
+        // $getShippingCostSavedForFreeDelivery = \App\Utils\CartManager::get_shipping_cost_saved_for_free_delivery();
+        // $couponDiscount = session()->has('coupon_discount') ? session('coupon_discount') : 0;
+        // if ($cart->count() > 0) {
+        //     foreach ($cart as $key => $cartItem) {
+        //         $productPriceTotal += $cartItem['price'] * $cartItem['quantity'];
+        //         $totalTax += $cartItem['tax_model'] == 'exclude' ? ($cartItem['tax'] * $cartItem['quantity']) : 0;
+        //         $totalDiscountOnProduct += $cartItem['discount'] * $cartItem['quantity'];
+        //     }
 
-            if (session()->missing('coupon_type') || session('coupon_type') != 'free_delivery') {
-                $totalShippingCost = $shippingCost - $getShippingCostSavedForFreeDelivery;
-            } else {
-                $totalShippingCost = $shippingCost;
-            }
+        //     if (session()->missing('coupon_type') || session('coupon_type') != 'free_delivery') {
+        //         $totalShippingCost = $shippingCost - $getShippingCostSavedForFreeDelivery;
+        //     } else {
+        //         $totalShippingCost = $shippingCost;
+        //     }
 
-            $totalOfflineAmount = $productPriceTotal + $totalTax + $totalShippingCost - $couponDiscount - $totalDiscountOnProduct - $orderWiseShippingDiscount;
-        }
+        //     $totalOfflineAmount = $productPriceTotal + $totalTax + $totalShippingCost - $couponDiscount - $totalDiscountOnProduct - $orderWiseShippingDiscount;
+        // }
         ?>
 
     <div class="payment-list-area">
@@ -42,8 +67,11 @@
             </div>
         </div>
 
-        <h4 class="mt-4 font-weight-bold text-center">
+        <!-- <h4 class="mt-4 font-weight-bold text-center">
             {{translate('amount')}} : {!! webCurrencyConverter(amount: $totalOfflineAmount) !!}
+        </h4> -->
+        <h4 class="mt-4 font-weight-bold text-center">
+            {{translate('amount')}} : {!! webCurrencyConverter(amount: $subTotal+$totalTax+$totalShippingCost-$coupon_dis-$totalDiscountOnProduct-$orderWiseShippingDiscount) !!}
         </h4>
 
         <div class="mx-xl-5">

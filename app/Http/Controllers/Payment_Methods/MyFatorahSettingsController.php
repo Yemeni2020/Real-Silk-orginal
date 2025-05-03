@@ -242,7 +242,7 @@ class MyFatorahSettingsController extends Controller
         
         // echo $currency;
         $rate = Currency::where(['code' => $data["currency_code"]])->first()->exchange_rate ;
-        $main_amount=($data->payment_amount + 0.006)/$rate;
+        $main_amount=(($data->payment_amount + 0.006)/$rate) ;
         $rate2 = Currency::where(['code' => session('currency_code')])->first()->exchange_rate;
 
         // dump($data);
