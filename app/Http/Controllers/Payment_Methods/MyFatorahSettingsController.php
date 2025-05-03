@@ -242,11 +242,15 @@ class MyFatorahSettingsController extends Controller
         
         // echo $currency;
         $rate = Currency::where(['code' => $data["currency_code"]])->first()->exchange_rate ;
-        $main_amount=(($data->payment_amount + 0.006)/$rate) ;
-        $rate2 = Currency::where(['code' => session('currency_code')])->first()->exchange_rate;
+        $local_amount = webCurrencyConverterOnlyDigit($data->payment_amount);
+        // dump($aa);
+        // dump($data->payment_amount / $rate);
+        // return $data->payment_amount;
+        // $main_amount=(($data->payment_amount + 0.006)/$rate) ;
+        // $rate2 = Currency::where(['code' => session('currency_code')])->first()->exchange_rate;
 
-        // dump($data);
-        $local_amount=$main_amount*$rate2;
+        // // dump($data);
+        // $local_amount=$main_amount*$rate2;
         // echo $local_amount;
         // return null;
         if($currency != "KWT" && $currency != "SAU" && $currency != "BHR" && $currency != "ARE" && $currency != "QAT" && $currency != "OMN" && $currency != "JOR" && $currency != "EGY"){

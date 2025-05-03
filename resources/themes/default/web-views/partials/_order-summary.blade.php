@@ -157,6 +157,7 @@
         <div class="product-description-label fw-semibold text-capitalize">{{translate('total_price')}} :</div>
         &nbsp; <strong
                 class="text-base">{!! webCurrencyConverter(amount: $subTotal+$totalTax+$totalShippingCost-$coupon_dis-$totalDiscountOnProduct-$orderWiseShippingDiscount) !!}</strong>
+                
     </div>
     <a data-route="{{ Route::currentRouteName() }}"
        class="btn btn--primary btn-block proceed_to_next_button text-capitalize {{$cart->count() <= 0 ? 'disabled' : ''}} action-checkout-function">{{translate('proceed_to_checkout')}}</a>

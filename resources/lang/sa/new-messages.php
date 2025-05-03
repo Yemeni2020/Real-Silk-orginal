@@ -8814,4 +8814,11 @@ return [
 	"a_sitemap_is_an_xml_file_that_contains_all_the_web_pages_of_a_website." => "A sitemap is an xml file that contains all the web pages of a website.",
 	"here_we_list_and_organize_all_the_default_pages_in_a_hierarchical_structure_of_your_website_through_xml_sitemap." => "Here we list and organize all the default pages in a hierarchical structure of your website through xml sitemap.",
 	"loading" => "Loading",
+	"for_offline_payment_options,_please_follow_the_steps_below" => "For offline payment options  please follow the steps below",
+	"__________" => "          ",
+	"بنك" => "بنك",
+	"رقم الحوالة" => "رقم الحوالة",
+	"_____________________" => "                     ",
+	"___________________" => "                   ",
+	"اسم الحساب" => "اسم الحساب",
 ];
