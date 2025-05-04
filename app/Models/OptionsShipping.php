@@ -18,7 +18,7 @@ class OptionsShipping extends Model
     ];
     protected $casts = [
         'id' => 'integer',
-        'name' => 'boolean',
+        'name' => 'string',
         'shipping_method' => 'string',
     ];
 

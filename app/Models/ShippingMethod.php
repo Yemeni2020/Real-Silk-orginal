@@ -54,7 +54,7 @@ class ShippingMethod extends Model
         return $this->belongsTo(Seller::class,'creator_id');
     }
 
-    public function options_shipping():HasMany{
+    public function optionsShipping():HasMany{
         return $this->hasMany(OptionsShipping::class,"shipping_method","id");
     }
     

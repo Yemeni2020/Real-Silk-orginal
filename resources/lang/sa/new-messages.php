@@ -8821,4 +8821,10 @@ return [
 	"_____________________" => "                     ",
 	"___________________" => "                   ",
 	"اسم الحساب" => "اسم الحساب",
+	"Product_not_found_in_cart" => "Product not found in cart",
+	"Please_add_or_checked_items_before_proceeding_to_checkout" => "Please add or checked items before proceeding to checkout",
+	"Shipping will be handled by the factory" => "Shipping will be handled by the factory",
+	"Shipping will be handled by admin" => "Shipping will be handled by admin",
+	"Factory has a shipping method defined. Shipping will be handled by factory." => "Factory has a shipping method defined. Shipping will be handled by factory.",
+	"No shipping method found for factory. Shipping will be handled by admin." => "No shipping method found for factory. Shipping will be handled by admin.",
 ];

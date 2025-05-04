@@ -2,6 +2,7 @@
 use App\Models\TapPaymentSetting;
 use App\Models\Currency;
 use App\Models\ShippingMethod;
+use App\Models\OptionsShipping;
 
 $TapPayment = TapPaymentSetting::where("method",'TAP')->Where('Type',1)->get();
 $MyFatorah = TapPaymentSetting::where("method",'MYFATOORAH')->Where('Type',1)->get();
@@ -131,10 +132,10 @@ $currencyModel = getWebConfig('currency_model');
                                                             </div>
 
                                                            <?php
-                                                            $Shipping_methods=ShippingMethod::where(['status' => 1])->where(['creator_id' => $shopIdentity->id])->get();
+                                                            $Shipping_methods=ShippingMethod::where(['status' => 1])->where(['creator_id' => $shopIdentity->id])->with(['optionsShipping.options'])->get();
 
                                                             if($Shipping_methods->count() == 0)
-                                                                $Shipping_methods = ShippingMethod::where(['status' => 1])->where(['creator_type' => 'admin'])->get();
+                                                                $Shipping_methods = ShippingMethod::where(['status' => 1])->where(['creator_type' => 'admin'])->with(['optionsShipping.options'])->get();
                                                             ?>
 
                                                             @else
@@ -246,12 +247,13 @@ $currencyModel = getWebConfig('currency_model');
                                             @endif
                                         @endforeach
                                         @if($shipping_type == 'order_wise')
-                                            <div class="row shipping-method-vue" :methods='@json($Shipping_methods)' style="border:1px var(--web-primary) solid;" id="shipping-method-vue">
+                                            @php($seller_id=$cartItem->seller_is=='admin'?0:$shopIdentity->id )
+                                            <div class="row shipping-method-vue container" style="border:1px var(--web-primary) solid;" id="shipping-method-vue">
                                                 <div class="col-12">
                                                     <div class="">
                                                         <h6 class="font-semibold d-inline-block fs-15 mb-2">{{translate('shipping_method')}}</h6>
                                                         <label  for="sorting">
-                                                            <select class="form-control custom-select filter-on-product-filter-change">
+                                                            <select onchange="show_options('{{$seller_id}}',this)" class="form-control custom-select filter-on-product-filter-change">
                                                                 <option selected="" disabled="">Choose</option>
                                                                 @foreach($Shipping_methods as $shipping_method)
                                                                     <option value="{{ $shipping_method->id }}">{{ $shipping_method->title }}</option>
@@ -261,6 +263,28 @@ $currencyModel = getWebConfig('currency_model');
                                                         </label>
                                                     </div>
                                                     
+                                                </div>
+                                                <div class="col-12">
+                                                    @foreach($Shipping_methods as $shipping_method)
+                                                        <div class="_options{{ $seller_id }} row option_shipping" style="display: none;" id="options{{ $shipping_method->id }}_{{ $seller_id }}">
+                                                            @foreach($shipping_method->optionsShipping as $sel)
+                                                            <div>
+                                                                <span>{{$sel["name"]}}</span>
+                                                                <select class="form-control custom-select filter-on-product-filter-change" name="O_{{ $sel->id }}_{{ $seller_id }}" id="O_{{ $sel->id }}_{{ $seller_id }}">
+                                                                    @foreach($sel->options as $option)
+                                                                        <option value="{{ $option->id }}">{{ $option->name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                                
+                                                            @endforeach
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                            <div class="container">
+                                                <div id="Api_shipping{{$seller_id}}">
+
                                                 </div>
                                             </div>
                                         @endif
@@ -741,11 +765,18 @@ $currencyModel = getWebConfig('currency_model');
 </div>
 
 <span id="route-action-checkout-function" data-route="shipping_methods"></span>
+<span id="route-checkout-shipping-method-api" data-route="{{route('checkout-shipping-method-api')}}"></span>
 @endsection
 
 @push('script')
-<script src="{{ theme_asset(path: 'public/assets/front-end/js/payment.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/js/shipping_method.js') }}"></script>
 <script>
+
+    function show_options(shop_id,$select){
+        $("._options"+shop_id).css("display","none");
+        $("#options"+$select.value+"_"+shop_id).css("display","block");
+        getApi_shippingMethod(shop_id,$select);
+    }
     
 </script>
 @endpush

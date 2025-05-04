@@ -108,8 +108,12 @@ class HomeController extends Controller
         // });
 
         //Old Code
-        $homeCategories = Category::where('home_status', true)->whereHas('product', function ($q) {
-            $q->select("id","name","category_id")->active(); // فقط المنتجات المفعّلة مثلاً
+        // $homeCategories = Category::where('home_status', true)->whereHas('product', function ($q) {
+        //     $q->select("id","name","category_id")->active(); // فقط المنتجات المفعّلة مثلاً
+        // })->select("id","name")->limit(5)->priority()->get();
+
+        $homeCategories = Category::where('home_status', true)->where('position',1)->whereHas('subCategoryProduct', function ($q) {
+            $q->select("id","name","category_id","sub_category_id")->active(); // فقط المنتجات المفعّلة مثلاً
         })->select("id","name")->limit(5)->priority()->get();
 
         $homeCategories->map(function ($data) {

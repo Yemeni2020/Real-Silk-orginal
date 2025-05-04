@@ -46,4 +46,25 @@ class CategoryService
         return $output;
     }
 
+    public function deleteImages(object $data): bool
+    {
+        if ($data->childes) {
+            foreach ($data->childes as $child) {
+                if ($child->childes) {
+                    foreach ($child->childes as $item) {
+                        if ($item['icon']) {
+                            $this->delete('category/' . $item['icon']);
+                        }
+                    }
+                }
+                if ($child['icon']) {
+                    $this->delete('category/' . $child['icon']);
+                }
+            }
+        }
+        if ($data['icon']) {
+            $this->delete('category/' . $data['icon']);
+        }
+        return true;
+    }
 }

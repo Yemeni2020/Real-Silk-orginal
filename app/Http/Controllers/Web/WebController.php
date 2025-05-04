@@ -63,6 +63,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Utils\BrandManager;
 use function App\Utils\payment_gateways;
 
 class WebController extends Controller
@@ -163,6 +164,17 @@ class WebController extends Controller
         return response()->json([
             'view' => view('web-views.partials._category-list-ajax', compact('category'))->render(),
         ]);
+    }
+
+    public function checkout_shipping_method_api(Request $request){
+
+        if($request->has("shipping_method"))
+            $shipping_method=$request["shipping_method"];
+        else
+            $shipping_method=0;
+        $shiping = ShippingMethod::findOrFail($shipping_method);
+        
+        return response()->json(["shipping_method"=>$shipping_method]);
     }
 
     public function getAllBrandsView(Request $request): View|RedirectResponse
@@ -957,6 +969,9 @@ class WebController extends Controller
 
         $productData = Product::active()->with(['reviews'])->withCount('reviews');
 
+        $activeBrands = BrandManager::getActiveBrandWithCountingAndPriorityWiseSorting();
+
+        $query = $productData->where("discount",">",0);
         if ($request['data_from'] == 'category') {
             $products = $productData->get();
             $product_ids = [];
@@ -1053,6 +1068,7 @@ class WebController extends Controller
         $data = [
             'id' => $request['id'],
             'name' => $request['name'],
+            'product_type' => $request['product_type'],
             'data_from' => $request['data_from'],
             'sort_by' => $request['sort_by'],
             'page_no' => $request['page'],
@@ -1060,7 +1076,7 @@ class WebController extends Controller
             'max_price' => $request['max_price'],
         ];
 
-        $products = $fetched->paginate(5)->appends($data);
+        $products = $fetched->paginate(20)->appends($data);
 
         if ($request->ajax()) {
             return response()->json([
@@ -1074,7 +1090,7 @@ class WebController extends Controller
             $data['brand_name'] = Brand::active()->find((int)$request['id'])->name;
         }
 
-        return view(VIEW_FILE_NAMES['products_view_page'], compact('products', 'data'), $data);
+        return view(VIEW_FILE_NAMES['products_view_page'], compact('products', 'data','activeBrands'), $data);
 
     }
 
