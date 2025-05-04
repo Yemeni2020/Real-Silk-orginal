@@ -30,10 +30,23 @@ class CategoryService
 
     public function getUpdateData(object $request, object $data): array
     {
-
+        $storage = config('filesystems.disks.default') ?? 'public';
+        $image = $request->file('image') ? $this->update('category/', $data['image'], 'webp', $request->file('image')) : $data['icon'];
+        $image_ad = $request->file('image-ad') ? $this->update('category/image_ad/', $data['image_ad'], 'webp', $request->file('image-ad')) : $data['image_ad'];
+        $cat = Category::where('id', $request['parent'])->first();
 
         return [
             'name' => $request['name'][array_search('en', $request['lang'])],
+            'slug' => Str::slug($request['name'][array_search('en', $request['lang'])]),
+            'icon' => $image,
+            'icon_storage_type' => $request->has('image') ? $storage : $data['icon_storage_type'],
+            'image_ad' => $image_ad,
+            'priority' => $request['priority'],
+            'parent_id' => $request['parent']??0,
+            'position' =>  $request['parent']>0 && isset($cat)? $cat['position']+1:0,
+            'menu'=> isset($request['show_menu'])?true:false,
+            'brands' => json_encode($request->input('brand', [])), // تحويل المصفوفة إلى JSON
+            
         ];
     }
 

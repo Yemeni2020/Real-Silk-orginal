@@ -181,6 +181,7 @@
                                 <th>{{ translate('sub_category_name') }}</th>
                                 <th>{{ translate('category_name') }}</th>
                                 <th class="text-center">{{ translate('priority') }}</th>
+                                <th class="text-center">{{ translate('home_category_status') }}</th>
                                 <th class="text-center">{{ translate('action') }}</th>
                             </tr>
                             </thead>
@@ -196,6 +197,28 @@
                                     @endif
                                     <td>{{($category['defaultname']) }}</td>
                                     <td>{{$category?->parent?->defaultname ?? translate('category_not_found') }}</td>
+                                    <td class="text-center">
+                                        <form action="{{ route('admin.category.status') }}" method="post"
+                                            id="category-status{{ $category['id'] }}-form">
+                                            @csrf
+                                            <input type="hidden" name="id" value="{{ $category['id'] }}">
+                                            <label class="switcher mx-auto">
+                                                <input type="checkbox" class="switcher_input toggle-switch-message"
+                                                    name="home_status"
+                                                    id="category-status{{ $category['id'] }}" value="1"
+                                                    {{ $category['home_status'] == 1 ? 'checked' : '' }}
+                                                    data-modal-id="toggle-status-modal"
+                                                    data-toggle-id="category-status{{ $category['id'] }}"
+                                                    data-on-image="category-status-on.png"
+                                                    data-off-image="category-status-off.png"
+                                                    data-on-title="{{ translate('Want_to_Turn_ON').' '.$category['defaultname'].' '. translate('status') }}"
+                                                    data-off-title="{{ translate('Want_to_Turn_OFF').' '.$category['defaultname'].' '.translate('status') }}"
+                                                    data-on-message="<p>{{ translate('if_enabled_this_category_it_will_be_visible_from_the_category_wise_product_section_in_the_website_and_customer_app_in_the_homepage') }}</p>"
+                                                    data-off-message="<p>{{ translate('if_disabled_this_category_it_will_be_hidden_from_the_category_wise_product_section_in_the_website_and_customer_app_in_the_homepage') }}</p>">
+                                                <span class="switcher_control"></span>
+                                            </label>
+                                        </form>
+                                    </td>
                                     <td class="text-center">{{ $category['priority']}}</td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
