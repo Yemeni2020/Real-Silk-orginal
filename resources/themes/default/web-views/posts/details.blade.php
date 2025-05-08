@@ -11,7 +11,7 @@
     <div class="__inline-23">
         <div class="container mt-4 rtl text-align-direction">
             <div class="row {{request()->cookie('direction', 'ltr') === "rtl" ? '__dir-rtl' : ''}}">
-                <div class="col-lg-9 col-12">
+                <div class="col-lg-12 col-12">
 
                     <?php $guestCheckout = getWebConfig(name: 'guest_checkout'); ?>
                     <div class="row">
@@ -80,62 +80,62 @@
                         </div>
 
                         <div class="col-lg-7 col-md-8 col-12 mt-md-0 mt-sm-3 web-direction">
-                            <div class="details __h-100">
+                            <div class="details">
                                 <h1 class="mb-2 __inline-24">{{$post->name}}</h1>
             
                             </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="mt-4 rtl col-12 text-align-direction">
                             <div class="row">
-                                <div class="col-12">
-                                    <div>
-                                        <div
-                                            class="px-4 pb-3 mb-3 mr-0 mr-md-2 bg-white __review-overview __rounded-10 pt-3">
-                                            <ul class="nav nav-tabs nav--tabs d-flex justify-content-center mt-3"
-                                                role="tablist">
-                                                <li class="nav-item">
-                                                    <a class="nav-link __inline-27 active " href="#overview"
-                                                       data-toggle="tab" role="tab">
-                                                        {{translate('overview')}}
-                                                    </a>
-                                                </li>
-                                                
-                                            </ul>
-                                            <div class="tab-content px-lg-3">
-                                                <div class="tab-pane fade show active text-justify" id="overview"
-                                                     role="tabpanel">
-                                                    <div class="row pt-2 specification">
-
-                                                        @if($post->video_url != null && (str_contains($post->video_url, "youtube.com/embed/")))
-                                                            <div class="col-12 mb-4">
-                                                                <iframe width="420" height="315"
-                                                                        src="{{$post->video_url}}">
-                                                                </iframe>
-                                                            </div>
-                                                        @endif
+                                <div class="mt-4 rtl col-12 text-align-direction">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div>
+                                                <div
+                                                    class="px-4 pb-3 mb-3 mr-0 mr-md-2 bg-white __review-overview __rounded-10 pt-3">
+                                                    <!-- <ul class="nav nav-tabs nav--tabs d-flex justify-content-center mt-3"
+                                                        role="tablist">
+                                                        <li class="nav-item">
+                                                            <a class="nav-link __inline-27 active " href="#overview"
+                                                            data-toggle="tab" role="tab">
+                                                                {{translate('overview')}}
+                                                            </a>
+                                                        </li>
                                                         
-                                                            @if ($post['details']  )
-                                                                <div class="text-body col-lg-12 col-md-12 overflow-scroll fs-13 text-justify details-text-justify rich-editor-html-content">
-                                                                    {!! $post['details'] !!}
-                                                                </div>
-                                                            @endif
-                                                        <hr>
-                                                    </div>
-                                                        @if (!$post['details'] && ($post->video_url == null || !(str_contains($post->video_url, "youtube.com/embed/"))) &&1!=2 )
-                                                            <div>
-                                                                <div class="text-center text-capitalize py-5">
-                                                                    <img class="mw-90"
-                                                                        src="{{theme_asset(path: 'public/assets/front-end/img/icons/nodata.svg')}}"
-                                                                        alt="">
-                                                                    <p class="text-capitalize mt-2">
-                                                                        <small>{{translate('product_details_not_found')}}
-                                                                            !</small>
-                                                                    </p>
-                                                                </div>
+                                                    </ul> -->
+                                                    <div class="tab-content px-lg-3">
+                                                        <div class="tab-pane fade show active text-justify" id="overview"
+                                                            role="tabpanel">
+                                                            <div class="row pt-2 specification">
+
+                                                                @if($post->video_url != null && (str_contains($post->video_url, "youtube.com/embed/")))
+                                                                    <div class="col-12 mb-4">
+                                                                        <iframe width="420" height="315"
+                                                                                src="{{$post->video_url}}">
+                                                                        </iframe>
+                                                                    </div>
+                                                                @endif
+                                                                
+                                                                    @if ($post['details']  )
+                                                                        <div class="text-body col-lg-12 col-md-12 overflow-scroll fs-13 text-justify details-text-justify rich-editor-html-content">
+                                                                            {!! $post['details'] !!}
+                                                                        </div>
+                                                                    @endif
+                                                                <hr>
                                                             </div>
-                                                        @endif
+                                                                @if (!$post['details'] && ($post->video_url == null || !(str_contains($post->video_url, "youtube.com/embed/"))) &&1!=2 )
+                                                                    <div>
+                                                                        <div class="text-center text-capitalize py-5">
+                                                                            <img class="mw-90"
+                                                                                src="{{theme_asset(path: 'public/assets/front-end/img/icons/nodata.svg')}}"
+                                                                                alt="">
+                                                                            <p class="text-capitalize mt-2">
+                                                                                <small>{{translate('product_details_not_found')}}
+                                                                                    !</small>
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -144,6 +144,7 @@
                             </div>
                         </div>
                     </div>
+                    
 
                 </div>
                 

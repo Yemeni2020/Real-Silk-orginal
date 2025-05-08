@@ -31,6 +31,7 @@ class ShippingMethod extends Model
      * @var array
      */
     protected $fillable = [
+        'id',
         'creator_id',
         'creator_type',
         'title',
@@ -45,6 +46,7 @@ class ShippingMethod extends Model
      * @var array
      */
     protected $casts = [
+        'id' => 'integer',
         'status' => 'boolean',
         'cost' => 'float:2',
     ];

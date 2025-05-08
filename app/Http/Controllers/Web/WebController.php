@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Contracts\Repositories\RobotsMetaContentRepositoryInterface;
 use App\Models\Admin;
 use App\Services\ProductService;
+use App\Services\shippingMethod\shippingMethodService;
 use App\Traits\InHouseTrait;
 use App\Models\User;
 use App\Traits\MaintenanceModeTrait;
@@ -84,6 +85,7 @@ class WebController extends Controller
         private ProductCompare                                $compare,
         private readonly RobotsMetaContentRepositoryInterface $robotsMetaContentRepo,
         private readonly ProductService                       $productService,
+        private readonly shippingMethodService                $shippingMethod,
     )
     {
 
@@ -166,15 +168,20 @@ class WebController extends Controller
         ]);
     }
 
-    public function checkout_shipping_method_api(Request $request){
+    public function checkout_shipping_method_api(Request $request)
+    {
+        $shipping_method = $request->input("shipping_method", 0);
+        $shiping = ShippingMethod::find($shipping_method);
 
-        if($request->has("shipping_method"))
-            $shipping_method=$request["shipping_method"];
-        else
-            $shipping_method=0;
-        $shiping = ShippingMethod::findOrFail($shipping_method);
+        if (!$shiping) {
+            return response()->json(["error" => "Shipping method not found."], 404);
+        }
+
+        // فقط للطباعة أثناء التطوير
+        // dump($shiping);
         
-        return response()->json(["shipping_method"=>$shipping_method]);
+
+        return $this->shippingMethod->Show_ShippingMethod($shiping);
     }
 
     public function getAllBrandsView(Request $request): View|RedirectResponse

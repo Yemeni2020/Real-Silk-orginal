@@ -20,6 +20,6 @@ function getApi_shippingMethod(shop_id, select) {
         })
         .catch(error => {
             console.error("Error fetching shipping method data:", error);
-            document.getElementById('Api_shipping' + shop_id).innerHTML = "<p>حدث خطأ أثناء تحميل البيانات.</p>";
+            // document.getElementById('Api_shipping' + shop_id).innerHTML = "<p>حدث خطأ أثناء تحميل البيانات.</p>";
         });
 }
