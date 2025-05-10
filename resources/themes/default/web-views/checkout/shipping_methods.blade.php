@@ -63,7 +63,7 @@ $currencyModel = getWebConfig('currency_model');
                                 </tr>
                                 </thead>
                             </table>
-                            
+                                
                                 @foreach($cart as $group_key=>$group)
                                     <div class="card __card cart_information __cart-table mb-3">
                                             <?php
@@ -763,7 +763,15 @@ $currencyModel = getWebConfig('currency_model');
         @include('web-views.partials._order-summary')
     </div>
 </div>
+<div class="modal fade" id="Api_shipping" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content" id="quick-Api_shipping">
+      <!-- سيتم ملء هذا المحتوى ديناميكياً -->
+    </div>
+  </div>
+</div>
 
+<div id=""></div>
 <span id="route-action-checkout-function" data-route="shipping_methods"></span>
 <span id="route-checkout-shipping-method-api" data-route="{{route('checkout-shipping-method-api')}}"></span>
 @endsection

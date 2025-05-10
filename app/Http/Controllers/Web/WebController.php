@@ -171,6 +171,7 @@ class WebController extends Controller
     public function checkout_shipping_method_api(Request $request)
     {
         $shipping_method = $request->input("shipping_method", 0);
+        $shop_id = $request->input("shop_id", 0);
         $shiping = ShippingMethod::find($shipping_method);
 
         if (!$shiping) {
@@ -181,7 +182,7 @@ class WebController extends Controller
         // dump($shiping);
         
 
-        return $this->shippingMethod->Show_ShippingMethod($shiping);
+        return $this->shippingMethod->Show_ShippingMethod($shiping,$shop_id);
     }
 
     public function getAllBrandsView(Request $request): View|RedirectResponse
@@ -555,6 +556,7 @@ class WebController extends Controller
         $cartGroupList = Cart::whereHas('product', function ($query) {
             return $query->active();
         })->whereIn('cart_group_id', $cartItemGroupIDs)->where(['is_checked' => 1])->get()->groupBy('cart_group_id');
+        
         $isPhysicalProductExistArray = [];
         foreach ($cartGroupList as $groupId => $cartGroup) {
             $isPhysicalProductExist = false;

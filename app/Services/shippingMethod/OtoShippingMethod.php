@@ -54,9 +54,9 @@ class OtoShippingMethod implements ShippingMethodInterface{
         ];
 
         $body = [
-            "weight"=>"3",
-            "originCity"=>"Riyadh",
-            "destinationCity"=>"Jeddah",
+            "weight"=>$weight,
+            "originCity"=>$fromCity,
+            "destinationCity"=>$toCity,
             "height"=>30,
             "width"=>30,
             "length"=>30
@@ -67,42 +67,60 @@ class OtoShippingMethod implements ShippingMethodInterface{
 
         return $response->json();
     }
-    public function getApi($cart){
-        
-
-        $cart=\App\Models\Cart::whereHas('product', function ($query) {
-            return $query->active();
-        })->where(['customer_id' => (auth('customer')->check() ? auth('customer')->id() : session('guest_id'))])
-        ->get()->groupBy('cart_group_id');
-        foreach ($cart as  $key => $group) {
-            foreach ($group as $key => $value) {
-                # code...
-                $body=[
-                    "weight"=>"3",
-                    "originCity"=>"Riyadh",
-                    "destinationCity"=>"Jeddah",
-                    "height"=>30,
-                    "width"=>30,
-                    "length"=>30
-                ];
-                return response()->json($value);
-            }
+    public function getApi($shop_id)
+    {
+        $shippingAddress = \App\Models\ShippingAddress::find(session()->get('address_id'));
+    
+        if (!$shippingAddress) {
+            return response()->json(['error' => 'لم يتم العثور على عنوان الشحن'], 404);
         }
-        
+    
+        $userId = auth('customer')->check() ? auth('customer')->id() : session('guest_id');
+    
+        $type_shop = $shop_id == 0 ? "admin" : "seller";
+    
+        $cartItems = \App\Models\Cart::whereHas('product', fn($q) => $q->active())
+            ->where('customer_id', $userId)
+            ->where("seller_is", $type_shop)
+            ->with(["seller.shop", "product"]);
+    
+        if ($type_shop === "seller") {
+            $cartItems = $cartItems->where("seller_id", $shop_id);
+        }
+    
+        $cartItems = $cartItems->get();
+    
+        if ($cartItems->isEmpty()) {
+            return response()->json(['error' => 'لا يوجد منتجات في السلة'], 404);
+        }
+    
         $oto = new \App\Services\ShippingMethod\OtoShippingMethod();
-
-        $rates = $oto->getShippingRates([
-            'country' => 'SA',
-            'city' => 'Riyadh',
-            'postal_code' => '12271',
-        ], [
-            'country' => 'SA',
-            'city' => 'Jeddah',
-            'postal_code' => '21577',
-        ], 2.5); 
-
-        return response()->json($rates);
-
-        return response()->json(['message' => 'This method does not support rates yet']);
+    
+        // ✅ تجميع الوزن
+        $totalWeight = $cartItems->sum(fn($item) => $item->product->weight ?? 1);
+    
+        // ✅ تحديد المدينة الأصل
+        $firstItem = $cartItems->first();
+        $originCity = $shop_id == 0
+            ? 'Dammam'
+            : ($firstItem->seller->shop->city ?? 'Riyadh');
+    
+        $destinationCity = $shippingAddress->city ?? 'Jeddah';
+    
+        // ✅ استدعاء OTO لحساب سعر الشحن الإجمالي
+        $rate = $oto->getShippingRates($originCity, $destinationCity, $totalWeight);
+    
+        // ✅ عرض النتائج كـ HTML
+        $htmlView = view("web-views.checkout.partials.company_shipping_oto", [
+            "rate" => $rate,
+            "originCity" => $originCity,
+            "destinationCity" => $destinationCity,
+            "totalWeight" => $totalWeight,
+            "products" => $cartItems
+        ])->render();
+    
+        return response($htmlView);
     }
+    
+    
 }
