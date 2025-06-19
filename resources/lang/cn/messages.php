@@ -137,11 +137,7 @@
   'Choice Title' => '选择标题',
   'Variant' => '变体',
   'Variant Price' => '变体价格',
-<<<<<<< HEAD
   'SKU' => '商品编号(SKU)',
-=======
-  'SKU' => 'SKU',
->>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
   'Enter choice values' => '输入选择值',
   'Banner' => '横幅',
   'add_main_banner' => '添加主横幅',
@@ -8286,11 +8282,7 @@
 'enter_confirm_password' => 'Enter confirm password',
 'No_address_found' => 'No address found',
 'disallow_search_engines_to_put_this_web_page_on_their_list_or_index_and_do_not_show_it_on_search_results.' => 'Disallow search engines to put this web page on their list or index and do not show it on search results.',
-<<<<<<< HEAD
 'no_index' => '没有索引',
-=======
-'no_index' => 'No index',
->>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 'you_can_not_update_this_on_demo_mode' => 'You can not update this on demo mode',
 'The_bucket_field_is_required' => 'The bucket field is required',
 'this_feature_is_disabled_for_demo.' => 'This feature is disabled for demo.',
@@ -9125,7 +9117,6 @@
 "post_image_removed_successfully" => "帖子图片删除成功",
 "All_Posts" => "所有帖子",
 "Search posts..." => "搜索帖子...",
-<<<<<<< HEAD
 "IndianRed" => "印度红",
 "Salmon" => "鲑鱼红",
 "LightCoral" => "浅珊瑚色",
@@ -9265,7 +9256,5 @@
 "DarkSlateGray" => "深石板灰",
 "DarkSalmon" => "深鲑红",
 "Black" => "黑色",
-=======
->>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 );
 ?>
