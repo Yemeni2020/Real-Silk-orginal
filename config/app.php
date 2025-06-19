@@ -3,6 +3,7 @@
 use App\Providers\InterfaceServiceProvider;
 use App\Providers\ObserverServiceProvider;
 
+
 return [
 
     /*
@@ -15,9 +16,14 @@ return [
     | any other location as required by the application or its packages.
     |
     */
-
+    
     'name' => env('APP_NAME', '6valy'),
 
+
+    //SEO Optimizer
+    'SEOMeta' => Artesaos\SEOTools\Facades\SEOMeta::class,
+    'OpenGraph' => Artesaos\SEOTools\Facades\OpenGraph::class,
+    'Twitter' => Artesaos\SEOTools\Facades\TwitterCard::class,
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -166,6 +172,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         App\Providers\SocialLoginServiceProvider::class,
         Madnest\Madzipper\MadzipperServiceProvider::class,
+        Artesaos\SEOTools\Providers\SEOToolsServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -244,6 +251,10 @@ return [
         'Helper' => \App\Utils\Helpers::class,
         'Madzipper' => Madnest\Madzipper\Madzipper::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'SEOMeta'    => Artesaos\SEOTools\Facades\SEOMeta::class,
+        'OpenGraph'  => Artesaos\SEOTools\Facades\OpenGraph::class,
+        'Twitter'    => Artesaos\SEOTools\Facades\TwitterCard::class,
+        'SEO'        => Artesaos\SEOTools\Facades\SEOTools::class,
     ],
 
 ];

@@ -402,8 +402,7 @@ class MyFatorahSettingsController extends Controller
                 return response()->json(['success' => false, 'message' => 'فشلت عملية الدفع أو لا تزال قيد الانتظار']);
             }
         } else {
-            dump($response);
-            return null;
+
             // في حالة وجود خطأ في الاستجابة
             return response()->json(['success' => false, 'message' => 'حدث خطأ أثناء التحقق من حالة الدفع']);
         }

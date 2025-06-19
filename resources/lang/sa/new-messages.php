@@ -8827,4 +8827,6 @@ return [
 	"Shipping will be handled by admin" => "Shipping will be handled by admin",
 	"Factory has a shipping method defined. Shipping will be handled by factory." => "Factory has a shipping method defined. Shipping will be handled by factory.",
 	"No shipping method found for factory. Shipping will be handled by admin." => "No shipping method found for factory. Shipping will be handled by admin.",
+	"select_shipping_company" => "Select shipping company",
+	"we_not_found_shipping_company" => "We not found shipping company",
 ];

@@ -1,28 +1,34 @@
 @if($rate['success'] && !empty($rate['deliveryCompany']))
-    <form>
-        @foreach ($rate['deliveryCompany'] as $index => $company)
-            <div class="form-check mb-3 border p-3 rounded shadow-sm">
-                <input class="form-check-input" type="radio"
-                       name="shipping_method"
-                       id="shipping_{{ $index }}"
-                       value="{{ json_encode($company) }}">
+        <div class="mb-4">
+            <label class="form-label">{{ translate('select_shipping_company') }}</label>
+            <div class="row">
+                @foreach ($rate['deliveryCompany'] as $index => $company)
+                <div class="col-lg-3 col-md-3 col-12 ">
+                <img src="{{ $company['logo'] }}" alt="logo" style="height: 50px;display:block;">
 
-                <label class="form-check-label d-flex align-items-center justify-content-between w-100"
-                       for="shipping_{{ $index }}">
-                    <div>
-                        <strong>{{ $company['deliveryCompanyName'] }}</strong><br>
-                        خدمة: {{ $company['deliveryOptionName'] }}<br>
-                        السعر: {{ $company['price'] }} {{ $company['currency'] }}<br>
-                        زمن التوصيل: {{ $company['avgDeliveryTime'] }}<br>
-                        COD: {{ $company['codCharge'] }} {{ $company['currency'] }}
-                    </div>
-                    <div>
-                        <img src="{{ $company['logo'] }}" alt="logo" style="height: 40px;">
-                    </div>
-                </label>
+                    <input type="radio"
+                           id="shipping_{{ $index }}"
+                           name="shipping_method{{$shop_id}}"
+                           value="{{ json_encode($company) }}"
+                           class="d-none"
+                           @if($loop->first) checked @endif>
+
+                    <label for="shipping_{{ $index }}"
+                           class="btn btn-outline-primary text-start p-3 w-100 d-flex justify-content-between align-items-center shadow-sm @if($loop->first) active @endif"
+                           onclick="selectShippingMethod({{ $index }},{{$shop_id}})">
+                        <div>
+                            <strong>{{ $company['deliveryCompanyName'] }}</strong><br>
+                            <small>{{translate("service")}}: {{ $company['deliveryOptionName'] }}</small><br>
+                            <small>{{translate("price")}}: {{ $company['price'] }} {{ $company['currency'] }}</small><br>
+                            <small>{{translate("time")}}: {{ $company['avgDeliveryTime'] }}</small><br>
+                            <small>{{translate("COD")}}: {{ $company['codCharge'] }} {{ $company['currency'] }}</small>
+                        </div>
+                    </label>
+
+                </div>
+                @endforeach
             </div>
-        @endforeach
-    </form>
+        </div>
 @else
-    <p>لم يتم العثور على شركات شحن لهذا المتجر.</p>
+    <div class="alert alert-warning">{{translate("we_not_found_shipping_company")}}.</div>
 @endif

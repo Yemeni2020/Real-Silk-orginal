@@ -1432,6 +1432,8 @@ function actionCheckoutFunctionInit() {
             checkoutFromShipping();
         } else if (getRoute && getRoute.toString() === "checkout-payment") {
             checkoutFromPayment();
+        } else if (getRoute && getRoute.toString() === "shipping-methods") {
+            checkoutFromShippingMethod();
         }
     });
 

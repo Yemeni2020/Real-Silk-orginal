@@ -13,6 +13,10 @@ $shippingMethod = getWebConfig(name: 'shipping_method');
     <meta name="msvalidate.01" content="{{getWebConfig('bing_webmaster_code')}}">
     <meta name="baidu-site-verification" content="{{getWebConfig('baidu_webmaster_code')}}">
     <meta name="yandex-verification" content="{{getWebConfig('yandex_webmaster_code')}}">
+    {!! \Artesaos\SEOTools\Facades\SEOMeta::generate() !!}
+    {!! \Artesaos\SEOTools\Facades\OpenGraph::generate() !!}
+    {!! \Artesaos\SEOTools\Facades\TwitterCard::generate() !!}
+    
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ $web_config['fav_icon']['path'] }}">

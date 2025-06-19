@@ -27,9 +27,16 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use \_;
+use Artesaos\SEOTools\Facades\SEOMeta;
+use Artesaos\SEOTools\Facades\OpenGraph;
+use \League\OAuth1\Client\Server\Twitter;
+
+
 
 class HomeController extends Controller
 {
+    
     use InHouseTrait,EmailTemplateTrait;
 
     public function __construct(
@@ -45,7 +52,7 @@ class HomeController extends Controller
     )
     {
     }
-
+    
 
     public function index()
     {
@@ -250,15 +257,27 @@ class HomeController extends Controller
         $recommendedProduct = $this->product->select("id","name","discount","discount_type","product_type","slug","current_stock","unit_price","thumbnail","added_by")->active()->inRandomOrder()->first();
         $footer_banner = $this->banner->where('banner_type', 'Footer Banner')->where('theme', theme_root_path())->where('published', 1)->whereJsonContains('language', $curnnet_lang)->orderBy('id', 'desc')->get();
         
+        //add seo
+        SEOMeta::setTitle(__('Home') . ' | ' . getWebConfig(name: 'company_name'));
+        SEOMeta::setDescription(__('Buy top-rated products at amazing prices from trusted sellers & come in safe way and fast.'));
+        SEOMeta::addMeta('article:published_time', now()->toW3cString(), 'property');
 
-        // dump($categories);
-        return view(VIEW_FILE_NAMES['home'],
-            compact(
-                'flashDeal', 'featuredProductsList', 'topRated', 'bestSellProduct', 'latest_products', 'categories', 'brands',
-                'deal_of_the_day', 'topVendorsList', 'homeCategories', 'brand_setting', 'main_banner', 'main_section_banner',
-                'current_date', 'recommendedProduct', 'footer_banner', 'newArrivalProducts','side_banner','curnnet_lang'
-            )
-        );
+        OpenGraph::setTitle(__('Home') . ' | ' . getWebConfig(name: 'company_name'));
+        OpenGraph::setDescription(__('Buy top-rated products at amazing prices from trusted sellers.'));
+        OpenGraph::setUrl(url()->current());
+        OpenGraph::addProperty('type', 'website');
+
+        // Twitter::setTitle(__('Home') . ' | ' . getWebConfig(name: 'company_name'));
+        // Twitter::setSite('@YourCompanyHandle');
+
+        // 👇 Keep this as it is
+        return view(VIEW_FILE_NAMES['home'], compact(
+            'flashDeal', 'featuredProductsList', 'topRated', 'bestSellProduct', 'latest_products', 'categories', 'brands',
+            'deal_of_the_day', 'topVendorsList', 'homeCategories', 'brand_setting', 'main_banner', 'main_section_banner',
+            'current_date', 'recommendedProduct', 'footer_banner', 'newArrivalProducts','side_banner','curnnet_lang'
+        ));
+
+        
     }
 
     public function theme_aster(): View

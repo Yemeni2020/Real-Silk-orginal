@@ -12,6 +12,10 @@
     <meta property="twitter:title" content="Welcome To {{$web_config['name']->value}} Home"/>
     <meta property="twitter:url" content="{{env('APP_URL')}}">
     <meta property="twitter:description" content="{{ substr(strip_tags(str_replace('&nbsp;', ' ', $web_config['about']->value)),0,160) }}">
+    {{-- {!! SEOMeta::generate() !!}
+    {!! OpenGraph::generate() !!}
+    {!! Twitter::generate() !!} --}}
+    SEOMeta::addKeyword(['ecommerce', 'shop online', 'best prices', 'trusted sellers', 'RealSilk', 'real', 'Real Silk', 'حرير حقيقي', 'شراء اونلاين','best discount','best shiping','Phones & Telecom','Phones','charging','هواتف واجهزة نقالة','Furniture']);
 
     <link rel="stylesheet" href="{{theme_asset(path: 'public/assets/front-end/css/home.css')}}"/>
     <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/owl.carousel.min.css') }}">

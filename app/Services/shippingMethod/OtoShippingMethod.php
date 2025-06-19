@@ -57,9 +57,7 @@ class OtoShippingMethod implements ShippingMethodInterface{
             "weight"=>$weight,
             "originCity"=>$fromCity,
             "destinationCity"=>$toCity,
-            "height"=>30,
-            "width"=>30,
-            "length"=>30
+            "currency"=>"KWD",
         ];
 
         $response = Http::withHeaders($headers)
@@ -116,7 +114,8 @@ class OtoShippingMethod implements ShippingMethodInterface{
             "originCity" => $originCity,
             "destinationCity" => $destinationCity,
             "totalWeight" => $totalWeight,
-            "products" => $cartItems
+            "products" => $cartItems,
+            "shop_id" => $shop_id
         ])->render();
     
         return response($htmlView);

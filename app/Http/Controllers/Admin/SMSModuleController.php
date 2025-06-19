@@ -31,7 +31,7 @@ class SMSModuleController extends Controller
         $paymentGatewayPublishedStatus = isset($payment_published_status[0]['is_published']) ? $payment_published_status[0]['is_published'] : 0;
 
         $sms_gateways = Setting::whereIn('settings_type', ['sms_config'])->whereIn('key_name', Helpers::getDefaultSMSGateways())->get();
-        dump($sms_gateways);
+        // dump($sms_gateways);
         $sms_gateways = $sms_gateways->sortBy(function ($item) {
             return count($item['live_values']);
         })->values()->all();

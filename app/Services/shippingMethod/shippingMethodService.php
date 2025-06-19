@@ -13,7 +13,10 @@ class shippingMethodService{
 
             // $cart=$shop_id;
 
-            return $Method->getApi($shop_id);
+            if ($Method) {
+                return $Method->getApi($shop_id);
+            }
         }
+        return null;
     }
 }

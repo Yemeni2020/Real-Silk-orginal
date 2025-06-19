@@ -9267,4 +9267,9 @@ return [
 	"signatures" => "Signatures",
 	"signatures admin" => "Signatures admin",
 	" adv" => " adv",
+	"select_shipping_company" => "Select shipping company",
+	"COD" => "COD",
+	"we_not_found_shipping_company" => "We not found shipping company",
+	"Jeep" => "Jeep",
+
 ];

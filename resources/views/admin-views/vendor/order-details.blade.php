@@ -197,8 +197,8 @@
                                                         </div>
                                                         <div>
                                                             <strong>{{translate('unit_price')}} :</strong>
-                                                            {{setCurrencySymbol(amount: usdToDefaultCurrency(amount: $detail['price']+($detail->tax_model =='include' ? $detail['tax']:0)), currencyCode: getCurrencyCode())}}
-                                                            @if ($detail->tax_model =='include')
+                                                            {{setCurrencySymbol(amount: usdToDefaultCurrency(amount: $detail['price']+($detail->tax_model =={{translate('include')}} ? $detail['tax']:0)), currencyCode: getCurrencyCode())}}
+                                                            @if ($detail->tax_model == 'include')
                                                                 ({{translate('tax_incl.')}})
                                                             @else
                                                                 ({{translate('tax').":".($detail->productAllStatus->tax)}}{{$detail->productAllStatus->tax_type ==="percent" ? '%' :''}})
