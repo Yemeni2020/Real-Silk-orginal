@@ -910,7 +910,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
                 Route::get(Pages::PRIVACY_POLICY[URI], 'getPrivacyPolicyView')->name('privacy-policy');
                 Route::post(Pages::PRIVACY_POLICY[URI], 'updatePrivacyPolicy')->name('privacy-policy-update');
 
-                Route::get(uri: Pages::ABOUT_US[URI], 'getAboutUsView')->name('about-us');//هنا يوجهك الى ال view 
+                Route::get(Pages::ABOUT_US[URI], 'getAboutUsView')->name('about-us');
                 //pages عبارة عن enum 
                 Route::post(Pages::ABOUT_US[URI], action: 'updateAboutUs')->name('about-update');//وهنا يوجهك الى ال حفظ في controller شوف كيف
 
