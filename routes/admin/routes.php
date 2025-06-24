@@ -896,7 +896,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
 
     Route::group(['prefix' => 'business-settings', 'as' => 'business-settings.'], function () {
         Route::group(['middleware' => ['module:system_settings']], function () {
-            Route::controller(PagesController::class)->group(function () {
+            Route::controller(controller: PagesController::class)->group(function () {//PagesController هذا ال كونترولير الذي داخله داله ال view وداله الحفظ تبع ال update about us
                 Route::get(Pages::TERMS_CONDITION[URI], 'index')->name('terms-condition');
                 Route::post(Pages::TERMS_CONDITION[URI], 'updateTermsCondition')->name('update-terms');
 
@@ -910,11 +910,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
                 Route::get(Pages::PRIVACY_POLICY[URI], 'getPrivacyPolicyView')->name('privacy-policy');
                 Route::post(Pages::PRIVACY_POLICY[URI], 'updatePrivacyPolicy')->name('privacy-policy-update');
 
-                Route::get(Pages::ABOUT_US[URI], 'getAboutUsView')->name('about-us');
-                Route::post(Pages::ABOUT_US[URI], 'updateAboutUs')->name('about-update');
+                Route::get(uri: Pages::ABOUT_US[URI], 'getAboutUsView')->name('about-us');//هنا يوجهك الى ال view 
+                //pages عبارة عن enum 
+                Route::post(Pages::ABOUT_US[URI], action: 'updateAboutUs')->name('about-update');//وهنا يوجهك الى ال حفظ في controller شوف كيف
 
                 Route::get(Pages::VIEW[URI] . '/{page}', 'getPageView')->name('page');
-                Route::post(Pages::VIEW[URI] . '/{page}', 'updatePage')->name('page-update');
+                Route::post(Pages::VIEW[URI] . '/{page}', action: 'updatePage')->name('page-update');
             });
 
             Route::controller(SocialMediaSettingsController::class)->group(function () {

@@ -15,8 +15,6 @@
                 <div class="about-us">
 
                     {!! $aboutUs !!}
-
-
                 </div>
             </div>
         @else

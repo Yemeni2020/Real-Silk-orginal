@@ -36,7 +36,7 @@
                                     <p class="text-primary mb-2">{{ translate('resend_code_within') }}</p>
                                     <h6 class="text-primary mb-5 verifyTimer">
                                         <span class="verifyCounter" data-second="{{$getTimeInSecond}}"></span>{{translate('s')}}
-                                    </h6>سسس
+                                    </h6>
                                 </div>
 
                                 <form class="otp-form" method="POST"
