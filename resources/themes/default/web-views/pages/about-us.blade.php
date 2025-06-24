@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="container for-container rtl">
-        <h2 class="text-center py-4 fs-24 font-semi-bold text-capitalize">{{ translate('about_Our_Company')}}</h2>
+        <h2 class="hero text-center">{{ translate('about_Our_Company')}}</h2>
         @if(!empty($aboutUs))
             <div class="for-padding text-justify">
                 

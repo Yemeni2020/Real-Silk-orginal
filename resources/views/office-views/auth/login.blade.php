@@ -162,6 +162,13 @@
                             @endif
                             <button type="button" class="btn btn-lg btn-block btn--primary submit-login-form">{{translate('login')}}</button>
                         </form>
+
+                        <div class="text-center mt-3">
+                            <span>{{ translate('Don’t have an account?') }}</span>
+                            <a href="{{route('vendor.auth.registration.index',['office'=>'office'])}}" class="font-weight-bold text-primary">
+                                {{ translate('Sign up as Office') }}
+                            </a>
+                        </div>
                     </div>
                     @if(env('APP_MODE')=='demo')
                         <div class="card-footer">

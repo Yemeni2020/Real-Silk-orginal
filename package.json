@@ -8,8 +8,7 @@
         "hot": "mix hot",
         "prod": "npm run production",
         "production": "mix --production"
-        },
-
+    },
     "devDependencies": {
         "axios": "^0.19",
         "bootstrap": "^4.0.0",
@@ -27,6 +26,7 @@
     },
     "dependencies": {
         "@inertiajs/inertia": "^0.11.1",
-        "@inertiajs/inertia-vue3": "^0.6.0"
+        "@inertiajs/inertia-vue3": "^0.6.0",
+        "aos": "^2.3.4"
     }
 }

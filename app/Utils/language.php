@@ -73,7 +73,8 @@ if (!function_exists('removeSpecialCharacters')) {
     }
 }
 
-if (!function_exists('getDefaultLanguage')) {
+if (!function_exists('getDefaultLanguage')) { // هذا في ال util وال travl يدي لك تفعل دوال تقدر تستدعيهن في اي داله كانت
+    //وين بقعة تعديل الabo
     function getDefaultLanguage(): string
     {
         if (strpos(url()->current(), '/api')) {

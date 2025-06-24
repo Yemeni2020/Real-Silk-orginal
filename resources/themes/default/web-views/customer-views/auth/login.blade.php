@@ -37,6 +37,17 @@
                         {{ translate('Sign_In') }}
                     </h2>
                 </div>
+                <div class="d-flex justify-content-center gap-3 mb-4">
+                    <a href="#" class="btn btn-outline-primary" active>
+                        {{ translate('Sign in as User') }}
+                    </a>
+                    <a href="{{route('vendor.auth.login')}}" class="btn btn-outline-secondary">
+                        {{ translate('Sign in as Factory') }}
+                    </a>
+                    <a href="{{route('office.auth.login')}}" class="btn btn-outline-secondary ">
+                        {{ translate('Sign in as Office') }}
+                    </a>
+                </div>
                 <div class="position-relative">
                     <div class="row justify-content-center align-items-center g-4 {{ $multiColumn ? 'or-sign-in-with-row' : '' }}">
                         @if($customerOTPLogin && !$customerManualLogin && !$customerSocialLogin)

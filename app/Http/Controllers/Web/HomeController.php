@@ -258,14 +258,13 @@ class HomeController extends Controller
         $footer_banner = $this->banner->where('banner_type', 'Footer Banner')->where('theme', theme_root_path())->where('published', 1)->whereJsonContains('language', $curnnet_lang)->orderBy('id', 'desc')->get();
         
         //add seo
-        SEOMeta::setTitle(__('Home') . ' | ' . getWebConfig(name: 'company_name'));
-        SEOMeta::setDescription(__('Buy top-rated products at amazing prices from trusted sellers & come in safe way and fast.'));
+        SEOMeta::setTitle(__('حرير حقيقي - Real Silk طريقك الى الصين') . ' | ' . getWebConfig(name: 'company_name'));
+        SEOMeta::setDescription(__('مرحبًا بكم في Real Silk، المنصة الرائدة للبيع بالجملة التي تربط مجموعة متنوعة من المصنّعين في الصين بعملائنا الكرام في المملكة العربية السعودية. هدفنا هو تقديم منتجات عالية الجودة بأفضل الأسعار، لتمكين عملائنا من النجاح في مشاريعهم التجارية.'));
         SEOMeta::addMeta('article:published_time', now()->toW3cString(), 'property');
+        SEOMeta::setDescription(__('مرحبًا بكم في Real Silk، المنصة الرائدة للبيع بالجملة التي تربط مجموعة متنوعة من المصنّعين في الصين بعملائنا الكرام في المملكة العربية السعودية. هدفنا هو تقديم منتجات عالية الجودة بأفضل الأسعار، لتمكين عملائنا من النجاح في مشاريعهم التجارية.'));
+        SEOMeta::addMeta('article:published_time', now()->toW3cString(), 'property');
+        SEOMeta::addKeyword(['منصة البيع بالجملة','البيع بالجملة في السعودية','بيع بالجملة الصين','مصنّعين من الصين','منتجات عالية الجودة','أسعار الجملة','منصة تجارية سعودية','ربط التجار بالمصنعين','تجارة مربحة','ecommerce','real silk','real-silk','حرير','online','fasion','saudi arabia','buying','saudi', 'china','factory','حرير حقيقي السعودية','سعودية','شراء','اونلاين','متجر','ادوات منزلية', 'shop online', 'best prices', 'trusted sellers','ecommerce', 'shop online', 'best prices', 'trusted sellers', 'RealSilk', 'real', 'Real Silk', 'حرير حقيقي', 'شراء اونلاين','best discount','best shiping','Phones & Telecom','Phones','charging','هواتف واجهزة نقالة','Furniture','السعودية','حرير حقيقي السعودية']);
 
-        OpenGraph::setTitle(__('Home') . ' | ' . getWebConfig(name: 'company_name'));
-        OpenGraph::setDescription(__('Buy top-rated products at amazing prices from trusted sellers.'));
-        OpenGraph::setUrl(url()->current());
-        OpenGraph::addProperty('type', 'website');
 
         // Twitter::setTitle(__('Home') . ' | ' . getWebConfig(name: 'company_name'));
         // Twitter::setSite('@YourCompanyHandle');

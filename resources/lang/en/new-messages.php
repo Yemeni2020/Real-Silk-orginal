@@ -9271,5 +9271,10 @@ return [
 	"COD" => "COD",
 	"we_not_found_shipping_company" => "We not found shipping company",
 	"Jeep" => "Jeep",
-
+	"Sign in as Office" => "Sign in as Office",
+	"Sign in as Factory" => "Sign in as Factory",
+	"Sign in as User" => "Sign in as User",
+	"Don’t have an account?" => "Don’t have an account ",
+	"Sign up as Office" => "Sign up as Office",
+	"Sign up as Factory" => "Sign up as Factory",
 ];

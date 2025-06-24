@@ -107,7 +107,7 @@
                                 </label>
                             </div>
 
-                            @if($web_config['digital_product_setting'])
+                            {{-- @if($web_config['digital_product_setting'])
                             <div class="">
                                 <h6 class="font-semibold fs-15 mb-2">{{ translate('Product_Type') }}</h6>
                                 <label class="w-100 opacity-75 text-nowrap for-sorting d-block mb-0 ps-0" for="sorting">
@@ -122,7 +122,7 @@
                                     </select>
                                 </label>
                             </div>
-                            @endif
+                            @endif --}}
 
                             <div class="d-lg-none">
                                 <h6 class="font-semibold fs-15 mb-2">{{ translate('Sort_By') }}</h6>

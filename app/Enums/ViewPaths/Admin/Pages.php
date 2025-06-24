@@ -29,7 +29,7 @@ enum Pages
 
     const ABOUT_US = [
         URI => 'about-us',
-        VIEW => 'admin-views.business-settings.page.about-us'
+        VIEW => 'admin-views.business-settings.page.about-us'//هذا مسار ال view اذا انت تشتي يعني داخل ال admin-view داخل business-settinge داخل pageداخل شvout-us
     ];
 
 
