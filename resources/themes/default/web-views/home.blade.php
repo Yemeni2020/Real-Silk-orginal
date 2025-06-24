@@ -15,7 +15,7 @@
     {{-- {!! SEOMeta::generate() !!}
     {!! OpenGraph::generate() !!}
     {!! Twitter::generate() !!} --}}
-    SEOMeta::addKeyword(['ecommerce', 'shop online', 'best prices', 'trusted sellers', 'RealSilk', 'real', 'Real Silk', 'حرير حقيقي', 'شراء اونلاين','best discount','best shiping','Phones & Telecom','Phones','charging','هواتف واجهزة نقالة','Furniture']);
+    {{-- SEOMeta::addKeyword(['ecommerce', 'shop online', 'best prices', 'trusted sellers', 'RealSilk', 'real', 'Real Silk', 'حرير حقيقي', 'شراء اونلاين','best discount','best shiping','Phones & Telecom','Phones','charging','هواتف واجهزة نقالة','Furniture']); --}}
 
     <link rel="stylesheet" href="{{theme_asset(path: 'public/assets/front-end/css/home.css')}}"/>
     <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/owl.carousel.min.css') }}">
