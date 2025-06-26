@@ -44,7 +44,11 @@ return [
 	"Customer" => "Customer",
 	"Reviews" => "Reviews",
 	"in" => "In",
+<<<<<<< HEAD
 	"wish_list" => "Wishlist",
+=======
+	"wish_list" => "Wish List",
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 	"user_section" => "User section",
 	"Sellers" => "All Sellers",
 	"customers" => "Customers",
@@ -139,7 +143,11 @@ return [
 	"Choice Title" => "Choice Title",
 	"Variant" => "Variant",
 	"Variant Price" => "Variant Price",
+<<<<<<< HEAD
 	"SKU" => "商品编号(SKU)",
+=======
+	"SKU" => "SKU",
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 	"Enter choice values" => "Enter choice values",
 	"Banner" => "Banner",
 	"add_main_banner" => "Add main banner",
@@ -1879,7 +1887,11 @@ return [
 	"subscriber_list" => "Subscriber list",
 	"System Default currency updated successfully!" => "System Default currency updated successfully!",
 	"Search Products" => "Search Products",
+<<<<<<< HEAD
 	"wish_listed" => "Wishlisted",
+=======
+	"wish_listed" => "Wish listed",
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 	"Seller_info" => "Seller info",
 	"chat" => "Chat",
 	"Visit Store" => "Visit Store",
@@ -2282,7 +2294,11 @@ return [
 	"product_report" => "Product report",
 	"All_Products" => "All Products",
 	"Out_of_Stock_Products" => "Out of Stock Products",
+<<<<<<< HEAD
 	"Wish_Listed_Products" => "Wishlisted Products",
+=======
+	"Wish_Listed_Products" => "Wish Listed Products",
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 	"Product Unit Price" => "Product Unit Price",
 	"Total Amount Sold" => "Total Amount Sold",
 	"Total Discount Given" => "Total Discount Given",
@@ -2935,7 +2951,11 @@ return [
 	"Edit_Personal_Details" => "Edit Personal Details",
 	"Go_back" => "Go back",
 	"Update_Profile" => "Update Profile",
+<<<<<<< HEAD
 	"Wish_List" => "Wishlist",
+=======
+	"Wish_List" => "Wish List",
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 	"Compare" => "Compare",
 	"Loyalty_Point" => "Loyalty Point",
 	"Personal_Details" => "Personal Details",
@@ -3008,7 +3028,11 @@ return [
 	"Joined" => "Joined",
 	"Show_Order_:" => "Show Order :",
 	"Don t Delete" => "Don t Delete",
+<<<<<<< HEAD
 	"My_Wish_List" => "My Wishlist",
+=======
+	"My_Wish_List" => "My Wish List",
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 	"Clear_All" => "Clear All",
 	"Update_Deliveryman" => "Update Deliveryman",
 	"General_Information" => "General Information",
@@ -5594,7 +5618,11 @@ return [
 	"recurring" => "Recurring",
 	"all_Products" => "All Products",
 	"product_Stock" => "Product Stock",
+<<<<<<< HEAD
 	"wish_Listed_Products" => "Wishlisted Products",
+=======
+	"wish_Listed_Products" => "Wish Listed Products",
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 	"total_Product_Sale" => "Total Product Sale",
 	"total_Discount_Given" => "Total Discount Given",
 	"product_Statistics" => "Product Statistics",
@@ -5946,9 +5974,15 @@ return [
 	"additional_Information" => "Additional Information",
 	"filter_Products" => "Filter Products",
 	"product_SKU" => "Product SKU",
+<<<<<<< HEAD
 	"attribute_Variation" => "属性变化",
 	"variation_Wise_Price" => "价格差异",
 	"Variation_Wise_Stock" => "差异化库存",
+=======
+	"attribute_Variation" => "Attribute Variation",
+	"variation_Wise_Price" => "Variation Wise Price",
+	"Variation_Wise_Stock" => "Variation Wise Stock",
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 	"Upload_Image" => "Upload Image",
 	"you_can`t_delete_account_due_ongoing_product" => "You can`t delete account due ongoing product",
 	"give_review" => "Give review",
@@ -7312,11 +7346,19 @@ return [
 	"reply_status" => "Reply status",
 	"not_sent" => "Not sent",
 	"not_seen_yet" => "Not seen yet",
+<<<<<<< HEAD
 	"Variation Wise Price" => "价格差异",
 	"Stock" => "Stock",
 	"New Fashionable Box Balance Heel Shoes For Women" => "New Fashionable Box Balance Heel Shoes For Women",
 	"Youtube Video Link" => "Youtube Video Link",
 	"variation_wise_price" => "价格差异",
+=======
+	"Variation Wise Price" => "Variation Wise Price",
+	"Stock" => "Stock",
+	"New Fashionable Box Balance Heel Shoes For Women" => "New Fashionable Box Balance Heel Shoes For Women",
+	"Youtube Video Link" => "Youtube Video Link",
+	"variation_wise_price" => "Variation wise price",
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 	"product_SEO_&_meta_data" => "Product SEO & meta data",
 	"video_link" => "Video link",
 	"video_url_not_found" => "Video url not found",
@@ -8711,6 +8753,7 @@ return [
 	"Search posts..." => "Search posts...",
 	"CopyRight 6amTech@2021" => "CopyRight 6amTech@2021",
 	"Jeep" => "JEPs",
+<<<<<<< HEAD
 	"IndianRed" => "印度红",
     "LightCoral" => "浅珊瑚色",
     "Salmon" => "鲑鱼红",
@@ -8854,3 +8897,6 @@ return [
 ];
 
 
+=======
+];
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7

@@ -168,7 +168,11 @@
         @endforeach
     </script>
 @endif
+<<<<<<< HEAD
 {{-- @if(isset($recaptcha) && $recaptcha['status'] == 1)
+=======
+@if(isset($recaptcha) && $recaptcha['status'] == 1)
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
     <script type="text/javascript">
         "use strict";
         var onloadCallback = function () {
@@ -178,7 +182,11 @@
         };
     </script>
     <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+<<<<<<< HEAD
 @endif --}}
+=======
+@endif
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 
 </body>
 </html>

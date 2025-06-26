@@ -1679,7 +1679,11 @@ return [
 	"subscriber_list" => "Subscriber list",
 	"System Default currency updated successfully!" => "System Default currency updated successfully!",
 	"Search Products" => "Search Products",
+<<<<<<< HEAD
 	"wish_listed" => "Wishlisted",
+=======
+	"wish_listed" => "Wish listed",
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 	"Seller_info" => "Seller info",
 	"chat" => "Chat",
 	"Visit Store" => "Visit Store",
@@ -2095,7 +2099,11 @@ return [
 	"product_report" => "Product report",
 	"All_Products" => "All Products",
 	"Out_of_Stock_Products" => "Out of Stock Products",
+<<<<<<< HEAD
 	"Wish_Listed_Products" => "Wishlisted Products",
+=======
+	"Wish_Listed_Products" => "Wish Listed Products",
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 	"Product Unit Price" => "Product Unit Price",
 	"Total Amount Sold" => "Total Amount Sold",
 	"Total Discount Given" => "Total Discount Given",
@@ -2761,7 +2769,11 @@ return [
 	"Edit_Personal_Details" => "Edit Personal Details",
 	"Go_back" => "Go back",
 	"Update_Profile" => "Update Profile",
+<<<<<<< HEAD
 	"Wish_List" => "Wishlist",
+=======
+	"Wish_List" => "Wish List",
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 	"Compare" => "Compare",
 	"Loyalty_Point" => "Loyalty Point",
 	"Personal_Details" => "Personal Details",
@@ -2836,7 +2848,11 @@ return [
 	"Joined" => "Joined",
 	"Show_Order_:" => "Show Order :",
 	"Don t Delete" => "Don t Delete",
+<<<<<<< HEAD
 	"My_Wish_List" => "My Wishlist",
+=======
+	"My_Wish_List" => "My Wish List",
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 	"Clear_All" => "Clear All",
 	"Update_Deliveryman" => "Update Deliveryman",
 	"General_Information" => "General Information",
@@ -5424,7 +5440,11 @@ return [
 	"recurring" => "Recurring",
 	"all_Products" => "All Products",
 	"product_Stock" => "Product Stock",
+<<<<<<< HEAD
 	"wish_Listed_Products" => "Wishlisted Products",
+=======
+	"wish_Listed_Products" => "Wish Listed Products",
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 	"total_Product_Sale" => "Total Product Sale",
 	"total_Discount_Given" => "Total Discount Given",
 	"product_Statistics" => "Product Statistics",
@@ -9277,6 +9297,7 @@ return [
 	"Don’t have an account?" => "Don’t have an account ",
 	"Sign up as Office" => "Sign up as Office",
 	"Sign up as Factory" => "Sign up as Factory",
+<<<<<<< HEAD
 	"IndianRed" => "IndianRed",
     "LightCoral" => "LightCoral",
     "Salmon" => "Salmon",
@@ -9416,4 +9437,6 @@ return [
     "SlateGray" => "SlateGray",
     "DarkSlateGray" => "DarkSlateGray",
     "Black" => "Black"
+=======
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 ];

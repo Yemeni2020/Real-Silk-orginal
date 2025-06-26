@@ -4,7 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
     "content-hash": "46148812cd39a41d0068e0b22c3a4993",
+=======
+    "content-hash": "52a459b289c1d9da6686e80d940f4456",
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
     "packages": [
         {
             "name": "artesaos/seotools",
@@ -8199,6 +8203,7 @@
             "time": "2024-09-02T10:17:15+00:00"
         },
         {
+<<<<<<< HEAD
             "name": "siberfx/laravel-tryoto",
             "version": "1.0.1",
             "source": {
@@ -8257,6 +8262,8 @@
             "time": "2024-08-04T16:15:05+00:00"
         },
         {
+=======
+>>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
             "name": "spatie/browsershot",
             "version": "4.3.0",
             "source": {
