@@ -8850,5 +8850,8 @@ return [
     "SlateGray" => "石板灰",
     "DarkSlateGray" => "深石板灰",
     "Black" => "黑色",
+	"Sign in as Office" => "以办公室身份登录",
+	"Sign in as User" => "以用户身份登录",
+	"Sign in as Factory" => "以工厂身份登录",
 	
 ];

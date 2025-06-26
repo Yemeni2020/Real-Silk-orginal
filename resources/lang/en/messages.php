@@ -44,11 +44,7 @@ return [
 	"Customer" => "Customer",
 	"Reviews" => "Reviews",
 	"in" => "in",
-<<<<<<< HEAD
 	"wish_list" => "wishlist",
-=======
-	"wish_list" => "wish list",
->>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
 	"user_section" => "user section",
 	"Sellers" => "Sellers",
 	"customers" => "customers",
@@ -205,4 +201,8 @@ return [
 	"Email" => "Email",
 	"Account" => "Account",
 	"suspend" => "suspend",
+	"Sign in as Office" => "Sign in as Office",
+	"Sign in as User" => "Sign in as User",
+	"Sign in as Factory" => "Sign in as Factory",
+	
 ];

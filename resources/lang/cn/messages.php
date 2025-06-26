@@ -9256,5 +9256,6 @@
 "DarkSlateGray" => "深石板灰",
 "DarkSalmon" => "深鲑红",
 "Black" => "黑色",
+"Sign_in_as_Office" => "以办公室身份登录",
 );
 ?>

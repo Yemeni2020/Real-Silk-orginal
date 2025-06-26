@@ -8832,5 +8832,9 @@ return [
 	"addresss" => "Addresss",
 	"Thank_you_for_your_patience." => "Thank you for your patience.",
 	"no_Coupon_Found" => "No Coupon Found",
-	"Sign in as Office" => "Sign in as Office",
+	"Sign in as Office" => "تسجيل الدخول باسم المكتب",
+	"Sign in as User" => "تسجيل الدخول كمستخدم",
+	"Sign in as Factory" => "تسجيل الدخول كمصنع",
+	"Don’t have an account?" => "Don’t have an account ",
+	"Sign up as Factory" => "Sign up as Factory",
 ];

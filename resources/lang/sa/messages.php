@@ -8836,5 +8836,8 @@
 "select_shipping_method" => "اختر طريقة الشحن",
 "Please_select_shipping_method" => "الرجاء اختيار طريقة الشحن",
 "Choose_Shipping_Method" => "اختر طريقة الشحن",
-"Proceed_to_Checkout" => "المتابعة إلى الدفع"
+"Proceed_to_Checkout" => "المتابعة إلى الدفع",
+"Sign_in_as_Office" => "تسجيل الدخول باسم المكتب",
+
+
 );
