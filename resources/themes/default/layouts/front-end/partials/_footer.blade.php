@@ -402,6 +402,12 @@
                                         <span><i class="fa fa-envelope  me-2 mt-2 mb-2"></i> {{getWebConfig(name: 'company_email')}} </span>
                                     </a>
                                 </div>
+                                <div class="d-block w-100">
+                                    <a class="widget-list-link"
+                                        href="#">
+                                        <span><i class="fa fa-envelope  me-2 mt-2 mb-2"></i> Saudi Arabia Dammam </span>
+                                    </a>
+                                </div>
                                 <div class="pe-3 d-block w-100">
                                     @if(auth('customer')->check())
                                     <a class="widget-list-link" href="{{route('account-tickets')}}">

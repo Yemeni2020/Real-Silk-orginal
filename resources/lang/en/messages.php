@@ -44,7 +44,7 @@ return [
 	"Customer" => "Customer",
 	"Reviews" => "Reviews",
 	"in" => "in",
-	"wish_list" => "wish list",
+	"wish_list" => "wishlist",
 	"user_section" => "user section",
 	"Sellers" => "Sellers",
 	"customers" => "customers",

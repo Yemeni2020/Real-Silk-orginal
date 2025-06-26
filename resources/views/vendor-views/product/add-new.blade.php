@@ -549,7 +549,7 @@ $auto_translate=getWebConfig("auto_translate");
                                 name="colors[]" multiple="multiple" id="colors-selector" disabled>
                                 @foreach ($colors as $key => $color)
                                     <option value="{{ $color->code }}">
-                                        {{ $color['name'] }}
+                                        {{  translate($color['name'])}}
                                     </option>
                                 @endforeach
                             </select>

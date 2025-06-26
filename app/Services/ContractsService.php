@@ -125,6 +125,7 @@ class ContractsService{
             'format' => 'A4',
             'margin_top' => 50,
             'margin_bottom' => 50,
+            'tempDir' => __DIR__ . '/tmp'
         ]);
 
         // ✅ **إضافة ترويسة (Header)**

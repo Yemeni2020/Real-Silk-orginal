@@ -685,7 +685,7 @@ $auto_translate=getWebConfig("auto_translate");
                                     @foreach ($colors as $key => $color)
                                         <option
                                             value={{ $color->code }} {{in_array($color->code,$product['colors'])?'selected':''}}>
-                                            {{ $color['name'] }}
+                                            {{  translate($color['name'])}}
                                         </option>
                                     @endforeach
                                 </select>

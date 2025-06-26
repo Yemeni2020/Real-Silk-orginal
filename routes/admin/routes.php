@@ -896,7 +896,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
 
     Route::group(['prefix' => 'business-settings', 'as' => 'business-settings.'], function () {
         Route::group(['middleware' => ['module:system_settings']], function () {
-            Route::controller(controller: PagesController::class)->group(function () {//PagesController هذا ال كونترولير الذي داخله داله ال view وداله الحفظ تبع ال update about us
+            Route::controller( PagesController::class)->group(function () {//PagesController هذا ال كونترولير الذي داخله داله ال view وداله الحفظ تبع ال update about us
                 Route::get(Pages::TERMS_CONDITION[URI], 'index')->name('terms-condition');
                 Route::post(Pages::TERMS_CONDITION[URI], 'updateTermsCondition')->name('update-terms');
 

@@ -48,6 +48,7 @@
         "razorpay/razorpay": "^2.9",
         "rennokki/laravel-eloquent-query-cache": "^3.4",
         "seshac/laravel-shiprocket-api": "^2.0",
+        "siberfx/laravel-tryoto": "^1.0",
         "spatie/image-optimizer": "^1.7",
         "spatie/laravel-sitemap": "^7.1",
         "stripe/stripe-php": "^13.9",

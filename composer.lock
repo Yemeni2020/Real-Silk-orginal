@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "52a459b289c1d9da6686e80d940f4456",
+    "content-hash": "46148812cd39a41d0068e0b22c3a4993",
     "packages": [
         {
             "name": "artesaos/seotools",
@@ -8197,6 +8197,64 @@
                 }
             ],
             "time": "2024-09-02T10:17:15+00:00"
+        },
+        {
+            "name": "siberfx/laravel-tryoto",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/siberfx/laravel-tryoto.git",
+                "reference": "7c5724b3fffd60fd2cddbe2caad06bb121aac13f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/siberfx/laravel-tryoto/zipball/7c5724b3fffd60fd2cddbe2caad06bb121aac13f",
+                "reference": "7c5724b3fffd60fd2cddbe2caad06bb121aac13f",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^10.40|^11.0",
+                "php": "^8.2||^8.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Siberfx\\LaravelTryoto\\TryotoServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Siberfx\\LaravelTryoto\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Selim Görmüş",
+                    "email": "info@siberfx.com",
+                    "homepage": "https://siberfx.com",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "tryoto.com unofficial api integration using laravel http client.",
+            "homepage": "https://github.com/siberfx/laravel-tryoto",
+            "keywords": [
+                "Siberfx",
+                "cargo integration",
+                "shipment automation",
+                "shipment integration",
+                "tryoto"
+            ],
+            "support": {
+                "issues": "https://github.com/siberfx/laravel-tryoto/issues",
+                "source": "https://github.com/siberfx/laravel-tryoto/tree/1.0.1"
+            },
+            "time": "2024-08-04T16:15:05+00:00"
         },
         {
             "name": "spatie/browsershot",
