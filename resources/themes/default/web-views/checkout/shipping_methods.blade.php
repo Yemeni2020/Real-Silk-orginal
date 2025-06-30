@@ -247,49 +247,49 @@ $currencyModel = getWebConfig('currency_model');
                                             @endif
                                         @endforeach
                                         @if($shipping_type == 'order_wise')
-                                            @php($seller_id=$cartItem->seller_is=='admin'?0:$shopIdentity->id )
-                                            <div class="row shipping-method-vue container" style="border:1px var(--web-primary) solid;" id="shipping-method-vue">
+                                            @php($seller_id = $cartItem->seller_is == 'admin' ? 0 : $shopIdentity->id)
+                                            <div class="row shipping-method-vue container shadow-lg rounded-lg p-4 mt-4" style="border:1px solid var(--web-primary);" id="shipping-method-vue">
                                                 <div class="col-12">
-                                                    <div class="">
-                                                        <h6 class="font-semibold d-inline-block fs-15 mb-2">{{translate('shipping_method')}}</h6>
-                                                        <label  for="sorting">
-                                                            <select onchange="show_options('{{$seller_id}}',this)" class="form-control custom-select filter-on-product-filter-change">
-                                                                <option selected="" disabled="">Choose</option>
-                                                                @foreach($Shipping_methods as $shipping_method)
-                                                                    <option value="{{ $shipping_method->id }}">{{ $shipping_method->title }}</option>
-                                                                @endforeach
-                                                                
-                                                            </select>
-                                                        </label>
+                                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                                        <h6 class="font-semibold fs-16 mb-0">{{ translate('shipping_method') }}</h6>
+                                                        <label for="sorting" class="text-primary font-weight-bold">{{ translate('choose_shipping_method') }}</label>
                                                     </div>
-                                                    
+                                                    <div class="shipping-select">
+                                                        <select onchange="show_options('{{$seller_id}}', this)" class="form-control custom-select filter-on-product-filter-change shadow-sm rounded-lg">
+                                                            <option selected="" disabled="">{{ translate('choose_shipping_method') }}</option>
+                                                            @foreach($Shipping_methods as $shipping_method)
+                                                                <option value="{{ $shipping_method->id }}">{{ $shipping_method->title }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                                <div class="col-12">
+
+                                                {{-- Options for shipping methods (hidden by default) --}}
+                                                {{-- <div class="col-12">
                                                     @foreach($Shipping_methods as $shipping_method)
                                                         <div class="_options{{ $seller_id }} row option_shipping" style="display: none;" id="options{{ $shipping_method->id }}_{{ $seller_id }}">
                                                             @foreach($shipping_method->optionsShipping as $sel)
-                                                            <div>
-                                                                <span>{{$sel["name"]}}</span>
-                                                                <select class="form-control custom-select filter-on-product-filter-change" name="O_{{ $sel->id }}_{{ $seller_id }}" id="O_{{ $sel->id }}_{{ $seller_id }}">
-                                                                    @foreach($sel->options as $option)
-                                                                        <option value="{{ $option->id }}">{{ $option->name }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                                
+                                                                <div class="option-container">
+                                                                    <span class="option-name">{{$sel["name"]}}</span>
+                                                                    <select class="form-control custom-select filter-on-product-filter-change" name="O_{{ $sel->id }}_{{ $seller_id }}" id="O_{{ $sel->id }}_{{ $seller_id }}">
+                                                                        @foreach($sel->options as $option)
+                                                                            <option value="{{ $option->id }}">{{ $option->name }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
                                                             @endforeach
                                                         </div>
                                                     @endforeach
-                                                </div>
+                                                </div> --}}
                                             </div>
-                                            <div class="container">
-                                                <div id="Api_shipping{{$seller_id}}">
 
+                                            <div class="container mt-3">
+                                                <div id="Api_shipping{{$seller_id}}" class="shipping-options-container">
+                                                    <!-- API Shipping options will be rendered here -->
                                                 </div>
                                             </div>
                                         @endif
-                                        <table
-                                            class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table __cart-table">
+                                        <table class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table __cart-table">
                                             <tbody>
                                                 <?php
                                                 $isPhysicalProductExist = false;
@@ -299,134 +299,110 @@ $currencyModel = getWebConfig('currency_model');
                                                     }
                                                 }
                                                 ?>
-                                            @foreach($group as $cart_key=>$cartItem)
-                                                @php($product = $cartItem->allProducts)
+                                                @foreach($group as $cart_key=>$cartItem)
+                                                    @php($product = $cartItem->allProducts)
 
-                                                <?php
-                                                    $getProductCurrentStock = $product->current_stock;
-                                                    if(!empty($product->variation)) {
-                                                        foreach(json_decode($product->variation, true) as $productVariantSingle) {
-                                                            if($productVariantSingle['type'] == $cartItem->variant) {
-                                                                $getProductCurrentStock = $productVariantSingle['qty'];
+                                                    <?php
+                                                        $getProductCurrentStock = $product->current_stock;
+                                                        if(!empty($product->variation)) {
+                                                            foreach(json_decode($product->variation, true) as $productVariantSingle) {
+                                                                if($productVariantSingle['type'] == $cartItem->variant) {
+                                                                    $getProductCurrentStock = $productVariantSingle['qty'];
+                                                                }
                                                             }
                                                         }
-                                                    }
-                                                ?>
+                                                    ?>
 
-                                                <?php
-                                                    $checkProductStatus = $cartItem->allProducts?->status ?? 0;
-                                                    if($cartItem->seller_is == 'admin') {
-                                                        $inhouseTemporaryClose = getWebConfig(name: 'temporary_close') ? getWebConfig(name: 'temporary_close')['status'] : 0;
-                                                        $inhouseVacation = getWebConfig(name: 'vacation_add');
-                                                        $vacationStartDate = $inhouseVacation['vacation_start_date'] ? date('Y-m-d', strtotime($inhouseVacation['vacation_start_date'])) : null;
-                                                        $vacationEndDate = $inhouseVacation['vacation_end_date'] ? date('Y-m-d', strtotime($inhouseVacation['vacation_end_date'])) : null;
-                                                        $vacationStatus = $inhouseVacation['status'] ?? 0;
-                                                        if ($inhouseTemporaryClose || ($vacationStatus && (date('Y-m-d') >= $vacationStartDate) && (date('Y-m-d') <= $vacationEndDate))) {
-                                                            $checkProductStatus = 0;
+                                                    <?php
+                                                        $checkProductStatus = $cartItem->allProducts?->status ?? 0;
+                                                        if($cartItem->seller_is == 'admin') {
+                                                            $inhouseTemporaryClose = getWebConfig(name: 'temporary_close') ? getWebConfig(name: 'temporary_close')['status'] : 0;
+                                                            $inhouseVacation = getWebConfig(name: 'vacation_add');
+                                                            $vacationStartDate = $inhouseVacation['vacation_start_date'] ? date('Y-m-d', strtotime($inhouseVacation['vacation_start_date'])) : null;
+                                                            $vacationEndDate = $inhouseVacation['vacation_end_date'] ? date('Y-m-d', strtotime($inhouseVacation['vacation_end_date'])) : null;
+                                                            $vacationStatus = $inhouseVacation['status'] ?? 0;
+                                                            if ($inhouseTemporaryClose || ($vacationStatus && (date('Y-m-d') >= $vacationStartDate) && (date('Y-m-d') <= $vacationEndDate))) {
+                                                                $checkProductStatus = 0;
+                                                            }
+                                                        }else{
+                                                            if (!isset($cartItem->allProducts->seller) || (isset($cartItem->allProducts->seller) && $cartItem->allProducts->seller->status != 'approved')) {
+                                                                $checkProductStatus = 0;
+                                                            }
+                                                            if (!isset($cartItem->allProducts->seller->shop) || $cartItem->allProducts->seller->shop->temporary_close) {
+                                                                $checkProductStatus = 0;
+                                                            }
+                                                            if(isset($cartItem->allProducts->seller->shop) && ($cartItem->allProducts->seller->shop->vacation_status && (date('Y-m-d') >= $cartItem->allProducts->seller->shop->vacation_start_date) && (date('Y-m-d') <= $cartItem->allProducts->seller->shop->vacation_end_date))) {
+                                                                $checkProductStatus = 0;
+                                                            }
                                                         }
-                                                    }else{
-                                                        if (!isset($cartItem->allProducts->seller) || (isset($cartItem->allProducts->seller) && $cartItem->allProducts->seller->status != 'approved')) {
-                                                            $checkProductStatus = 0;
-                                                        }
-                                                        if (!isset($cartItem->allProducts->seller->shop) || $cartItem->allProducts->seller->shop->temporary_close) {
-                                                            $checkProductStatus = 0;
-                                                        }
-                                                        if(isset($cartItem->allProducts->seller->shop) && ($cartItem->allProducts->seller->shop->vacation_status && (date('Y-m-d') >= $cartItem->allProducts->seller->shop->vacation_start_date) && (date('Y-m-d') <= $cartItem->allProducts->seller->shop->vacation_end_date))) {
-                                                            $checkProductStatus = 0;
-                                                        }
-                                                    }
-                                                ?>
+                                                    ?>
 
-                                                <tr>
-                                                    <td class="__w-45">
-                                                        <div class="d-flex gap-3 align-items-center">
-
-                                                            <div class="d-flex gap-3">
-                                                                <div class="">
-                                                                    <a href="{{ $checkProductStatus == 1 ? route('product', $cartItem['slug']) : 'javascript:'}}"
-                                                                    class="position-relative overflow-hidden">
-                                                                        <img class="rounded __img-62 {{ $checkProductStatus == 0?'custom-cart-opacity-50':'' }}"
-                                                                            src="{{ getStorageImages(path: $cartItem?->product?->thumbnail_full_url, type: 'product') }}"
-                                                                            alt="{{ translate('product') }}">
-                                                                        @if ($checkProductStatus == 0)
-                                                                            <span class="temporary-closed position-absolute text-center p-2">
-                                                                                <span class="fs-12 font-weight-bolder">{{ translate('N/A') }}</span>
-                                                                            </span>
-                                                                        @endif
-                                                                    </a>
-                                                                </div>
-                                                                <div class="d-flex flex-column gap-1">
-                                                                    <div
-                                                                        class="text-break __line-2 __w-18rem {{ $checkProductStatus == 0?'custom-cart-opacity-50':'' }}">
+                                                    <tr class="product-row {{ $checkProductStatus == 0 ? 'product-unavailable' : '' }}">
+                                                        <td class="__w-45">
+                                                            <div class="d-flex gap-3 align-items-center">
+                                                                <div class="d-flex gap-3">
+                                                                    <div class="product-image-container">
                                                                         <a href="{{ $checkProductStatus == 1 ? route('product', $cartItem['slug']) : 'javascript:'}}">
-                                                                            {{$cartItem['name']}}
+                                                                            <img class="rounded __img-62 {{ $checkProductStatus == 0 ? 'custom-cart-opacity-50' : '' }}" 
+                                                                                src="{{ getStorageImages(path: $cartItem?->product?->thumbnail_full_url, type: 'product') }}" 
+                                                                                alt="{{ translate('product') }}" loading="lazy">
+                                                                            @if ($checkProductStatus == 0)
+                                                                                <span class="temporary-closed position-absolute text-center p-2">
+                                                                                    <span class="fs-12 font-weight-bolder">{{ translate('N/A') }}</span>
+                                                                                </span>
+                                                                            @endif
                                                                         </a>
-                                                                        @if(!empty($cartItem['variant']))
-                                                                            <div>
-                                                                                <span class="__text-12px">{{translate('variant')}} : {{$cartItem['variant']}}</span>
+                                                                    </div>
+                                                                    <div class="d-flex flex-column gap-1">
+                                                                        <div class="product-name text-break __line-2 __w-18rem {{ $checkProductStatus == 0 ? 'custom-cart-opacity-50' : '' }}">
+                                                                            <a href="{{ $checkProductStatus == 1 ? route('product', $cartItem['slug']) : 'javascript:'}}">
+                                                                                {{$cartItem['name']}}
+                                                                            </a>
+                                                                            @if(!empty($cartItem['variant']))
+                                                                                <div><span class="__text-12px">{{translate('variant')}} : {{$cartItem['variant']}}</span></div>
+                                                                            @endif
+                                                                        </div>
+                                                                        <div class="product-variations d-flex flex-wrap gap-2 {{ $checkProductStatus == 0 ? 'custom-cart-opacity-50' : '' }}">
+                                                                            @foreach(json_decode($cartItem['variations'], true) as $key1 => $variation)
+                                                                                <div><span class="__text-12px text-capitalize"><span class="text-muted">{{$key1}} </span>: <span class="fw-semibold">{{$variation}}</span></span></div>
+                                                                            @endforeach
+                                                                        </div>
+
+                                                                        @if ($product->product_type == 'physical' && $shipping_type != 'order_wise')
+                                                                            <div class="shipping-cost d-flex flex-wrap gap-2 {{ $checkProductStatus == 0 ? 'custom-cart-opacity-50' : '' }}">
+                                                                                <span class="fw-semibold">{{ translate('shipping_cost')}}</span>: 
+                                                                                <span>{{ translate("We_will_connect_with_you_for_cost_shipping") }}</span>
                                                                             </div>
                                                                         @endif
+
+                                                                        @if($product->product_type == 'physical' && $getProductCurrentStock < $cartItem['quantity'])
+                                                                            <div class="text-danger font-bold">{{ translate('Out_Of_Stock') }}</div>
+                                                                        @endif
                                                                     </div>
-
-                                                                    <div
-                                                                        class="d-flex flex-wrap gap-2 {{ $checkProductStatus == 0?'custom-cart-opacity-50':'' }}">
-                                                                        @foreach(json_decode($cartItem['variations'], true) as $key1 => $variation)
-                                                                            <div class="">
-                                                                                    <span class="__text-12px text-capitalize">
-                                                                                        <span class="text-muted">{{$key1}} </span> : <span
-                                                                                            class="fw-semibold">{{$variation}}</span>
-                                                                                    </span>
-                                                                            </div>
-                                                                        @endforeach
-                                                                    </div>
-
-                                                                    @if ($product->product_type == 'physical' && $shipping_type != 'order_wise')
-                                                                        <div
-                                                                            class="d-flex flex-wrap gap-2 {{ $checkProductStatus == 0?'custom-cart-opacity-50':'' }}">
-                                                                            <span class="fw-semibold">
-                                                                                {{ translate('shipping_cost')}}
-                                                                            </span>:
-                                                                            <span>
-                                                                                {{translate("We_will_connect_with_you_for_cost_shipping")}}
-                                                                                @if(1==2)
-                                                                                {!! webCurrencyConverter(amount: $cartItem['shipping_cost']) !!}
-                                                                                @endif
-                                                                            </span>
-                                                                        </div>
-                                                                    @endif
-
-                                                                    @if($product->product_type == 'physical' && $getProductCurrentStock < $cartItem['quantity'])
-                                                                        <div class="d-flex text-danger font-bold">
-                                                                            <span>{{ translate('Out_Of_Stock') }}</span>
-                                                                        </div>
-                                                                    @endif
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                    <td class="{{ $checkProductStatus == 0?'custom-cart-opacity-50':'' }} __w-15p">
-                                                        <div class="text-center">
-                                                            <div class="fw-semibold">
-                                                                {!! webCurrencyConverter(amount: $cartItem['price']-$cartItem['discount']) !!}
-                                                            </div>
-                                                            <span class="text-nowrap fs-10">
+                                                        </td>
+                                                        <td class="{{ $checkProductStatus == 0 ? 'custom-cart-opacity-50' : '' }} __w-15p">
+                                                            <div class="text-center">
+                                                                <div class="fw-semibold">
+                                                                    {!! webCurrencyConverter(amount: $cartItem['price'] - $cartItem['discount']) !!}
+                                                                </div>
+                                                                <span class="text-nowrap fs-10">
                                                                     @if ($cartItem->tax_model === "exclude")
-                                                                    ({{ translate('tax')}}
-                                                                    : {!! webCurrencyConverter(amount: $cartItem['tax']*$cartItem['quantity'])!!}
-                                                                    )
-                                                                @else
-                                                                    ({{ translate('tax_included')}})
-                                                                @endif
+                                                                        ({{ translate('tax')}} : {!! webCurrencyConverter(amount: $cartItem['tax'] * $cartItem['quantity']) !!})
+                                                                    @else
+                                                                        ({{ translate('tax_included')}})
+                                                                    @endif
                                                                 </span>
-                                                        </div>
-                                                    </td>
-                                                    <td class="__w-15p text-end {{ $checkProductStatus == 0?'custom-cart-opacity-50':'' }}">
-                                                        <div>
-                                                        {!! webCurrencyConverter(amount: ($cartItem['price']-$cartItem['discount'])*$cartItem['quantity']) !!}
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
+                                                            </div>
+                                                        </td>
+                                                        <td class="__w-15p text-end {{ $checkProductStatus == 0 ? 'custom-cart-opacity-50' : '' }}">
+                                                            <div>
+                                                                {!! webCurrencyConverter(amount: ($cartItem['price'] - $cartItem['discount']) * $cartItem['quantity']) !!}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
                                             </tbody>
                                         </table>
                                         

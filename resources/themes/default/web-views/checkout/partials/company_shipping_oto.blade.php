@@ -1,19 +1,22 @@
 @if($rate['success'] && !empty($rate['deliveryCompany']))
         <div class="mb-4">
             <label class="form-label">{{ translate('select_shipping_company') }}</label>
+            
             <div class="row">
                 @foreach ($rate['deliveryCompany'] as $index => $company)
                 <div class="col-lg-3 col-md-3 col-12 ">
                 <img src="{{ $company['logo'] }}" alt="logo" style="height: 50px;display:block;">
 
                     <input type="radio"
-                           id="shipping_{{ $index }}"
+                           id="shipping_{{ $index }}_{{$shop_id}}"
                            name="shipping_method{{$shop_id}}"
                            value="{{ json_encode($company) }}"
                            class="d-none"
                            @if($loop->first) checked @endif>
+                        
+                           <input type="hidden" value=" {{ $company['price'] }}" id="price_shipping_{{ $index }}_{{$shop_id}}" >
 
-                    <label for="shipping_{{ $index }}"
+                    <label for="shipping_{{ $index }}_{{$shop_id }}"
                            class="btn btn-outline-primary text-start p-3 w-100 d-flex justify-content-between align-items-center shadow-sm @if($loop->first) active @endif"
                            onclick="selectShippingMethod({{ $index }},{{$shop_id}})">
                         <div>

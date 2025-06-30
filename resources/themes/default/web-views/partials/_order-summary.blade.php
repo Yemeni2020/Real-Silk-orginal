@@ -11,6 +11,7 @@
             @php($cartGroupIds=\App\Utils\CartManager::get_cart_group_ids())
             @php($getShippingCost=\App\Utils\CartManager::get_shipping_cost(type: 'checked'))
             @php($getShippingCostSavedForFreeDelivery=\App\Utils\CartManager::get_shipping_cost_saved_for_free_delivery(type: 'checked'))
+
             @if($cart->count() > 0)
                 @foreach($cart as $key => $cartItem)
                     @php($subTotal+=$cartItem['price']*$cartItem['quantity'])
@@ -58,7 +59,13 @@
             <div class="d-flex justify-content-between">
                 <span class="cart_title">{{translate('shipping')}}</span>
                 <span class="cart_value">
+                        
+                @if ($shippingMethod == 'sellerOrhouse_wise_shipping')
+                    <label id="shippingMethodPriceSummary"> {{translate("We_will_connect_with_you_for_cost_shipping")}}</label> 
+                @else
                     {{translate("We_will_connect_with_you_for_cost_shipping")}}
+                @endif
+
                 @if(1==2)
                 {!! webCurrencyConverter(amount: $totalShippingCost) !!}
                 @endif
@@ -117,12 +124,14 @@
             <hr class="my-2">
             <div class="d-flex justify-content-between">
                 <span class="cart_title text-primary font-weight-bold">{{translate('total')}}</span>
-                <span class="cart_value">
+                <span class="cart_value" id='cat_value_price'>
                 {!! webCurrencyConverter(amount: $subTotal+$totalTax+$totalShippingCost-$coupon_dis-$totalDiscountOnProduct-$orderWiseShippingDiscount) !!}
                 </span>
             </div>
+            <input type="hidden" value="{{usdToDefaultCurrency($subTotal+$totalTax+$totalShippingCost-$coupon_dis-$totalDiscountOnProduct-$orderWiseShippingDiscount,'SAR')}}" id="total_invoice">
         </div>
         @php($company_reliability = getWebConfig(name: 'company_reliability'))
+
         @if($company_reliability != null)
             <div class="pt-5">
                 <div class="footer-slider owl-theme owl-carousel">
@@ -140,7 +149,7 @@
         @endif
 
         <div class="pt-4">
-            <a class="btn btn--primary btn-block proceed_to_next_button {{$cart->count() <= 0 ? 'disabled' : ''}} action-checkout-function">{{translate('proceed_to_Checkout')}}</a>
+            <a class="btn btn--primary btn-block proceed_to_next_button {{$cart->count() <= 0 ? 'disabled' : ''}} action-checkout-function" >{{translate('proceed_to_Checkout')}}</a>
         </div>
 
         <div class="d-flex justify-content-center mt-3">

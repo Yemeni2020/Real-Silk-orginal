@@ -797,13 +797,22 @@ class ProductController extends BaseController
         ];
         $products = $this->productRepo->getListWhere(orderBy: ['id' => 'desc'], searchValue: $request['searchValue'], filters: $filters, dataLimit: getWebConfig(name: WebConfigKey::PAGINATION_LIMIT));
         $products->map(function ($product) {
-            if ($product->product_type == 'physical' && count(json_decode($product->choice_options)) > 0 || count(json_decode($product->colors)) > 0) {
-                $colorName = [];
-                $colorsCollection = collect(json_decode($product->colors));
-                $colorsCollection->map(function ($color) use (&$colorName) {
-                    $colorName[] = $this->colorRepo->getFirstWhere(['code' => $color])->name;
-                });
-                $product['colorsName'] = $colorName;
+            if ($product->product_type == 'physical') {
+                // تحقق إذا كانت قيمة colors غير فارغة وصحيحة
+                $decodedColors = json_decode($product->colors);
+                if (is_array($decodedColors) && count($decodedColors) > 0) {
+                    $colorName = [];
+                    $colorsCollection = collect($decodedColors);
+
+                    // نقوم بالتحقق والتأكد من أن اللون غير فارغ
+                    $colorsCollection->map(function ($color) use (&$colorName) {
+                        $colorName[] = $this->colorRepo->getFirstWhere(['code' => $color])->name;
+                    });
+
+                    $product['colorsName'] = $colorName;
+                } else {
+                    $product['colorsName'] = []; // إذا كانت الألوان غير موجودة أو فارغة
+                }
             }
         });
         $vendors = $this->sellerRepo->getListWhere(filters: ['status' => 'approved'], relations: ['shop'], dataLimit: 'all');

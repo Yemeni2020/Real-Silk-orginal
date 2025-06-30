@@ -132,46 +132,49 @@
                                             </div>
                                         </div>
                                     </div>
-                                    @if ($product->product_type == 'physical' && count(json_decode($product->choice_options)) >0 || count(json_decode($product->colors)) >0 )
+                                    @if ($product->product_type == 'physical' && 
+                                        (is_array(json_decode($product->choice_options)) && count(json_decode($product->choice_options)) > 0 || 
+                                        is_array(json_decode($product->colors)) && count(json_decode($product->colors)) > 0 ))
                                         <div class="col-sm-6 col-xl-4">
-                                        <h4 class="mb-3">{{ translate('available_variations') }}</h4>
-                                        <div class="pair-list">
-                                            @if (json_decode($product->choice_options) != null)
-                                                @foreach (json_decode($product->choice_options) as $key => $value)
-                                                    <div>
-                                                        @if (array_filter($value->options) != null)
-                                                            <span class="key text-nowrap">{{ translate($value->title) }}</span>
-                                                            <span>:</span>
-                                                            <span class="value">
-                                                    @foreach ($value->options as $index => $option)
-                                                                    {{ $option }}
-                                                                    @if ($index === array_key_last(($value->options)))
-                                                                        @break
-                                                                    @endif
-                                                                    ,
-                                                                @endforeach
-                                                </span>
-                                                        @endif
-                                                    </div>
-                                                @endforeach
-                                            @endif
-                                            @if (isset($product['colorsName']))
-                                                <div>
-                                                    <span class="key text-nowrap">{{ translate('color') }}</span>
-                                                    <span>:</span>
-                                                    <span class="value">
-                                                        @foreach ($product['colorsName'] as $key => $color)
-                                                                    {{ $color }}
-                                                            @if ($key === array_key_last($product['colorsName']))
-                                                                @break
+                                            <h4 class="mb-3">{{ translate('available_variations') }}</h4>
+                                            <div class="pair-list">
+                                                @if (is_array(json_decode($product->choice_options)) && count(json_decode($product->choice_options)) > 0)
+                                                    @foreach (json_decode($product->choice_options) as $key => $value)
+                                                        <div>
+                                                            @if (array_filter($value->options) != null)
+                                                                <span class="key text-nowrap">{{ translate($value->title) }}</span>
+                                                                <span>:</span>
+                                                                <span class="value">
+                                                                    @foreach ($value->options as $index => $option)
+                                                                        {{ $option }}
+                                                                        @if ($index === array_key_last($value->options))
+                                                                            @break
+                                                                        @endif
+                                                                        ,
+                                                                    @endforeach
+                                                                </span>
                                                             @endif
-                                                            ,
-                                                        @endforeach
-                                                    </span>
-                                                </div>
-                                            @endif
+                                                        </div>
+                                                    @endforeach
+                                                @endif
+
+                                                @if (isset($product['colorsName']) && is_array($product['colorsName']) && count($product['colorsName']) > 0)
+                                                    <div>
+                                                        <span class="key text-nowrap">{{ translate('color') }}</span>
+                                                        <span>:</span>
+                                                        <span class="value">
+                                                            @foreach ($product['colorsName'] as $key => $color)
+                                                                {{ $color }}
+                                                                @if ($key === array_key_last($product['colorsName']))
+                                                                    @break
+                                                                @endif
+                                                                ,
+                                                            @endforeach
+                                                        </span>
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </div>
-                                    </div>
                                     @endif
                                     @if(count($product->tags)>0)
                                         <div class="col-sm-6 col-xl-4">

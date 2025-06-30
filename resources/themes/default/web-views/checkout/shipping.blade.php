@@ -5,6 +5,63 @@
 @push('css_or_js')
     <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/bootstrap-select.min.css') }}">
     <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/plugin/intl-tel-input/css/intlTelInput.css') }}">
+    
+    <style>
+    .select-container {
+    position: relative;
+    width: 100%;
+}
+
+.custom-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 12px 16px;
+    font-size: 14px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.custom-select:focus {
+    border-color: #007bff;
+    background-color: #ffffff;
+    outline: none;
+}
+
+.custom-select option {
+    padding: 12px;
+}
+
+/* تأثير عند مرور الفأرة على الحقل */
+.custom-select:hover {
+    border-color: #007bff;
+}
+
+/* تخصيص label */
+label {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+/* تخصيص التحذير */
+.text-danger {
+    color: red;
+}
+
+/* تأثير على الحقل عندما لا يكون نشطًا */
+.custom-select:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+/* إضافة أيقونة السهم داخل الحقل */
+.custom-select::-ms-expand {
+    display: none;
+}</style>
 @endpush
 
 @section('content')
@@ -114,10 +171,61 @@
                                                                 </select>
                                                             </div>
                                                         </div>
-                                                        <div class="col-6">
+                                                        {{-- <div class="col-6">
                                                             <div class="form-group">
                                                                 <label>{{ translate('city')}}<span  class="text-danger">*</span></label>
                                                                 <input type="text" class="form-control" name="city" id="city" {{$shippingAddresses->count()==0?'required':''}}>
+                                                            </div>
+                                                        </div> --}}
+                                                        <div class="col-6">
+                                                            <div class="form-group">
+                                                                <label for="city" class="font-weight-bold">{{ translate('city') }} <span class="text-danger">*</span></label>
+                                                                <div class="select-container">
+                                                                    <select class="form-control custom-select" name="city" id="city" {{$shippingAddresses->count() == 0 ? 'required' : ''}}>
+                                                                        <option value="" disabled selected>{{ translate('choose_city') }}</option>
+                                                                        <option value="الرياض">{{ translate('riyadh') }}</option>
+                                                                        <option value="جدة">{{ translate('jeddah') }}</option>
+                                                                        <option value="مكة المكرمة">{{ translate('mecca') }}</option>
+                                                                        <option value="المدينة المنورة">{{ translate('medina') }}</option>
+                                                                        <option value="الدمام">{{ translate('dammam') }}</option>
+                                                                        <option value="الخبر">{{ translate('khobar') }}</option>
+                                                                        <option value="تبوك">{{ translate('tabuk') }}</option>
+                                                                        <option value="بريدة">{{ translate('buraidah') }}</option>
+                                                                        <option value="أبها">{{ translate('abha') }}</option>
+                                                                        <option value="الطائف">{{ translate('taif') }}</option>
+                                                                        <option value="الجبيل">{{ translate('jubail') }}</option>
+                                                                        <option value="حائل">{{ translate('hail') }}</option>
+                                                                        <option value="نجران">{{ translate('najran') }}</option>
+                                                                        <option value="جازان">{{ translate('jazan') }}</option>
+                                                                        <option value="ينبع">{{ translate('yanbu') }}</option>
+                                                                        <option value="المجمعة">{{ translate('majmaah') }}</option>
+                                                                        <option value="المبرز">{{ translate('al_mubarraz') }}</option>
+                                                                        <option value="الخرج">{{ translate('alkharj') }}</option>
+                                                                        <option value="رأس تنورة">{{ translate('ras_tanura') }}</option>
+                                                                        <option value="عرعر">{{ translate('ar_ar') }}</option>
+                                                                        <option value="الأحساء">{{ translate('al_ahsa') }}</option>
+                                                                        <option value="القنفذة">{{ translate('alqunfudhah') }}</option>
+                                                                        <option value="وادي الدواسر">{{ translate('wadi_addawasir') }}</option>
+                                                                        <option value="الباحة">{{ translate('albaha') }}</option>
+                                                                        <option value="سكاكا">{{ translate('sakaka') }}</option>
+                                                                        <option value="بيشة">{{ translate('bishah') }}</option>
+                                                                        <option value="دومة الجندل">{{ translate('domat_aljandal') }}</option>
+                                                                        <option value="القريات">{{ translate('alqurayyat') }}</option>
+                                                                        <option value="شقراء">{{ translate('shaqra') }}</option>
+                                                                        <option value="الخفجي">{{ translate('khafji') }}</option>
+                                                                        <option value="عفيف">{{ translate('afif') }}</option>
+                                                                        <option value="رابغ">{{ translate('rabigh') }}</option>
+                                                                        <option value="الحوطة">{{ translate('al_hawtah') }}</option>
+                                                                        <option value="العلا">{{ translate('alula') }}</option>
+                                                                        <option value="حفر الباطن">{{ translate('hafr_albatin') }}</option>
+                                                                        <option value="محايل">{{ translate('muhayil') }}</option>
+                                                                        <option value="الجوف">{{ translate('al_jouf') }}</option>
+                                                                        <option value="الخبت">{{ translate('alkhabt') }}</option>
+                                                                        <option value="الجموم">{{ translate('aljumum') }}</option>
+                                                                        <option value="الهفوف">{{ translate('al_hufuf') }}</option>
+                                                                        <option value="جَعرَانة">{{ translate('jaarana') }}</option>
+                                                                    </select>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-6">
@@ -339,10 +447,53 @@
                                                         </div>
                                                         <div class="col-6">
                                                             <div class="form-group">
-                                                                <label for="exampleInputEmail1">{{ translate('city')}}<span
-                                                                        class="text-danger">*</span></label>
-                                                                <input type="text" class="form-control" id="billing_city"
-                                                                    name="billing_city" {{$billingAddresses->count()==0?'required':''}}>
+                                                                <label for="city" class="font-weight-bold">{{ translate('city') }} <span class="text-danger">*</span></label>
+                                                                <div class="select-container">
+                                                                    <select class="form-control custom-select" name="city" id="city" {{$shippingAddresses->count() == 0 ? 'required' : ''}}>
+                                                                        <option value="" disabled selected>{{ translate('choose_city') }}</option>
+                                                                        <option value="الرياض">{{ translate('riyadh') }}</option>
+                                                                        <option value="جدة">{{ translate('jeddah') }}</option>
+                                                                        <option value="مكة المكرمة">{{ translate('mecca') }}</option>
+                                                                        <option value="المدينة المنورة">{{ translate('medina') }}</option>
+                                                                        <option value="الدمام">{{ translate('dammam') }}</option>
+                                                                        <option value="الخبر">{{ translate('khobar') }}</option>
+                                                                        <option value="تبوك">{{ translate('tabuk') }}</option>
+                                                                        <option value="بريدة">{{ translate('buraidah') }}</option>
+                                                                        <option value="أبها">{{ translate('abha') }}</option>
+                                                                        <option value="الطائف">{{ translate('taif') }}</option>
+                                                                        <option value="الجبيل">{{ translate('jubail') }}</option>
+                                                                        <option value="حائل">{{ translate('hail') }}</option>
+                                                                        <option value="نجران">{{ translate('najran') }}</option>
+                                                                        <option value="جازان">{{ translate('jazan') }}</option>
+                                                                        <option value="ينبع">{{ translate('yanbu') }}</option>
+                                                                        <option value="المجمعة">{{ translate('majmaah') }}</option>
+                                                                        <option value="المبرز">{{ translate('al_mubarraz') }}</option>
+                                                                        <option value="الخرج">{{ translate('alkharj') }}</option>
+                                                                        <option value="رأس تنورة">{{ translate('ras_tanura') }}</option>
+                                                                        <option value="عرعر">{{ translate('ar_ar') }}</option>
+                                                                        <option value="الأحساء">{{ translate('al_ahsa') }}</option>
+                                                                        <option value="القنفذة">{{ translate('alqunfudhah') }}</option>
+                                                                        <option value="وادي الدواسر">{{ translate('wadi_addawasir') }}</option>
+                                                                        <option value="الباحة">{{ translate('albaha') }}</option>
+                                                                        <option value="سكاكا">{{ translate('sakaka') }}</option>
+                                                                        <option value="بيشة">{{ translate('bishah') }}</option>
+                                                                        <option value="دومة الجندل">{{ translate('domat_aljandal') }}</option>
+                                                                        <option value="القريات">{{ translate('alqurayyat') }}</option>
+                                                                        <option value="شقراء">{{ translate('shaqra') }}</option>
+                                                                        <option value="الخفجي">{{ translate('khafji') }}</option>
+                                                                        <option value="عفيف">{{ translate('afif') }}</option>
+                                                                        <option value="رابغ">{{ translate('rabigh') }}</option>
+                                                                        <option value="الحوطة">{{ translate('al_hawtah') }}</option>
+                                                                        <option value="العلا">{{ translate('alula') }}</option>
+                                                                        <option value="حفر الباطن">{{ translate('hafr_albatin') }}</option>
+                                                                        <option value="محايل">{{ translate('muhayil') }}</option>
+                                                                        <option value="الجوف">{{ translate('al_jouf') }}</option>
+                                                                        <option value="الخبت">{{ translate('alkhabt') }}</option>
+                                                                        <option value="الجموم">{{ translate('aljumum') }}</option>
+                                                                        <option value="الهفوف">{{ translate('al_hufuf') }}</option>
+                                                                        <option value="جَعرَانة">{{ translate('jaarana') }}</option>
+                                                                    </select>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-6">

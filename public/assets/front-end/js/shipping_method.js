@@ -8,7 +8,7 @@ function getApi_shippingMethod(shop_id, select) {
         console.error("Shipping method not selected");
         return;
     }
-    const container = document.getElementById('Api_shipping'+shop_id);
+    const container = document.getElementById('Api_shipping' + shop_id);
 
     $.ajax({
         url: url,
@@ -17,11 +17,11 @@ function getApi_shippingMethod(shop_id, select) {
             shop_id: shop_id,
             shipping_method: shipping_method
         },
-        beforeSend: function () {
+        beforeSend: function() {
             container.innerHTML = "";
             $("#loading").show();
         },
-        success: function (data) {
+        success: function(data) {
             if (container) {
                 container.innerHTML = data;
 
@@ -35,43 +35,83 @@ function getApi_shippingMethod(shop_id, select) {
                 console.warn("Container element #quick-Api_shipping not found.");
             }
         },
-        error: function (xhr, status, error) {
+        error: function(xhr, status, error) {
             console.error("Error fetching shipping method data:", error);
         },
-        complete: function () {
+        complete: function() {
             $("#loading").hide();
         }
     });
+
 }
-function selectShippingMethod(index,shop_id) {
+window.shippingMethodPriceSummary = {};
+window.total_amount = parseFloat(window.cat_value_price.value) || 0;
+
+function selectShippingMethod(index, shop_id) {
     // إزالة التنسيق النشط من جميع الخيارات
-    document.querySelectorAll('input[name="shipping_method'+shop_id+'"]').forEach((input) => {
+    document.querySelectorAll('input[name="shipping_method' + shop_id + '"]').forEach((input) => {
         const label = document.querySelector(`label[for="${input.id}"]`);
-        label.classList.remove('active');
+        if (label) label.classList.remove('active');
     });
 
     // إضافة التنسيق النشط للعنصر المحدد
-    const selectedInput = document.getElementById(`shipping_${index}`);
-    const selectedLabel = document.querySelector(`label[for="shipping_${index}"]`);
+    const selectedInput = document.getElementById(`shipping_${index}_${shop_id}`);
+    const selectedLabel = document.querySelector(`label[for="shipping_${index}_${shop_id}"]`);
+    const PriceShipping = document.getElementById(`price_shipping_${index}_${shop_id}`);
+
+    if (PriceShipping && !isNaN(parseFloat(PriceShipping.value))) {
+        window.shippingMethodPriceSummary[shop_id] = parseFloat(PriceShipping.value);
+    }
+
+    updateTotalShippingPrice();
+
     if (selectedInput) selectedInput.checked = true;
     if (selectedLabel) selectedLabel.classList.add('active');
+}
+
+function updateTotalShippingPrice() {
+    let total = 0;
+    for (const shopId in window.shippingMethodPriceSummary) {
+        const price = window.shippingMethodPriceSummary[shopId];
+        if (!isNaN(price)) {
+            total += price;
+        }
+    }
+
+    const totalElement = document.getElementById('shippingMethodPriceSummary');
+    const cat_value_price = document.getElementById('cat_value_price');
+    if (totalElement) {
+        totalElement.innerText = formatCurrency(total.toFixed(2));
+    }
+
+    // تحديث السعر النهائي داخل input cat_value_price
+    if (window.cat_value_price) {
+        window.cat_value_price.innerHTML = formatCurrency(total + parseFloat(document.getElementById('total_invoice').value)); // <-- نستخدم دالة للتنسيق
+    }
+}
+
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('en', {
+        style: 'currency',
+        currency: 'SAR' // ← عدلها حسب العملة لديك
+    }).format(amount);
 }
 
 function checkoutFromShippingMethod() {
     let physical_product = $('#physical_product').val();
     let billing_address_same_shipping;
 
-    if(physical_product === 'yes') {
+    if (physical_product === 'yes') {
         let sameAsShippingCheckbox = $('#same_as_shipping_address');
         billing_address_same_shipping = sameAsShippingCheckbox ? sameAsShippingCheckbox.is(":checked") : false;
 
         let allAreFilled = true;
-        document.getElementById("address-form").querySelectorAll("[required]").forEach(function (i) {
+        document.getElementById("address-form").querySelectorAll("[required]").forEach(function(i) {
             if (!allAreFilled) return;
             if (!i.value) allAreFilled = false;
             if (i.type === "radio") {
                 let radioValueCheck = false;
-                document.getElementById("address-form").querySelectorAll(`[name=${i.name}]`).forEach(function (r) {
+                document.getElementById("address-form").querySelectorAll(`[name=${i.name}]`).forEach(function(r) {
                     if (r.checked) radioValueCheck = true;
                 });
                 allAreFilled = radioValueCheck;
@@ -83,19 +123,19 @@ function checkoutFromShippingMethod() {
         let billingAddressForm = $('#billing-address-form');
         if (billing_address_same_shipping != true && billingAddressForm.length > 0) {
 
-            document.getElementById("billing-address-form").querySelectorAll("[required]").forEach(function (i) {
+            document.getElementById("billing-address-form").querySelectorAll("[required]").forEach(function(i) {
                 if (!allAreFilled_shipping) return;
                 if (!i.value) allAreFilled_shipping = false;
                 if (i.type === "radio") {
                     let radioValueCheck = false;
-                    document.getElementById("billing-address-form").querySelectorAll(`[name=${i.name}]`).forEach(function (r) {
+                    document.getElementById("billing-address-form").querySelectorAll(`[name=${i.name}]`).forEach(function(r) {
                         if (r.checked) radioValueCheck = true;
                     });
                     allAreFilled_shipping = radioValueCheck;
                 }
             });
         }
-    }else {
+    } else {
         billing_address_same_shipping = false;
     }
 
@@ -120,10 +160,10 @@ function checkoutFromShippingMethod() {
             customer_confirm_password: customerConfirmPassword ? customerConfirmPassword.val() : null,
         },
 
-        beforeSend: function () {
+        beforeSend: function() {
             $('#loading').show();
         },
-        success: function (data) {
+        success: function(data) {
             // console.log(errors)
             // console.log(data.errors)
             if (data.errors) {
@@ -137,10 +177,10 @@ function checkoutFromShippingMethod() {
                 location.href = $('#route-shipping-method').data('url');
             }
         },
-        complete: function () {
+        complete: function() {
             $('#loading').hide();
         },
-        error: function (data) {
+        error: function(data) {
             if (data.errors) {
                 for (var i = 0; i < data.errors.length; i++) {
                     toastr.error(data.errors[i].message, {
