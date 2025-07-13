@@ -563,11 +563,7 @@ $auto_translate=getWebConfig("auto_translate");
                                 name="colors[]" multiple="multiple" id="colors-selector" disabled>
                                 @foreach ($colors as $key => $color)
                                     <option value="{{ $color->code }}">
-<<<<<<< HEAD
-                                        {{  translate($color['name'])}}
-=======
                                         {{ $color['name'] }}
->>>>>>> ee0f3990109b9f35b6a832e0efb28dba6e27b9b7
                                     </option>
                                 @endforeach
                             </select>
