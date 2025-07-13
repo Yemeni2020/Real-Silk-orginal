@@ -583,7 +583,8 @@ class WebController extends Controller
         $paymentPublishedStatus = config('get_payment_publish_status');
         $paymentGatewayPublishedStatus = isset($paymentPublishedStatus[0]['is_published']) ? $paymentPublishedStatus[0]['is_published'] : 0;
 
-        $shippingType = isset($adminShipping) == true ? $adminShipping->shipping_type : 'order_wise';
+        $adminShipping = ShippingType::where('seller_id', 0)->first();
+        $shippingType = isset($adminShipping) ? $adminShipping->shipping_type : 'order_wise';
         $sellerShippingList = $shippingType == 'order_wise' ? ShippingMethod::where(['status' => 1])->where(['creator_type' => 'admin'])->get() : null;
 
         $arr=[

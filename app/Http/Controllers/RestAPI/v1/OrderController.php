@@ -30,6 +30,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use App\Services\Shipping\OtoShippingService;
 
 class OrderController extends Controller
 {
@@ -48,6 +49,14 @@ class OrderController extends Controller
         return response()->json(OrderManager::track_order($request['order_id']), 200);
     }
     
+    public function confirm($id, OtoShippingService $otoShippingService)
+    {
+        $order = OrderManager::findByIdWithItems($id);
+        $shipment = $otoShippingService->createShipment($order);
+
+        return response()->json(['success' => true, 'shipment' => $shipment]);
+    }
+
     public function place_order_MyFatorah(Request $request)
     {
         $user = Helpers::get_customer($request);

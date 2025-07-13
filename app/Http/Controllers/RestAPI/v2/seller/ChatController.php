@@ -213,7 +213,7 @@ class ChatController extends Controller
         $messageForm = Seller::find($seller['id']);
 
         $chatting = new Chatting();
-        $chatting->seller_id = $seller->id;
+        $chatting->seller_id = $seller['id'];
         $chatting->message = $request['message'];
         $chatting->sent_by_seller = 1;
         $chatting->seen_by_seller = 1;

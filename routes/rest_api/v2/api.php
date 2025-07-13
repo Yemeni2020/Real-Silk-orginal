@@ -101,14 +101,14 @@ Route::group(['namespace' => 'RestAPI\v2', 'prefix' => 'v2', 'middleware' => ['a
             });
         });
 
-        Route::group(['prefix' => 'messages'], function () {
-            Route::controller(VendorChatController::class)->group(function () {
-                Route::get('list/{type}', 'list');
-                Route::get('get-message/{type}/{id}', 'get_message');
-                Route::post('send/{type}', 'send_message');
-                Route::get('search/{type}', 'search');
-            });
-        });
+        // Route::group(['prefix' => 'messages'], function () {
+        //     Route::controller(VendorChatController::class)->group(function () {
+        //         Route::get('list/{type}', 'list');
+        //         Route::get('get-message/{type}/{id}', 'get_message');
+        //         Route::post('send/{type}', 'send_message');
+        //         Route::get('search/{type}', 'search');
+        //     });
+        // });
 
         Route::group(['prefix' => 'auth', 'namespace' => 'auth'], function () {
             Route::post('login', 'LoginController@login');
@@ -177,14 +177,14 @@ Route::group(['namespace' => 'RestAPI\v2', 'prefix' => 'v2', 'middleware' => ['a
                 Route::get('withdraw-list-by-approved', 'getWithdrawListByApproved');
             });
 
-            Route::group(['prefix' => 'messages'], function () {
-                Route::controller(DeliveryChatController::class)->group(function () {
-                    Route::get('list/{type}', 'list');
-                    Route::get('get-message/{type}/{id}', 'get_message');
-                    Route::post('send-message/{type}', 'send_message');
-                    Route::get('search/{type}', 'search');
-                });
-            });
+            // Route::group(['prefix' => 'messages'], function () {
+            //     Route::controller(DeliveryChatController::class)->group(function () {
+            //         Route::get('list/{type}', 'list');
+            //         Route::get('get-message/{type}/{id}', 'get_message');
+            //         Route::post('send-message/{type}', 'send_message');
+            //         Route::get('search/{type}', 'search');
+            //     });
+            // });
         });
 
     });

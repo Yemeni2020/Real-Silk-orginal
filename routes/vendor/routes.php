@@ -57,6 +57,7 @@ use App\Http\Middleware\MaintenanceModeMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Vendor\Order\OrderController;
 use App\Http\Controllers\Vendor\TransactionReportController;
+use App\Http\Controllers\Vendor\ReportController;
 use App\Http\Controllers\Vendor\ProductReportController;
 use App\Http\Controllers\Vendor\OrderReportController;
 
@@ -370,7 +371,7 @@ Route::group(['middleware' => ['maintenance_mode']], function () {
                     Route::get('order-report-pdf', 'exportOrderReportInPDF')->name('order-report-pdf');
                 });
 
-                Route::any('set-date', 'App\Http\Controllers\Vendor\ReportController@set_date')->name('set-date');
+                // Route::any('set-date', 'App\Http\Controllers\Vendor\ReportController@set_date')->name('set-date');
             });
 
             Route::group(['prefix' => 'transaction', 'as' => 'transaction.'], function () {

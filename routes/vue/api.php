@@ -5,7 +5,7 @@ use App\Http\Controllers\VueApi\HomeController;
 use App\Http\Controllers\VueApi\ProductListController;
 use App\Http\Controllers\VueApi\ProductDetailsController;
 use Illuminate\Http\Request;
-Route::group(['prefix' => 'vueAPI','as'=>'.vueAPI'], function () {
+Route::group(['prefix' => 'vueAPI','as'=>'vueAPI.'], function () {
 
     Route::get('/translate', function (Request $request) {
         $key = $request->has("key")? $request->key : '';

@@ -79,14 +79,14 @@
                                 <span error="number_cr" class="text-danger fs-12"></span>
 
                             </div>
-                            <div class="form-group mb-4">
-                            <label for="country" class="text-capitalize">{{ translate("Select_Country") }} <span class="text-danger">*</span></label>
-                            <select id="country" name="country" class="form-control" required>
-                                <option value="">{{ translate("Choose_Country") }}</option>
-                                <option value="china">{{ translate("China") }}</option>
-                                <option value="saudi" >{{ translate("Saudi Arabia") }}</option>
-                            </select>
-                            </div>
+                                <div class="form-group mb-4">
+                                <label for="country" class="text-capitalize">{{ translate("Select_Country") }} <span class="text-danger">*</span></label>
+                                <select id="country" name="country" class="form-control" required>
+                                    <option value="">{{ translate("Choose_Country") }}</option>
+                                    <option value="china">{{ translate("China") }}</option>
+                                    <option value="saudi" >{{ translate("Saudi Arabia") }}</option>
+                                </select>
+                                </div>
 
                             <div class="form-group mb-4">
                             <label for="city" class="text-capitalize">{{ translate("Select_city") }} <span class="text-danger">*</span></label>

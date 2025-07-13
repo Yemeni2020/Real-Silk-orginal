@@ -6,13 +6,18 @@ $shippingMethod = getWebConfig(name: 'shipping_method');
 ?>
 <head>
     <meta charset="utf-8">
-    <title>@yield('title')</title>
+    <title>@yield('title','الصفحة الرئيسية- حرير حقيقي|| Real Silk')</title>
     <meta name="_token" content="{{csrf_token()}}">
+
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta name="google" content="index, follow">
 
     <meta name="google-site-verification" content="{{getWebConfig('google_search_console_code')}}">
     <meta name="msvalidate.01" content="{{getWebConfig('bing_webmaster_code')}}">
     <meta name="baidu-site-verification" content="{{getWebConfig('baidu_webmaster_code')}}">
     <meta name="yandex-verification" content="{{getWebConfig('yandex_webmaster_code')}}">
+    <meta name='keywords' content= "@yield('meta_keywords', 'حرير حقيقي, Real Silk, السعودية, تجارة الكترونية, ريل سيلك, متجر حرير حقيقي, Real Silk Store, حرير حقيقي متجر, Real Silk Online Store')">
     {!! \Artesaos\SEOTools\Facades\SEOMeta::generate() !!}
     {!! \Artesaos\SEOTools\Facades\OpenGraph::generate() !!}
     {!! \Artesaos\SEOTools\Facades\TwitterCard::generate() !!}

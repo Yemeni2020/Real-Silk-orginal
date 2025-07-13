@@ -23,7 +23,7 @@ class OptionsShipping extends Model
     ];
 
     public function shippingMethod():BelongsTo{
-        return $this->belongsTo(ShippingMethod::class,"shipping_method","id");
+        return $this->belongsTo(ShippingMethod::class, "shipping_method", "id");
     }
     public function options():HasMany{
         return $this->hasMany(SelectOptionsShipping::class,"option_shipping","id");

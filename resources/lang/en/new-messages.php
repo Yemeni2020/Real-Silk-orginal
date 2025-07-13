@@ -9460,4 +9460,16 @@ return [
 	"jaarana" => "Jaarana",
 	"1proceed_to_checkout" => "1proceed to checkout",
 	"1proceed_to_Checkout" => "1proceed to Checkout",
+	"أنت الآن في صفحة تسجيل دخول العملاء (كمورد). إذا كنت تمثل مصنعًا أو مكتبًا وسيطًا، الرجاء النزول لأسفل الصفحة واختيار التسجيل المناسب." => "You are now on the customer login page (as a vendor). If you are a manufacturer or middle office, please scroll down and select the appropriate registration.",
+	"المصانع الصينية" => "Chinese factories",
+	"تسجيل دخول المصانع الصينية" => "Chinese Factory Login",
+	"المكاتب الوسيطة" => "Office Intermediaries",
+	"تسجيل دخول المكاتب الوسيطة" => "Office Intermediaries Login",
+	"Chinese factories" => "Chinese factories",
+	"إذا كنت تمثل مصنعًا صينيًا وتريد الوصول إلى لوحة التحكم الخاصة بك، الرجاء تسجيل الدخول من هنا." => "إذا كنت تمثل مصنعًا صينيًا وتريد الوصول إلى لوحة التحكم الخاصة بك، الرجاء تسجيل الدخول من هنا.",
+	"Chinese Factory Login" => "Chinese Factory Login",
+	"Office Intermediaries" => "Office Intermediaries",
+	"إذا كنت تمثل مكتبًا وسيطًا (مكتب خدمات أو وساطة تجارية)، يمكنك الدخول من هنا لإدارة حسابك." => "إذا كنت تمثل مكتبًا وسيطًا (مكتب خدمات أو وساطة تجارية)، يمكنك الدخول من هنا لإدارة حسابك.",
+	"Office Intermediaries Login" => "Office Intermediaries Login",
+	
 ];

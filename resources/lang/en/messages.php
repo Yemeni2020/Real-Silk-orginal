@@ -204,5 +204,12 @@ return [
 	"Sign in as Office" => "Sign in as Office",
 	"Sign in as User" => "Sign in as User",
 	"Sign in as Factory" => "Sign in as Factory",
+	"أنت الآن في صفحة تسجيل دخول العملاء (الزبائن). إذا كنت تمثل مصنعًا أو مكتبًا وسيطًا، الرجاء النزول لأسفل الصفحة واختيار التسجيل المناسب." => "You are now on the customer login page. If you represent a factory or an office, please scroll down and select the appropriate login.",
+	"تسجيل الدخول كمكتب وساطة" => "Sign in as Office Intermediaries",
+	"تسجيل الدخول كمصنع صيني" => "Sign in as Chinese factories",
+	"إذا كنت تمثل مكتبًا وسيطًا (مكتب خدمات أو وساطة تجارية)، يمكنك الدخول من هنا لإدارة حسابك." => "If you represent an office intermediary (service or trade mediation office), you can log in here to manage your account.",
+	"إذا كنت تمثل مصنعًا صينيًا وتريد الوصول إلى لوحة التحكم الخاصة بك، الرجاء تسجيل الدخول من هنا." => "If you represent a Chinese factory and want to access your dashboard, please log in here.",
+
+
 	
 ];

@@ -7,19 +7,76 @@
     $defaultSymbol_Svg = '<span class="Rial-SA"></span>';
 
 @endphp
+
+@push('css_or_js')
+<style>
+    .topbar .dropdown-toggle {
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 30px;
+        background-color: #f5f5f5;
+        color: #333;
+        transition: all 0.2s ease;
+    }
+
+    .topbar .dropdown-toggle:hover {
+        background-color: #e1e1e1;
+    }
+
+    .topbar .dropdown-menu {
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        min-width: 180px;
+    }
+
+    .topbar .dropdown-item:hover {
+        background-color: #f0f0f0;
+    }
+
+    .customer-identity-alert {
+        background: linear-gradient(to right, #f3f4f6, #ffffff);
+        font-size: 0.95rem;
+    }
+
+    .announcement-banner {
+        font-size: 0.95rem;
+        font-weight: 500;
+        border-radius: 0;
+    }
+
+    .btn-close-announcement:hover {
+        color: red !important;
+    }
+</style>
+@endpush
+
+
 @php($announcement=getWebConfig(name: 'announcement'))
 
 @if (isset($announcement) && $announcement['status']==1)
-    <div class="text-center position-relative px-4 py-1" id="announcement"
+    {{-- <div class="text-center position-relative px-4 py-1" id="announcement"
          style="background-color: {{ $announcement['color'] }};color:{{$announcement['text_color']}}">
         <span>{{ $announcement['announcement'] }} </span>
         <span class="__close-announcement web-announcement-slideUp">X</span>
-    </div>
+    </div> --}}
+    <div class="announcement-banner position-relative text-center py-2 px-3 mb-0" id="announcement"
+     style="background: linear-gradient(90deg, {{ $announcement['color'] }} 0%, #ffffff00 100%); color: {{ $announcement['text_color'] }};">
+    <strong class="text-uppercase">{{ $announcement['announcement'] }}</strong>
+    <button class="btn-close-announcement web-announcement-slideUp" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: none; background: none; font-size: 18px; font-weight: bold; color: inherit;">
+        ×
+    </button>
+</div>
 @endif
 
 
 <header class="rtl __inline-10">
-    <div class="topbar  d-lg-none d-md-none d-xlg-none">
+    {{-- <div class="customer-identity-alert text-center py-3 px-4 bg-light border-bottom shadow-sm">
+        <h6 class="mb-0 text-dark fw-semibold">
+            👋 مرحبًا بك في واجهة <span class="text-primary">العملاء (الزبائن)</span> — إذا كنت تمثل مصنعًا أو مكتبًا وسيطًا، يرجى التوجه لأسفل الصفحة لاستخدام تسجيل الدخول المناسب.
+        </h6>
+    </div> --}}
+    {{-- <div class="topbar  d-lg-none d-md-none d-xlg-none">
+        
         <div class="container">
 
             <div>
@@ -83,6 +140,71 @@
 
             </div>
         </div>
+    </div> --}}
+    <div class="topbar bg-light py-2 border-bottom shadow-sm d-block">
+        <div class="container d-flex justify-content-between flex-wrap align-items-center gap-2">
+
+            {{-- ✅ معلومات الاتصال --}}
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+                <a class="btn btn-sm btn-outline-secondary rounded-pill" href="tel:{{$web_config['phone']->value}}">
+                    <i class="fa fa-phone me-1"></i> {{$web_config['phone']->value}}
+                </a>
+            </div>
+
+            {{-- ✅ العملات واللغات --}}
+            <div class="d-flex flex-wrap align-items-center gap-2">
+
+                {{-- العملة --}}
+                @php($currency_model = getWebConfig(name: 'currency_model'))
+                @if($currency_model=='multi_currency')
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill dropdown-toggle" data-toggle="dropdown">
+                            <span>
+                                {{session('currency_code')}}
+                                {!! session('currency_symbol') == "SAR" ? $defaultSymbol_Svg : session('currency_symbol') !!}
+                            </span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right text-align-direction min-width-160px">
+                            @foreach (\App\Models\Currency::where('status', 1)->get() as $currency)
+                                <li class="dropdown-item cursor-pointer get-currency-change-function"
+                                    data-code="{{$currency['code']}}">
+                                    {{ $currency->name }}
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                {{-- اللغة --}}
+                <div class="dropdown __language-bar text-capitalize">
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill dropdown-toggle" data-toggle="dropdown">
+                        @foreach(json_decode($language['value'],true) as $data)
+                            @if($data['code'] == getDefaultLanguage())
+                                <img width="20"
+                                    src="{{theme_asset(path: 'public/assets/front-end/img/flags/'.$data['code'].'.png')}}"
+                                    alt="{{$data['name']}}" class="me-1">
+                                {{$data['name']}}
+                            @endif
+                        @endforeach
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right text-align-direction">
+                        @foreach(json_decode($language['value'],true) as $data)
+                            @if($data['status']==1)
+                                <li class="change-language" data-action="{{route('change-language')}}" data-language-code="{{$data['code']}}">
+                                    <a class="dropdown-item pb-1" href="javascript:">
+                                        <img width="20"
+                                            src="{{theme_asset(path: 'public/assets/front-end/img/flags/'.$data['code'].'.png')}}"
+                                            alt="{{$data['name']}}" class="me-2"/>
+                                        <span>{{$data['name']}}</span>
+                                    </a>
+                                </li>
+                            @endif
+                        @endforeach
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
     </div>
 
 
@@ -144,7 +266,7 @@
                         </div>
                     </a>
                     <div class="navbar-tool open-search-form-mobile d-lg-none {{request()->cookie('direction', 'ltr') === "rtl" ? 'mr-md-3' : 'ml-md-3'}}">
-                        <a class="navbar-tool-icon-box bg-secondary" href="javascript:">
+                        <a class="navbar-tool-icon-box bg-secondary" href="#" onclick="event.preventDefault();">
                             <i class="tio-search"></i>
                         </a>
                     </div>
@@ -217,12 +339,12 @@
                     </div>
                 </div>
             </div>
-            
+
 
 
 
             <!-- Languge -->
-            <div class="col-xl-2 col-lg-2 col-md-2 d-none d-md-block">
+            {{-- <div class="col-xl-2 col-lg-2 col-md-2 d-none d-md-block">
                 <div class="row">
                     @php($currency_model = getWebConfig(name: 'currency_model'))
                     @if($currency_model=='multi_currency')
@@ -271,7 +393,8 @@
     
 
                 </div>
-            </div>
+            </div> --}}
+            
         </div>
 
         <div>
@@ -525,7 +648,7 @@
                                 </li>
                             @endif
     
-                            @if ($businessMode == 'multi')
+                            {{-- @if ($businessMode == 'multi')
                                 @if(getWebConfig(name: 'seller_registration'))
                                     <li class="nav-item">
                                         <div class="dropdown">
@@ -566,7 +689,7 @@
                                         </div>
                                     </li>
                                 @endif
-                            @endif
+                            @endif --}}
                         </ul>
     
                         

@@ -290,15 +290,15 @@ Route::group(['namespace' => 'RestAPI\v1', 'prefix' => 'v1', 'middleware' => ['a
         });
 
         // Chatting
-        Route::group(['prefix' => 'chat'], function () {
-            Route::controller(ChatController::class)->group(function () {
-                Route::get('list/{type}', 'list');
-                Route::get('get-messages/{type}/{id}', 'get_message');
-                Route::post('send-message/{type}', 'send_message');
-                Route::post('seen-message/{type}', 'seen_message');
-                Route::get('search/{type}', 'search');
-            });
-        });
+        // Route::group(['prefix' => 'chat'], function () {
+        //     Route::controller(ChatController::class)->group(function () {
+        //         Route::get('list/{type}', 'list');
+        //         Route::get('get-messages/{type}/{id}', 'get_message');
+        //         Route::post('send-message/{type}', 'send_message');
+        //         Route::post('seen-message/{type}', 'seen_message');
+        //         Route::get('search/{type}', 'search');
+        //     });
+        // });
 
         //wallet
         Route::group(['prefix' => 'wallet'], function () {
@@ -361,7 +361,7 @@ Route::group(['namespace' => 'RestAPI\v1', 'prefix' => 'v1', 'middleware' => ['a
     Route::get('get-guest-id', 'GeneralController@get_guest_id');
     //MyCode
     Route::get('MethodPayment', 'MethodPaymentController@GetMethod');
-    Route::post('TapPayment', 'TapPaymentSettingsController@createPaymentAPI');
+    // Route::post('TapPayment', 'TapPaymentSettingsController@createPaymentAPI');
     //End MyCode
     //map api
     Route::group(['prefix' => 'mapapi'], function () {

@@ -229,13 +229,15 @@
             @include('web-views.partials._order-summary')
         </div>
     </div>
-
-    <span id="route-action-checkout-function" data-route="checkout-details"></span>
+    
+    <span id="route-action-checkout-function" data-route="{{ route('checkout-details') }}"></span>
 @endsection
 
 @push('script')
 
     <script>
+        // var url = $('#route-action-checkout-function').data('route');
+        // window.location.href = url; 
         $('#login-form').submit(function (e) {
             e.preventDefault();
             $.ajaxSetup({
