@@ -9,6 +9,7 @@ use App\Http\Controllers\Customer\Auth\LoginController;
 use App\Http\Controllers\Customer\Auth\RegisterController;
 use App\Http\Controllers\Customer\Auth\SocialAuthController;
 use App\Http\Controllers\Customer\PaymentController;
+use App\Http\Controllers\Integrations\AliExpressController;
 use App\Http\Controllers\Customer\SystemController;
 use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\ChattingController;
@@ -519,3 +520,8 @@ if (!$isGatewayPublished) {
         });
     });
 }
+
+Route::prefix('integrations/aliexpress')->name('integrations.aliexpress.')->controller(AliExpressController::class)->group(function () {
+    Route::get('connect', 'connect')->name('connect');
+    Route::get('callback', 'callback')->name('callback');
+});

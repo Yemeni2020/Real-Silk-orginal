@@ -9471,5 +9471,5 @@ return [
 	"Office Intermediaries" => "Office Intermediaries",
 	"إذا كنت تمثل مكتبًا وسيطًا (مكتب خدمات أو وساطة تجارية)، يمكنك الدخول من هنا لإدارة حسابك." => "إذا كنت تمثل مكتبًا وسيطًا (مكتب خدمات أو وساطة تجارية)، يمكنك الدخول من هنا لإدارة حسابك.",
 	"Office Intermediaries Login" => "Office Intermediaries Login",
-	
+	"CopyRight 6amTech@2021" => "CopyRight 6amTech@2021",
 ];
