@@ -682,7 +682,7 @@ $auto_translate=getWebConfig("auto_translate");
                                     </label>
                                     <label class="switcher">
                                         <input type="checkbox" class="switcher_input" id="product-color-switcher"
-                                               name="colors_active" {{count($product['colors'])>0?'checked':''}}>
+                                               name="colors_active" {{ !empty($product['colors']) && is_countable($product['colors']) && count($product['colors']) > 0 ? 'checked' : '' }}>
                                         <span class="switcher_control"></span>
                                     </label>
                                 </div>
@@ -690,10 +690,10 @@ $auto_translate=getWebConfig("auto_translate");
                                 <select
                                     class="js-example-basic-multiple js-states js-example-responsive form-control color-var-select"
                                     name="colors[]" multiple="multiple"
-                                    id="colors-selector" {{count($product['colors'])>0?'':'disabled'}}>
+                                    id="colors-selector" {{ !empty($product['colors']) && is_countable($product['colors']) && count($product['colors']) > 0 ? '' : 'disabled' }}>
                                     @foreach ($colors as $key => $color)
                                         <option
-                                            value={{ $color->code }} {{in_array($color->code,$product['colors'])?'selected':''}}>
+                                            value={{ $color->code }} {{ in_array($color->code, (array) ($product['colors'] ?? []), true) ? 'selected' : '' }}>
                                             {{ $color['name']}}
                                         </option>
                                     @endforeach
@@ -844,8 +844,8 @@ $auto_translate=getWebConfig("auto_translate");
 
                                     <div class="row g-2" id="additional_Image_Section">
 
-                                        @if(count($product->colors) == 0)
-                                            @foreach ($product->images_full_url as $key => $photo)
+                                        @if(empty($product->colors) || !is_countable($product->colors) || count($product->colors) == 0)
+                                            @foreach ((array) $product->images_full_url as $key => $photo)
                                                 @php($unique_id = rand(1111,9999))
                                                 <div class="col-sm-12 col-md-4" id="addition-image-section-{{$key}}">
                                                     <div
@@ -885,7 +885,7 @@ $auto_translate=getWebConfig("auto_translate");
                                             @endforeach
                                         @else
                                             @if($product->color_image)
-                                                @foreach ($product->color_images_full_url as $photo)
+                                                @foreach ((array) $product->color_images_full_url as $photo)
                                                     @if($photo['color'] == null)
                                                         @php($unique_id = rand(1111,9999))
                                                         <div class="col-sm-12 col-md-4" id="addition-image-section-{{$key}}">
@@ -926,7 +926,7 @@ $auto_translate=getWebConfig("auto_translate");
                                                     @endif
                                                 @endforeach
                                             @else
-                                                @foreach ($product->images_full_url as $key => $photo)
+                                                @foreach ((array) $product->images_full_url as $key => $photo)
                                                     @php($unique_id = rand(1111,9999))
 
                                                     <div class="col-sm-12 col-md-4" id="addition-image-section-{{$key}}">
@@ -1350,7 +1350,7 @@ $auto_translate=getWebConfig("auto_translate");
     <script>
         "use strict";
 
-        let colors = {{ count($product->colors) }};
+        let colors = {{ (!empty($product->colors) && is_countable($product->colors)) ? count($product->colors) : 0 }};
         let imageCount = {{15-count(json_decode($product->images)) }};
         let thumbnail = '{{ productImagePath('thumbnail').'/'.$product->thumbnail ?? dynamicAsset(path: 'public/assets/back-end/img/400x400/img2.jpg') }}';
         $(function () {

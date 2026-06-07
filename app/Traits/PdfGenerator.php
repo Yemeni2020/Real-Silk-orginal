@@ -6,6 +6,22 @@ use Illuminate\Support\Facades\Storage;
 
 trait  PdfGenerator
 {
+    private static function getMpdfInstance(): \Mpdf\Mpdf
+    {
+        $tempDir = storage_path('app/mpdf/tmp');
+
+        if (!is_dir($tempDir)) {
+            mkdir($tempDir, 0775, true);
+        }
+
+        return new \Mpdf\Mpdf([
+            'default_font' => 'FreeSerif',
+            'mode' => 'utf-8',
+            'format' => [190, 250],
+            'autoLangToFont' => true,
+            'tempDir' => $tempDir,
+        ]);
+    }
     
     // MyCode For Real Mark
     // public static function generatePdf($view, $filePrefix, $filePostfix, $pdfType = null, $requestFrom = 'admin'): string
@@ -43,10 +59,10 @@ trait  PdfGenerator
     // End Code
     public static function generatePdf($view, $filePrefix, $filePostfix, $pdfType = null, $requestFrom = 'admin'): string
     {
-        $mpdf = new \Mpdf\Mpdf(['default_font' => 'FreeSerif', 'mode' => 'utf-8', 'format' => [190, 250], 'autoLangToFont' => true]);
+        $mpdf = self::getMpdfInstance();
         $mpdf->autoScriptToLang = true;
         $mpdf->autoLangToFont = true;
-        if ($pdfType = 'invoice') {
+        if ($pdfType == 'invoice') {
             $footerHtml = self::footerHtml($requestFrom);
             $mpdf->SetHTMLFooter($footerHtml);
         }
@@ -54,14 +70,15 @@ trait  PdfGenerator
         $mpdf_view = $mpdf_view->render();
         $mpdf->WriteHTML($mpdf_view);
         $mpdf->Output($filePrefix . $filePostfix . '.pdf', 'D');
+        return '';
     }
 
     public static function storePdf($view, $filePrefix, $filePostfix, $pdfType = null, $requestFrom = 'admin'): string
     {
-        $mpdf = new \Mpdf\Mpdf(['default_font' => 'FreeSerif', 'mode' => 'utf-8', 'format' => [190, 250], 'autoLangToFont' => true]);
+        $mpdf = self::getMpdfInstance();
         $mpdf->autoScriptToLang = true;
         $mpdf->autoLangToFont = true;
-        if ($pdfType = 'invoice') {
+        if ($pdfType == 'invoice') {
             $footerHtml = self::footerHtml($requestFrom);
             $mpdf->SetHTMLFooter($footerHtml);
         }

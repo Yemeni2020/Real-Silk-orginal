@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -12,10 +14,12 @@ class BusinessSettingSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('business_settings')->insert([
-            'id' => 1,
-            'type' => 'system_default_currency',
-            'value' => 1,
-        ]);
+        DB::table('business_settings')->updateOrInsert(
+            ['id' => 1],
+            [
+                'type' => 'system_default_currency',
+                'value' => 1,
+            ]
+        );
     }
 }

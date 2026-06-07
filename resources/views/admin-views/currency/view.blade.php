@@ -86,20 +86,20 @@
                                            placeholder="{{translate('ex').':'.'USD'}}" required>
                                 </div>
                             </div>
-                            @if($currencyModel['value']=='multi_currency')
-                                <div class="col-sm-6 col-lg-4 col-xl-3">
-                                    <div class="form-group">
-                                        <div class="d-flex align-items-center gap-2 mb-2">
-                                            <label for="exchange_rate"
-                                                   class="title-color mb-0">{{translate('exchange_rate')}}</label>
-                                            <i class="tio-info-outined" data-toggle="tooltip"
-                                               title="{{translate('based_on_your_region_set_the_exchange_rate_of_the_currency_you_want_to_add')}}"></i>
-                                        </div>
-                                        <input type="number" min="0" max="1000000" name="exchange_rate"
-                                               step="0.00000001" class="form-control" id="exchange_rate"
-                                               placeholder="{{translate('ex').':'.'120'}}" required>
+                            <div class="col-sm-6 col-lg-4 col-xl-3">
+                                <div class="form-group">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <label for="exchange_rate"
+                                               class="title-color mb-0">{{translate('exchange_rate')}}</label>
+                                        <i class="tio-info-outined" data-toggle="tooltip"
+                                           title="{{translate('based_on_your_region_set_the_exchange_rate_of_the_currency_you_want_to_add')}}"></i>
                                     </div>
+                                    <input type="number" min="0" max="1000000" name="exchange_rate"
+                                           step="0.00000001" class="form-control" id="exchange_rate"
+                                           placeholder="{{translate('ex').':'.'120'}}" required>
                                 </div>
+                            </div>
+                            @if($currencyModel['value']=='multi_currency')
                                 <div class="col-sm-6 col-lg-4 col-xl-3">
                                         <div class="form-group">
                                             <div class="d-flex align-items-center gap-2 mb-2">
@@ -158,11 +158,9 @@
                                 <th>{{translate('currency_name')}}</th>
                                 <th>{{translate('currency_symbol')}}</th>
                                 <th>{{translate('currency_code')}}</th>
-                                @if($currencyModel['value']=='multi_currency')
-                                    <th>{{translate('exchange_rate')}}
-                                        ({{'1'.' '. getCurrencyCode(type: 'default').' '.'='.'?' }})
-                                    </th>
-                                @endif
+                                <th>{{translate('exchange_rate')}}
+                                    ({{'1'.' '. getCurrencyCode(type: 'default').' '.'='.'?' }})
+                                </th>
                                 <th>{{translate('status')}}</th>
                                 <th class="text-center">{{translate('action')}}</th>
                             </tr>
@@ -174,9 +172,7 @@
                                     <td>{{$currency->name}}</td>
                                     <td>{{$currency->symbol}}</td>
                                     <td>{{$currency->code}}</td>
-                                    @if($currencyModel['value']=='multi_currency')
-                                        <td>{{$currency->exchange_rate}}</td>
-                                    @endif
+                                    <td>{{$currency->exchange_rate}}</td>
                                     <td>
                                         @if($default['value'] != $currency->id)
                                             @if(($currency->status == 0) || ($currency->status == 1 && ($digitalPaymentStatus ? $currency->must_required_for_gateway != 1 : 1)))

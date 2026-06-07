@@ -5,6 +5,7 @@ namespace App\Traits;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Exception\NotReadableException;
 use Intervention\Image\Facades\Image;
 
 trait FileManagerTrait
@@ -26,7 +27,12 @@ trait FileManagerTrait
                 Storage::disk($storage)->makeDirectory($dir);
             }
 
-            $isOriginalImage = in_array($image->getClientOriginalExtension(), ['gif', 'svg']);
+            $extension = strtolower((string) $image->getClientOriginalExtension());
+            $mimeType = strtolower((string) $image->getClientMimeType());
+            $isOriginalImage = in_array($extension, ['gif', 'svg', 'avif'], true)
+                || str_contains($mimeType, 'image/avif')
+                || str_contains($mimeType, 'image/svg')
+                || str_contains($mimeType, 'image/gif');
             if ($isOriginalImage) {
                 $imageName = Carbon::now()->toDateString() . "-" . uniqid() . "." . $image->getClientOriginalExtension();
                 Storage::disk($storage)->put($dir . $imageName, file_get_contents($image));
@@ -34,10 +40,16 @@ trait FileManagerTrait
                 if (in_array(request()->ip(), ['127.0.0.1', '::1']) && !(imagetypes() & IMG_WEBP) || env('APP_DEBUG') && !(imagetypes() & IMG_WEBP)) {
                     $format = 'png';
                 }
-                $imageWebp = Image::make($image)->encode($format);
-                $imageName = Carbon::now()->toDateString() . "-" . uniqid() . "." . $format;
-                Storage::disk($storage)->put($dir . $imageName, $imageWebp);
-                $imageWebp->destroy();
+                try {
+                    $imageWebp = Image::make($image)->encode($format);
+                    $imageName = Carbon::now()->toDateString() . "-" . uniqid() . "." . $format;
+                    Storage::disk($storage)->put($dir . $imageName, $imageWebp);
+                    $imageWebp->destroy();
+                } catch (NotReadableException $exception) {
+                    $fallbackExtension = strtolower((string) $image->getClientOriginalExtension()) ?: 'jpg';
+                    $imageName = Carbon::now()->toDateString() . "-" . uniqid() . "." . $fallbackExtension;
+                    Storage::disk($storage)->put($dir . $imageName, file_get_contents($image));
+                }
             }
         } else {
             $imageName = 'def.png';

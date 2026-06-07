@@ -25,9 +25,38 @@
         transform: scale(1.02);
     }
 
+    .factory-office-login-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .factory-office-login-item {
+        flex: 1 1 320px;
+        max-width: 420px;
+    }
+
+    .factory-office-login-item-content {
+        width: 100%;
+        word-break: normal;
+        overflow-wrap: break-word;
+    }
+
+    .factory-office-login-item-content h5,
+    .factory-office-login-item-content p,
+    .factory-office-login-item-content a {
+        word-break: normal;
+        white-space: normal;
+    }
+
     @media (max-width: 768px) {
         .factory-office-login-box {
             padding: 20px;
+        }
+
+        .factory-office-login-item {
+            max-width: 100%;
         }
     }
 </style>
@@ -40,17 +69,7 @@
     $customerOTPLogin = $web_config['customer_login_options']['otp_login'] ?? 0;
     $customerSocialLogin = $web_config['customer_login_options']['social_login'] ?? 0;
 
-    if (!$customerOTPLogin && $customerManualLogin && $customerSocialLogin) {
-        $multiColumn = 1;
-    } elseif ($customerOTPLogin && !$customerManualLogin && $customerSocialLogin) {
-        $multiColumn = 1;
-    } elseif ($customerOTPLogin && $customerManualLogin && !$customerSocialLogin) {
-        $multiColumn = 1;
-    } elseif ($customerOTPLogin && $customerManualLogin && $customerSocialLogin) {
-        $multiColumn = 1;
-    } else {
-        $multiColumn = 0;
-    }
+    $multiColumn = $customerSocialLogin ? 1 : 0;
     ?>
 
     <div class="container py-4 py-lg-5 my-4 text-align-direction">
@@ -199,7 +218,7 @@
                             <div class="or-sign-in-with"><span>{{translate('Or Sign in with')}}</span></div>
                         @endif
 
-                        @if($multiColumn || $customerSocialLogin)
+                        @if($multiColumn || $customerSocialLogin || ($customerOTPLogin && $customerManualLogin))
                             <div class="{{ $multiColumn ? 'col-md-6' : 'col-12' }}">
                                 <div class="d-flex justify-content-center flex-column align-items-center my-3 gap-3">
                                     @if($customerSocialLogin)
@@ -237,33 +256,31 @@
                         @endif
                     </div>
                 </div>
-                <div class="container mt-5">
-                    <div class="factory-office-login-box py-4 px-3 px-md-5 shadow rounded bg-light text-center">
-                        {{-- <h4 class="mb-4 text-dark fw-bold">{{ translate('هل أنت مصنع أو مكتب وسيط؟') }}</h4> --}}
-
-                        <div class="row justify-content-center gap-3">
-                            <div class="col-md-5 col-12">
-                                <div class="p-3 border rounded h-100 d-flex flex-column justify-content-between">
-                                    <h5 class="text-success mb-3">{{ translate('Chinese factories') }}</h5>
-                                    <p class="text-muted small">
-                                        {{ translate('إذا كنت تمثل مصنعًا صينيًا وتريد الوصول إلى لوحة التحكم الخاصة بك، الرجاء تسجيل الدخول من هنا.') }}
-                                    </p>
-                                    <a href="{{ route('vendor.auth.login') }}" class="btn btn-outline-success mt-3 rounded-pill px-4 py-2">
-                                        <i class="fa fa-industry me-2"></i> {{ translate('Chinese Factory Login') }}
-                                    </a>
-                                </div>
+            </div>
+            <div class="col-12 mt-5">
+                <div class="factory-office-login-box py-4 px-3 px-md-5 shadow rounded bg-light text-center">
+                    <div class="factory-office-login-grid">
+                        <div class="factory-office-login-item">
+                            <div class="factory-office-login-item-content p-3 border rounded h-100 d-flex flex-column justify-content-between">
+                                <h5 class="text-success mb-3">{{ translate('Chinese factories') }}</h5>
+                                <p class="text-muted small">
+                                    {{ translate('إذا كنت تمثل مصنعًا صينيًا وتريد الوصول إلى لوحة التحكم الخاصة بك، الرجاء تسجيل الدخول من هنا.') }}
+                                </p>
+                                <a href="{{ route('vendor.auth.login') }}" class="btn btn-outline-success mt-3 rounded-pill px-4 py-2">
+                                    <i class="fa fa-industry me-2"></i> {{ translate('Chinese Factory Login') }}
+                                </a>
                             </div>
+                        </div>
 
-                            <div class="col-md-5 col-12">
-                                <div class="p-3 border rounded h-100 d-flex flex-column justify-content-between">
-                                    <h5 class="text-info mb-3">{{ translate('Office Intermediaries') }}</h5>
-                                    <p class="text-muted small">
-                                        {{ translate('إذا كنت تمثل مكتبًا وسيطًا (مكتب خدمات أو وساطة تجارية)، يمكنك الدخول من هنا لإدارة حسابك.') }}
-                                    </p>
-                                    <a href="{{ route('office.auth.login') }}" class="btn btn-outline-info mt-3 rounded-pill px-4 py-2">
-                                        <i class="fa fa-building me-2"></i> {{ translate('Office Intermediaries Login') }}
-                                    </a>
-                                </div>
+                        <div class="factory-office-login-item">
+                            <div class="factory-office-login-item-content p-3 border rounded h-100 d-flex flex-column justify-content-between">
+                                <h5 class="text-info mb-3">{{ translate('Office Intermediaries') }}</h5>
+                                <p class="text-muted small">
+                                    {{ translate('إذا كنت تمثل مكتبًا وسيطًا (مكتب خدمات أو وساطة تجارية)، يمكنك الدخول من هنا لإدارة حسابك.') }}
+                                </p>
+                                <a href="{{ route('office.auth.login') }}" class="btn btn-outline-info mt-3 rounded-pill px-4 py-2">
+                                    <i class="fa fa-building me-2"></i> {{ translate('Office Intermediaries Login') }}
+                                </a>
                             </div>
                         </div>
                     </div>

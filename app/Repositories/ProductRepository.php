@@ -85,7 +85,7 @@ class ProductRepository implements ProductRepositoryInterface
         }
 
         if (!empty($relations['seller.shop'])) {
-            $query->with(['seller:id,shop_id', 'seller.shop:id,seller_id,name']);
+            $query->with(['seller:id', 'seller.shop:id,seller_id,name']);
         }
 
         if (!empty($relations['wishList'])) {

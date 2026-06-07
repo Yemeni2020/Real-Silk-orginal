@@ -175,6 +175,8 @@ use App\Http\Controllers\Admin\Notification\NotificationSetupController;
 use App\Http\Controllers\Admin\ThirdParty\SocialLoginSettingsController;
 use App\Http\Controllers\Admin\ThirdParty\CurrencyConfigController;
 use App\Http\Controllers\Admin\ThirdParty\AIConfigController;
+use App\Http\Controllers\Admin\AliExpressCatalogController;
+use App\Http\Controllers\Admin\Integrations\AliExpressImportController;
 use App\Http\Controllers\Admin\Deliveryman\DeliverymanWithdrawController;
 use App\Http\Controllers\Admin\Settings\VendorRegistrationReasonController;
 use App\Http\Controllers\Admin\Deliveryman\DeliveryManCashCollectController;
@@ -295,6 +297,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
             Route::get(Order::LISTSERVICE[URI], 'listservice')->name('listservice');
             Route::get(Order::EXPORT_EXCEL[URI] . '/{status}', 'exportList')->name('export-excel');
             Route::get(Order::GENERATE_INVOICE[URI] . '/{id}', 'generateInvoice')->name('generate-invoice')->withoutMiddleware(['module:order_management']);
+            Route::get('aliexpress-fulfillment/{id}', 'aliExpressFulfillment')->name('aliexpress-fulfillment');
+            Route::post('aliexpress-fulfillment/{id}', 'saveAliExpressFulfillment')->name('aliexpress-fulfillment.save');
+            Route::post('aliexpress-fulfillment/{id}/item', 'saveAliExpressItemFulfillment')->name('aliexpress-fulfillment.item-save');
             Route::get(Order::VIEW[URI] . '/{id}', 'getView')->name('details');
             Route::get(Order::VIEWSERVICE[URI] . '/{id}', 'getViewService')->name('servicedetails');
             Route::post(Order::VIEWSERVICE[URI] . '/{id}', 'changeStatus');
@@ -1325,5 +1330,30 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['admin']],
         });
     });
 
-});
+    Route::group(['prefix' => 'aliexpress', 'as' => 'aliexpress.'], function () {
+        Route::controller(AliExpressCatalogController::class)->group(function () {
+            Route::get('/catalog', 'index')->name('catalog.index');
+            Route::get('/catalog/search', 'search')->name('catalog.search');
+            Route::post('/catalog/{productId}/preview', 'preview')->name('catalog.preview');
+            Route::post('/catalog/{productId}/import', 'import')->name('catalog.import');
+            Route::post('/catalog/{productId}/publish', 'publish')->name('catalog.publish');
+        });
 
+        Route::controller(AliExpressImportController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/reconnect', 'reconnect')->name('reconnect');
+            Route::get('/preview', 'previewForm')->name('preview');
+            Route::post('/preview', 'createPreview')->name('preview.store');
+            Route::get('/preview/{id}', 'showPreview')->name('preview.show');
+            Route::post('/preview/import', 'importPreview')->name('preview.import');
+            Route::post('/preview/publish', 'publishPreview')->name('preview.publish');
+            Route::post('/preview/skip', 'skipPreview')->name('preview.skip');
+            Route::post('/publish-imported', 'publishImported')->name('publish-imported');
+            Route::post('/import-publish', 'importAndPublish')->name('import-publish');
+            Route::post('/queue-bulk', 'queueBulk')->name('queue-bulk');
+            Route::post('/retry-failed', 'retryFailed')->name('retry-failed');
+            Route::post('/cancel-pending', 'cancelPending')->name('cancel-pending');
+        });
+    });
+
+});

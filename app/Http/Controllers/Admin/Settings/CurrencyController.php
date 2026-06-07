@@ -108,13 +108,14 @@ class CurrencyController extends BaseController
 
     public function add(Request $request): RedirectResponse|null
     {
+        $autoChange = (int) $request->input('auto_change', 0);
         $currencyExist = $this->currencyRepo->getFirstWhere(params: ['code' => $request['code']]);
         if ($currencyExist) {
             Toastr::warning(translate('Currency_already_exist'));
             return redirect()->back();
         }
 
-        if($request['auto_change']==1){
+        if($autoChange === 1){
             $exchange=getWebConfig(name: 'Currency_exchangerate');
 
             
@@ -157,7 +158,7 @@ class CurrencyController extends BaseController
             'name' => $request['name'],
             'symbol' => $request['symbol'],
             'code' => $request['code'],
-            'auto_change' => $request['auto_change'],
+            'auto_change' => $autoChange,
             'exchange_rate' => $request->has('exchange_rate') ? $request['exchange_rate'] : 1,
             'language' => $request->has('lang') ? $request['lang'] : "",
         ]);
@@ -174,6 +175,7 @@ class CurrencyController extends BaseController
 
     public function update(Request $request, $id): RedirectResponse
     {
+        $autoChange = (int) $request->input('auto_change', 0);
         $currency = $this->currencyRepo->getFirstWhere(params: ['id' => $id]);
         if ($currency['code'] == 'BDT' && $request['code'] != 'BDT') {
             $config = $this->settingRepo->getFirstWhere(params: ['key_name'=>'ssl_commerz']);
@@ -203,7 +205,7 @@ class CurrencyController extends BaseController
 
 
 
-        if($request['auto_change']==1){
+        if($autoChange === 1){
             $exchange=getWebConfig(name: 'Currency_exchangerate');
 
             
@@ -247,7 +249,7 @@ class CurrencyController extends BaseController
             'name' => $request['name'],
             'symbol' => $request['symbol'],
             'code' => $request['code'],
-            'auto_change' => $request['auto_change'],
+            'auto_change' => $autoChange,
             'exchange_rate' => $request->has('exchange_rate') ? $request['exchange_rate'] : 1,
             'language' => $request->has('lang') ? $request['lang'] :"",
         ];

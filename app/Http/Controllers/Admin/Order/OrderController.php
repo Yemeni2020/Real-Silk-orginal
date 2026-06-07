@@ -28,6 +28,9 @@ use App\Repositories\WalletTransactionRepository;
 use App\Services\DeliveryCountryCodeService;
 use App\Services\DeliveryManTransactionService;
 use App\Services\DeliveryManWalletService;
+use App\Services\AliExpress\OrderAliExpressFulfillmentBuilder;
+use App\Services\AliExpress\AliExpressFulfillmentValidationService;
+use App\Services\IntegrationLogService;
 use App\Services\OrderService;
 use App\Services\OrderStatusHistoryService;
 use App\Traits\CustomerTrait;
@@ -42,6 +45,7 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use App\Models\FormItem;
+use App\Models\AliExpressOrderItemFulfillment;
 use Illuminate\Support\Facades\View as PdfView;
 use App\Models\DetailsOrderService;
 use App\Models\OrderService as ModelOrderService;
@@ -386,6 +390,130 @@ class OrderController extends BaseController
             compact('order', 'vendor', 'companyPhone', 'companyEmail', 'companyName', 'companyWebLogo','invoiceSettings')
         );
         $this->generatePdf(view: $mpdf_view, filePrefix: 'order_invoice_',filePostfix: $order['id'],pdfType: 'invoice');
+    }
+
+    public function aliExpressFulfillment(string|int $id, OrderAliExpressFulfillmentBuilder $builder, AliExpressFulfillmentValidationService $validator): View|RedirectResponse
+    {
+        $order = $this->orderRepo->getFirstWhere(params: ['id' => $id], relations: ['details.productAllStatus', 'customer']);
+
+        if (!$order) {
+            Toastr::error(translate('Order_not_found'));
+            return back();
+        }
+
+        $fulfillment = $builder->build($order);
+        $warnings = $validator->validate($order, $fulfillment);
+
+        return view('admin-views.order.aliexpress-fulfillment', compact('order', 'fulfillment', 'warnings'));
+    }
+
+    public function saveAliExpressFulfillment(Request $request, string|int $id, IntegrationLogService $integrationLog): RedirectResponse
+    {
+        $order = $this->orderRepo->getFirstWhere(params: ['id' => $id]);
+        if (!$order) {
+            Toastr::error(translate('Order_not_found'));
+            return back();
+        }
+
+        $validated = $request->validate([
+            'supplier_order_id' => 'required|string|max:100',
+            'tracking_id' => 'nullable|string|max:191',
+            'delivery_service_name' => 'nullable|string|max:191',
+        ]);
+
+        $serviceName = trim((string) ($validated['delivery_service_name'] ?? ''));
+        if ($serviceName === '') {
+            $serviceName = 'AliExpress - ' . $validated['supplier_order_id'];
+        }
+
+        $this->orderRepo->update(id: $order->id, data: [
+            'delivery_type' => 'third_party_delivery',
+            'delivery_service_name' => $serviceName,
+            'third_party_delivery_tracking_id' => $validated['tracking_id'] ?? null,
+            'delivery_man_id' => null,
+            'deliveryman_charge' => 0,
+            'expected_delivery_date' => null,
+        ]);
+        $integrationLog->log('aliexpress', 'fulfillment_created', 'success', null, [
+            'order_id' => $order->id,
+            'delivery_service_name' => $serviceName,
+            'has_tracking' => !empty($validated['tracking_id']),
+        ], (string) $order->id, auth('admin')->id());
+
+        Toastr::success('AliExpress fulfillment info saved.');
+        return redirect()->route('admin.orders.aliexpress-fulfillment', [$order->id]);
+    }
+
+    public function saveAliExpressItemFulfillment(Request $request, string|int $id, IntegrationLogService $integrationLog): RedirectResponse
+    {
+        $order = $this->orderRepo->getFirstWhere(params: ['id' => $id], relations: ['details']);
+        if (!$order) {
+            Toastr::error(translate('Order_not_found'));
+            return back();
+        }
+
+        $validated = $request->validate([
+            'order_detail_id' => 'required|integer',
+            'status' => 'required|string|in:not_started,supplier_order_pending,supplier_order_placed,supplier_paid,supplier_shipped,tracking_received,delivered,failed,cancelled,refunded',
+            'supplier_order_id' => 'nullable|string|max:100',
+            'supplier_line_id' => 'nullable|string|max:100',
+            'supplier_order_url' => 'nullable|string|max:500',
+            'supplier_paid_amount' => 'nullable|numeric|min:0',
+            'supplier_currency' => 'nullable|string|max:10',
+            'carrier' => 'nullable|string|max:191',
+            'tracking_number' => 'nullable|string|max:191',
+            'note' => 'nullable|string|max:1000',
+        ]);
+
+        $orderDetailId = (int) $validated['order_detail_id'];
+        $detailExists = collect($order->details)->contains(fn ($d) => (int) $d->id === $orderDetailId);
+        if (!$detailExists) {
+            Toastr::error('Order item not found for this order.');
+            return back();
+        }
+
+        AliExpressOrderItemFulfillment::query()->updateOrCreate(
+            ['order_detail_id' => $orderDetailId],
+            [
+                'order_id' => $order->id,
+                'status' => $validated['status'],
+                'supplier_order_id' => $validated['supplier_order_id'] ?? null,
+                'supplier_line_id' => $validated['supplier_line_id'] ?? null,
+                'supplier_order_url' => $validated['supplier_order_url'] ?? null,
+                'supplier_paid_amount' => $validated['supplier_paid_amount'] ?? null,
+                'supplier_currency' => $validated['supplier_currency'] ?? null,
+                'carrier' => $validated['carrier'] ?? null,
+                'supplier_carrier' => $validated['carrier'] ?? null,
+                'tracking_number' => $validated['tracking_number'] ?? null,
+                'supplier_tracking_number' => $validated['tracking_number'] ?? null,
+                'note' => $validated['note'] ?? null,
+                'notes' => $validated['note'] ?? null,
+                'updated_by_admin_id' => auth('admin')->id(),
+                'placed_by_admin_id' => in_array($validated['status'], ['supplier_order_placed', 'supplier_paid', 'supplier_shipped', 'tracking_received', 'delivered'], true) ? auth('admin')->id() : null,
+                'placed_at' => in_array($validated['status'], ['supplier_order_placed', 'supplier_paid', 'supplier_shipped', 'tracking_received', 'delivered'], true) ? now() : null,
+                'tracking_synced_at' => !empty($validated['tracking_number']) ? now() : null,
+            ]
+        );
+
+        if (!empty($validated['tracking_number']) || !empty($validated['carrier'])) {
+            $this->orderRepo->update(id: $order->id, data: [
+                'delivery_type' => 'third_party_delivery',
+                'delivery_service_name' => $validated['carrier'] ?? $order->delivery_service_name,
+                'third_party_delivery_tracking_id' => $validated['tracking_number'] ?? $order->third_party_delivery_tracking_id,
+                'delivery_man_id' => null,
+                'deliveryman_charge' => 0,
+                'expected_delivery_date' => null,
+            ]);
+            $integrationLog->log('aliexpress', 'tracking_updated', 'success', null, [
+                'order_id' => $order->id,
+                'order_detail_id' => $orderDetailId,
+                'carrier' => $validated['carrier'] ?? null,
+                'has_tracking' => !empty($validated['tracking_number']),
+            ], (string) $order->id, auth('admin')->id());
+        }
+
+        Toastr::success('AliExpress item fulfillment saved.');
+        return redirect()->route('admin.orders.aliexpress-fulfillment', [$order->id]);
     }
 
     public function updateStatus(

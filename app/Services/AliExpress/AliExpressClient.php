@@ -65,6 +65,86 @@ class AliExpressClient
         ], static fn ($value) => $value !== null && $value !== ''), $accessToken);
     }
 
+    public function getProductDetail(string $productId, ?string $accessToken = null): array
+    {
+        return $this->getDropshippingProduct(
+            (string) $accessToken,
+            $productId,
+            config('aliexpress.default_country'),
+            config('aliexpress.default_currency'),
+            config('aliexpress.default_language'),
+        );
+    }
+
+    public function searchProducts(array $filters): array
+    {
+        $accessToken = (string) ($filters['access_token'] ?? '');
+        unset($filters['access_token']);
+
+        try {
+            $response = $this->call((string) config('aliexpress.catalog.search_method', 'aliexpress.ds.text.search'), array_filter([
+                'key_word' => $filters['keyword'] ?? null,
+                'keyWord' => $filters['keyword'] ?? null,
+                'category_id' => $filters['category_id'] ?? null,
+                'categoryId' => $filters['category_id'] ?? null,
+                'min_price' => $filters['min_price'] ?? null,
+                'max_price' => $filters['max_price'] ?? null,
+                'ship_to_country' => $filters['ship_to_country'] ?? config('aliexpress.default_country'),
+                'countryCode' => $filters['ship_to_country'] ?? config('aliexpress.default_country'),
+                'target_currency' => $filters['currency'] ?? config('aliexpress.default_currency'),
+                'currency' => $filters['currency'] ?? config('aliexpress.default_currency'),
+                'target_language' => $filters['language'] ?? config('aliexpress.default_language'),
+                'locale' => $filters['language'] ?? config('aliexpress.default_language'),
+                'local' => $filters['local'] ?? config('aliexpress.catalog.local', 'en_US'),
+                'sort' => $filters['sort'] ?? null,
+                'page_no' => $filters['page'] ?? 1,
+                'page_size' => $filters['per_page'] ?? 20,
+                'pageNo' => $filters['page'] ?? 1,
+                'pageSize' => $filters['per_page'] ?? 20,
+            ], static fn ($value) => $value !== null && $value !== ''), $accessToken ?: null);
+
+            return [
+                'success' => true,
+                'message' => null,
+                'data' => $response,
+                'meta' => [],
+                'warnings' => [],
+            ];
+        } catch (RuntimeException $exception) {
+            return [
+                'success' => false,
+                'message' => $this->friendlyCatalogError($exception),
+                'data' => [],
+                'meta' => [],
+                'warnings' => [$exception->getMessage()],
+            ];
+        }
+    }
+
+    public function getCategories(?string $parentId = null, ?string $accessToken = null): array
+    {
+        try {
+            $response = $this->call((string) config('aliexpress.catalog.category_method', 'aliexpress.ds.category.get'), array_filter([
+                'parent_category_id' => $parentId,
+                'language' => config('aliexpress.default_language'),
+            ], static fn ($value) => $value !== null && $value !== ''), $accessToken ?: null);
+
+            return [
+                'success' => true,
+                'message' => null,
+                'data' => $response,
+                'warnings' => [],
+            ];
+        } catch (RuntimeException $exception) {
+            return [
+                'success' => false,
+                'message' => 'AliExpress category browsing is not available for this API account.',
+                'data' => [],
+                'warnings' => [$exception->getMessage()],
+            ];
+        }
+    }
+
     public function call(string $method, array $params = [], ?string $session = null): array
     {
         $parameters = array_merge($params, [
@@ -183,5 +263,15 @@ class AliExpressClient
     private function getRedirectUri(): string
     {
         return $this->redirectUri ?? (string) config('aliexpress.redirect_uri');
+    }
+
+    private function friendlyCatalogError(RuntimeException $exception): string
+    {
+        $message = strtolower($exception->getMessage());
+        if (str_contains($message, 'permission') || str_contains($message, 'isv') || str_contains($message, 'method') || str_contains($message, 'invalid api')) {
+            return 'AliExpress catalog search is not available for this API account. You can still import by product URL or ID.';
+        }
+
+        return 'AliExpress catalog search failed. Please try again later or import by product URL or ID.';
     }
 }

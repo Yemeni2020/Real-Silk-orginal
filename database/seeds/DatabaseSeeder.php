@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,7 +16,8 @@ class DatabaseSeeder extends Seeder
          $this->call([
              AdminRoleTable::class,
              AdminTable::class,
-             SellerTableSeeder::class
+             SellerTableSeeder::class,
+             CurrencyTableSeeder::class,
          ]);
     }
 }

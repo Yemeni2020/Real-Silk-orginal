@@ -9472,4 +9472,9 @@ return [
 	"إذا كنت تمثل مكتبًا وسيطًا (مكتب خدمات أو وساطة تجارية)، يمكنك الدخول من هنا لإدارة حسابك." => "إذا كنت تمثل مكتبًا وسيطًا (مكتب خدمات أو وساطة تجارية)، يمكنك الدخول من هنا لإدارة حسابك.",
 	"Office Intermediaries Login" => "Office Intermediaries Login",
 	"CopyRight 6amTech@2021" => "CopyRight 6amTech@2021",
+	"the_products_are_shown_in_this_list,_which_quantity_is_below" => "The products are shown in this list  which quantity is below",
+	"category  is required!" => "Category is required!",
+	"The code format is invalid." => "The code format is invalid.",
+	"AliExpress Fulfillment" => "AliExpress Fulfillment",
+	"CopyRight realsilk@2026" => "CopyRight realsilk@2026",
 ];

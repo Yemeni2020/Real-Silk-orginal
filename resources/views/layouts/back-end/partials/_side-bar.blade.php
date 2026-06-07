@@ -423,6 +423,20 @@
                                             <span class="text-truncate">{{translate('bulk_import')}}</span>
                                         </a>
                                     </li>
+                                    <li class="nav-item {{Request::is('admin/aliexpress') || Request::is('admin/aliexpress/preview*') ?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.aliexpress.index')}}"
+                                           title="AliExpress import">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">AliExpress import</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item {{Request::is('admin/aliexpress/catalog*')?'active':''}}">
+                                        <a class="nav-link " href="{{route('admin.aliexpress.catalog.index')}}"
+                                           title="AliExpress Catalog">
+                                            <span class="tio-circle nav-indicator-icon"></span>
+                                            <span class="text-truncate">AliExpress Catalog</span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                             <li class="navbar-vertical-aside-has-menu {{Request::is('admin/products/'.Product::LIST[URI].'/vendor*')||(Request::is('admin/products/'.\App\Enums\ViewPaths\Admin\Product::VIEW[URI].'/vendor/*'))||Request::is('admin/products/'.\App\Enums\ViewPaths\Admin\Product::UPDATED_PRODUCT_LIST[URI])?'active':''}}">

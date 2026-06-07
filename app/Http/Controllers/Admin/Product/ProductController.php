@@ -437,7 +437,7 @@ class ProductController extends BaseController
         $product['qtySum'] = $product?->orderDelivered->sum('qty');
         $product['discountSum'] = $product?->orderDelivered->sum('discount');
         $productColors = [];
-        $colors = json_decode($product['colors']);
+        $colors = json_decode((string) ($product['colors'] ?? ''), true) ?: [];
         foreach ($colors as $color) {
             $getColor = $this->colorRepo->getFirstWhere(params: ['code' => $color]);
             if ($getColor) {

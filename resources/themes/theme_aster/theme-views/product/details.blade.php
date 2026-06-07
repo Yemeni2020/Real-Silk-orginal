@@ -442,11 +442,12 @@
                                                 @csrf
                                                 <div class="">
                                                     <input type="hidden" name="id" value="{{ $product->id }}">
-                                                    @if (count(json_decode($product->colors)) > 0)
+                                                    @php($decodedColors = json_decode((string) ($product->colors ?? ''), true) ?: [])
+                                                    @if (count($decodedColors) > 0)
                                                         <div class="d-flex gap-4 flex-wrap align-items-center mb-3">
                                                             <h6 class="fw-semibold">{{translate('color')}}</h6>
                                                             <ul class="option-select-btn custom_01_option flex-wrap weight-style--two gap-2 pt-2">
-                                                                @foreach (json_decode($product->colors) as $key => $color)
+                                                                @foreach ($decodedColors as $key => $color)
                                                                     <li>
                                                                         <label>
                                                                             <input type="radio" hidden=""
@@ -467,7 +468,7 @@
                                                         </div>
                                                     @endif
 
-                                                    @foreach (json_decode($product->choice_options) as  $choice)
+                                                    @foreach ((json_decode((string) ($product->choice_options ?? ''), false) ?: []) as $choice)
                                                         <div class="d-flex gap-4 flex-wrap align-items-center mb-4">
                                                             <h6 class="fw-semibold">{{translate($choice->title)}}</h6>
                                                             <ul class="option-select-btn custom_01_option flex-wrap weight-style--two gap-2">

@@ -27,6 +27,9 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
         $schedule->command('currency:update')->hourly();
+        if ((bool) config('aliexpress.sync.schedule_enabled', false)) {
+            $schedule->command('aliexpress:sync-products')->cron((string) config('aliexpress.sync.schedule', '0 */6 * * *'));
+        }
     }
 
     /**

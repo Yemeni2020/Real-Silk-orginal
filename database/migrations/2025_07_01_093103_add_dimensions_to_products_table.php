@@ -12,10 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->decimal('weight', 8, 2)->nullable();
-            $table->decimal('length', 8, 2)->nullable();
-            $table->decimal('width', 8, 2)->nullable();
-            $table->decimal('height', 8, 2)->nullable();
+            if (!Schema::hasColumn('products', 'weight')) {
+                $table->decimal('weight', 8, 2)->nullable();
+            }
+
+            if (!Schema::hasColumn('products', 'length')) {
+                $table->decimal('length', 8, 2)->nullable();
+            }
+
+            if (!Schema::hasColumn('products', 'width')) {
+                $table->decimal('width', 8, 2)->nullable();
+            }
+
+            if (!Schema::hasColumn('products', 'height')) {
+                $table->decimal('height', 8, 2)->nullable();
+            }
         });
     }
 
@@ -25,7 +36,17 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn(['weight', 'length', 'width', 'height']);
+            $columnsToDrop = [];
+
+            foreach (['weight', 'length', 'width', 'height'] as $column) {
+                if (Schema::hasColumn('products', $column)) {
+                    $columnsToDrop[] = $column;
+                }
+            }
+
+            if ($columnsToDrop !== []) {
+                $table->dropColumn($columnsToDrop);
+            }
         });
     }
 };

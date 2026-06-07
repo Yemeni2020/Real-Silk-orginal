@@ -50,15 +50,15 @@
                                                class="form-control" id="code"
                                                value="{{$currency['code']}}">
                                     </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="title-color">{{translate('exchange_rate').':'}}</label>
+                                        <input type="number" min="0" max="1000000"
+                                               name="exchange_rate" step="0.00000001"
+                                               placeholder="{{translate('exchange_Rate')}}"
+                                               class="form-control" id="exchange_rate"
+                                               value="{{$currency['exchange_rate']}}">
+                                    </div>
                                     @if($currencyModel=='multi_currency')
-                                        <div class="col-md-6 mb-3">
-                                            <label class="title-color">{{translate('exchange_rate').':'}}</label>
-                                            <input type="number" min="0" max="1000000"
-                                                   name="exchange_rate" step="0.00000001"
-                                                   placeholder="{{translate('exchange_Rate')}}"
-                                                   class="form-control" id="exchange_rate"
-                                                   value="{{$currency['exchange_rate']}}">
-                                        </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="title-color">{{translate('Language').':'}}</label>
                                             @php

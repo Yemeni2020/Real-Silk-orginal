@@ -67,6 +67,11 @@
                                             alt="" class="mr-1">
                                         {{translate('print_Invoice')}}
                                     </a>
+
+                                    <a class="btn btn-outline-primary px-4"
+                                       href="{{ route('admin.orders.aliexpress-fulfillment', [$order['id']]) }}">
+                                        {{ translate('AliExpress Fulfillment') }}
+                                    </a>
                                 </div>
                                 <div class="d-flex flex-column gap-2 mt-3">
                                     <div class="order-status d-flex justify-content-sm-end gap-10 text-capitalize">

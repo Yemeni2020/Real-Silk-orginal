@@ -1,4 +1,4 @@
-@if(count($combinations) > 0)
+@if(!empty($combinations) && is_countable($combinations) && count($combinations) > 0)
     <table class="table physical_product_show table-borderless">
         <thead class="thead-light thead-50 text-capitalize">
         <tr>
